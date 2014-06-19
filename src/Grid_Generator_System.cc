@@ -36,11 +36,13 @@ void
 PPL::Grid_Generator_System::insert(Grid_Generator_System& gs, Recycle_Input) {
   const dimension_type gs_num_rows = gs.num_rows();
 
-  if (space_dimension() < gs.space_dimension())
+  if (space_dimension() < gs.space_dimension()) {
     set_space_dimension(gs.space_dimension());
-  else
+  }
+  else {
     gs.set_space_dimension(space_dimension());
-
+  }
+  
   for (dimension_type i = 0; i < gs_num_rows; ++i) {
     sys.insert(gs.sys.rows[i], Recycle_Input());
   }
@@ -62,8 +64,9 @@ PPL::Grid_Generator_System::insert(Grid_Generator& g, Recycle_Input) {
     // There is no need to add the origin as a parameter,
     // as it will be immediately flagged as redundant.
     // However, we still have to adjust space dimension.
-    if (space_dimension() < g.space_dimension())
+    if (space_dimension() < g.space_dimension()) {
       set_space_dimension(g.space_dimension());
+    }
     return;
   }
 
@@ -112,8 +115,9 @@ PPL::Grid_Generator_System
   // lines and rays into the origin of the space.
   const bool not_invertible = (v.space_dimension() >= expr.space_dimension()
                                || expr.coefficient(v) == 0);
-  if (not_invertible)
+  if (not_invertible) {
     x.remove_invalid_lines_and_parameters();
+  }
 }
 
 PPL_OUTPUT_DEFINITIONS(Grid_Generator_System)
@@ -125,8 +129,9 @@ PPL::Grid_Generator_System::ascii_dump(std::ostream& s) const {
 
 bool
 PPL::Grid_Generator_System::ascii_load(std::istream& s) {
-  if (!sys.ascii_load(s))
+  if (!sys.ascii_load(s)) {
     return false;
+  }
 
   PPL_ASSERT(OK());
   return true;
@@ -176,13 +181,15 @@ PPL::IO_Operators::operator<<(std::ostream& s,
                               const Grid_Generator_System& gs) {
   Grid_Generator_System::const_iterator i = gs.begin();
   const Grid_Generator_System::const_iterator gs_end = gs.end();
-  if (i == gs_end)
+  if (i == gs_end) {
     return s << "false";
+  }
   while (true) {
     s << *i;
     ++i;
-    if (i == gs_end)
+    if (i == gs_end) {
       return s;
+    }
     s << ", ";
   }
 }
@@ -235,10 +242,12 @@ PPL::Grid_Generator_System::remove_invalid_lines_and_parameters() {
   // decreases it.
   for (dimension_type i = 0; i < num_rows(); ) {
     const Grid_Generator& g = (*this)[i];
-    if (g.is_line_or_parameter() && g.all_homogeneous_terms_are_zero())
+    if (g.is_line_or_parameter() && g.all_homogeneous_terms_are_zero()) {
       sys.remove_row(i, false);
-    else
+    }
+    else {
       ++i;
+    }
   }
 }
 
@@ -246,8 +255,9 @@ bool
 PPL::Grid_Generator_System::has_points() const {
   const Grid_Generator_System& ggs = *this;
   for (dimension_type i = num_rows(); i-- > 0; ) {
-    if (!ggs[i].is_line_or_parameter())
+    if (!ggs[i].is_line_or_parameter()) {
       return true;
+    }
   }
   return false;
 }
@@ -269,8 +279,9 @@ PPL::Grid_Generator_System::num_lines() const {
   }
   else {
     for (dimension_type i = num_rows(); i-- > 0 ; ) {
-      if (ggs[i].is_line())
+      if (ggs[i].is_line()) {
         ++n;
+      }
     }
   }
   return n;
@@ -289,14 +300,16 @@ PPL::Grid_Generator_System::num_parameters() const {
   if (sys.is_sorted()) {
     for (dimension_type i = num_rows();
          i != 0 && ggs[--i].is_parameter_or_point(); ) {
-      if (ggs[i].is_line_or_parameter())
+      if (ggs[i].is_line_or_parameter()) {
         ++n;
+      }
     }
   }
   else {
     for (dimension_type i = num_rows(); i-- > 0 ; ) {
-      if (ggs[i].is_parameter())
+      if (ggs[i].is_parameter()) {
         ++n;
+      }
     }
   }
   return n;

@@ -36,14 +36,17 @@ Ask_Tell<D>::check_normalized() const {
     for (const_iterator yi = x_begin; yi != x_end; ++yi)
       if (xi != yi) {
         if (xi->tell().definitely_entails(yi->tell())) {
-          if (yi->ask().definitely_entails(xi->ask()))
+          if (yi->ask().definitely_entails(xi->ask())) {
             return false;
+          }
         }
-        else if (xi->tell().definitely_entails(yi->ask()))
+        else if (xi->tell().definitely_entails(yi->ask())) {
           return false;
+        }
         if (xi->ask().definitely_entails(yi->ask())
-            && !xi->ask().definitely_entails(yi->tell()))
+            && !xi->ask().definitely_entails(yi->tell())) {
           return false;
+        }
       }
   return true;
 }
@@ -63,8 +66,9 @@ Ask_Tell<D>::reduce() {
         x_end = sequence.end();
         changed = true;
       }
-      else
+      else {
         ++yi;
+      }
     }
   PPL_ASSERT_HEAVY(OK());
   return changed;
@@ -90,8 +94,9 @@ Ask_Tell<D>::deduce() {
         }
     } while (tell_changed);
   }
-  if (changed)
+  if (changed) {
     (void) reduce();
+  }
   PPL_ASSERT_HEAVY(OK());
   return changed;
 }
@@ -132,14 +137,17 @@ Ask_Tell<D>::absorb() {
         x_begin = sequence.begin();
         x_end = sequence.end();
       }
-      else
+      else {
         ++xi;
+      }
     }
-    else
+    else {
       ++xi;
+    }
   }
-  if (changed)
+  if (changed) {
     (void) reduce();
+  }
   PPL_ASSERT_HEAVY(OK());
   return changed;
 }
@@ -159,8 +167,9 @@ Ask_Tell<D>::deabsorb() const {
             D new_ask = xi_ask;
             new_ask.weakening_assign(yi->tell());
             new_ask.meet_assign(yi_ask);
-            if (!new_ask.definitely_entails(xi_ask))
+            if (!new_ask.definitely_entails(xi_ask)) {
               new_sequence.push_back(Pair(new_ask, xi->tell()));
+            }
           }
         }
       }
@@ -196,8 +205,9 @@ Ask_Tell<D>::upper_bound_assign(const Ask_Tell& y) {
       tell.upper_bound_assign(yi->tell());
       D ask = xi->ask();
       ask.meet_assign(yi->ask());
-      if (!ask.definitely_entails(tell))
+      if (!ask.definitely_entails(tell)) {
         z.pair_insert(ask, tell);
+      }
     }
   *this = z;
   PPL_ASSERT_HEAVY(OK());
@@ -209,10 +219,12 @@ Ask_Tell<D>::OK() const {
   for (typename Ask_Tell<D>::const_iterator xi = begin(),
          x_end = end(); xi != x_end; ++xi) {
     const Ask_Tell_Pair<D>& p = *xi;
-    if (!p.ask().OK())
+    if (!p.ask().OK()) {
       return false;
-    if (!p.tell().OK())
+    }
+    if (!p.tell().OK()) {
       return false;
+    }
     if (p.ask().definitely_entails(p.tell())) {
 #ifndef NDEBUG
       using namespace IO_Operators;
@@ -238,14 +250,17 @@ namespace IO_Operators {
 template <typename D>
 std::ostream&
 operator<<(std::ostream& s, const Ask_Tell<D>& x) {
-  if (x.is_top())
+  if (x.is_top()) {
     s << "true";
-  else if (x.is_bottom())
+  }
+  else if (x.is_bottom()) {
     s << "false";
-  else
+  }
+  else {
     for (typename Ask_Tell<D>::const_iterator xi = x.begin(),
            x_end = x.end(); xi != x_end; ++xi)
       s << "(" << xi->ask() << " -> " << xi->tell() << ")";
+  }
   return s;
 }
 

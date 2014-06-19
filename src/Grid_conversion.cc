@@ -39,22 +39,26 @@ Grid::lower_triangular(const Congruence_System& sys,
   const dimension_type num_columns = sys.space_dimension() + 1;
 
   // Check for easy square failure case.
-  if (sys.num_rows() > num_columns)
+  if (sys.num_rows() > num_columns) {
     return false;
-
+  }
+  
   // Check triangularity.
 
   dimension_type row = 0;
   for (dimension_type dim = num_columns; dim-- > 0; ) {
-    if (dim_kinds[dim] == CON_VIRTUAL)
+    if (dim_kinds[dim] == CON_VIRTUAL) {
       continue;
+    }
     const Congruence& cg = sys[row];
     ++row;
     // Check diagonal.
-    if (cg.expr.get(dim) <= 0)
+    if (cg.expr.get(dim) <= 0) {
       return false;
-    if (!cg.expr.all_zeroes(dim + 1, num_columns))
+    }
+    if (!cg.expr.all_zeroes(dim + 1, num_columns)) {
       return false;
+    }
   }
 
   // Check squareness.
@@ -80,15 +84,18 @@ Grid::upper_triangular(const Grid_Generator_System& sys,
   // Check triangularity.
   while (num_columns > 0) {
     --num_columns;
-    if (dim_kinds[num_columns] == GEN_VIRTUAL)
+    if (dim_kinds[num_columns] == GEN_VIRTUAL) {
       continue;
+    }
     const Grid_Generator& gen = sys[--row];
     // Check diagonal.
-    if (gen.expr.get(num_columns) <= 0)
+    if (gen.expr.get(num_columns) <= 0) {
       return false;
+    }
     // Check elements preceding diagonal.
-    if (!gen.expr.all_zeroes(0, num_columns))
+    if (!gen.expr.all_zeroes(0, num_columns)) {
       return false;
+    }
   }
 
   // Check for squareness.
@@ -99,9 +106,10 @@ void
 Grid::multiply_grid(const Coefficient& multiplier, Grid_Generator& gen,
                     Swapping_Vector<Grid_Generator>& dest_rows,
                     const dimension_type num_rows) {
-  if (multiplier == 1)
+  if (multiplier == 1) {
     return;
-
+  }
+  
   if (gen.is_line()) {
     // Multiply every element of the line.
     gen.expr *= multiplier;
@@ -112,8 +120,9 @@ Grid::multiply_grid(const Coefficient& multiplier, Grid_Generator& gen,
 
     for (dimension_type index = num_rows; index-- > 0; ) {
       Grid_Generator& generator = dest_rows[index];
-      if (generator.is_parameter_or_point())
+      if (generator.is_parameter_or_point()) {
         generator.expr *= multiplier;
+      }
     }
   }
 }
@@ -122,15 +131,17 @@ void
 Grid::multiply_grid(const Coefficient& multiplier, Congruence& cg,
                     Swapping_Vector<Congruence>& dest,
                     const dimension_type num_rows) {
-  if (multiplier == 1)
+  if (multiplier == 1) {
     return;
-
+  }
+  
   if (cg.is_proper_congruence()) {
     // Multiply every element of every congruence.
     for (dimension_type index = num_rows; index-- > 0; ) {
       Congruence& congruence = dest[index];
-      if (congruence.is_proper_congruence())
+      if (congruence.is_proper_congruence()) {
         congruence.scale(multiplier);
+      }
     }
   }
   else {
@@ -164,9 +175,10 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
   const dimension_type dims = source.space_dimension() + 1;
   dimension_type source_index = source.num_rows();
   for (dimension_type dim = dims; dim-- > 0; ) {
-    if (dim_kinds[dim] == GEN_VIRTUAL)
+    if (dim_kinds[dim] == GEN_VIRTUAL) {
       // Virtual generators map to equalities.
       ++dest_num_rows;
+    }
     else {
       --source_index;
       if (dim_kinds[dim] == PARAMETER) {
@@ -193,8 +205,9 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
   // diagonal elements.
   source_index = source.num_rows();
   for (dimension_type dim = dims; dim-- > 0; ) {
-    if (dim_kinds[dim] == LINE)
+    if (dim_kinds[dim] == LINE) {
       --source_index;
+    }
     else {
       Linear_Expression le;
       le.set_space_dimension(dest.space_dimension());
@@ -259,8 +272,9 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
     // rows in `dest' that follow `dim_index' have zeroes at index
     // `dim'.
     dimension_type tmp_source_index = source_index;
-    if (dim_kinds[dim] != LINE)
+    if (dim_kinds[dim] != LINE) {
       ++dest_index;
+    }
     for (dimension_type dim_prec = dim; dim_prec-- > 0; ) {
       if (dim_kinds[dim_prec] != GEN_VIRTUAL) {
         --tmp_source_index;
@@ -290,8 +304,9 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
     = dest.rows[dest_num_rows - 1].inhomogeneous_term();
   for (dimension_type row = dest_num_rows; row-- > 0; ) {
     Congruence& cg = dest.rows[row];
-    if (cg.is_proper_congruence())
+    if (cg.is_proper_congruence()) {
       cg.set_modulus(modulus);
+    }
   }
 
   PPL_ASSERT(lower_triangular(dest, dim_kinds));
@@ -300,10 +315,11 @@ Grid::conversion(Grid_Generator_System& source, Congruence_System& dest,
   // reduce the coefficients in the congruence system
   // using "diagonal" values.
   for (dimension_type dim = dims, i = 0; dim-- > 0; )  {
-    if (dim_kinds[dim] != CON_VIRTUAL)
+    if (dim_kinds[dim] != CON_VIRTUAL) {
       // Factor the "diagonal" congruence out of the preceding rows.
       reduce_reduced<Congruence_System>
         (dest.rows, dim, i++, 0, dim, dim_kinds, false);
+    }
   }
 
 #ifndef NDEBUG
@@ -332,9 +348,10 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
   diagonal_lcm = 1;
   const dimension_type dims = source.space_dimension() + 1;
   for (dimension_type dim = dims; dim-- > 0; ) {
-    if (dim_kinds[dim] == CON_VIRTUAL)
+    if (dim_kinds[dim] == CON_VIRTUAL) {
       // Virtual congruences map to lines.
       ++dest_num_rows;
+    }
     else {
       if (dim_kinds[dim] == PROPER_CONGRUENCE) {
         // Dimension `dim' has a proper congruence row at
@@ -441,8 +458,9 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
     // rows in `dest' that follow row `dest_index' are zero at index
     // `dim'.
     dimension_type tmp_source_index = source_index;
-    if (dim_kinds[dim] != EQUALITY)
+    if (dim_kinds[dim] != EQUALITY) {
       ++dest_index;
+    }
     for (dimension_type dim_fol = dim + 1; dim_fol < dims; ++dim_fol) {
       if (dim_kinds[dim_fol] != CON_VIRTUAL) {
         --tmp_source_index;
@@ -478,10 +496,11 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
   // reduce the coordinates in the grid_generator system
   // using "diagonal" values.
   for (dimension_type dim = 0, i = 0; dim < dims; ++dim) {
-    if (dim_kinds[dim] != GEN_VIRTUAL)
+    if (dim_kinds[dim] != GEN_VIRTUAL) {
       // Factor the "diagonal" generator out of the preceding rows.
       reduce_reduced<Grid_Generator_System>
         (dest.sys.rows, dim, i++, dim, dims - 1, dim_kinds);
+    }
   }
 
   // Ensure that the parameter divisors are the same as the divisor of
@@ -505,8 +524,9 @@ Grid::conversion(Congruence_System& source, Grid_Generator_System& dest,
 #ifndef NDEBUG
   // The previous code can modify the rows' fields, exploiting the friendness.
   // Check that all rows are OK now.
-  for (dimension_type i = dest.sys.rows.size(); i-- > 0; )
+  for (dimension_type i = dest.sys.rows.size(); i-- > 0; ) {
     PPL_ASSERT(dest.sys.rows[i].OK());
+  }
 #endif
 
   PPL_ASSERT(dest.sys.OK());

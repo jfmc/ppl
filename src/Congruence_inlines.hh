@@ -167,18 +167,21 @@ operator/(const Constraint& c, Coefficient_traits::const_reference m) {
 
 inline Congruence&
 Congruence::operator/=(Coefficient_traits::const_reference k) {
-  if (k >= 0)
+  if (k >= 0) {
     modulus_ *= k;
-  else
+  }
+  else {
     modulus_ *= -k;
+  }
   return *this;
 }
 
 /*! \relates Congruence */
 inline bool
 operator==(const Congruence& x, const Congruence& y) {
-  if (x.space_dimension() != y.space_dimension())
+  if (x.space_dimension() != y.space_dimension()) {
     return false;
+  }
   Congruence x_temp(x);
   Congruence y_temp(y);
   x_temp.strong_normalize();
@@ -205,8 +208,9 @@ Congruence::space_dimension() const {
 
 inline Coefficient_traits::const_reference
 Congruence::coefficient(const Variable v) const {
-  if (v.space_dimension() > space_dimension())
+  if (v.space_dimension() > space_dimension()) {
     throw_dimension_incompatible("coefficient(v)", "v", v);
+  }
   return expr.coefficient(v);
 }
 

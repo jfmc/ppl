@@ -118,11 +118,12 @@ DB_Matrix<T>::grow(const dimension_type new_n_rows) {
   // Here we have the right number of rows.
   if (new_n_rows > row_size) {
     // We need more columns.
-    if (new_n_rows <= row_capacity)
+    if (new_n_rows <= row_capacity) {
       // But we have enough capacity: we resize existing rows.
       for (dimension_type i = old_n_rows; i-- > 0; ) {
         rows[i].expand_within_capacity(new_n_rows);
       }
+    }
     else {
       // Capacity exhausted: we must reallocate the rows and
       // make sure all the rows have the same capacity.
@@ -198,11 +199,12 @@ DB_Matrix<T>::resize_no_copy(const dimension_type new_n_rows) {
   // Here we have the right number of rows.
   if (new_n_rows > row_size) {
     // We need more columns.
-    if (new_n_rows <= row_capacity)
+    if (new_n_rows <= row_capacity) {
       // But we have enough capacity: we resize existing rows.
       for (dimension_type i = old_n_rows; i-- > 0; ) {
         rows[i].expand_within_capacity(new_n_rows);
       }
+    }
     else {
       // Capacity exhausted: we must reallocate the rows and
       // make sure all the rows have the same capacity.
@@ -248,8 +250,9 @@ DB_Matrix<T>::ascii_load(std::istream& s) {
   for (dimension_type i = 0; i < nrows;  ++i) {
     for (dimension_type j = 0; j < nrows; ++j) {
       Result r = input(x[i][j], s, ROUND_CHECK);
-      if (result_relation(r) != VR_EQ || is_minus_infinity(x[i][j]))
+      if (result_relation(r) != VR_EQ || is_minus_infinity(x[i][j])) {
         return false;
+      }
     }
   }
 
@@ -265,11 +268,13 @@ template <typename T>
 bool
 operator==(const DB_Matrix<T>& x, const DB_Matrix<T>& y) {
   const dimension_type x_num_rows = x.num_rows();
-  if (x_num_rows != y.num_rows())
+  if (x_num_rows != y.num_rows()) {
     return false;
+  }
   for (dimension_type i = x_num_rows; i-- > 0; ) {
-    if (x[i] != y[i])
+    if (x[i] != y[i]) {
       return false;
+    }
   }
   return true;
 }
@@ -306,8 +311,9 @@ DB_Matrix<T>::OK() const {
   const DB_Matrix& x = *this;
   const dimension_type n_rows = x.num_rows();
   for (dimension_type i = 0; i < n_rows; ++i) {
-    if (!x[i].OK(row_size, row_capacity))
+    if (!x[i].OK(row_size, row_capacity)) {
       return false;
+    }
   }
 
   // All checks passed.

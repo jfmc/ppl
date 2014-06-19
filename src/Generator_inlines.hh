@@ -73,8 +73,9 @@ Generator::set_is_ray_or_point_or_inequality() {
 
 inline void
 Generator::set_topology(Topology x) {
-  if (topology() == x)
+  if (topology() == x) {
     return;
+  }
   if (topology() == NECESSARILY_CLOSED) {
     // Add a column for the epsilon dimension.
     expr.set_space_dimension(expr.space_dimension() + 1);
@@ -124,10 +125,12 @@ Generator::Generator(dimension_type space_dim, Kind kind, Topology topology,
   : expr(r),
     kind_(kind),
     topology_(topology) {
-  if (is_necessarily_closed())
+  if (is_necessarily_closed()) {
     expr.set_space_dimension(space_dim);
-  else
+  }
+  else {
     expr.set_space_dimension(space_dim + 1);
+  }
   PPL_ASSERT(space_dimension() == space_dim);
   PPL_ASSERT(OK());
 }
@@ -137,12 +140,15 @@ Generator::Generator(Linear_Expression& e, Type type, Topology topology)
   : topology_(topology) {
   PPL_ASSERT(type != CLOSURE_POINT || topology == NOT_NECESSARILY_CLOSED);
   swap(expr, e);
-  if (topology == NOT_NECESSARILY_CLOSED)
+  if (topology == NOT_NECESSARILY_CLOSED) {
     expr.set_space_dimension(expr.space_dimension() + 1);
-  if (type == LINE)
+  }
+  if (type == LINE) {
     kind_ = LINE_OR_EQUALITY;
-  else
+  }
+  else {
     kind_ = RAY_OR_POINT_OR_INEQUALITY;
+  }
   strong_normalize();
 }
 
@@ -151,8 +157,9 @@ Generator::Generator(Linear_Expression& e, Kind kind, Topology topology)
   : kind_(kind),
     topology_(topology) {
   swap(expr, e);
-  if (topology == NOT_NECESSARILY_CLOSED)
+  if (topology == NOT_NECESSARILY_CLOSED) {
     expr.set_space_dimension(expr.space_dimension() + 1);
+  }
   strong_normalize();
 }
 
@@ -236,8 +243,9 @@ Generator::set_space_dimension_no_ok(dimension_type space_dim) {
     }
   }
   PPL_ASSERT(space_dimension() == space_dim);
-  if (expr.space_dimension() < old_expr_space_dim)
+  if (expr.space_dimension() < old_expr_space_dim) {
     strong_normalize();
+  }
 }
 
 inline void
@@ -273,18 +281,23 @@ Generator::is_ray() const {
 
 inline Generator::Type
 Generator::type() const {
-  if (is_line())
+  if (is_line()) {
     return LINE;
-  if (is_line_or_ray())
+  }
+  if (is_line_or_ray()) {
     return RAY;
-  if (is_necessarily_closed())
+  }
+  if (is_necessarily_closed()) {
     return POINT;
+  }
   else {
     // Checking the value of the epsilon coefficient.
-    if (epsilon_coefficient() == 0)
+    if (epsilon_coefficient() == 0) {
       return CLOSURE_POINT;
-    else
+    }
+    else {
       return POINT;
+    }
   }
 }
 
@@ -310,17 +323,19 @@ Generator::set_is_ray_or_point() {
 
 inline Coefficient_traits::const_reference
 Generator::coefficient(const Variable v) const {
-  if (v.space_dimension() > space_dimension())
+  if (v.space_dimension() > space_dimension()) {
     throw_dimension_incompatible("coefficient(v)", "v", v);
+  }
   return expr.coefficient(v);
 }
 
 inline Coefficient_traits::const_reference
 Generator::divisor() const {
   Coefficient_traits::const_reference d = expr.inhomogeneous_term();
-  if (!is_ray_or_point() || d == 0)
+  if (!is_ray_or_point() || d == 0) {
     throw_invalid_argument("divisor()",
                            "*this is neither a point nor a closure point");
+  }
   return d;
 }
 
@@ -451,10 +466,12 @@ Generator::ascii_dump(std::ostream& s) const {
     s << "C ";
     break;
   }
-  if (is_necessarily_closed())
+  if (is_necessarily_closed()) {
     s << "(C)";
-  else
+  }
+  else {
     s << "(NNC)";
+  }
   s << "\n";
 }
 
@@ -464,19 +481,24 @@ Generator::ascii_load(std::istream& s) {
 
   expr.ascii_load(s);
 
-  if (!(s >> str))
+  if (!(s >> str)) {
     return false;
-  if (str == "L")
+  }
+  if (str == "L") {
     set_is_line();
-  else if (str == "R" || str == "P" || str == "C")
+  }
+  else if (str == "R" || str == "P" || str == "C") {
     set_is_ray_or_point();
-  else
+  }
+  else {
     return false;
-
+  }
+  
   std::string str2;
 
-  if (!(s >> str2))
+  if (!(s >> str2)) {
     return false;
+  }
   if (str2 == "(C)") {
     if (is_not_necessarily_closed())
       // TODO: Avoid using the mark_as_*() methods if possible.
@@ -484,31 +506,37 @@ Generator::ascii_load(std::istream& s) {
   }
   else {
     if (str2 == "(NNC)") {
-      if (is_necessarily_closed())
+      if (is_necessarily_closed()) {
         // TODO: Avoid using the mark_as_*() methods if possible.
         mark_as_not_necessarily_closed();
+      }
     }
-    else
+    else {
       return false;
+    }
   }
 
   // Checking for equality of actual and declared types.
   switch (type()) {
   case Generator::LINE:
-    if (str != "L")
+    if (str != "L") {
       return false;
+    }
     break;
   case Generator::RAY:
-    if (str != "R")
+    if (str != "R") {
       return false;
+    }
     break;
   case Generator::POINT:
-    if (str != "P")
+    if (str != "P") {
       return false;
+    }
     break;
   case Generator::CLOSURE_POINT:
-    if (str != "C")
+    if (str != "C") {
       return false;
+    }
     break;
   }
 
@@ -537,12 +565,14 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
                     Temp& tmp2) {
   // Generator kind compatibility check: we only compute distances
   // between (closure) points.
-  if (x.is_line_or_ray() || y.is_line_or_ray())
+  if (x.is_line_or_ray() || y.is_line_or_ray()) {
     return false;
+  }
   const dimension_type x_space_dim = x.space_dimension();
   // Dimension-compatibility check.
-  if (x_space_dim != y.space_dimension())
+  if (x_space_dim != y.space_dimension()) {
     return false;
+  }
 
   // All zero-dim generators have distance zero.
   if (x_space_dim == 0) {

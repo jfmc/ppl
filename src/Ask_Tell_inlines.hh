@@ -69,13 +69,16 @@ Ask_Tell_Pair<D>::definitely_entails(const Ask_Tell_Pair& y) const {
   const D& x_tell = x.tell();
   const D& y_ask = y.ask();
   const D& y_tell = y.tell();
-  if (!y_ask.definitely_entails(x_ask))
+  if (!y_ask.definitely_entails(x_ask)) {
     return false;
-  else if (x_tell.definitely_entails(y_tell))
+  }
+  else if (x_tell.definitely_entails(y_tell)) {
     return true;
+  }
   // The following test can be omitted.
-  else if (x_tell.definitely_entails(y_ask))
+  else if (x_tell.definitely_entails(y_ask)) {
     return false;
+  }
   else {
     D x_tell_y_ask = x_tell;
     x_tell_y_ask.meet_assign(y_ask);
@@ -96,8 +99,9 @@ Ask_Tell<D>::Ask_Tell(const Ask_Tell& y)
 template <typename D>
 Ask_Tell<D>::Ask_Tell(const D& ask, const D& tell)
   : sequence(), normalized(true) {
-  if (!tell.is_top())
+  if (!tell.is_top()) {
     pair_insert(ask, tell);
+  }
 }
 
 template <typename D>
@@ -185,8 +189,9 @@ Ask_Tell<D>::pair_insert_good(const D& ask, const D& tell) {
 template <typename D>
 void
 Ask_Tell<D>::pair_insert(const D& ask, const D& tell) {
-  if (tell.definitely_entails(ask))
+  if (tell.definitely_entails(ask)) {
     pair_insert_good(ask, tell);
+  }
   else {
     D new_tell = tell;
     new_tell.meet_assign(ask);
@@ -197,9 +202,10 @@ Ask_Tell<D>::pair_insert(const D& ask, const D& tell) {
 template <typename D>
 void
 Ask_Tell<D>::normalize() const {
-  if (normalized)
+  if (normalized) {
     return;
-
+  }
+  
   Ask_Tell& x = const_cast<Ask_Tell&>(*this);
   x.reduce();
   x.deduce();
@@ -212,8 +218,9 @@ Ask_Tell<D>::normalize() const {
 template <typename D>
 bool
 Ask_Tell<D>::is_normalized() const {
-  if (!normalized && check_normalized())
+  if (!normalized && check_normalized()) {
     normalized = true;
+  }
   return normalized;
 }
 
@@ -236,8 +243,9 @@ Ask_Tell<D>::definitely_entails(const Ask_Tell& y) const {
 template <typename D>
 Ask_Tell<D>&
 Ask_Tell<D>::add_pair(const D& ask, const D& tell) {
-  if (!ask.definitely_entails(tell))
+  if (!ask.definitely_entails(tell)) {
     pair_insert(ask, tell);
+  }
   PPL_ASSERT_HEAVY(OK());
   return *this;
 }
@@ -305,8 +313,9 @@ Ask_Tell<D>::probe(const D& tell, const D& ask) const {
       if (xtell.definitely_entails(yi->ask())
           && !xtell.definitely_entails(yi->tell())) {
           xtell.meet_assign(yi->tell());
-          if (xtell.definitely_entails(ask))
+          if (xtell.definitely_entails(ask)) {
             return true;
+          }
           tell_changed = true;
       }
     }

@@ -61,8 +61,9 @@ adjust_topology_and_space_dimension(const Topology new_topology,
     // A NOT_NECESSARILY_CLOSED constraint system
     // can be converted to a NECESSARILY_CLOSED one
     // only if it does not contain strict inequalities.
-    if (has_strict_inequalities())
+    if (has_strict_inequalities()) {
       return false;
+    }
     // Since there were no strict inequalities,
     // the only constraints that may have a non-zero epsilon coefficient
     // are the eps-leq-one and the eps-geq-zero constraints.
@@ -74,10 +75,12 @@ adjust_topology_and_space_dimension(const Topology new_topology,
     // Note that num_rows() is *not* constant, because it is decreased by
     // remove_row().
     for (dimension_type i = 0; i < num_rows(); ) {
-      if (sys[i].epsilon_coefficient() != 0)
+      if (sys[i].epsilon_coefficient() != 0) {
         sys.remove_row(i, false);
-      else
+      }
+      else {
         ++i;
+      }
     }
 
     // If `cs' was sorted we sort it again.
@@ -97,16 +100,18 @@ bool
 PPL::Constraint_System::has_equalities() const {
   // We verify if the system has equalities also in the pending part.
   for (dimension_type i = sys.num_rows(); i-- > 0; ) {
-    if (sys[i].is_equality())
+    if (sys[i].is_equality()) {
       return true;
+    }
   }
   return false;
 }
 
 bool
 PPL::Constraint_System::has_strict_inequalities() const {
-  if (sys.is_necessarily_closed())
+  if (sys.is_necessarily_closed()) {
     return false;
+  }
   // We verify if the system has strict inequalities
   // also in the pending part.
   for (dimension_type i = sys.num_rows(); i-- > 0; ) {
@@ -115,8 +120,9 @@ PPL::Constraint_System::has_strict_inequalities() const {
     // also, equalities have the epsilon coefficient equal to zero.
     // NOTE: the constraint eps_leq_one should not be considered
     //       a strict inequality.
-    if (c.epsilon_coefficient() < 0 && !c.is_tautological())
+    if (c.epsilon_coefficient() < 0 && !c.is_tautological()) {
       return true;
+    }
   }
   return false;
 }
@@ -134,10 +140,12 @@ PPL::Constraint_System::insert(Constraint& c, Recycle_Input) {
   PPL_ASSERT(sys.num_pending_rows() == 0);
 
   if (sys.topology() != c.topology()) {
-    if (sys.topology() == NECESSARILY_CLOSED)
+    if (sys.topology() == NECESSARILY_CLOSED) {
       sys.set_topology(NOT_NECESSARILY_CLOSED);
-    else
+    }
+    else {
       c.set_topology(NOT_NECESSARILY_CLOSED);
+    }
   }
 
   sys.insert(c, Recycle_Input());
@@ -154,10 +162,12 @@ PPL::Constraint_System::insert_pending(const Constraint& r) {
 void
 PPL::Constraint_System::insert_pending(Constraint& c, Recycle_Input) {
   if (sys.topology() != c.topology()) {
-    if (sys.topology() == NECESSARILY_CLOSED)
+    if (sys.topology() == NECESSARILY_CLOSED) {
       sys.set_topology(NOT_NECESSARILY_CLOSED);
-    else
+    }
+    else {
       c.set_topology(NOT_NECESSARILY_CLOSED);
+    }
   }
 
   sys.insert_pending(c, Recycle_Input());
@@ -173,16 +183,18 @@ PPL::Constraint_System::num_inequalities() const {
   dimension_type n = 0;
   // If the Base happens to be sorted, take advantage of the fact
   // that inequalities are at the bottom of the system.
-  if (sys.is_sorted())
+  if (sys.is_sorted()) {
     for (dimension_type i = sys.num_rows();
          i > 0 && cs[--i].is_inequality(); ) {
       ++n;
     }
-  else
+  }
+  else {
     for (dimension_type i = sys.num_rows(); i-- > 0 ; ) {
       if (cs[i].is_inequality())
         ++n;
     }
+  }
   return n;
 }
 
@@ -215,11 +227,12 @@ PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
     if (g.is_line()) {
       // Lines must saturate all constraints.
       for (dimension_type i = sys.num_rows(); i-- > 0; ) {
-        if (sps(g, sys[i]) != 0)
+        if (sps(g, sys[i]) != 0) {
           return false;
+        }
       }
     }
-    else
+    else {
       // `g' is either a ray, a point or a closure point.
       for (dimension_type i = sys.num_rows(); i-- > 0; ) {
         const Constraint& c = sys[i];
@@ -227,14 +240,18 @@ PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
         if (c.is_inequality()) {
           // As `cs' is necessarily closed,
           // `c' is a non-strict inequality.
-          if (sp_sign < 0)
+          if (sp_sign < 0) {
             return false;
+          }
         }
-        else
+        else {
           // `c' is an equality.
-          if (sp_sign != 0)
+          if (sp_sign != 0) {
             return false;
+          }
+        }
       }
+    }
   }
   else
     // `cs' is not necessarily closed.
@@ -243,8 +260,9 @@ PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
     case Generator::LINE:
       // Lines must saturate all constraints.
       for (dimension_type i = sys.num_rows(); i-- > 0; ) {
-        if (sps(g, sys[i]) != 0)
+        if (sps(g, sys[i]) != 0) {
           return false;
+        }
       }
 
       break;
@@ -257,16 +275,19 @@ PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
         const int sp_sign = sps(g, c);
         switch (c.type()) {
         case Constraint::EQUALITY:
-          if (sp_sign != 0)
+          if (sp_sign != 0) {
             return false;
+          }
           break;
         case Constraint::NONSTRICT_INEQUALITY:
-          if (sp_sign < 0)
+          if (sp_sign < 0) {
             return false;
+          }
           break;
         case Constraint::STRICT_INEQUALITY:
-          if (sp_sign <= 0)
+          if (sp_sign <= 0) {
             return false;
+          }
           break;
         }
       }
@@ -280,13 +301,15 @@ PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
         const int sp_sign = sps(g, c);
         if (c.is_inequality()) {
           // Constraint `c' is either a strict or a non-strict inequality.
-          if (sp_sign < 0)
+          if (sp_sign < 0) {
             return false;
+          }
         }
         else
           // Constraint `c' is an equality.
-          if (sp_sign != 0)
+          if (sp_sign != 0) {
             return false;
+          }
       }
       break;
     }
@@ -316,13 +339,16 @@ PPL::Constraint_System
     Coefficient_traits::const_reference row_v = row.coefficient(v);
     if (row_v != 0) {
       const Coefficient c = row_v;
-      if (denominator != 1)
+      if (denominator != 1) {
         row.expr *= denominator;
+      }
       row.expr.linear_combine(expr, 1, c, 0, expr.space_dimension() + 1);
-      if (not_invertible)
+      if (not_invertible) {
         row.expr.set_coefficient(v, Coefficient_zero());
-      else
+      }
+      else {
         row.expr.set_coefficient(v, c * expr_v);
+      }
       row.strong_normalize();
       PPL_ASSERT(row.OK());
     }
@@ -343,9 +369,10 @@ PPL_OUTPUT_DEFINITIONS(Constraint_System)
 
 bool
 PPL::Constraint_System::ascii_load(std::istream& s) {
-  if (!sys.ascii_load(s))
+  if (!sys.ascii_load(s)) {
     return false;
-
+  }
+  
   PPL_ASSERT(OK());
   return true;
 }
@@ -382,8 +409,9 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Constraint_System& cs) {
     while (i != cs_end) {
       s << *i;
       ++i;
-      if (i != cs_end)
+      if (i != cs_end) {
         s << ", ";
+      }
     }
   }
   return s;

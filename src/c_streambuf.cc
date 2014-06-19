@@ -40,10 +40,12 @@ c_streambuf::underflow() {
   const int_type eof = traits_type::eof();
   if (traits_type::eq_int_type(next_char_buf, eof)) {
     char buf;
-    if (cb_read(&buf, 1) == 1)
+    if (cb_read(&buf, 1) == 1) {
       next_char_buf = buf;
-    else
+    }
+    else {
       next_char_buf = eof;
+    }
   }
   return next_char_buf;
 }
@@ -51,22 +53,26 @@ c_streambuf::underflow() {
 std::streamsize
 c_streambuf::xsgetn(char_type* s, std::streamsize n) {
   PPL_ASSERT(n >= 0);
-  if (n == 0)
+  if (n == 0) {
     return n;
+  }
   const int_type eof = traits_type::eof();
   const size_t sz_n = static_cast<size_t>(n);
   size_t a;
-  if (traits_type::eq_int_type(next_char_buf, eof))
+  if (traits_type::eq_int_type(next_char_buf, eof)) {
     a = 0;
+  }
   else {
     s[0] = static_cast<char_type>(next_char_buf);
     a = 1;
   }
   const size_t r = cb_read(s + a, sz_n - a) + a;
-  if (r > 0)
+  if (r > 0) {
     unget_char_buf = traits_type::to_int_type(s[r - 1]);
-  else
+  }
+  else {
     unget_char_buf = traits_type::eof();
+  }
   return static_cast<std::streamsize>(r);
 }
 
@@ -88,14 +94,17 @@ c_streambuf::xsputn(const char_type* s, std::streamsize n) {
 c_streambuf::int_type
 c_streambuf::overflow(int_type c) {
   const int_type eof = traits_type::eof();
-  if (traits_type::eq_int_type(c, eof))
+  if (traits_type::eq_int_type(c, eof)) {
     return (sync() != 0) ? eof : traits_type::not_eof(c);
+  }
   else {
     char buf = static_cast<char>(c);
-    if (cb_write(&buf, 1) == 1)
+    if (cb_write(&buf, 1) == 1) {
       return c;
-    else
+    }
+    else {
       return eof;
+    }
   }
 }
 

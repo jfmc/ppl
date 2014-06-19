@@ -167,8 +167,9 @@ fpu_reset_inexact() {
   // NOTE: on entry to this function the current rounding mode
   // has to be the default one.
   extern bool have_sse_unit;
-  if (have_sse_unit)
+  if (have_sse_unit) {
     sse_set_control(PPL_SSE_CONTROL_DEFAULT);
+  }
 #endif
 }
 
@@ -179,21 +180,24 @@ fpu_restore_rounding_direction(fpu_rounding_control_word_type) {
 #endif
 #ifdef PPL_FPMATH_MAY_USE_SSE
   extern bool have_sse_unit;
-  if (have_sse_unit)
+  if (have_sse_unit) {
     sse_set_control(PPL_SSE_CONTROL_DEFAULT);
+  }
 #endif
 }
 
 inline int
 fpu_check_inexact() {
 #ifdef PPL_FPMATH_MAY_USE_387
-  if (fpu_get_status() & FPU_INEXACT)
+  if (fpu_get_status() & FPU_INEXACT) {
     return 1;
+  }
 #endif
 #ifdef PPL_FPMATH_MAY_USE_SSE
   extern bool have_sse_unit;
-  if (have_sse_unit && (sse_get_control() & SSE_INEXACT))
+  if (have_sse_unit && (sse_get_control() & SSE_INEXACT)) {
     return 1;
+  }
 #endif
   return 0;
 }

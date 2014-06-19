@@ -30,8 +30,9 @@ namespace Parma_Polyhedra_Library {
 inline void
 Bounded_Integer_Coefficient_Policy::handle_result(Result r) {
   // Note that the input functions can return VC_NAN.
-  if (result_overflow(r) || result_class(r) == VC_NAN)
+  if (result_overflow(r) || result_class(r) == VC_NAN) {
     throw_result_exception(r);
+  }
 }
 #endif // PPL_CHECKED_INTEGERS
 

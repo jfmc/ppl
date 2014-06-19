@@ -57,9 +57,10 @@ PPL::Generator
 PPL::Generator::point(const Linear_Expression& e,
                       Coefficient_traits::const_reference d,
                       Representation r) {
-  if (d == 0)
+  if (d == 0) {
     throw std::invalid_argument("PPL::point(e, d):\n"
                                 "d == 0.");
+  }
   Linear_Expression ec(e, r);
   ec.set_inhomogeneous_term(d);
   Generator g(ec, Generator::POINT, NECESSARILY_CLOSED);
@@ -67,9 +68,10 @@ PPL::Generator::point(const Linear_Expression& e,
   // If the divisor is negative, we negate it as well as
   // all the coefficients of the point, because we want to preserve
   // the invariant: the divisor of a point is strictly positive.
-  if (d < 0)
+  if (d < 0) {
     neg_assign(g.expr);
-
+  }
+  
   // Enforce normalization.
   g.expr.normalize();
   return g;
@@ -90,9 +92,10 @@ PPL::Generator
 PPL::Generator::closure_point(const Linear_Expression& e,
                               Coefficient_traits::const_reference d,
                               Representation r) {
-  if (d == 0)
+  if (d == 0) {
     throw std::invalid_argument("PPL::closure_point(e, d):\n"
                                 "d == 0.");
+  }
   Linear_Expression ec(e, r);
   ec.set_inhomogeneous_term(d);
 
@@ -101,9 +104,10 @@ PPL::Generator::closure_point(const Linear_Expression& e,
   // If the divisor is negative, we negate it as well as
   // all the coefficients of the point, because we want to preserve
   // the invariant: the divisor of a point is strictly positive.
-  if (d < 0)
+  if (d < 0) {
     neg_assign(g.expr);
-
+  }
+  
   // Enforce normalization.
   g.expr.normalize();
   return g;
@@ -123,10 +127,11 @@ PPL::Generator::closure_point(Representation r) {
 PPL::Generator
 PPL::Generator::ray(const Linear_Expression& e, Representation r) {
   // The origin of the space cannot be a ray.
-  if (e.all_homogeneous_terms_are_zero())
+  if (e.all_homogeneous_terms_are_zero()) {
     throw std::invalid_argument("PPL::ray(e):\n"
                                 "e == 0, but the origin cannot be a ray.");
-
+  }
+  
   Linear_Expression ec(e, r);
   ec.set_inhomogeneous_term(0);
   const Generator g(ec, Generator::RAY, NECESSARILY_CLOSED);
@@ -137,10 +142,11 @@ PPL::Generator::ray(const Linear_Expression& e, Representation r) {
 PPL::Generator
 PPL::Generator::line(const Linear_Expression& e, Representation r) {
   // The origin of the space cannot be a line.
-  if (e.all_homogeneous_terms_are_zero())
+  if (e.all_homogeneous_terms_are_zero()) {
     throw std::invalid_argument("PPL::line(e):\n"
                                 "e == 0, but the origin cannot be a line.");
-
+  }
+  
   Linear_Expression ec(e, r);
   ec.set_inhomogeneous_term(0);
   const Generator g(ec, Generator::LINE, NECESSARILY_CLOSED);
@@ -167,9 +173,10 @@ PPL::Generator::remove_space_dimensions(const Variables_Set& vars) {
     // Become a point.
     set_is_ray_or_point();
     expr.set_inhomogeneous_term(1);
-    if (is_not_necessarily_closed())
+    if (is_not_necessarily_closed()) {
       set_epsilon_coefficient(1);
-
+    }
+    
     PPL_ASSERT(OK());
     return false;
   }
@@ -183,10 +190,11 @@ PPL::Generator::remove_space_dimensions(const Variables_Set& vars) {
 void
 PPL::Generator
 ::permute_space_dimensions(const std::vector<Variable>& cycle) {
-  if (cycle.size() < 2)
+  if (cycle.size() < 2) {
     // No-op. No need to call sign_normalize().
     return;
-
+  }
+  
   expr.permute_space_dimensions(cycle);
 
   // *this is still normalized but may be not strongly normalized: sign
@@ -206,10 +214,11 @@ int
 PPL::compare(const Generator& x, const Generator& y) {
   const bool x_is_line_or_equality = x.is_line_or_equality();
   const bool y_is_line_or_equality = y.is_line_or_equality();
-  if (x_is_line_or_equality != y_is_line_or_equality)
+  if (x_is_line_or_equality != y_is_line_or_equality) {
     // Equalities (lines) precede inequalities (ray/point).
     return y_is_line_or_equality ? 2 : -2;
-
+  }
+  
   return compare(x.expr, y.expr);
 }
 
@@ -217,13 +226,15 @@ bool
 PPL::Generator::is_equivalent_to(const Generator& y) const {
   const Generator& x = *this;
   const dimension_type x_space_dim = x.space_dimension();
-  if (x_space_dim != y.space_dimension())
+  if (x_space_dim != y.space_dimension()) {
     return false;
-
+  }
+  
   const Type x_type = x.type();
-  if (x_type != y.type())
+  if (x_type != y.type()) {
     return false;
-
+  }
+  
   if (x_type == POINT
       && !(x.is_necessarily_closed() && y.is_necessarily_closed())) {
     // Due to the presence of epsilon-coefficients, syntactically
@@ -322,28 +333,35 @@ PPL::Generator::fancy_print(std::ostream& s) const {
           i_end = expr.lower_bound(Variable(num_variables)); i != i_end; ++i) {
     c = *i;
     if (!first) {
-      if (c > 0)
+      if (c > 0) {
         s << " + ";
+      }
       else {
         s << " - ";
         neg_assign(c);
       }
     }
-    else
+    else {
       first = false;
-    if (c == -1)
+    }
+    if (c == -1) {
       s << "-";
-    else if (c != 1)
+    }
+    else if (c != 1) {
       s << c << "*";
+    }
     IO_Operators::operator<<(s, i.variable());
   }
-  if (first)
+  if (first) {
     // A point or closure point in the origin.
     s << 0;
-  if (extra_parentheses)
+  }
+  if (extra_parentheses) {
     s << ")";
-  if (needed_divisor)
+  }
+  if (needed_divisor) {
     s << "/" << expr.inhomogeneous_term();
+  }
   s << ")";
 }
 

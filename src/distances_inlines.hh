@@ -99,8 +99,9 @@ inline void
 L_Infinity_Distance_Specialization<Temp>::combine(Temp& running,
                                                   const Temp& current,
                                                   Rounding_Dir) {
-  if (current > running)
+  if (current > running) {
     running = current;
+  }
 }
 
 template <typename Temp>

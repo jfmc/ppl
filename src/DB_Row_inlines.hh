@@ -179,8 +179,9 @@ DB_Row<T>::allocate(
   DB_Row<T>& x = *this;
   PPL_ASSERT(capacity <= max_size());
 #if !PPL_CXX_SUPPORTS_ZERO_LENGTH_ARRAYS
-  if (capacity == 0)
+  if (capacity == 0) {
     ++capacity;
+  }
 #endif
   PPL_ASSERT(x.impl == 0);
   x.impl = new (capacity) typename DB_Row_Impl_Handler<T>::Impl();

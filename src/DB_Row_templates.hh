@@ -80,8 +80,9 @@ DB_Row_Impl_Handler<T>::Impl::shrink(dimension_type new_size) {
   set_size(new_size);
 #if !PPL_CXX_SUPPORTS_ZERO_LENGTH_ARRAYS
   // Make sure we do not try to destroy vec_[0].
-  if (new_size == 0)
+  if (new_size == 0) {
     ++new_size;
+  }
 #endif
   // We assume construction was done "forward".
   // We thus perform destruction "backward".
@@ -204,11 +205,13 @@ DB_Row<T>::OK(const dimension_type row_size,
 template <typename T>
 bool
 operator==(const DB_Row<T>& x, const DB_Row<T>& y) {
-  if (x.size() != y.size())
+  if (x.size() != y.size()) {
     return false;
+  }
   for (dimension_type i = x.size(); i-- > 0; ) {
-    if (x[i] != y[i])
+    if (x[i] != y[i]) {
       return false;
+    }
   }
   return true;
 }

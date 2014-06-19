@@ -286,4 +286,3 @@ PPL::operator==(const Bit_Matrix& x, const Bit_Matrix& y) {
   }
   return true;
 }
-

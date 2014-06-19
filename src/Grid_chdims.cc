@@ -40,9 +40,10 @@ PPL::Grid::add_space_dimensions(Congruence_System& cgs,
   const dimension_type old_modulus_index = cgs.space_dimension() + 1;
   cgs.set_space_dimension(space_dimension() + dims);
 
-  if (congruences_are_minimized() || generators_are_minimized())
+  if (congruences_are_minimized() || generators_are_minimized()) {
     dim_kinds.resize(old_modulus_index + dims, CON_VIRTUAL /* a.k.a. LINE */);
-
+  }
+  
   gs.add_universe_rows_and_columns(dims);
 }
 
@@ -111,22 +112,26 @@ PPL::Grid::add_space_dimensions_and_embed(dimension_type m) {
   // dimensions. That is, for each new dimension we add the line
   // having that direction. This is done by invoking the function
   // add_space_dimensions().
-  if (congruences_are_up_to_date())
-    if (generators_are_up_to_date())
+  if (congruences_are_up_to_date()) {
+    if (generators_are_up_to_date()) {
       // Adds rows and/or columns to both matrices.
       add_space_dimensions(con_sys, gen_sys, m);
+    }
     else {
       // Only congruences are up-to-date, so modify only them.
       con_sys.set_space_dimension(con_sys.space_dimension() + m);
-      if (congruences_are_minimized())
+      if (congruences_are_minimized()) {
         dim_kinds.resize(con_sys.space_dimension() + 1, CON_VIRTUAL);
+      }
     }
+  }
   else {
     // Only generators are up-to-date, so modify only them.
     PPL_ASSERT(generators_are_up_to_date());
     gen_sys.add_universe_rows_and_columns(m);
-    if (generators_are_minimized())
+    if (generators_are_minimized()) {
       dim_kinds.resize(gen_sys.space_dimension() + 1, LINE);
+    }
   }
   // Update the space dimension.
   space_dim += m;
@@ -146,9 +151,10 @@ PPL::Grid::add_space_dimensions_and_embed(dimension_type m) {
 //     R^1                   R^2
 void
 PPL::Grid::add_space_dimensions_and_project(dimension_type m) {
-  if (m == 0)
+  if (m == 0) {
     return;
-
+  }
+  
   // The space dimension of the resulting grid should be at most the
   // maximum allowed space dimension.
   check_space_dimension_overflow(m, max_space_dimension() - space_dimension(),
@@ -180,16 +186,19 @@ PPL::Grid::add_space_dimensions_and_project(dimension_type m) {
   // for each new dimensions `x[k]', we add the constraint x[k] = 0;
   // this is done by invoking the function add_space_dimensions()
   // giving the system of constraints as the second argument.
-  if (congruences_are_up_to_date())
-    if (generators_are_up_to_date())
+  if (congruences_are_up_to_date()) {
+    if (generators_are_up_to_date()) {
       // Add rows and/or columns to both matrices.
       add_space_dimensions(gen_sys, con_sys, m);
+    }
     else {
       // Only congruences are up-to-date so modify only them.
       con_sys.add_unit_rows_and_space_dimensions(m);
-      if (congruences_are_minimized())
+      if (congruences_are_minimized()) {
         dim_kinds.resize(con_sys.space_dimension() + 1, EQUALITY);
+      }
     }
+  }
   else {
     // Only generators are up-to-date so modify only them.
     PPL_ASSERT(generators_are_up_to_date());
@@ -199,8 +208,9 @@ PPL::Grid::add_space_dimensions_and_project(dimension_type m) {
 
     normalize_divisors(gen_sys);
 
-    if (generators_are_minimized())
+    if (generators_are_minimized()) {
       dim_kinds.resize(gen_sys.space_dimension() + 1, EQUALITY);
+    }
   }
   // Now update the space dimension.
   space_dim += m;
@@ -232,18 +242,20 @@ PPL::Grid::concatenate_assign(const Grid& y) {
   }
 
   // If `y' is a universe 0-dim grid, the result is `*this'.
-  if (added_columns == 0)
+  if (added_columns == 0) {
     return;
-
+  }
+  
   // If `*this' is a universe 0-dim space grid, the result is `y'.
   if (space_dim == 0) {
     *this = y;
     return;
   }
 
-  if (!congruences_are_up_to_date())
+  if (!congruences_are_up_to_date()) {
     update_congruences();
-
+  }
+  
   con_sys.concatenate(y.congruences());
 
   space_dim += added_columns;
@@ -268,9 +280,10 @@ PPL::Grid::remove_space_dimensions(const Variables_Set& vars) {
 
   // Dimension-compatibility check.
   const dimension_type min_space_dim = vars.space_dimension();
-  if (space_dim < min_space_dim)
+  if (space_dim < min_space_dim) {
     throw_dimension_incompatible("remove_space_dimensions(vs)", min_space_dim);
-
+  }
+  
   const dimension_type new_space_dim = space_dim - vars.size();
 
   if (marked_empty()
@@ -339,8 +352,9 @@ PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
       dimension_type num_redundant = 0;
       const dimension_type num_old_gs = space_dim - new_dimension;
       for (dimension_type row = 0; row < num_old_gs; ++row) {
-        if (dim_kinds[row] != GEN_VIRTUAL)
+        if (dim_kinds[row] != GEN_VIRTUAL) {
           ++num_redundant;
+        }
       }
       if (num_redundant > 0) {
         // Chop zero rows from end of system, to keep minimal form.
@@ -365,8 +379,9 @@ PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
     // Count the actual number of rows that are now redundant.
     dimension_type num_redundant = 0;
     for (dimension_type row = space_dim; row > new_dimension; --row) {
-      if (dim_kinds[row] != CON_VIRTUAL)
+      if (dim_kinds[row] != CON_VIRTUAL) {
         ++num_redundant;
+      }
     }
 
     con_sys.remove_rows(0, num_redundant, true);
@@ -389,13 +404,15 @@ PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
 void
 PPL::Grid::expand_space_dimension(Variable var, dimension_type m) {
   // `var' must be one of the dimensions of the vector space.
-  if (var.space_dimension() > space_dim)
+  if (var.space_dimension() > space_dim) {
     throw_dimension_incompatible("expand_space_dimension(v, m)", "v", var);
-
+  }
+  
   // Adding 0 dimensions leaves the same grid.
-  if (m == 0)
+  if (m == 0) {
     return;
-
+  }
+  
   // The resulting space dimension must be at most the maximum.
   check_space_dimension_overflow(m, max_space_dimension() - space_dimension(),
                                  "PPL::Grid::",
@@ -418,9 +435,10 @@ PPL::Grid::expand_space_dimension(Variable var, dimension_type m) {
     Coefficient_traits::const_reference coeff = cg.coefficient(var);
 
     // Only consider congruences that constrain `var'.
-    if (coeff == 0)
+    if (coeff == 0) {
       continue;
-
+    }
+    
     Congruence cg_copy = cg;
     cg_copy.expr.set_coefficient(var, Coefficient_zero());
 
@@ -440,23 +458,27 @@ PPL::Grid::fold_space_dimensions(const Variables_Set& vars, Variable dest) {
   // TODO: this implementation is _really_ an executable specification.
 
   // `dest' should be one of the dimensions of the grid.
-  if (dest.space_dimension() > space_dim)
+  if (dest.space_dimension() > space_dim) {
     throw_dimension_incompatible("fold_space_dimensions(vs, v)", "v", dest);
-
+  }
+  
   // Folding only has effect if dimensions are given.
-  if (vars.empty())
+  if (vars.empty()) {
     return;
-
+  }
+  
   // All variables in `vars' must be dimensions of the grid.
-  if (vars.space_dimension() > space_dim)
+  if (vars.space_dimension() > space_dim) {
     throw_dimension_incompatible("fold_space_dimensions(vs, v)",
                                  "vs.space_dimension()",
                                  vars.space_dimension());
-
+  }
+  
   // Moreover, `dest.id()' must not occur in `vars'.
-  if (vars.find(dest.id()) != vars.end())
+  if (vars.find(dest.id()) != vars.end()) {
     throw_invalid_argument("fold_space_dimensions(vs, v)",
                            "v should not occur in vs");
+  }
   // All of the affine images we are going to compute are not invertible,
   // hence we will need to compute the grid generators of the polyhedron.
   // Since we keep taking copies, make sure that a single conversion

@@ -88,71 +88,101 @@ bool
 PPL::Grid::Status::ascii_load(std::istream& s) {
   PPL_UNINITIALIZED(bool, positive);
 
-  if (!get_field(s, zero_dim_univ, positive))
+  if (!get_field(s, zero_dim_univ, positive)) {
     return false;
-  if (positive)
+  }
+  if (positive) {
     set_zero_dim_univ();
-
-  if (!get_field(s, empty, positive))
+  }
+  
+  if (!get_field(s, empty, positive)) {
     return false;
-  if (positive)
+  }
+  if (positive) {
     set_empty();
-
-  if (!get_field(s, consys_min, positive))
+  }
+  
+  if (!get_field(s, consys_min, positive)) {
     return false;
-  if (positive)
+  }
+  if (positive) {
     set_c_minimized();
-  else
+  }
+  else {
     reset_c_minimized();
+  }
 
-  if (!get_field(s, gensys_min, positive))
+  if (!get_field(s, gensys_min, positive)) {
     return false;
-  if (positive)
+  }
+  
+  if (positive) {
     set_g_minimized();
-  else
+  }
+  else {
     reset_g_minimized();
+  }
 
-  if (!get_field(s, consys_upd, positive))
+  if (!get_field(s, consys_upd, positive)) {
     return false;
-  if (positive)
+  }
+  
+  if (positive) {
     set_c_up_to_date();
-  else
+  }
+  else {
     reset_c_up_to_date();
+  }
 
-  if (!get_field(s, gensys_upd, positive))
+  if (!get_field(s, gensys_upd, positive)) {
     return false;
-  if (positive)
+  }
+  if (positive) {
     set_g_up_to_date();
-  else
+  }
+  else {
     reset_g_up_to_date();
+  }
 
-  if (!get_field(s, consys_pending, positive))
+  if (!get_field(s, consys_pending, positive)) {
     return false;
-  if (positive)
+  }
+  if (positive) {
     set_c_pending();
-  else
+  }
+  else {
     reset_c_pending();
-
-  if (!get_field(s, gensys_pending, positive))
+  }
+  
+  if (!get_field(s, gensys_pending, positive)) {
     return false;
-  if (positive)
+  }
+  if (positive) {
     set_g_pending();
-  else
+  }
+  else {
     reset_g_pending();
-
-  if (!get_field(s, satc_upd, positive))
+  }
+  
+  if (!get_field(s, satc_upd, positive)) {
     return false;
-  if (positive)
+  }
+  if (positive) {
     set_sat_c_up_to_date();
-  else
+  }
+  else {
     reset_sat_c_up_to_date();
-
-  if (!get_field(s, satg_upd, positive))
+  }
+  
+  if (!get_field(s, satg_upd, positive)) {
     return false;
-  if (positive)
+  }
+  if (positive) {
     set_sat_g_up_to_date();
-  else
+  }
+  else {
     reset_sat_g_up_to_date();
+  }
 
   // Check invariants.
   PPL_ASSERT(OK());
@@ -166,15 +196,17 @@ PPL::Grid::Status::OK() const {
   using std::cerr;
 #endif
 
-  if (test_zero_dim_univ())
+  if (test_zero_dim_univ()) {
     // Zero-dim universe is OK.
     return true;
-
+  }
+  
   if (test_empty()) {
     Status copy = *this;
     copy.reset_empty();
-    if (copy.test_zero_dim_univ())
+    if (copy.test_zero_dim_univ()) {
       return true;
+    }
 #ifndef NDEBUG
     cerr << "The empty flag is incompatible with any other one."
          << endl << "Flags:" << endl;

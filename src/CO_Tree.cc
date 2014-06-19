@@ -51,14 +51,16 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1) {
     return iterator(*this);
   }
 
-  if (itr == end())
+  if (itr == end()) {
     return insert(key1);
-
+  }
+  
   iterator candidate1 = bisect_near(itr, key1);
 
-  if (key1 == candidate1.index())
+  if (key1 == candidate1.index()) {
     return candidate1;
-
+  }
+  
   dimension_type candidate2_index = dfs_index(candidate1);
 
   if (key1 < candidate1.index()) {
@@ -78,11 +80,12 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1) {
 
   PPL_ASSERT(candidate2_index <= reserved_size + 1);
 
-  if (candidate2_index == 0 || candidate2_index > reserved_size)
+  if (candidate2_index == 0 || candidate2_index > reserved_size) {
     // Use candidate1
     return iterator(insert_precise(key1, Coefficient_zero(),
                                    candidate1_node));
-
+  }
+  
   tree_iterator candidate2_node(*this, candidate2_index);
 
   // Adjacent nodes in an in-order visit of a tree always have different
@@ -116,9 +119,10 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1,
     return iterator(*this);
   }
 
-  if (itr == end())
+  if (itr == end()) {
     return insert(key1, data1);
-
+  }
+  
   iterator candidate1 = bisect_near(itr, key1);
 
   if (key1 == candidate1.index()) {
@@ -145,10 +149,11 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1,
 
   tree_iterator candidate1_node(candidate1, *this);
 
-  if (candidate2_index == 0 || candidate2_index > reserved_size)
+  if (candidate2_index == 0 || candidate2_index > reserved_size) {
     // Use candidate1
     return iterator(insert_precise(key1, data1, candidate1_node));
-
+  }
+  
   tree_iterator candidate2_node(*this, candidate2_index);
 
   // Adjacent nodes in an in-order visit of a tree always have different
@@ -173,14 +178,16 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1,
 void
 PPL::CO_Tree::erase_element_and_shift_left(dimension_type key) {
   iterator itr = erase(key);
-  if (itr == end())
+  if (itr == end()) {
     return;
+  }
   const dimension_type i = dfs_index(itr);
   dimension_type* p = indexes + i;
   const dimension_type* const p_end = indexes + (reserved_size + 1);
   for ( ; p != p_end; ++p) {
-    if (*p != unused_index)
+    if (*p != unused_index) {
       --(*p);
+    }
   }
   PPL_ASSERT(OK());
 }
@@ -220,9 +227,10 @@ PPL::CO_Tree::bisect_in(dimension_type first, dimension_type last,
       ++new_half;
     }
 
-    if (indexes[new_half] == key)
+    if (indexes[new_half] == key) {
       return new_half;
-
+    }
+    
     if (indexes[new_half] > key) {
 
       while (indexes[half] == unused_index) {
@@ -255,9 +263,10 @@ PPL::CO_Tree::bisect_near(dimension_type hint, dimension_type key) const {
   PPL_ASSERT(hint <= reserved_size);
   PPL_ASSERT(indexes[hint] != unused_index);
 
-  if (indexes[hint] == key)
+  if (indexes[hint] == key) {
     return hint;
-
+  }
+  
   dimension_type new_hint;
   dimension_type offset = 1;
 
@@ -275,15 +284,17 @@ PPL::CO_Tree::bisect_near(dimension_type hint, dimension_type key) const {
           ++hint;
         }
 
-        if (indexes[hint] >= key)
+        if (indexes[hint] >= key) {
           return hint;
+        }
         // The searched element is in (hint,new_hint) and both indexes point
         // to valid elements.
         break;
       }
-      else
+      else {
         new_hint = hint - offset;
-
+      }
+      
       PPL_ASSERT(new_hint > 0);
       PPL_ASSERT(new_hint <= reserved_size);
 
@@ -294,8 +305,9 @@ PPL::CO_Tree::bisect_near(dimension_type hint, dimension_type key) const {
 
       PPL_ASSERT(new_hint <= hint);
 
-      if (indexes[new_hint] == key)
+      if (indexes[new_hint] == key) {
         return new_hint;
+      }
       else
         if (indexes[new_hint] < key) {
           // The searched element is in (new_hint,hint)
@@ -321,8 +333,9 @@ PPL::CO_Tree::bisect_near(dimension_type hint, dimension_type key) const {
         while (indexes[new_hint] == unused_index) {
           --new_hint;
         }
-        if (indexes[new_hint] <= key)
+        if (indexes[new_hint] <= key) {
           return new_hint;
+        }
         // The searched element is in (hint,new_hint) and both indexes point
         // to valid elements.
         break;
@@ -340,13 +353,14 @@ PPL::CO_Tree::bisect_near(dimension_type hint, dimension_type key) const {
 
       PPL_ASSERT(hint <= new_hint);
 
-      if (indexes[new_hint] == key)
+      if (indexes[new_hint] == key) {
         return new_hint;
-      else
+      }
+      else {
         if (indexes[new_hint] > key)
           // The searched element is in (hint,new_hint).
           break;
-
+      }
       hint = new_hint;
       offset *= 2;
     }
@@ -363,9 +377,10 @@ PPL::CO_Tree::bisect_near(dimension_type hint, dimension_type key) const {
     ++hint;
   }
 
-  if (hint == new_hint)
+  if (hint == new_hint) {
     return hint;
-
+  }
+  
   --new_hint;
 
   while (indexes[new_hint] == unused_index) {
@@ -404,9 +419,9 @@ PPL::CO_Tree::insert_precise(dimension_type key1,
   const bool invalidating
     = (data <= &data1) && (&data1 < data + (reserved_size + 1));
 
-  if (!invalidating)
+  if (!invalidating) {
     return insert_precise_aux(key1, data1, itr);
-
+  }
   // `data1' could be invalidated by the insert, because it is
   // a coefficient of this row. Avoid the issue by copying it.
   data_type data1_copy = data1;
@@ -459,10 +474,12 @@ PPL::CO_Tree::insert_precise_aux(dimension_type key1,
   ++size_;
 
   if (!itr.is_leaf()) {
-    if (key1 < itr.index())
+    if (key1 < itr.index()) {
       itr.get_left_child();
-    else
+    }
+    else {
       itr.get_right_child();
+    }
     PPL_ASSERT(itr.index() == unused_index);
 
     new (&(*itr)) data_type(data1);
@@ -508,11 +525,12 @@ PPL::CO_Tree::erase(tree_iterator itr) {
   }
 
 #ifndef NDEBUG
-  if (size_ > 1)
+  if (size_ > 1) {
     PPL_ASSERT(!is_less_than_ratio(size_ - 1, reserved_size,
                                    min_density_percent)
                || is_greater_than_ratio(size_ - 1, reserved_size/2,
                                         max_density_percent));
+  }
 #endif
 
   const dimension_type deleted_key = itr.index();
@@ -521,19 +539,22 @@ PPL::CO_Tree::erase(tree_iterator itr) {
   while (true) {
     dimension_type& current_key  = itr.index();
     data_type&      current_data = *itr;
-    if (itr.is_leaf())
+    if (itr.is_leaf()) {
       break;
+    }
     itr.get_left_child();
-    if (itr.index() != unused_index)
+    if (itr.index() != unused_index) {
       // The left child has a value.
       itr.follow_right_children_with_value();
+    }
     else {
       // The left child has not a value, try the right child.
       itr.get_parent();
       itr.get_right_child();
-      if (itr.index() != unused_index)
+      if (itr.index() != unused_index) {
         // The right child has a value.
         itr.follow_left_children_with_value();
+      }
       else {
         // The right child has not a value, too.
         itr.get_parent();
@@ -553,17 +574,19 @@ PPL::CO_Tree::erase(tree_iterator itr) {
 
   itr = rebalance(itr, 0, Coefficient_zero());
 
-  if (itr.get_offset() < deleted_node.get_offset())
+  if (itr.get_offset() < deleted_node.get_offset()) {
     // deleted_node is an ancestor of itr
     itr = deleted_node;
-
+  }
+  
   itr.go_down_searching_key(deleted_key);
 
   iterator result(itr);
 
-  if (result.index() < deleted_key)
+  if (result.index() < deleted_key) {
     ++result;
-
+  }
+  
   PPL_ASSERT(OK());
   PPL_ASSERT(result == end() || result.index() > deleted_key);
 #ifndef NDEBUG
@@ -624,8 +647,9 @@ PPL::CO_Tree::destroy() {
 
   if (reserved_size != 0) {
     for (dimension_type i = 1; i <= reserved_size; ++i) {
-      if (indexes[i] != unused_index)
+      if (indexes[i] != unused_index) {
         data[i].~data_type();
+      }
     }
 
     delete[] indexes;
@@ -636,53 +660,63 @@ PPL::CO_Tree::destroy() {
 bool
 PPL::CO_Tree::structure_OK() const {
 
-  if (size_ > reserved_size)
+  if (size_ > reserved_size) {
     return false;
-
+  }
+  
   if (reserved_size == 0) {
-    if (indexes != NULL)
+    if (indexes != NULL) {
       return false;
-    if (data != NULL)
+    }
+    if (data != NULL) {
       return false;
-    if (max_depth != 0)
+    }
+    if (max_depth != 0) {
       return false;
-
+    }
+    
     return true;
   }
 
-  if (reserved_size < 3)
+  if (reserved_size < 3) {
     return false;
-
-  if (reserved_size != (static_cast<dimension_type>(1) << max_depth) - 1)
+  }
+  if (reserved_size != (static_cast<dimension_type>(1) << max_depth) - 1) {
     return false;
-
-  if (data == NULL)
+  }
+  
+  if (data == NULL) {
     return false;
-
-  if (indexes == NULL)
+  }
+  
+  if (indexes == NULL) {
     return false;
-
-  if (max_depth == 0)
+  }
+  
+  if (max_depth == 0) {
     return false;
-
+  }
+  
   if (size_ == 0) {
 
     // This const_cast could be removed by adding a const_tree_iterator,
     // but it would add much code duplication without a real need.
     tree_iterator itr(*const_cast<CO_Tree*>(this));
-    if (itr.index() != unused_index)
+    if (itr.index() != unused_index) {
       return false;
-
+    }
+    
   }
   else {
     // This const_cast could be removed by adding a const_tree_iterator,
     // but it would add much code duplication without a real need.
     tree_iterator itr(*const_cast<CO_Tree*>(this));
     const dimension_type real_size = count_used_in_subtree(itr);
-    if (real_size != size_)
+    if (real_size != size_) {
       // There are \p real_size elements in the tree that are reachable by the
       // root, but size is \p size.
       return false;
+    }
   }
 
   if (size_ != 0) {
@@ -692,19 +726,22 @@ PPL::CO_Tree::structure_OK() const {
     if (itr != itr_end) {
       dimension_type last_index = itr.index();
       for (++itr; itr != itr_end; ++itr) {
-        if (last_index >= itr.index())
+        if (last_index >= itr.index()) {
           // Found index \p itr->first after index \p last_index.
           return false;
+        }
         last_index = itr.index();
       }
     }
   }
 
-  if (const_iterator(cached_end) != const_iterator(*this, reserved_size + 1))
+  if (const_iterator(cached_end) != const_iterator(*this, reserved_size + 1)) {
     return false;
-  if (cached_const_end != const_iterator(*this, reserved_size + 1))
+  }
+  if (cached_const_end != const_iterator(*this, reserved_size + 1)) {
     return false;
-
+  }
+  
   return true;
 }
 
@@ -759,10 +796,12 @@ PPL::CO_Tree::dump_subtree(tree_iterator itr) {
     itr.get_parent();
   }
   std::cout << "At depth: " << itr.depth();
-  if (itr.index() == unused_index)
+  if (itr.index() == unused_index) {
     std::cout << " (no data)" << std::endl;
-  else
+  }
+  else {
     std::cout << " pair (" << itr.index() << "," << *itr << ")" << std::endl;
+  }
   if (!itr.is_leaf()) {
     itr.get_right_child();
     dump_subtree(itr);
@@ -795,8 +834,9 @@ PPL::CO_Tree::rebuild_bigger_tree() {
 
   for (dimension_type i = 1, j = 2; i <= reserved_size; ++i, ++j) {
     new_indexes[j] = indexes[i];
-    if (indexes[i] != unused_index)
+    if (indexes[i] != unused_index) {
       move_data_element(new_data[j], data[i]);
+    }
     ++j;
     new_indexes[j] = unused_index;
   }
@@ -837,12 +877,14 @@ PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
                                           << height) - 1;
   const bool deleting = itr.index() == unused_index;
   PPL_ASSERT(deleting || key != unused_index);
-  if (deleting)
+  if (deleting) {
     subtree_size = 0;
-  else
+  }
+  else {
     // The existing element and the element with index key we want to add.
     subtree_size = 2;
-
+  }
+  
   while (is_greater_than_ratio(subtree_size, subtree_reserved_size,
                                max_density_percent
                                + ((itr_depth_minus_1
@@ -859,10 +901,12 @@ PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
     PPL_ASSERT(itr_depth_minus_1 != 0);
     const bool is_right_brother = itr.is_right_child();
     itr.get_parent();
-    if (is_right_brother)
+    if (is_right_brother) {
       itr.get_left_child();
-    else
+    }
+    else {
       itr.get_right_child();
+    }
     subtree_size += count_used_in_subtree(itr);
     itr.get_parent();
     PPL_ASSERT(itr.index() != unused_index);
@@ -1081,9 +1125,10 @@ PPL::CO_Tree::redistribute_elements_in_subtree(
 void
 PPL::CO_Tree::move_data_from(CO_Tree& tree) {
   PPL_ASSERT(size_ == 0);
-  if (tree.size_ == 0)
+  if (tree.size_ == 0) {
     return;
-
+  }
+  
   tree_iterator root(*this);
 
   dimension_type source_index = 1;
@@ -1220,8 +1265,9 @@ PPL::CO_Tree::copy_data_from(const CO_Tree& x) {
 
     // 1. Destroy the data elements that have been constructed successfully.
     for (dimension_type j = x.reserved_size; j > i; --j) {
-      if (indexes[j] != unused_index)
+      if (indexes[j] != unused_index) {
         data[j].~data_type();
+      }
     }
 
     // 2. Deallocate index[] and data[]
@@ -1252,8 +1298,9 @@ PPL::CO_Tree::count_used_in_subtree(tree_iterator itr) {
     = &(itr.tree.indexes[root_index - (k - 1)]);
 
   for (dimension_type j = 2*k - 1; j > 0; --j, ++current_index) {
-    if (*current_index != unused_index)
+    if (*current_index != unused_index) {
       ++n;
+    }
   }
 
   return n;
@@ -1263,30 +1310,39 @@ bool
 PPL::CO_Tree::const_iterator::OK() const {
 #if PPL_CO_TREE_EXTRA_DEBUG
   if (tree == 0) {
-    if (current_index != 0)
+    if (current_index != 0) {
       return false;
-    if (current_data != 0)
+    }
+    if (current_data != 0) {
       return false;
+    }
   }
   else
     if (tree->reserved_size == 0) {
       if (current_index != 1 + static_cast<dimension_type*>(0)
-          || current_data != 1 + static_cast<data_type*>(0))
+          || current_data != 1 + static_cast<data_type*>(0)) {
         return false;
+      }
     }
     else {
-      if (current_index <= &(tree->indexes[0]))
+      if (current_index <= &(tree->indexes[0])) {
         return false;
-      if (current_index > &(tree->indexes[tree->reserved_size + 1]))
+      }
+      if (current_index > &(tree->indexes[tree->reserved_size + 1])) {
         return false;
-      if (current_data <= &(tree->data[0]))
+      }
+      if (current_data <= &(tree->data[0])) {
         return false;
-      if (current_data > &(tree->data[tree->reserved_size + 1]))
+      }
+      if (current_data > &(tree->data[tree->reserved_size + 1])) {
         return false;
-      if (*current_index == unused_index)
+      }
+      if (*current_index == unused_index) {
         return false;
-      if (current_index - tree->indexes != current_data - tree->data)
+      }
+      if (current_index - tree->indexes != current_data - tree->data) {
         return false;
+      }
     }
 #endif
   return true;
@@ -1296,30 +1352,39 @@ bool
 PPL::CO_Tree::iterator::OK() const {
 #if PPL_CO_TREE_EXTRA_DEBUG
   if (tree == 0) {
-    if (current_index != 0)
+    if (current_index != 0) {
       return false;
-    if (current_data != 0)
+    }
+    if (current_data != 0) {
       return false;
+    }
   }
   else
     if (tree->reserved_size == 0) {
       if (current_index != 1 + static_cast<dimension_type*>(0)
-          || current_data != 1 + static_cast<data_type*>(0))
+          || current_data != 1 + static_cast<data_type*>(0)) {
         return false;
+      }
     }
     else {
-      if (current_index <= &(tree->indexes[0]))
+      if (current_index <= &(tree->indexes[0])) {
         return false;
-      if (current_index > &(tree->indexes[tree->reserved_size + 1]))
+      }
+      if (current_index > &(tree->indexes[tree->reserved_size + 1])) {
         return false;
-      if (current_data <= &(tree->data[0]))
+      }
+      if (current_data <= &(tree->data[0])) {
         return false;
-      if (current_data > &(tree->data[tree->reserved_size + 1]))
+      }
+      if (current_data > &(tree->data[tree->reserved_size + 1])) {
         return false;
-      if (*current_index == unused_index)
+      }
+      if (*current_index == unused_index) {
         return false;
-      if (current_index - tree->indexes != current_data - tree->data)
+      }
+      if (current_index - tree->indexes != current_data - tree->data) {
         return false;
+      }
     }
 #endif
   return true;
@@ -1327,15 +1392,17 @@ PPL::CO_Tree::iterator::OK() const {
 
 bool
 PPL::CO_Tree::tree_iterator::OK() const {
-  if (i == 0 || i > tree.reserved_size)
+  if (i == 0 || i > tree.reserved_size) {
     return false;
-
+  }
+  
   // This assumes two's complement encoding.
   const dimension_type correct_offset = i & -i;
 
-  if (offset != correct_offset)
+  if (offset != correct_offset) {
     return false;
-
+  }
+  
   return true;
 }
 

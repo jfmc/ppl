@@ -40,10 +40,11 @@ PPL::BD_Shape_Helpers::extract_bounded_difference(const Constraint& c,
   PPL_ASSERT(c_num_vars == 0 && c_first_var == 0 && c_second_var == 0);
 
   c_first_var = c.expression().first_nonzero(1, space_dim + 1);
-  if (c_first_var == space_dim + 1)
+  if (c_first_var == space_dim + 1) {
     // All the inhomogeneous coefficients are zero.
     return true;
-
+  }
+  
   ++c_num_vars;
 
   c_second_var = c.expression().first_nonzero(c_first_var + 1, space_dim + 1);
@@ -57,19 +58,21 @@ PPL::BD_Shape_Helpers::extract_bounded_difference(const Constraint& c,
 
   ++c_num_vars;
 
-  if (!c.expression().all_zeroes(c_second_var + 1, space_dim + 1))
+  if (!c.expression().all_zeroes(c_second_var + 1, space_dim + 1)) {
     // The constraint `c' is not a bounded difference.
     return false;
-
+  }
+  
   // Make sure that `c' is indeed a bounded difference, i.e., it is of the
   // form:
   // a*x - a*y <=/= b.
   Coefficient_traits::const_reference c0 = c.expression().get(Variable(c_first_var - 1));
   Coefficient_traits::const_reference c1 = c.expression().get(Variable(c_second_var - 1));
-  if (sgn(c0) == sgn(c1) || c0 != -c1)
+  if (sgn(c0) == sgn(c1) || c0 != -c1) {
     // Constraint `c' is not a bounded difference.
     return false;
-
+  }
+  
   c_coeff = c1;
 
   return true;
@@ -88,7 +91,8 @@ PPL::compute_leader_indices(const std::vector<dimension_type>& predecessor,
   PPL_ASSERT(0 == predecessor[0]);
   indices.push_back(0);
   for (dimension_type i = 1, p_size = predecessor.size(); i != p_size; ++i) {
-    if (i == predecessor[i])
+    if (i == predecessor[i]) {
       indices.push_back(i);
+    }
   }
 }

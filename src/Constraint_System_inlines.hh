@@ -196,9 +196,10 @@ Constraint_System::empty() const {
 
 inline void
 Constraint_System::add_low_level_constraints() {
-  if (sys.is_necessarily_closed())
+  if (sys.is_necessarily_closed()) {
     // The positivity constraint.
     insert(Constraint::zero_dim_positivity());
+  }
   else {
     // Add the epsilon constraints.
     insert(Constraint::epsilon_leq_one());

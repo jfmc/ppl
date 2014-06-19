@@ -45,8 +45,9 @@ PPL::Congruence_System::Congruence_System(const Constraint_System& cs,
     representation_(r) {
   for (Constraint_System::const_iterator i = cs.begin(),
          cs_end = cs.end(); i != cs_end; ++i) {
-    if (i->is_equality())
+    if (i->is_equality()) {
       insert(*i);
+    }
   }
 }
 
@@ -113,11 +114,13 @@ PPL::Congruence_System::insert_verbatim(Congruence& cg, Recycle_Input) {
 
   cg.set_representation(representation());
 
-  if (cg.space_dimension() >= space_dimension())
+  if (cg.space_dimension() >= space_dimension()) {
     set_space_dimension(cg.space_dimension());
-  else
+  }
+  else {
     cg.set_space_dimension(space_dimension());
-
+  }
+  
   rows.resize(num_rows() + 1);
 
   swap(cg, rows.back());
@@ -127,8 +130,9 @@ PPL::Congruence_System::insert_verbatim(Congruence& cg, Recycle_Input) {
 
 void
 PPL::Congruence_System::insert(const Constraint& c) {
-  if (c.space_dimension() > space_dimension())
+  if (c.space_dimension() > space_dimension()) {
     set_space_dimension(c.space_dimension());
+  }
   Congruence cg(c, space_dimension(), representation());
   cg.strong_normalize();
   rows.resize(num_rows() + 1);
@@ -142,8 +146,9 @@ void
 PPL::Congruence_System::insert(Congruence_System& cgs, Recycle_Input) {
   const dimension_type old_num_rows = num_rows();
   const dimension_type cgs_num_rows = cgs.num_rows();
-  if (space_dimension() < cgs.space_dimension())
+  if (space_dimension() < cgs.space_dimension()) {
     set_space_dimension(cgs.space_dimension());
+  }
   rows.resize(old_num_rows + cgs_num_rows);
   for (dimension_type i = cgs_num_rows; i-- > 0; ) {
     cgs.rows[i].set_space_dimension(space_dimension());
@@ -163,9 +168,10 @@ PPL::Congruence_System::insert(const Congruence_System& y) {
   const dimension_type y_num_rows = y.num_rows();
 
   // Grow to the required size.
-  if (space_dimension() < y.space_dimension())
+  if (space_dimension() < y.space_dimension()) {
     set_space_dimension(y.space_dimension());
-
+  }
+  
   rows.resize(rows.size() + y_num_rows);
 
   // Copy the rows of `y', with the new space dimension.
@@ -187,25 +193,29 @@ PPL::Congruence_System::normalize_moduli() {
     while (true) {
       --row;
       lcm = cgs[row].modulus();
-      if (lcm > 0)
+      if (lcm > 0) {
         break;
-      if (row == 0)
+      }
+      if (row == 0) {
         // All rows are equalities.
         return;
+      }
     }
     while (row > 0) {
       --row;
       const Coefficient& modulus = cgs[row].modulus();
-      if (modulus > 0)
+      if (modulus > 0) {
         lcm_assign(lcm, lcm, modulus);
+      }
     }
 
     // Represent every row using the LCM as the modulus.
     PPL_DIRTY_TEMP_COEFFICIENT(factor);
     for (row = num_rows(); row-- > 0; ) {
       const Coefficient& modulus = cgs[row].modulus();
-      if (modulus <= 0 || modulus == lcm)
+      if (modulus <= 0 || modulus == lcm) {
         continue;
+      }
       exact_div_assign(factor, lcm, modulus);
       rows[row].scale(factor);
     }
@@ -222,8 +232,9 @@ bool
 PPL::Congruence_System::has_linear_equalities() const {
   const Congruence_System& cgs = *this;
   for (dimension_type i = cgs.num_rows(); i-- > 0; ) {
-    if (cgs[i].modulus() == 0)
+    if (cgs[i].modulus() == 0) {
       return true;
+    }
   }
   return false;
 }
@@ -241,8 +252,9 @@ PPL::Congruence_System::num_equalities() const {
   const Congruence_System& cgs = *this;
   dimension_type n = 0;
   for (dimension_type i = num_rows(); i-- > 0 ; ) {
-    if (cgs[i].is_equality())
+    if (cgs[i].is_equality()) {
       ++n;
+    }
   }
   return n;
 }
@@ -253,8 +265,9 @@ PPL::Congruence_System::num_proper_congruences() const {
   dimension_type n = 0;
   for (dimension_type i = num_rows(); i-- > 0 ; ) {
     const Congruence& cg = cgs[i];
-    if (cg.is_proper_congruence())
+    if (cg.is_proper_congruence()) {
       ++n;
+    }
   }
   return n;
 }
@@ -270,8 +283,9 @@ satisfies_all_congruences(const Grid_Generator& g) const {
     for (dimension_type i = cgs.num_rows(); i-- > 0; ) {
       const Congruence& cg = cgs[i];
       Scalar_Products::assign(sp, g, cg);
-      if (sp != 0)
+      if (sp != 0) {
         return false;
+      }
     }
   else {
     const Coefficient& divisor = g.divisor();
@@ -279,11 +293,13 @@ satisfies_all_congruences(const Grid_Generator& g) const {
       const Congruence& cg = cgs[i];
       Scalar_Products::assign(sp, g, cg);
       if (cg.is_equality()) {
-        if (sp != 0)
+        if (sp != 0) {
           return false;
+        }
       }
-      else if (sp % (cg.modulus() * divisor) != 0)
+      else if (sp % (cg.modulus() * divisor) != 0) {
         return false;
+      }
     }
   }
   return true;
@@ -300,8 +316,9 @@ PPL::Congruence_System::has_a_free_dimension() const {
 
   for (dimension_type i = num_rows(); i-- > 0; ) {
     rows[i].expression().has_a_free_dimension_helper(candidates);
-    if (candidates.empty())
+    if (candidates.empty()) {
       return false;
+    }
   }
   return !candidates.empty();
 }
@@ -340,22 +357,27 @@ PPL::Congruence_System::ascii_load(std::istream& s) {
   std::string str;
   dimension_type num_rows;
   dimension_type space_dim;
-  if (!(s >> num_rows))
+  if (!(s >> num_rows)) {
     return false;
-  if (!(s >> str) || str != "x")
+  }
+  if (!(s >> str) || str != "x") {
     return false;
-  if (!(s >> space_dim))
+  }
+  if (!(s >> space_dim)) {
     return false;
+  }
   clear();
   space_dimension_ = space_dim;
 
-  if (!Parma_Polyhedra_Library::ascii_load(s, representation_))
+  if (!Parma_Polyhedra_Library::ascii_load(s, representation_)) {
     return false;
-
+  }
+  
   Congruence c;
   for (dimension_type i = 0; i < num_rows; ++i) {
-    if (!c.ascii_load(s))
+    if (!c.ascii_load(s)) {
       return false;
+    }
     insert_verbatim(c, Recycle_Input());
   }
 
@@ -386,12 +408,15 @@ PPL::Congruence_System::OK() const {
   // and representation `representation()'.
   for (dimension_type i = num_rows(); i-- > 0; ) {
     const Congruence& cg = rows[i];
-    if (cg.space_dimension() != space_dimension())
+    if (cg.space_dimension() != space_dimension()) {
       return false;
-    if (cg.representation() != representation())
+    }
+    if (cg.representation() != representation()) {
       return false;
-    if (!cg.OK())
+    }
+    if (!cg.OK()) {
       return false;
+    }
   }
   // All checks passed.
   return true;
@@ -402,15 +427,17 @@ std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Congruence_System& cgs) {
   Congruence_System::const_iterator i = cgs.begin();
   const Congruence_System::const_iterator cgs_end = cgs.end();
-  if (i == cgs_end)
+  if (i == cgs_end) {
     return s << "true";
+  }
   while (true) {
     Congruence cg = *i;
     cg.strong_normalize();
     s << cg;
     ++i;
-    if (i == cgs_end)
+    if (i == cgs_end) {
       return s;
+    }
     s << ", ";
   }
 }
@@ -418,12 +445,14 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Congruence_System& cgs) {
 /*! \relates Parma_Polyhedra_Library::Congruence_System */
 bool
 PPL::operator==(const Congruence_System& x, const Congruence_System& y) {
-  if (x.num_rows() != y.num_rows())
+  if (x.num_rows() != y.num_rows()) {
     return false;
+  }
   for (dimension_type i = x.num_rows(); i-- > 0; ) {
     // NOTE: this also checks for space dimension.
-    if (x[i] != y[i])
+    if (x[i] != y[i]) {
       return false;
+    }
   }
   return true;
 }

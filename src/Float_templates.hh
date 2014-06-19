@@ -53,54 +53,59 @@ const FP_Interval_Type& compute_absolute_error(
   unsigned int f_mantissa_bits;
   switch (analyzed_format) {
     case IEEE754_HALF:
-      if (ieee754_half_result != ZERO_INTERVAL)
+      if (ieee754_half_result != ZERO_INTERVAL) {
         return ieee754_half_result;
-
+      }
       to_compute = &ieee754_half_result;
       f_base = float_ieee754_half::BASE;
       f_exponent_bias = float_ieee754_half::EXPONENT_BIAS;
       f_mantissa_bits = float_ieee754_half::MANTISSA_BITS;
       break;
     case IEEE754_SINGLE:
-      if (ieee754_single_result != ZERO_INTERVAL)
+      if (ieee754_single_result != ZERO_INTERVAL) {
         return ieee754_single_result;
-
+      }
+      
       to_compute = &ieee754_single_result;
       f_base = float_ieee754_single::BASE;
       f_exponent_bias = float_ieee754_single::EXPONENT_BIAS;
       f_mantissa_bits = float_ieee754_single::MANTISSA_BITS;
       break;
     case IEEE754_DOUBLE:
-      if (ieee754_double_result != ZERO_INTERVAL)
+      if (ieee754_double_result != ZERO_INTERVAL) {
         return ieee754_double_result;
-
+      }
+      
       to_compute = &ieee754_double_result;
       f_base = float_ieee754_double::BASE;
       f_exponent_bias = float_ieee754_double::EXPONENT_BIAS;
       f_mantissa_bits = float_ieee754_double::MANTISSA_BITS;
       break;
     case IBM_SINGLE:
-      if (ibm_single_result != ZERO_INTERVAL)
+      if (ibm_single_result != ZERO_INTERVAL) {
         return ibm_single_result;
-
+      }
+      
       to_compute = &ibm_single_result;
       f_base = float_ibm_single::BASE;
       f_exponent_bias = float_ibm_single::EXPONENT_BIAS;
       f_mantissa_bits = float_ibm_single::MANTISSA_BITS;
       break;
     case IEEE754_QUAD:
-      if (ieee754_quad_result != ZERO_INTERVAL)
+      if (ieee754_quad_result != ZERO_INTERVAL) {
         return ieee754_quad_result;
-
+      }
+      
       to_compute = &ieee754_quad_result;
       f_base = float_ieee754_quad::BASE;
       f_exponent_bias = float_ieee754_quad::EXPONENT_BIAS;
       f_mantissa_bits = float_ieee754_quad::MANTISSA_BITS;
       break;
     case INTEL_DOUBLE_EXTENDED:
-      if (intel_double_extended_result != ZERO_INTERVAL)
+      if (intel_double_extended_result != ZERO_INTERVAL) {
         return intel_double_extended_result;
-
+      }
+      
       to_compute = &intel_double_extended_result;
       f_base = float_intel_double_extended::BASE;
       f_exponent_bias = float_intel_double_extended::EXPONENT_BIAS;
@@ -133,10 +138,12 @@ discard_occurrences(std::map<dimension_type,
   typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
   typedef typename std::map<dimension_type, FP_Linear_Form>::iterator Iter;
   for (Iter i = lf_store.begin(); i != lf_store.end(); ) {
-    if((i->second).coefficient(var) != 0)
+    if((i->second).coefficient(var) != 0) {
       i = lf_store.erase(i);
-    else
+    }
+    else {
       ++i;
+    }
   }
 }
 
@@ -155,10 +162,12 @@ void upper_bound_assign(std::map<dimension_type,
   Const_Iter i2_end = ls2.end();
   for (Iter i1 = ls1.begin(), i1_end = ls1.end(); i1 != i1_end; ) {
     Const_Iter i2 = ls2.find(i1->first);
-    if ((i2 == i2_end) || (i1->second != i2->second))
+    if ((i2 == i2_end) || (i1->second != i2->second)) {
       i1 = ls1.erase(i1);
-    else
+    }
+    else {
       ++i1;
+    }
   }
 }
 

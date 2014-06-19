@@ -38,19 +38,24 @@ classify_mpq(const mpq_class& v, bool nan, bool inf, bool sign) {
   if ((Policy::has_nan || Policy::has_infinity)
       && ::sgn(v.get_den()) == 0) {
     int s = ::sgn(v.get_num());
-    if (Policy::has_nan && (nan || sign) && s == 0)
+    if (Policy::has_nan && (nan || sign) && s == 0) {
       return V_NAN;
-    if (!inf && !sign)
+    }
+    if (!inf && !sign) {
       return V_LGE;
+    }
     if (Policy::has_infinity) {
-      if (s < 0)
+      if (s < 0) {
         return inf ? V_EQ_MINUS_INFINITY : V_LT;
-      if (s > 0)
+      }
+      if (s > 0) {
         return inf ? V_EQ_PLUS_INFINITY : V_GT;
+      }
     }
   }
-  if (sign)
+  if (sign) {
     return static_cast<Result>(sgn<Policy>(v));
+  }
   return V_LGE;
 }
 
@@ -90,10 +95,12 @@ template <typename Policy>
 inline bool
 is_int_mpq(const mpq_class& v) {
   if ((Policy::has_infinity || Policy::has_nan)
-      && ::sgn(v.get_den()) == 0)
+      && ::sgn(v.get_den()) == 0) {
     return !(Policy::has_nan && ::sgn(v.get_num()) == 0);
-  else
+  }
+  else {
     return v.get_den() == 1;
+  }
 }
 
 PPL_SPECIALIZE_IS_INT(is_int_mpq, mpq_class)
@@ -154,12 +161,15 @@ PPL_SPECIALIZE_CONSTRUCT(construct_mpq_base, mpq_class, unsigned long)
 template <typename To_Policy, typename From_Policy, typename From>
 inline Result
 construct_mpq_float(mpq_class& to, const From& from, Rounding_Dir dir) {
-  if (is_nan<From_Policy>(from))
+  if (is_nan<From_Policy>(from)) {
     return construct_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
-  else if (is_minf<From_Policy>(from))
+  }
+  else if (is_minf<From_Policy>(from)) {
     return construct_special<To_Policy>(to, VC_MINUS_INFINITY, dir);
-  else if (is_pinf<From_Policy>(from))
+  }
+  else if (is_pinf<From_Policy>(from)) {
     return construct_special<To_Policy>(to, VC_PLUS_INFINITY, dir);
+  }
   new (&to) mpq_class(from);
   return V_EQ;
 }
@@ -182,12 +192,15 @@ PPL_SPECIALIZE_ASSIGN(assign_exact, mpq_class, unsigned long)
 template <typename To_Policy, typename From_Policy, typename From>
 inline Result
 assign_mpq_float(mpq_class& to, const From& from, Rounding_Dir dir) {
-  if (is_nan<From_Policy>(from))
+  if (is_nan<From_Policy>(from)) {
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
-  else if (is_minf<From_Policy>(from))
+  }
+  else if (is_minf<From_Policy>(from)) {
     return assign_special<To_Policy>(to, VC_MINUS_INFINITY, dir);
-  else if (is_pinf<From_Policy>(from))
+  }
+  else if (is_pinf<From_Policy>(from)) {
     return assign_special<To_Policy>(to, VC_PLUS_INFINITY, dir);
+  }
   assign_mpq_numeric_float(to, from);
   return V_EQ;
 }
@@ -199,12 +212,14 @@ PPL_SPECIALIZE_ASSIGN(assign_mpq_float, mpq_class, long double)
 template <typename To_Policy, typename From_Policy, typename From>
 inline Result
 assign_mpq_signed_int(mpq_class& to, const From from, Rounding_Dir) {
-  if (sizeof(From) <= sizeof(signed long))
+  if (sizeof(From) <= sizeof(signed long)) {
     to = static_cast<signed long>(from);
+  }
   else {
     mpz_ptr m = to.get_num().get_mpz_t();
-    if (from >= 0)
+    if (from >= 0) {
       mpz_import(m, 1, 1, sizeof(From), 0, 0, &from);
+    }
     else {
       From n = -from;
       mpz_import(m, 1, 1, sizeof(From), 0, 0, &n);
@@ -220,8 +235,9 @@ PPL_SPECIALIZE_ASSIGN(assign_mpq_signed_int, mpq_class, signed long long)
 template <typename To_Policy, typename From_Policy, typename From>
 inline Result
 assign_mpq_unsigned_int(mpq_class& to, const From from, Rounding_Dir) {
-  if (sizeof(From) <= sizeof(unsigned long))
+  if (sizeof(From) <= sizeof(unsigned long)) {
     to = static_cast<unsigned long>(from);
+  }
   else {
     mpz_import(to.get_num().get_mpz_t(), 1, 1, sizeof(From), 0, 0, &from);
     to.get_den() = 1;
@@ -398,8 +414,9 @@ smod_2exp_mpq(mpq_class& to, const mpq_class& x, unsigned int exp,
   mpz_fdiv_q_2exp(to.get_den().get_mpz_t(), to.get_den().get_mpz_t(), 1);
   bool neg = to.get_num() >= to.get_den();
   mpz_mul_2exp(to.get_den().get_mpz_t(), to.get_den().get_mpz_t(), 1);
-  if (neg)
+  if (neg) {
     to.get_num() -= to.get_den();
+  }
   mpz_mul_2exp(to.get_num().get_mpz_t(), to.get_num().get_mpz_t(), exp);
   to.canonicalize();
   return V_EQ;
@@ -530,11 +547,13 @@ irrational_precision() {
 */
 inline void
 set_irrational_precision(const unsigned p) {
-  if (p <= INT_MAX)
+  if (p <= INT_MAX) {
     Checked::irrational_precision = p;
-  else
+  }
+  else {
     throw std::invalid_argument("PPL::set_irrational_precision(p)"
                                 " with p > INT_MAX");
+  }
 }
 
 } // namespace Parma_Polyhedra_Library

@@ -84,9 +84,10 @@ wrap_assign_ind(PSET& pointset,
       else {
         for (Constraint_System::const_iterator j = cs.begin(),
                cs_end = cs.end(); j != cs_end; ++j) {
-          if (j->expression().all_zeroes(vars))
+          if (j->expression().all_zeroes(vars)) {
             // `*j' does not depend on variables in `vars'.
             p.refine_with_constraint(*j);
+          }
         }
       }
       p.refine_with_constraint(min_value <= x);
@@ -111,13 +112,14 @@ wrap_assign_col(PSET& dest,
                 Coefficient& tmp) {
   if (first == end) {
     PSET p(src);
-    if (cs_p != 0)
+    if (cs_p != 0) {
       p.refine_with_constraints(*cs_p);
-    for (Variables_Set::const_iterator i = vars.begin(),
+      for (Variables_Set::const_iterator i = vars.begin(),
            vars_end = vars.end(); i != vars_end; ++i) {
-      const Variable x(*i);
-      p.refine_with_constraint(min_value <= x);
-      p.refine_with_constraint(x <= max_value);
+        const Variable x(*i);
+        p.refine_with_constraint(min_value <= x);
+        p.refine_with_constraint(x <= max_value);
+      }
     }
     dest.upper_bound_assign(p);
   }
@@ -136,9 +138,10 @@ wrap_assign_col(PSET& dest,
         wrap_assign_col(dest, p, vars, first+1, end, w, min_value, max_value,
                         cs_p, tmp);
       }
-      else
+      else {
         wrap_assign_col(dest, src, vars, first+1, end, w, min_value, max_value,
                         cs_p, tmp);
+      }
     }
   }
 }
@@ -188,8 +191,9 @@ wrap_assign(PSET& pointset,
 
   // Wrapping no variable only requires refining with *cs_p, if any.
   if (vars.empty()) {
-    if (cs_p != 0)
+    if (cs_p != 0) {
       pointset.refine_with_constraints(*cs_p);
+    }
     return;
   }
 
@@ -204,9 +208,9 @@ wrap_assign(PSET& pointset,
   }
 
   // Wrapping an empty polyhedron is a no-op.
-  if (pointset.is_empty())
+  if (pointset.is_empty()) {
     return;
-
+  }
   // Set `min_value' and `max_value' to the minimum and maximum values
   // a variable of width `w' and signedness `s' can take.
   PPL_DIRTY_TEMP_COEFFICIENT(min_value);
@@ -271,9 +275,10 @@ wrap_assign(PSET& pointset,
       continue;
     }
 
-    if (!pointset.maximize(x, u_n, u_d, extremum))
+    if (!pointset.maximize(x, u_n, u_d, extremum)) {
       goto set_full_range;
-
+    }
+    
     div_assign_r(l_n, l_n, l_d, ROUND_DOWN);
     div_assign_r(u_n, u_n, u_d, ROUND_DOWN);
     l_n -= min_value;
@@ -284,35 +289,41 @@ wrap_assign(PSET& pointset,
     const Coefficient& last_quadrant = u_n;
 
     // Special case: this variable does not need wrapping.
-    if (first_quadrant == 0 && last_quadrant == 0)
+    if (first_quadrant == 0 && last_quadrant == 0) {
       continue;
-
+    }
+    
     // If overflow is impossible, try not to add useless constraints.
     if (o == OVERFLOW_IMPOSSIBLE) {
-      if (first_quadrant < 0)
+      if (first_quadrant < 0) {
         full_range_bounds.insert(min_value <= x);
-      if (last_quadrant > 0)
+      }
+      if (last_quadrant > 0) {
         full_range_bounds.insert(x <= max_value);
+      }
       continue;
     }
 
-    if (o == OVERFLOW_UNDEFINED || collective_wrap_too_complex)
+    if (o == OVERFLOW_UNDEFINED || collective_wrap_too_complex) {
       goto set_full_range;
-
+    }
+    
     Coefficient& quadrants = u_d;
     quadrants = last_quadrant - first_quadrant + 1;
 
     PPL_UNINITIALIZED(unsigned, extension);
     Result res = assign_r(extension, quadrants, ROUND_IGNORE);
-    if (result_overflow(res) != 0 || extension > complexity_threshold)
+    if (result_overflow(res) != 0 || extension > complexity_threshold) {
       goto set_full_range;
-
+    }
+    
     if (!wrap_individually && !collective_wrap_too_complex) {
       res = mul_assign_r(collective_wrap_complexity,
                          collective_wrap_complexity, extension, ROUND_IGNORE);
       if (result_overflow(res) != 0
-          || collective_wrap_complexity > complexity_threshold)
+          || collective_wrap_complexity > complexity_threshold) {
         collective_wrap_too_complex = true;
+      }
       if (collective_wrap_too_complex) {
         // Set all the dimensions in `translations' to full range.
         for (Wrap_Translations::const_iterator j = translations.begin(),
@@ -369,8 +380,9 @@ wrap_assign(PSET& pointset,
     }
   }
 
-  if (cs_p != 0)
+  if (cs_p != 0) {
     pointset.refine_with_constraints(*cs_p);
+  }
   pointset.refine_with_constraints(full_range_bounds);
 }
 

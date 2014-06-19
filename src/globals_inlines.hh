@@ -77,13 +77,16 @@ Throwable::~Throwable() {
 inline void
 maybe_abandon() {
 #ifndef NDEBUG
-  if (In_Assert::asserting())
+  if (In_Assert::asserting()) {
     return;
+  }
 #endif
-  if (Weightwatch_Traits::check_function != 0)
+  if (Weightwatch_Traits::check_function != 0) {
     Weightwatch_Traits::check_function();
-  if (const Throwable* const p = abandon_expensive_computations)
+  }
+  if (const Throwable* const p = abandon_expensive_computations) {
     p->throw_me();
+  }
 }
 
 inline dimension_type
@@ -138,18 +141,21 @@ total_memory_in_bytes(const mpq_class& x) {
 
 inline void
 ascii_dump(std::ostream& s, Representation r) {
-  if (r == DENSE)
+  if (r == DENSE) {
     s << "DENSE";
-  else
+  }
+  else {
     s << "SPARSE";
+  }
 }
 
 inline bool
 ascii_load(std::istream& is, Representation& r) {
   std::string s;
-  if (!(is >> s))
+  if (!(is >> s)) {
     return false;
-
+  }
+  
   if (s == "DENSE")  {
     r = DENSE;
     return true;

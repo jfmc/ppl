@@ -115,12 +115,14 @@ inline
 BD_Shape<T>::BD_Shape(const dimension_type num_dimensions,
                       const Degenerate_Element kind)
   : dbm(num_dimensions + 1), status(), redundancy_dbm() {
-  if (kind == EMPTY)
+  if (kind == EMPTY) {
     set_empty();
+  }
   else {
-    if (num_dimensions > 0)
+    if (num_dimensions > 0) {
       // A (non zero-dim) universe BDS is closed.
       set_shortest_path_closed();
+    }
   }
   PPL_ASSERT(OK());
 }
@@ -129,8 +131,9 @@ template <typename T>
 inline
 BD_Shape<T>::BD_Shape(const BD_Shape& y, Complexity_Class)
   : dbm(y.dbm), status(y.status), redundancy_dbm() {
-  if (y.marked_shortest_path_reduced())
+  if (y.marked_shortest_path_reduced()) {
     redundancy_dbm = y.redundancy_dbm;
+  }
 }
 
 template <typename T>
@@ -143,10 +146,12 @@ BD_Shape<T>::BD_Shape(const BD_Shape<U>& y, Complexity_Class)
     status(),
     redundancy_dbm() {
   // TODO: handle flags properly, possibly taking special cases into account.
-  if (y.marked_empty())
+  if (y.marked_empty()) {
     set_empty();
-  else if (y.marked_zero_dim_univ())
+  }
+  else if (y.marked_zero_dim_univ()) {
     set_zero_dim_univ();
+  }
 }
 
 template <typename T>
@@ -190,21 +195,24 @@ inline void
 BD_Shape<T>::refine_with_constraint(const Constraint& c) {
   const dimension_type c_space_dim = c.space_dimension();
   // Dimension-compatibility check.
-  if (c_space_dim > space_dimension())
+  if (c_space_dim > space_dimension()) {
     throw_dimension_incompatible("refine_with_constraint(c)", c);
-
-  if (!marked_empty())
+  }
+  
+  if (!marked_empty()) {
     refine_no_check(c);
+  }
 }
 
 template <typename T>
 inline void
 BD_Shape<T>::refine_with_constraints(const Constraint_System& cs) {
   // Dimension-compatibility check.
-  if (cs.space_dimension() > space_dimension())
+  if (cs.space_dimension() > space_dimension()) {
     throw_invalid_argument("refine_with_constraints(cs)",
                            "cs and *this are space-dimension incompatible");
-
+  }
+  
   for (Constraint_System::const_iterator i = cs.begin(),
          cs_end = cs.end(); !marked_empty() && i != cs_end; ++i) {
     refine_no_check(*i);
@@ -216,11 +224,13 @@ inline void
 BD_Shape<T>::refine_with_congruence(const Congruence& cg) {
   const dimension_type cg_space_dim = cg.space_dimension();
   // Dimension-compatibility check.
-  if (cg_space_dim > space_dimension())
+  if (cg_space_dim > space_dimension()) {
     throw_dimension_incompatible("refine_with_congruence(cg)", cg);
-
-  if (!marked_empty())
+  }
+  
+  if (!marked_empty()) {
     refine_no_check(cg);
+  }
 }
 
 template <typename T>
@@ -244,8 +254,9 @@ BD_Shape<T>::refine_no_check(const Congruence& cg) {
   PPL_ASSERT(cg.space_dimension() <= space_dimension());
 
   if (cg.is_proper_congruence()) {
-    if (cg.is_inconsistent())
+    if (cg.is_inconsistent()) {
       set_empty();
+    }
     // Other proper congruences are just ignored.
     return;
   }
@@ -272,9 +283,10 @@ template <typename T>
 inline
 BD_Shape<T>::BD_Shape(const Constraint_System& cs)
   : dbm(cs.space_dimension() + 1), status(), redundancy_dbm() {
-  if (cs.space_dimension() > 0)
+  if (cs.space_dimension() > 0) {
     // A (non zero-dim) universe BDS is shortest-path closed.
     set_shortest_path_closed();
+  }
   add_constraints(cs);
 }
 
@@ -285,8 +297,9 @@ BD_Shape<T>::BD_Shape(const Box<Interval>& box,
                       Complexity_Class)
   : dbm(box.space_dimension() + 1), status(), redundancy_dbm() {
   // Check emptiness for maximum precision.
-  if (box.is_empty())
+  if (box.is_empty()) {
     set_empty();
+  }
   else if (box.space_dimension() > 0) {
     // A (non zero-dim) universe BDS is shortest-path closed.
     set_shortest_path_closed();
@@ -299,9 +312,10 @@ inline
 BD_Shape<T>::BD_Shape(const Grid& grid,
                       Complexity_Class)
   : dbm(grid.space_dimension() + 1), status(), redundancy_dbm() {
-  if (grid.space_dimension() > 0)
+  if (grid.space_dimension() > 0) {
     // A (non zero-dim) universe BDS is shortest-path closed.
     set_shortest_path_closed();
+  }
   // Taking minimized congruences ensures maximum precision.
   refine_with_congruences(grid.minimized_congruences());
 }
@@ -313,8 +327,9 @@ BD_Shape<T>::BD_Shape(const Octagonal_Shape<U>& os,
                       Complexity_Class)
   : dbm(os.space_dimension() + 1), status(), redundancy_dbm() {
   // Check for emptiness for maximum precision.
-  if (os.is_empty())
+  if (os.is_empty()) {
     set_empty();
+  }
   else if (os.space_dimension() > 0) {
     // A (non zero-dim) universe BDS is shortest-path closed.
     set_shortest_path_closed();
@@ -330,8 +345,9 @@ inline BD_Shape<T>&
 BD_Shape<T>::operator=(const BD_Shape& y) {
   dbm = y.dbm;
   status = y.status;
-  if (y.marked_shortest_path_reduced())
+  if (y.marked_shortest_path_reduced()) {
     redundancy_dbm = y.redundancy_dbm;
+  }
   return *this;
 }
 
@@ -429,15 +445,18 @@ inline bool
 operator==(const BD_Shape<T>& x, const BD_Shape<T>& y) {
   const dimension_type x_space_dim = x.space_dimension();
   // Dimension-compatibility check.
-  if (x_space_dim != y.space_dimension())
+  if (x_space_dim != y.space_dimension()) {
     return false;
-
+  }
+  
   // Zero-dim BDSs are equal if and only if they are both empty or universe.
   if (x_space_dim == 0) {
-    if (x.marked_empty())
+    if (x.marked_empty()) {
       return y.marked_empty();
-    else
+    }
+    else {
       return !y.marked_empty();
+    }
   }
 
   // The exact equivalence test requires shortest-path closure.
@@ -446,10 +465,12 @@ operator==(const BD_Shape<T>& x, const BD_Shape<T>& y) {
 
   // If one of two BDSs is empty, then they are equal
   // if and only if the other BDS is empty too.
-  if (x.marked_empty())
+  if (x.marked_empty()) {
     return y.marked_empty();
-  if (y.marked_empty())
+  }
+  if (y.marked_empty()) {
     return false;
+  }
   // Check for syntactic equivalence of the two (shortest-path closed)
   // systems of bounded differences.
   return x.dbm == y.dbm;
@@ -474,15 +495,18 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
                             Temp& tmp2) {
   const dimension_type x_space_dim = x.space_dimension();
   // Dimension-compatibility check.
-  if (x_space_dim != y.space_dimension())
+  if (x_space_dim != y.space_dimension()) {
     return false;
-
+  }
+  
   // Zero-dim BDSs are equal if and only if they are both empty or universe.
   if (x_space_dim == 0) {
-    if (x.marked_empty() == y.marked_empty())
+    if (x.marked_empty() == y.marked_empty()) {
       assign_r(r, 0, ROUND_NOT_NEEDED);
-    else
+    }
+    else {
       assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
+    }
     return true;
   }
 
@@ -493,10 +517,12 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   // If one of two BDSs is empty, then they are equal if and only if
   // the other BDS is empty too.
   if (x.marked_empty() ||  y.marked_empty()) {
-    if (x.marked_empty() == y.marked_empty())
+    if (x.marked_empty() == y.marked_empty()) {
       assign_r(r, 0, ROUND_NOT_NEEDED);
-    else
+    }
+    else {
       assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
+    }
     return true;
   }
 
@@ -539,15 +565,18 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
                           Temp& tmp2) {
   const dimension_type x_space_dim = x.space_dimension();
   // Dimension-compatibility check.
-  if (x_space_dim != y.space_dimension())
+  if (x_space_dim != y.space_dimension()) {
     return false;
-
+  }
+  
   // Zero-dim BDSs are equal if and only if they are both empty or universe.
   if (x_space_dim == 0) {
-    if (x.marked_empty() == y.marked_empty())
+    if (x.marked_empty() == y.marked_empty()) {
       assign_r(r, 0, ROUND_NOT_NEEDED);
-    else
+    }
+    else {
       assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
+    }
     return true;
   }
 
@@ -558,10 +587,12 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   // If one of two BDSs is empty, then they are equal if and only if
   // the other BDS is empty too.
   if (x.marked_empty() ||  y.marked_empty()) {
-    if (x.marked_empty() == y.marked_empty())
+    if (x.marked_empty() == y.marked_empty()) {
       assign_r(r, 0, ROUND_NOT_NEEDED);
-    else
+    }
+    else {
       assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
+    }
     return true;
   }
 
@@ -604,15 +635,17 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
                            Temp& tmp2) {
   const dimension_type x_space_dim = x.space_dimension();
   // Dimension-compatibility check.
-  if (x_space_dim != y.space_dimension())
+  if (x_space_dim != y.space_dimension()) {
     return false;
-
+  }
   // Zero-dim BDSs are equal if and only if they are both empty or universe.
   if (x_space_dim == 0) {
-    if (x.marked_empty() == y.marked_empty())
+    if (x.marked_empty() == y.marked_empty()) {
       assign_r(r, 0, ROUND_NOT_NEEDED);
-    else
+    }
+    else {
       assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
+    }
     return true;
   }
 
@@ -623,10 +656,12 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   // If one of two BDSs is empty, then they are equal if and only if
   // the other BDS is empty too.
   if (x.marked_empty() ||  y.marked_empty()) {
-    if (x.marked_empty() == y.marked_empty())
+    if (x.marked_empty() == y.marked_empty()) {
       assign_r(r, 0, ROUND_NOT_NEEDED);
-    else
+    }
+    else {
       assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
+    }
     return true;
   }
 
@@ -712,8 +747,9 @@ BD_Shape<T>::strictly_contains(const BD_Shape& y) const {
 template <typename T>
 inline bool
 BD_Shape<T>::upper_bound_assign_if_exact(const BD_Shape& y) {
-  if (space_dimension() != y.space_dimension())
+  if (space_dimension() != y.space_dimension()) {
     throw_dimension_incompatible("upper_bound_assign_if_exact(y)", y);
+  }
 #if 0
   return BFT00_upper_bound_assign_if_exact(y);
 #else
@@ -728,8 +764,9 @@ BD_Shape<T>::integer_upper_bound_assign_if_exact(const BD_Shape& y) {
   PPL_COMPILE_TIME_CHECK(std::numeric_limits<T>::is_integer,
                          "BD_Shape<T>::integer_upper_bound_assign_if_exact(y):"
                          " T in not an integer datatype.");
-  if (space_dimension() != y.space_dimension())
+  if (space_dimension() != y.space_dimension()) {
     throw_dimension_incompatible("integer_upper_bound_assign_if_exact(y)", y);
+  }
   const bool integer_upper_bound = true;
   return BHZ09_upper_bound_assign_if_exact<integer_upper_bound>(y);
 }
@@ -741,10 +778,11 @@ BD_Shape<T>
   // Dimension-compatibility check: the variable having
   // maximum index is the one occurring last in the set.
   const dimension_type space_dim = space_dimension();
-  if (new_dimension > space_dim)
+  if (new_dimension > space_dim) {
     throw_dimension_incompatible("remove_higher_space_dimensions(nd)",
                                  new_dimension);
-
+  }
+  
   // The removal of no dimensions from any BDS is a no-op.
   // Note that this case also captures the only legal removal of
   // dimensions from a zero-dim space BDS.
@@ -759,13 +797,15 @@ BD_Shape<T>
 
   // Shortest-path closure is maintained.
   // TODO: see whether or not reduction can be (efficiently!) maintained too.
-  if (marked_shortest_path_reduced())
+  if (marked_shortest_path_reduced()) {
     reset_shortest_path_reduced();
-
+  }
+  
   // If we removed _all_ dimensions from a non-empty BDS,
   // the zero-dim universe BDS has been obtained.
-  if (new_dimension == 0 && !marked_empty())
+  if (new_dimension == 0 && !marked_empty()) {
     set_zero_dim_univ();
+  }
   PPL_ASSERT(OK());
 }
 

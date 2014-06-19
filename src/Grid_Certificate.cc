@@ -35,15 +35,16 @@ PPL::Grid_Certificate::Grid_Certificate(const Grid& gr)
 
   // As in Polyhedron assume that `gr' contains at least one point.
   PPL_ASSERT(!gr.marked_empty());
-  if (gr.space_dimension() == 0)
+  if (gr.space_dimension() == 0) {
     return;
+  }
   // One of the systems must be in minimal form.
   if (gr.congruences_are_up_to_date()) {
     if (gr.congruences_are_minimized()) {
       num_proper_congruences = gr.con_sys.num_proper_congruences();
       num_equalities = gr.con_sys.num_equalities();
     }
-    else
+    else {
       if (gr.generators_are_up_to_date() && gr.generators_are_minimized()) {
         // Calculate number of congruences from generators.
         num_proper_congruences
@@ -63,6 +64,7 @@ PPL::Grid_Certificate::Grid_Certificate(const Grid& gr)
         num_proper_congruences = mgr.con_sys.num_proper_congruences();
         num_equalities = mgr.con_sys.num_equalities();
       }
+    }
   }
   else {
     if (!gr.generators_are_minimized()) {
@@ -87,10 +89,12 @@ int
 PPL::Grid_Certificate::compare(const Grid_Certificate& y) const {
   PPL_ASSERT(OK() && y.OK());
   if (num_equalities == y.num_equalities) {
-    if (num_proper_congruences == y.num_proper_congruences)
+    if (num_proper_congruences == y.num_proper_congruences) {
       return 0;
-    else
+    }
+    else {
       return (num_proper_congruences > y.num_proper_congruences) ? 1 : -1;
+    }
   }
   return (num_equalities > y.num_equalities) ? 1 : -1;
 }

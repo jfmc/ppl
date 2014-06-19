@@ -36,9 +36,10 @@ namespace PPL = Parma_Polyhedra_Library;
 PPL::Congruence::Congruence(const Constraint& c, Representation r)
   : expr(c.expression(), c.space_dimension(), r),
     modulus_(0) {
-  if (!c.is_equality())
+  if (!c.is_equality()) {
     throw_invalid_argument("Congruence(c, r)",
                            "constraint c must be an equality.");
+  }
 }
 
 PPL::Congruence::Congruence(const Constraint& c,
@@ -46,9 +47,10 @@ PPL::Congruence::Congruence(const Constraint& c,
                             Representation r)
   : expr(c.expression(), new_space_dimension, r),
     modulus_(0) {
-  if (!c.is_equality())
+  if (!c.is_equality()) {
     throw_invalid_argument("Congruence(c, space_dim, r)",
                            "constraint c must be an equality.");
+  }
 }
 
 void
@@ -61,16 +63,18 @@ PPL::Congruence::normalize() {
   PPL_ASSERT(OK());
   sign_normalize();
 
-  if (modulus_ == 0)
+  if (modulus_ == 0) {
     return;
-
+  }
+  
   PPL_DIRTY_TEMP_COEFFICIENT(c);
   c = expr.inhomogeneous_term();
   // Factor the modulus out of the inhomogeneous term.
   c %= modulus_;
-  if (c < 0)
+  if (c < 0) {
     // Make inhomogeneous term positive.
     c += modulus_;
+  }
   expr.set_inhomogeneous_term(c);
 
   PPL_ASSERT(OK());
@@ -81,11 +85,13 @@ PPL::Congruence::strong_normalize() {
   normalize();
 
   Coefficient gcd = expr.gcd(0, expr.space_dimension() + 1);
-  if (gcd == 0)
+  if (gcd == 0) {
     gcd = modulus_;
-  else
+  }
+  else {
     gcd_assign(gcd, modulus_, gcd);
-
+  }
+  
   if (gcd != 0 && gcd != 1) {
     expr /= gcd;
     modulus_ /= gcd;
@@ -95,10 +101,11 @@ PPL::Congruence::strong_normalize() {
 
 void
 PPL::Congruence::scale(Coefficient_traits::const_reference factor) {
-  if (factor == 1)
+  if (factor == 1) {
     // Nothing to do.
     return;
-
+  }
+  
   expr *= factor;
   modulus_ *= factor;
 }
@@ -110,16 +117,18 @@ PPL::Congruence
   PPL_DIRTY_TEMP_COEFFICIENT(c);
   c = expr.get(v);
 
-  if (c == 0)
+  if (c == 0) {
     return;
-
+  }
+  
   scale(denominator);
 
   expr.linear_combine(e, 1, c, 0, e.space_dimension() + 1);
 
-  if (v.space_dimension() > e.space_dimension() || e.get(v) == 0)
+  if (v.space_dimension() > e.space_dimension() || e.get(v) == 0) {
     // Not invertible
     expr.set(v, Coefficient_zero());
+  }
   else {
     c *= e.get(v);
     expr.set(v, c);
@@ -168,42 +177,49 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Congruence& c) {
         i_end = c_e.lower_bound(Variable(num_variables)); i != i_end; ++i) {
     cv = *i;
     if (!first) {
-      if (cv > 0)
+      if (cv > 0) {
         s << " + ";
+      }
       else {
         s << " - ";
         neg_assign(cv);
       }
     }
-    else
+    else {
       first = false;
-    if (cv == -1)
+    }
+    if (cv == -1) {
       s << "-";
-    else if (cv != 1)
+    }
+    else if (cv != 1) {
       s << cv << "*";
+    }
     s << i.variable();
   }
-  if (first)
+  if (first) {
     s << Coefficient_zero();
+  }
   s << " = " << -c.inhomogeneous_term();
-  if (c.is_proper_congruence())
+  if (c.is_proper_congruence()) {
     s << " (mod " << c.modulus() << ")";
+  }
   return s;
 }
 
 bool
 PPL::Congruence::is_tautological() const {
-  if (is_equality())
+  if (is_equality()) {
     return (inhomogeneous_term() == 0) && expr.all_homogeneous_terms_are_zero();
-
+  }
   return (inhomogeneous_term() % modulus() == 0) && expr.all_homogeneous_terms_are_zero();
 }
 
 bool
 PPL::Congruence::is_inconsistent() const {
-  if (is_equality())
+  if (is_equality()) {
     return (inhomogeneous_term() != 0) && expr.all_homogeneous_terms_are_zero();
-
+  }
+  
   return (inhomogeneous_term() % modulus() != 0) && expr.all_homogeneous_terms_are_zero();
 }
 
@@ -220,12 +236,14 @@ PPL::Congruence::ascii_load(std::istream& s) {
   expr.ascii_load(s);
 
   std::string str;
-  if (!(s >> str) || str != "m")
+  if (!(s >> str) || str != "m") {
     return false;
-
-  if (!(s >> modulus_))
+  }
+  
+  if (!(s >> modulus_)) {
     return false;
-
+  }
+  
   PPL_ASSERT(OK());
   return true;
 }

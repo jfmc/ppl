@@ -420,8 +420,9 @@ Dense_Row::iterator::operator const_iterator() const {
 
 inline bool
 Dense_Row::iterator::OK() const {
-  if (row == NULL)
+  if (row == NULL) {
     return true;
+  }
   // i can be equal to row.size() for past-the-end iterators
   return (i <= row->size());
 }
@@ -493,8 +494,9 @@ Dense_Row::const_iterator::operator!=(const const_iterator& x) const {
 
 inline bool
 Dense_Row::const_iterator::OK() const {
-  if (row == NULL)
+  if (row == NULL) {
     return true;
+  }
   // i can be equal to row.size() for past-the-end iterators
   return (i <= row->size());
 }

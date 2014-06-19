@@ -337,10 +337,12 @@ gcdext_exact(To1& to, To2& s, To3& t, const From1& x, const From2& y,
       return V_EQ;
     }
     else {
-      if (x < 0)
+      if (x < 0) {
         s = -1;
-      else
+      }
+      else {
         s = 1;
+      }
       t = 0;
       return abs<To1_Policy, From1_Policy>(to, x, dir);
     }
@@ -353,22 +355,25 @@ gcdext_exact(To1& to, To2& s, To3& t, const From1& x, const From2& y,
 
   Result r;
   r = abs<To1_Policy, From1_Policy>(to, x, dir);
-  if (r != V_EQ)
+  if (r != V_EQ) {
     return r;
-
+  }
+   
   From2 a_y;
   r = abs<To1_Policy, From2_Policy>(a_y, y, dir);
-  if (r != V_EQ)
+  if (r != V_EQ) {
     return r;
-
+  }
+  
   // If PPL_MATCH_GMP_GCDEXT is defined then s is favored when the absolute
   // values of the given numbers are equal.  For instance if x and y
   // are both 5 then s will be 1 and t will be 0, instead of the other
   // way round.  This is to match the behavior of GMP.
 #define PPL_MATCH_GMP_GCDEXT 1
 #ifdef PPL_MATCH_GMP_GCDEXT
-  if (to == a_y)
+  if (to == a_y) {
     goto sign_check;
+  }
 #endif
 
   {
@@ -384,8 +389,9 @@ gcdext_exact(To1& to, To2& s, To3& t, const From1& x, const From2& y,
       s = v1;
       t = v2;
       to = v3;
-      if (t3 == 0)
+      if (t3 == 0) {
         break;
+      }
       v1 = t1;
       v2 = t2;
       v3 = t3;
@@ -397,11 +403,13 @@ gcdext_exact(To1& to, To2& s, To3& t, const From1& x, const From2& y,
 #endif
   if (negative_x) {
     r = neg<To2_Policy, To2_Policy>(s, s, dir);
-    if (r != V_EQ)
+    if (r != V_EQ) {
       return r;
+    }
   }
-  if (negative_y)
+  if (negative_y) {
     return neg<To3_Policy, To3_Policy>(t, t, dir);
+  }
   return V_EQ;
 #undef PPL_MATCH_GMP_GCDEXT
 }
@@ -418,11 +426,13 @@ lcm_gcd_exact(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   To a_y;
   Result r;
   r = abs<From1_Policy, From1_Policy>(a_x, x, dir);
-  if (r != V_EQ)
+  if (r != V_EQ) {
     return r;
+  }
   r = abs<From2_Policy, From2_Policy>(a_y, y, dir);
-  if (r != V_EQ)
+  if (r != V_EQ) {
     return r;
+  }
   To gcd;
   gcd_exact_no_abs<To_Policy, From1_Policy, From2_Policy>(gcd, a_x, a_y);
   // The following is derived from the assumption that a_x / gcd(a_x, a_y)
@@ -435,10 +445,12 @@ lcm_gcd_exact(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
 template <typename Policy, typename Type>
 inline Result_Relation
 sgn_generic(const Type& x) {
-  if (x > 0)
+  if (x > 0) {
     return VR_GT;
-  if (x == 0)
+  }
+  if (x == 0) {
     return VR_EQ;
+  }
   return VR_LT;
 }
 
@@ -550,8 +562,9 @@ inline typename Enable_If<(!Safe_Conversion<T1, T2>::value
 lt(const T1& x, const T2& y) {
   PPL_DIRTY_TEMP(T1, tmp);
   Result r = assign_r(tmp, y, ROUND_UP);
-  if (!result_representable(r))
+  if (!result_representable(r)) {
     return true;
+  }
   switch (result_relation(r)) {
   case VR_EQ:
   case VR_LT:
@@ -575,8 +588,9 @@ le(const T1& x, const T2& y) {
   // code this in checked_float_inlines.hh, probably it's faster also
   // if fpu supports inexact check.
   PPL_ASSERT(r != V_LE && r != V_GE && r != V_LGE);
-  if (!result_representable(r))
+  if (!result_representable(r)) {
     return true;
+  }
   switch (result_relation(r)) {
   case VR_EQ:
     return x <= tmp;
@@ -618,10 +632,12 @@ template <typename Policy1, typename Policy2,
           typename Type1, typename Type2>
 inline Result_Relation
 cmp_generic(const Type1& x, const Type2& y) {
-  if (lt(y, x))
+  if (lt(y, x)) {
     return VR_GT;
-  if (lt(x, y))
+  }
+  if (lt(x, y)) {
     return VR_LT;
+  }
   return VR_EQ;
 }
 

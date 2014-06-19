@@ -120,16 +120,18 @@ Determinate<PSET>::Determinate(const Determinate& y)
 template <typename PSET>
 inline
 Determinate<PSET>::~Determinate() {
-  if (prep->del_reference())
+  if (prep->del_reference()) {
     delete prep;
+  }
 }
 
 template <typename PSET>
 inline Determinate<PSET>&
 Determinate<PSET>::operator=(const Determinate& y) {
   y.prep->new_reference();
-  if (prep->del_reference())
+  if (prep->del_reference()) {
     delete prep;
+  }
   prep = y.prep;
   return *this;
 }

@@ -33,9 +33,10 @@ namespace Parma_Polyhedra_Library {
 template <typename T>
 typename Enable_If<Is_Native_Or_Checked<T>::value, void>::type
 ascii_dump(std::ostream& s, const T& t) {
-  if (std::numeric_limits<T>::is_exact)
+  if (std::numeric_limits<T>::is_exact) {
     // An exact data type: pretty printer is accurate.
     s << t;
+  }
   else {
     // An inexact data type (probably floating point):
     // first dump its hexadecimal representation ...
@@ -63,8 +64,9 @@ ascii_load(std::istream& s, T& t) {
     // An inexact data type (probably floating point):
     // first load its hexadecimal representation ...
     std::string str;
-    if (!(s >> str) || str.size() != 2*sizeof(T))
+    if (!(s >> str) || str.size() != 2*sizeof(T)) {
       return false;
+    }
     unsigned char* p = reinterpret_cast<unsigned char*>(&t);
     // CHECKME: any (portable) simpler way?
     for (unsigned i = 0; i < sizeof(T); ++i) {
@@ -137,8 +139,9 @@ ascii_load(std::istream& s, T& t) {
       p[i] = static_cast<unsigned char>(byte_value);
     }
     // ... then read and discard pretty printed value.
-    if (!(s >> str))
+    if (!(s >> str)) {
       return false;
+    }
     const std::string::size_type sz = str.size();
     return sz > 2 && str[0] == '(' && str[sz-1] == ')';
   }

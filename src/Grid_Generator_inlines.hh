@@ -80,10 +80,12 @@ Grid_Generator::set_not_necessarily_closed() {
 inline
 Grid_Generator::Grid_Generator(Linear_Expression& e, Type type) {
   swap(expr, e);
-  if (type == LINE)
+  if (type == LINE) {
     kind_ = LINE_OR_EQUALITY;
-  else
+  }
+  else {
     kind_ = RAY_OR_POINT_OR_INEQUALITY;
+  }
   PPL_ASSERT(OK());
 }
 
@@ -191,8 +193,9 @@ Grid_Generator::shift_space_dimensions(Variable v, dimension_type n) {
 
 inline Grid_Generator::Type
 Grid_Generator::type() const {
-  if (is_line())
+  if (is_line()) {
     return LINE;
+  }
   return is_point() ? POINT : PARAMETER;
 }
 
@@ -224,20 +227,25 @@ Grid_Generator::is_parameter_or_point() const {
 inline void
 Grid_Generator::set_divisor(Coefficient_traits::const_reference d) {
   PPL_ASSERT(!is_line());
-  if (is_line_or_parameter())
+  if (is_line_or_parameter()) {
     expr.set_coefficient(Variable(space_dimension()), d);
-  else
+  }
+  else {
     expr.set_inhomogeneous_term(d);
+  }
 }
 
 inline Coefficient_traits::const_reference
 Grid_Generator::divisor() const {
-  if (is_line())
+  if (is_line()) {
     throw_invalid_argument("divisor()", "*this is a line");
-  if (is_line_or_parameter())
+  }
+  if (is_line_or_parameter()) {
     return expr.coefficient(Variable(space_dimension()));
-  else
+  }
+  else {
     return expr.inhomogeneous_term();
+  }
 }
 
 inline bool

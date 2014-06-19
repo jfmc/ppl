@@ -42,8 +42,9 @@ PPL::Dense_Row::Dense_Row(const Sparse_Row& y, dimension_type sz, dimension_type
 
 void
 PPL::Dense_Row::resize(dimension_type new_size) {
-  if (new_size <= size())
+  if (new_size <= size()) {
     shrink(new_size);
+  }
   else {
     if (new_size > capacity()) {
       // Reallocation is required.
@@ -256,8 +257,9 @@ PPL::Dense_Row::init(const Sparse_Row& row) {
       new (&impl.vec[impl.size]) Coefficient(*itr);
       ++itr;
     }
-    else
+    else {
       new (&impl.vec[impl.size]) Coefficient();
+    }
     ++impl.size;
   }
   PPL_ASSERT(size() == row.size());
@@ -278,8 +280,9 @@ PPL::Dense_Row::operator=(const Sparse_Row& row) {
         impl.vec[impl.size] = *itr;
         ++itr;
       }
-      else
+      else {
         impl.vec[impl.size] = Coefficient_zero();
+      }
     }
   }
   else {
@@ -293,8 +296,9 @@ PPL::Dense_Row::operator=(const Sparse_Row& row) {
           new (&impl.vec[impl.size]) Coefficient(*itr);
           ++itr;
         }
-        else
+        else {
           new (&impl.vec[impl.size]) Coefficient();
+        }
       }
       // Construct the additional elements.
       for ( ; impl.size != row.size(); ++impl.size) {
@@ -303,8 +307,9 @@ PPL::Dense_Row::operator=(const Sparse_Row& row) {
           new (&impl.vec[impl.size]) Coefficient(*itr);
           ++itr;
         }
-        else
+        else {
           new (&impl.vec[impl.size]) Coefficient();
+        }
       }
     }
     else {
@@ -330,8 +335,9 @@ PPL::Dense_Row::normalize() {
     Coefficient_traits::const_reference x_i = x[--i];
     if (const int x_i_sign = sgn(x_i)) {
       gcd = x_i;
-      if (x_i_sign < 0)
+      if (x_i_sign < 0) {
         neg_assign(gcd);
+      }
       goto compute_gcd;
     }
   }
@@ -339,8 +345,9 @@ PPL::Dense_Row::normalize() {
   return;
 
 compute_gcd:
-  if (gcd == 1)
+  if (gcd == 1) {
     return;
+  }
   while (i > 0) {
     Coefficient_traits::const_reference x_i = x[--i];
     if (x_i != 0) {
@@ -356,8 +363,9 @@ compute_gcd:
       // integers we cannot make any assumption, so here we draw.
       // Overall, we win.
       gcd_assign(gcd, x_i, gcd);
-      if (gcd == 1)
+      if (gcd == 1) {
         return;
+      }
     }
   }
   // Divide the coefficients by the GCD.
@@ -405,16 +413,18 @@ PPL::Dense_Row::linear_combine(const Dense_Row& y,
     if (coeff2 == 1) {
       // Optimized implementation for coeff1==1, coeff2==1.
       for (dimension_type i = start; i < end; ++i) {
-        if (y[i] != 0)
+        if (y[i] != 0) {
           x[i] += y[i];
+        }
       }
       return;
     }
     if (coeff2 == -1) {
       // Optimized implementation for coeff1==1, coeff2==-1.
       for (dimension_type i = start; i < end; ++i) {
-        if (y[i] != 0)
+        if (y[i] != 0) {
           x[i] -= y[i];
+        }
       }
       return;
     }
@@ -424,8 +434,9 @@ PPL::Dense_Row::linear_combine(const Dense_Row& y,
       // The test against 0 gives rise to a consistent speed up: see
       // http://www.cs.unipr.it/pipermail/ppl-devel/2009-February/014000.html
       Coefficient_traits::const_reference y_i = y[i];
-      if (y_i != 0)
+      if (y_i != 0) {
         add_mul_assign(x_i, y_i, coeff2);
+      }
     }
     return;
   }
@@ -434,8 +445,9 @@ PPL::Dense_Row::linear_combine(const Dense_Row& y,
     // Optimized implementation for coeff2==1.
     for (dimension_type i = start; i < end; ++i) {
       x[i] *= coeff1;
-      if (y[i] != 0)
+      if (y[i] != 0) {
         x[i] += y[i];
+      }
     }
     return;
   }
@@ -443,8 +455,9 @@ PPL::Dense_Row::linear_combine(const Dense_Row& y,
     // Optimized implementation for coeff2==-1.
     for (dimension_type i = start; i < end; ++i) {
       x[i] *= coeff1;
-      if (y[i] != 0)
+      if (y[i] != 0) {
         x[i] -= y[i];
+      }
     }
     return;
   }
@@ -455,8 +468,9 @@ PPL::Dense_Row::linear_combine(const Dense_Row& y,
     // The test against 0 gives rise to a consistent speed up: see
     // http://www.cs.unipr.it/pipermail/ppl-devel/2009-February/014000.html
     Coefficient_traits::const_reference y_i = y[i];
-    if (y_i != 0)
+    if (y_i != 0) {
       add_mul_assign(x_i, y_i, coeff2);
+    }
   }
 }
 
@@ -476,17 +490,20 @@ PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Dense_Row)
 bool
 PPL::Dense_Row::ascii_load(std::istream& s) {
   std::string str;
-  if (!(s >> str) || str != "size")
+  if (!(s >> str) || str != "size") {
     return false;
+  }
   dimension_type new_size;
-  if (!(s >> new_size))
+  if (!(s >> new_size)) {
     return false;
-
+  }
+  
   resize(new_size);
 
   for (dimension_type col = 0; col < new_size; ++col) {
-    if (!(s >> (*this)[col]))
+    if (!(s >> (*this)[col])) {
       return false;
+    }
   }
 
   return true;
@@ -543,12 +560,14 @@ PPL::Dense_Row::OK() const {
   }
 
   if (capacity() == 0) {
-    if (impl.vec != 0)
+    if (impl.vec != 0) {
       is_broken = true;
+    }
   }
   else {
-    if (impl.vec == 0)
+    if (impl.vec == 0) {
       is_broken = true;
+    }
   }
 
   return !is_broken;
@@ -580,12 +599,14 @@ PPL::operator==(const Dense_Row& x, const Dense_Row& y) {
   const dimension_type x_size = x.size();
   const dimension_type y_size = y.size();
 
-  if (x_size != y_size)
+  if (x_size != y_size) {
     return false;
-
+  }
+  
   for (dimension_type i = x_size; i-- > 0; ) {
-    if (x[i] != y[i])
+    if (x[i] != y[i]) {
       return false;
+    }
   }
 
   return true;

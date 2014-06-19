@@ -174,8 +174,9 @@ get_field(std::istream& s, const std::string& keyword, bool& positive) {
   std::string str;
   if (!(s >> str)
       || (str[0] != yes && str[0] != no)
-      || str.substr(1) != keyword)
+      || str.substr(1) != keyword) {
     return false;
+  }
   positive = (str[0] == yes);
   return true;
 }
@@ -201,23 +202,29 @@ Box<ITV>::Status::ascii_load(std::istream& s) {
   using namespace Implementation::Boxes;
   PPL_UNINITIALIZED(bool, positive);
 
-  if (!get_field(s, Implementation::Boxes::empty_up_to_date, positive))
+  if (!get_field(s, Implementation::Boxes::empty_up_to_date, positive)) {
     return false;
-  if (positive)
+  }
+  if (positive) {
     set_empty_up_to_date();
-
-  if (!get_field(s, Implementation::Boxes::empty, positive))
+  }
+  
+  if (!get_field(s, Implementation::Boxes::empty, positive)) {
     return false;
-  if (positive)
+  }
+  if (positive) {
     set_empty();
-
-  if (!get_field(s, universe, positive))
+  }
+  if (!get_field(s, universe, positive)) {
     return false;
-  if (positive)
+  }
+  if (positive) {
     set_universe();
-  else
+  }
+  else {
     reset_universe();
-
+  }
+  
   // Check invariants.
   PPL_ASSERT(OK());
   return true;

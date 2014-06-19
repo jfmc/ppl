@@ -99,23 +99,28 @@ CO_Tree::max_size() {
 
 inline void
 CO_Tree::dump_tree() const {
-  if (empty())
+  if (empty()) {
     std::cout << "(empty tree)" << std::endl;
-  else
+  }
+  else {
     dump_subtree(tree_iterator(*const_cast<CO_Tree*>(this)));
+  }
 }
 
 inline CO_Tree::iterator
 CO_Tree::insert(const dimension_type key) {
-  if (empty())
+  if (empty()) {
     return insert(key, Coefficient_zero());
+  }
   else {
     tree_iterator itr(*this);
     itr.go_down_searching_key(key);
-    if (itr.index() == key)
+    if (itr.index() == key) {
       return iterator(itr);
-    else
+    }
+    else {
       return iterator(insert_precise(key, Coefficient_zero(), itr));
+    }
   }
 }
 
@@ -138,19 +143,22 @@ inline CO_Tree::iterator
 CO_Tree::erase(dimension_type key) {
   PPL_ASSERT(key != unused_index);
 
-  if (empty())
+  if (empty()) {
     return end();
-
+  }
+  
   tree_iterator itr(*this);
   itr.go_down_searching_key(key);
 
-  if (itr.index() == key)
+  if (itr.index() == key) {
     return erase(itr);
-
+  }
+  
   iterator result(itr);
-  if (result.index() < key)
+  if (result.index() < key) {
     ++result;
-
+  }
+  
   PPL_ASSERT(result == end() || result.index() > key);
 #ifndef NDEBUG
   iterator last = end();
@@ -225,8 +233,9 @@ CO_Tree::bisect(dimension_type key) {
 
 inline CO_Tree::const_iterator
 CO_Tree::bisect(dimension_type key) const {
-  if (empty())
+  if (empty()) {
     return end();
+  }
   const_iterator last = end();
   --last;
   return bisect_in(begin(), last, key);
@@ -253,8 +262,9 @@ CO_Tree::bisect_in(const_iterator first, const_iterator last,
 
 inline CO_Tree::iterator
 CO_Tree::bisect_near(iterator hint, dimension_type key) {
-  if (hint == end())
+  if (hint == end()) {
     return bisect(key);
+  }
   const dimension_type index
     = bisect_near(dfs_index(hint), key);
   return iterator(*this, index);
@@ -262,8 +272,9 @@ CO_Tree::bisect_near(iterator hint, dimension_type key) {
 
 inline CO_Tree::const_iterator
 CO_Tree::bisect_near(const_iterator hint, dimension_type key) const {
-  if (hint == end())
+  if (hint == end()) {
     return bisect(key);
+  }
   const dimension_type index = bisect_near(dfs_index(hint), key);
   return const_iterator(*this, index);
 }
@@ -356,11 +367,12 @@ CO_Tree::const_iterator::const_iterator(const CO_Tree& tree1)
 #if PPL_CO_TREE_EXTRA_DEBUG
   tree = &tree1;
 #endif
-  if (!tree1.empty())
+  if (!tree1.empty()) {
     while (*current_index == unused_index) {
       ++current_index;
       ++current_data;
     }
+  }
   PPL_ASSERT(OK());
 }
 
@@ -519,11 +531,12 @@ CO_Tree::iterator::iterator(CO_Tree& tree1)
 #if PPL_CO_TREE_EXTRA_DEBUG
   tree = &tree1;
 #endif
-  if (!tree1.empty())
+  if (!tree1.empty()) {
     while (*current_index == unused_index) {
       ++current_index;
       ++current_data;
     }
+  }
   PPL_ASSERT(OK());
 }
 
@@ -807,8 +820,9 @@ CO_Tree::tree_iterator::is_root() const {
 
 inline bool
 CO_Tree::tree_iterator::is_right_child() const {
-  if (is_root())
+  if (is_root()) {
     return false;
+  }
   return (i & (2*offset)) != 0;
 }
 

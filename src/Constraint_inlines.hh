@@ -80,8 +80,9 @@ Constraint::set_is_ray_or_point_or_inequality() {
 
 inline void
 Constraint::set_topology(Topology x) {
-  if (topology() == x)
+  if (topology() == x) {
     return;
+  }
   if (topology() == NECESSARILY_CLOSED) {
     // Add a column for the epsilon dimension.
     expr.set_space_dimension(expr.space_dimension() + 1);
@@ -140,9 +141,10 @@ Constraint::Constraint(Linear_Expression& e, Kind kind, Topology topology)
     topology_(topology) {
   PPL_ASSERT(kind != RAY_OR_POINT_OR_INEQUALITY || topology == NOT_NECESSARILY_CLOSED);
   swap(expr, e);
-  if (topology == NOT_NECESSARILY_CLOSED)
+  if (topology == NOT_NECESSARILY_CLOSED) {
     // Add the epsilon dimension.
     expr.set_space_dimension(expr.space_dimension() + 1);
+  }
   strong_normalize();
   PPL_ASSERT(OK());
 }
@@ -152,12 +154,15 @@ Constraint::Constraint(Linear_Expression& e, Type type, Topology topology)
   : topology_(topology) {
   PPL_ASSERT(type != STRICT_INEQUALITY || topology == NOT_NECESSARILY_CLOSED);
   swap(expr, e);
-  if (topology == NOT_NECESSARILY_CLOSED)
+  if (topology == NOT_NECESSARILY_CLOSED) {
     expr.set_space_dimension(expr.space_dimension() + 1);
-  if (type == EQUALITY)
+  }
+  if (type == EQUALITY) {
     kind_ = LINE_OR_EQUALITY;
-  else
+  }
+  else {
     kind_ = RAY_OR_POINT_OR_INEQUALITY;
+  }
   strong_normalize();
   PPL_ASSERT(OK());
 }
@@ -240,8 +245,9 @@ Constraint::set_space_dimension_no_ok(dimension_type space_dim) {
     }
   }
   PPL_ASSERT(space_dimension() == space_dim);
-  if (expr.space_dimension() < old_expr_space_dim)
+  if (expr.space_dimension() < old_expr_space_dim) {
     strong_normalize();
+  }
 }
 
 inline void
@@ -268,14 +274,18 @@ Constraint::is_inequality() const {
 
 inline Constraint::Type
 Constraint::type() const {
-  if (is_equality())
+  if (is_equality()) {
     return EQUALITY;
-  if (is_necessarily_closed())
+  }
+  if (is_necessarily_closed()) {
     return NONSTRICT_INEQUALITY;
-  if (epsilon_coefficient() < 0)
+  }
+  if (epsilon_coefficient() < 0) {
     return STRICT_INEQUALITY;
-  else
+  }
+  else {
     return NONSTRICT_INEQUALITY;
+  }
 }
 
 inline bool
@@ -300,8 +310,9 @@ Constraint::set_is_inequality() {
 
 inline Coefficient_traits::const_reference
 Constraint::coefficient(const Variable v) const {
-  if (v.space_dimension() > space_dimension())
+  if (v.space_dimension() > space_dimension()) {
     throw_dimension_incompatible("coefficient(v)", "v", v);
+  }
   return expr.coefficient(v);
 }
 
@@ -351,8 +362,9 @@ operator==(const Linear_Expression& e1, const Linear_Expression& e2) {
 /*! \relates Constraint */
 inline Constraint
 operator==(Variable v1, Variable v2) {
-  if (v1.space_dimension() > v2.space_dimension())
+  if (v1.space_dimension() > v2.space_dimension()) {
     swap(v1, v2);
+  }
   PPL_ASSERT(v1.space_dimension() <= v2.space_dimension());
 
   Linear_Expression diff(v1, Constraint::default_representation);

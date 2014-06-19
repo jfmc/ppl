@@ -51,24 +51,29 @@ wrap_string(const std::string& src_string,
         split_pos = idx;
         break;
       }
-      if (src[idx] == ',' && idx < line_length)
+      if (src[idx] == ',' && idx < line_length) {
         last_comma = idx;
-      if (is_space(src[idx]) && (idx == 0 || !is_space(src[idx-1])))
+      }
+      if (is_space(src[idx]) && (idx == 0 || !is_space(src[idx-1]))) {
         last_space = idx;
+      }
     }
     if (split_pos == npos) {
-      if (last_comma != npos)
+      if (last_comma != npos) {
         split_pos = last_comma + 1;
-      else if (last_space != npos)
+      }
+      else if (last_space != npos) {
         split_pos = last_space;
+      }
       else {
         for ( ; src[idx] != '\0'; ++idx) {
           if (src[idx] == ',') {
             ++idx;
             break;
           }
-          if (is_space(src[idx]))
+          if (is_space(src[idx])) {
             break;
+          }
         }
         split_pos = idx;
       }
@@ -78,13 +83,15 @@ wrap_string(const std::string& src_string,
       dst_string.append(indent_depth, ' ');
     dst_string.append(src, split_pos);
     src += split_pos;
-    if (is_space(*src))
+    if (is_space(*src)) {
       ++src;
+    }
     while (*src == ' ') {
       ++src;
     }
-    if (*src == '\0')
+    if (*src == '\0') {
       break;
+    }
     dst_string.push_back('\n');
   }
   return dst_string;

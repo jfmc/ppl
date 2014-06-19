@@ -36,9 +36,10 @@ PPL::Affine_Space::Affine_Space(const Generator_System& gs) {
   PPL_DIRTY_TEMP_COEFFICIENT(point_divisor);
   for (Generator_System::const_iterator g = gs.begin(),
          gs_end = gs.end(); g != gs_end; ++g) {
-    if (g->is_ray())
+    if (g->is_ray()) {
       throw std::invalid_argument("Affine_Space::Affine_Space(gs):\n"
                                   "gs contains rays.");
+    }
     else if (g->is_point() || g->is_closure_point()) {
       point_expr = Linear_Expression(*g);
       ggs.insert(grid_point(point_expr, g->divisor()));
@@ -61,11 +62,13 @@ PPL::Affine_Space::Affine_Space(const Generator_System& gs) {
       Linear_Expression e = point_expr;
       e.linear_combine(g->expression(), g->divisor(), -point_divisor,
                        1, space_dim + 1);
-      if (!e.all_homogeneous_terms_are_zero())
+      if (!e.all_homogeneous_terms_are_zero()) {
         ggs.insert(grid_line(e));
+      }
     }
-    else
+    else {
       ggs.insert(grid_line(Linear_Expression(*g)));
+    }
   }
   Grid(ggs).m_swap(gr);
   PPL_ASSERT(OK());
@@ -400,9 +403,10 @@ PPL::Affine_Space::limited_extrapolation_assign(const Affine_Space& y,
   Affine_Space& x = *this;
 
   // Dimension-compatibility check.
-  if (x.space_dimension() != y.space_dimension())
+  if (x.space_dimension() != y.space_dimension()) {
     throw_dimension_incompatible("widening_assign(y)", "y", y);
-
+  }
+  
   // Assume `y' is contained in or equal to `x'.
   PPL_EXPECT_HEAVY(copy_contains(x, y));
 }

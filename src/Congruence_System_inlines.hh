@@ -132,8 +132,9 @@ Congruence_System::representation() const {
 
 inline void
 Congruence_System::set_representation(Representation r) {
-  if (representation_ == r)
+  if (representation_ == r) {
     return;
+  }
   representation_ = r;
   for (dimension_type i = 0; i < num_rows(); ++i) {
     rows[i].set_representation(r);

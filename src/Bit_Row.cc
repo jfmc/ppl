@@ -35,9 +35,10 @@ PPL::Bit_Row::first() const {
   mp_srcptr p = vec->_mp_d;
   for (mp_size_t li = 0; li < vec_size; ++li, ++p) {
     const mp_limb_t limb = *p;
-    if (limb != 0)
+    if (limb != 0) {
       return static_cast<unsigned long>(li) * PPL_BITS_PER_GMP_LIMB
         + Implementation::first_one(limb);
+      }
   }
   return C_Integer<unsigned long>::max;
 }
@@ -59,9 +60,10 @@ PPL::Bit_Row::next(unsigned long position) const {
   mp_size_t li = static_cast<mp_size_t>(uli);
   const mp_size_t vec_size = vec->_mp_size;
   PPL_ASSERT(vec_size >= 0);
-  if (li >= vec_size)
+  if (li >= vec_size) {
     return C_Integer<unsigned long>::max;
-
+  }
+  
   // Get the first limb.
   mp_srcptr p = vec->_mp_d + li;
 
@@ -74,8 +76,9 @@ PPL::Bit_Row::next(unsigned long position) const {
       return static_cast<unsigned long>(li) * PPL_BITS_PER_GMP_LIMB
         + Implementation::first_one(limb);
     ++li;
-    if (li == vec_size)
+    if (li == vec_size) {
       break;
+    }
     ++p;
     limb = *p;
   }
@@ -86,8 +89,9 @@ unsigned long
 PPL::Bit_Row::last() const {
   mp_size_t li = vec->_mp_size;
   PPL_ASSERT(li >= 0);
-  if (li == 0)
+  if (li == 0) {
     return C_Integer<unsigned long>::max;
+  }
   --li;
   const mp_srcptr p = vec->_mp_d + li;
   const mp_limb_t limb = *p;
@@ -98,9 +102,10 @@ PPL::Bit_Row::last() const {
 
 unsigned long
 PPL::Bit_Row::prev(unsigned long position) const {
-  if (position == 0)
+  if (position == 0) {
     return C_Integer<unsigned long>::max;
-
+  }
+  
   --position;
 
   const mp_size_t vec_size = vec->_mp_size;
@@ -126,11 +131,13 @@ PPL::Bit_Row::prev(unsigned long position) const {
   }
 
   while (true) {
-    if (limb != 0)
+    if (limb != 0) {
       return static_cast<unsigned long>(li) * PPL_BITS_PER_GMP_LIMB
         + Implementation::last_one(limb);
-    if (li == 0)
+      }
+    if (li == 0) {
       break;
+    }
     --li;
     --p;
     limb = *p;
@@ -144,9 +151,10 @@ PPL::Bit_Row::operator[](const unsigned long k) const {
   PPL_ASSERT(vec_size >= 0);
 
   const unsigned long i = k / static_cast<unsigned long>(GMP_NUMB_BITS);
-  if (i >= static_cast<unsigned long>(vec_size))
+  if (i >= static_cast<unsigned long>(vec_size)) {
     return false;
-
+  }
+  
   const mp_limb_t limb = *(vec->_mp_d + i);
   return ((limb >> (k % static_cast<unsigned long>(GMP_NUMB_BITS))) & 1U) != 0;
 }
@@ -154,8 +162,9 @@ PPL::Bit_Row::operator[](const unsigned long k) const {
 void
 PPL::Bit_Row::set_until(unsigned long k) {
   // FIXME, TODO: this is an inefficient implementation.
-  while (k-- > 0)
+  while (k-- > 0) {
     mpz_setbit(vec, k);
+  }
 }
 
 /*! \relates Parma_Polyhedra_Library::Bit_Row */
@@ -192,13 +201,15 @@ PPL::subset_or_equal(const Bit_Row& x, const Bit_Row& y) {
   PPL_ASSERT(x_size >= 0);
   const mp_size_t y_size = y.vec->_mp_size;
   PPL_ASSERT(y_size >= 0);
-  if (x_size > y_size)
+  if (x_size > y_size) {
     return false;
+  }
   mp_srcptr xp = x.vec->_mp_d;
   mp_srcptr yp = y.vec->_mp_d;
   while (x_size > 0) {
-    if ((*xp & ~*yp) != 0)
+    if ((*xp & ~*yp) != 0) {
       return false;
+    }
     ++xp;
     ++yp;
     --x_size;
@@ -225,8 +236,9 @@ PPL::subset_or_equal(const Bit_Row& x, const Bit_Row& y,
     while (x_size > 0) {
       xl = *xp;
       yl = *yp;
-      if ((xl & ~yl) != 0)
+      if ((xl & ~yl) != 0) {
         return false;
+      }
     strict_subset_next:
       ++xp;
       ++yp;
@@ -238,8 +250,9 @@ PPL::subset_or_equal(const Bit_Row& x, const Bit_Row& y,
       xl = *xp;
       yl = *yp;
       if (xl != yl) {
-        if ((xl & ~yl) != 0)
+        if ((xl & ~yl) != 0) {
           return false;
+        }
         strict_subset = true;
         goto strict_subset_next;
       }
@@ -258,18 +271,21 @@ PPL::strict_subset(const Bit_Row& x, const Bit_Row& y) {
   PPL_ASSERT(x_size >= 0);
   const mp_size_t y_size = y.vec->_mp_size;
   PPL_ASSERT(y_size >= 0);
-  if (x_size > y_size)
+  if (x_size > y_size) {
     return false;
+  }
   bool different = (x_size < y_size);
   mp_srcptr xp = x.vec->_mp_d;
   mp_srcptr yp = y.vec->_mp_d;
   while (x_size > 0) {
     const mp_limb_t xl = *xp;
     const mp_limb_t yl = *yp;
-    if ((xl & ~yl) != 0)
+    if ((xl & ~yl) != 0) {
       return false;
-    if (!different && xl != yl)
+    }
+    if (!different && xl != yl) {
       different = true;
+    }
     ++xp;
     ++yp;
     --x_size;
@@ -285,9 +301,10 @@ PPL::operator==(const Bit_Row& x, const Bit_Row& y) {
   const mp_size_t y_vec_size = y.vec->_mp_size;
   PPL_ASSERT(y_vec_size >= 0);
 
-  if (x_vec_size != y_vec_size)
+  if (x_vec_size != y_vec_size) {
     return false;
-
+  }
+  
   return mpn_cmp(x.vec->_mp_d, y.vec->_mp_d, x_vec_size) == 0;
 }
 
@@ -299,9 +316,10 @@ PPL::operator!=(const Bit_Row& x, const Bit_Row& y) {
   const mp_size_t y_vec_size = y.vec->_mp_size;
   PPL_ASSERT(y_vec_size >= 0);
 
-  if (x_vec_size != y_vec_size)
+  if (x_vec_size != y_vec_size) {
     return true;
-
+  }
+  
   return mpn_cmp(x.vec->_mp_d, y.vec->_mp_d, x_vec_size) != 0;
 }
 

@@ -78,19 +78,24 @@ classify_mpz(const mpz_class& v, bool nan, bool inf, bool sign) {
     mp_size_field_t s = get_mp_size(v);
     if (Policy::has_nan
         && (nan || sign)
-        && s == C_Integer<mp_size_field_t>::min + 1)
+        && s == C_Integer<mp_size_field_t>::min + 1) {
       return V_NAN;
-    if (!inf && !sign)
+    }
+    if (!inf && !sign) {
       return V_LGE;
+    }
     if (Policy::has_infinity) {
-      if (s == C_Integer<mp_size_field_t>::min)
+      if (s == C_Integer<mp_size_field_t>::min) {
         return inf ? V_EQ_MINUS_INFINITY : V_LT;
-      if (s == C_Integer<mp_size_field_t>::max)
+      }
+      if (s == C_Integer<mp_size_field_t>::max) {
         return inf ? V_EQ_PLUS_INFINITY : V_GT;
+      }
     }
   }
-  if (sign)
+  if (sign) {
     return static_cast<Result>(sgn<Policy>(v));
+  }
   return V_LGE;
 }
 
@@ -136,8 +141,9 @@ inline Result
 assign_special_mpz(mpz_class& v, Result_Class c, Rounding_Dir) {
   switch (c) {
   case VC_NAN:
-    if (Policy::has_nan)
+    if (Policy::has_nan) {
       set_mp_size(v, C_Integer<mp_size_field_t>::min + 1);
+    }
     return V_NAN;
   case VC_MINUS_INFINITY:
     if (Policy::has_infinity) {
@@ -162,10 +168,12 @@ PPL_SPECIALIZE_ASSIGN_SPECIAL(assign_special_mpz, mpz_class)
 template <typename To_Policy, typename From_Policy>
 inline void
 copy_mpz(mpz_class& to, const mpz_class& from) {
-  if (is_nan_mpz<From_Policy>(from))
+  if (is_nan_mpz<From_Policy>(from)) {
     PPL_ASSERT(To_Policy::has_nan);
-  else if (is_minf_mpz<From_Policy>(from) || is_pinf_mpz<From_Policy>(from))
+  }
+  else if (is_minf_mpz<From_Policy>(from) || is_pinf_mpz<From_Policy>(from)) {
     PPL_ASSERT(To_Policy::has_infinity);
+  }
   else {
     to = from;
     return;
@@ -195,24 +203,30 @@ PPL_SPECIALIZE_CONSTRUCT(construct_mpz_base, mpz_class, unsigned long)
 template <typename To_Policy, typename From_Policy, typename From>
 inline Result
 construct_mpz_float(mpz_class& to, const From& from, Rounding_Dir dir) {
-  if (is_nan<From_Policy>(from))
+  if (is_nan<From_Policy>(from)) {
     return construct_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
-  else if (is_minf<From_Policy>(from))
+  }
+  else if (is_minf<From_Policy>(from)) {
     return construct_special<To_Policy>(to, VC_MINUS_INFINITY, dir);
-  else if (is_pinf<From_Policy>(from))
+  }
+  else if (is_pinf<From_Policy>(from)) {
     return construct_special<To_Policy>(to, VC_PLUS_INFINITY, dir);
+  }
   if (round_not_requested(dir)) {
     new (&to) mpz_class(from);
     return V_LGE;
   }
   From n = rint(from);
   new (&to) mpz_class(n);
-  if (from == n)
+  if (from == n) {
     return V_EQ;
-  if (from < 0)
+  }
+  if (from < 0) {
     return round_lt_mpz<To_Policy>(to, dir);
-  else
+  }
+  else {
     return round_gt_mpz<To_Policy>(to, dir);
+  }
 }
 
 PPL_SPECIALIZE_CONSTRUCT(construct_mpz_float, mpz_class, float)
@@ -232,12 +246,14 @@ PPL_SPECIALIZE_ASSIGN(assign_exact, mpz_class, unsigned long)
 template <typename To_Policy, typename From_Policy, typename From>
 inline Result
 assign_mpz_signed_int(mpz_class& to, const From from, Rounding_Dir) {
-  if (sizeof(From) <= sizeof(signed long))
+  if (sizeof(From) <= sizeof(signed long)) {
     to = static_cast<signed long>(from);
+  }
   else {
     mpz_ptr m = to.get_mpz_t();
-    if (from >= 0)
+    if (from >= 0) {
       mpz_import(m, 1, 1, sizeof(From), 0, 0, &from);
+    }
     else {
       From n = -from;
       mpz_import(m, 1, 1, sizeof(From), 0, 0, &n);
@@ -252,10 +268,12 @@ PPL_SPECIALIZE_ASSIGN(assign_mpz_signed_int, mpz_class, signed long long)
 template <typename To_Policy, typename From_Policy, typename From>
 inline Result
 assign_mpz_unsigned_int(mpz_class& to, const From from, Rounding_Dir) {
-  if (sizeof(From) <= sizeof(unsigned long))
+  if (sizeof(From) <= sizeof(unsigned long)) {
     to = static_cast<unsigned long>(from);
-  else
+  }
+  else {
     mpz_import(to.get_mpz_t(), 1, 1, sizeof(From), 0, 0, &from);
+  }
   return V_EQ;
 }
 
@@ -264,28 +282,36 @@ PPL_SPECIALIZE_ASSIGN(assign_mpz_unsigned_int, mpz_class, unsigned long long)
 template <typename To_Policy, typename From_Policy, typename From>
 inline Result
 assign_mpz_float(mpz_class& to, const From from, Rounding_Dir dir) {
-  if (is_nan<From_Policy>(from))
+  if (is_nan<From_Policy>(from)) {
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
-  else if (is_minf<From_Policy>(from))
+  }
+  else if (is_minf<From_Policy>(from)) {
     return assign_special<To_Policy>(to, VC_MINUS_INFINITY, dir);
-  else if (is_pinf<From_Policy>(from))
+  }
+  else if (is_pinf<From_Policy>(from)) {
     return assign_special<To_Policy>(to, VC_PLUS_INFINITY, dir);
+  }
   if (round_not_requested(dir)) {
     to = from;
     return V_LGE;
   }
   From i_from = rint(from);
   to = i_from;
-  if (from == i_from)
+  if (from == i_from) {
     return V_EQ;
-  if (round_direct(ROUND_UP))
+  }
+  if (round_direct(ROUND_UP)) {
     return round_lt_mpz<To_Policy>(to, dir);
-  if (round_direct(ROUND_DOWN))
+  }
+  if (round_direct(ROUND_DOWN)) {
     return round_gt_mpz<To_Policy>(to, dir);
-  if (from < i_from)
+  }
+  if (from < i_from) {
     return round_lt_mpz<To_Policy>(to, dir);
-  if (from > i_from)
+  }
+  if (from > i_from) {
     return round_gt_mpz<To_Policy>(to, dir);
+  }
   PPL_UNREACHABLE;
   return V_NAN;
 }
@@ -296,12 +322,15 @@ PPL_SPECIALIZE_ASSIGN(assign_mpz_float, mpz_class, double)
 template <typename To_Policy, typename From_Policy, typename From>
 inline Result
 assign_mpz_long_double(mpz_class& to, const From& from, Rounding_Dir dir) {
-  if (is_nan<From_Policy>(from))
+  if (is_nan<From_Policy>(from)) {
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
-  else if (is_minf<From_Policy>(from))
+  }
+  else if (is_minf<From_Policy>(from)) {
     return assign_special<To_Policy>(to, VC_MINUS_INFINITY, dir);
-  else if (is_pinf<From_Policy>(from))
+  }
+  else if (is_pinf<From_Policy>(from)) {
     return assign_special<To_Policy>(to, VC_PLUS_INFINITY, dir);
+  }
   // FIXME: this is an incredibly inefficient implementation!
   std::stringstream ss;
   output<From_Policy>(ss, from, Numeric_Format(), dir);
@@ -331,15 +360,17 @@ assign_mpz_mpq(mpz_class& to, const mpq_class& from, Rounding_Dir dir) {
   const mpz_srcptr d = from.get_den().get_mpz_t();
   if (round_down(dir)) {
     mpz_fdiv_q(to.get_mpz_t(), n, d);
-    if (round_strict_relation(dir))
+    if (round_strict_relation(dir)) {
       return (mpz_divisible_p(n, d) != 0) ? V_EQ : V_GT;
+    }
     return V_GE;
   }
   else {
     PPL_ASSERT(round_up(dir));
     mpz_cdiv_q(to.get_mpz_t(), n, d);
-    if (round_strict_relation(dir))
+    if (round_strict_relation(dir)) {
       return (mpz_divisible_p(n, d) != 0) ? V_EQ : V_LT;
+    }
     return V_LE;
   }
 }
@@ -405,15 +436,17 @@ div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y,
   }
   if (round_down(dir)) {
     mpz_fdiv_q(to.get_mpz_t(), n, d);
-    if (round_strict_relation(dir))
+    if (round_strict_relation(dir)) {
       return (mpz_divisible_p(n, d) != 0) ? V_EQ : V_GT;
+    }
     return V_GE;
   }
   else {
     PPL_ASSERT(round_up(dir));
     mpz_cdiv_q(to.get_mpz_t(), n, d);
-    if (round_strict_relation(dir))
+    if (round_strict_relation(dir)) {
       return (mpz_divisible_p(n, d) != 0) ? V_EQ : V_LT;
+    }
     return V_LE;
   }
 }
@@ -494,15 +527,17 @@ div_2exp_mpz(mpz_class& to, const mpz_class& x, unsigned int exp,
   }
   if (round_down(dir)) {
     mpz_fdiv_q_2exp(to.get_mpz_t(), n, exp);
-    if (round_strict_relation(dir))
+    if (round_strict_relation(dir)) {
       return (mpz_divisible_2exp_p(n, exp) != 0) ? V_EQ : V_GT;
+    }
     return V_GE;
   }
   else {
     PPL_ASSERT(round_up(dir));
     mpz_cdiv_q_2exp(to.get_mpz_t(), n, exp);
-    if (round_strict_relation(dir))
+    if (round_strict_relation(dir)) {
       return (mpz_divisible_2exp_p(n, exp) != 0) ? V_EQ : V_LT;
+    }
     return V_LE;
   }
 }
@@ -513,10 +548,12 @@ template <typename To_Policy, typename From_Policy>
 inline Result
 smod_2exp_mpz(mpz_class& to, const mpz_class& x, unsigned int exp,
               Rounding_Dir) {
-  if (mpz_tstbit(x.get_mpz_t(), exp - 1) != 0)
+  if (mpz_tstbit(x.get_mpz_t(), exp - 1) != 0) {
     mpz_cdiv_r_2exp(to.get_mpz_t(), x.get_mpz_t(), exp);
-  else
+  }
+  else {
     mpz_fdiv_r_2exp(to.get_mpz_t(), x.get_mpz_t(), exp);
+  }
   return V_EQ;
 }
 
@@ -603,8 +640,9 @@ sqrt_mpz(mpz_class& to, const mpz_class& from, Rounding_Dir dir) {
   }
   PPL_DIRTY_TEMP(mpz_class, r);
   mpz_sqrtrem(to.get_mpz_t(), r.get_mpz_t(), from.get_mpz_t());
-  if (r == 0)
+  if (r == 0) {
     return V_EQ;
+  }
   return round_gt_mpz<To_Policy>(to, dir);
 }
 

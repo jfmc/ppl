@@ -224,17 +224,18 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
       const T& x_i_j = x_i[j];
       const T& y_i_j = y_i[j];
       if (is_plus_infinity(x_i_j)) {
-        if (is_plus_infinity(y_i_j))
+        if (is_plus_infinity(y_i_j)) {
           continue;
+        }
         else {
         pinf:
           assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
           return true;
         }
       }
-      else if (is_plus_infinity(y_i_j))
+      else if (is_plus_infinity(y_i_j)) {
         goto pinf;
-
+      }
       const Temp* tmp1p;
       const Temp* tmp2p;
       if (x_i_j > y_i_j) {

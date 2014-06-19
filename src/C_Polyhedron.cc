@@ -39,8 +39,9 @@ PPL::C_Polyhedron::C_Polyhedron(const NNC_Polyhedron& y, Complexity_Class)
       const Linear_Expression expr(c.expression());
       add_constraint(expr >= 0);
     }
-    else
+    else {
       add_constraint(c);
+    }
   }
   PPL_ASSERT_HEAVY(OK());
 }
@@ -84,8 +85,9 @@ PPL::C_Polyhedron::C_Polyhedron(const Grid& grid, Complexity_Class)
 bool
 PPL::C_Polyhedron::poly_hull_assign_if_exact(const C_Polyhedron& y) {
   // Dimension-compatibility check.
-  if (space_dimension() != y.space_dimension())
+  if (space_dimension() != y.space_dimension()) {
     throw_dimension_incompatible("poly_hull_assign_if_exact(y)", "y", y);
+  }
 #define USE_BHZ09 0
 #define USE_BFT00 1
 #if USE_BHZ09 // [BagnaraHZ09]

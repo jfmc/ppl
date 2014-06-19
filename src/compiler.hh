@@ -101,17 +101,20 @@ clz32(uint32_t w) {
     w >>= 2;
     r -= 2;
   }
-  if ((w & 0x2U) != 0)
+  if ((w & 0x2U) != 0) {
     r -= 1;
+  }
   return r;
 }
 
 inline unsigned int
 clz64(uint64_t w) {
-  if ((w & 0xffffffff00000000ULL) == 0)
+  if ((w & 0xffffffff00000000ULL) == 0) {
     return clz32(static_cast<uint32_t>(w)) + 32;
-  else
+  }
+  else {
     return clz32(static_cast<uint32_t>(w >> 32));
+  }
 }
 
 inline unsigned int
@@ -126,10 +129,12 @@ ctz32(uint32_t w) {
 
 inline unsigned int
 ctz64(uint64_t w) {
-  if ((w & 0x00000000ffffffffULL) == 0)
+  if ((w & 0x00000000ffffffffULL) == 0) {
     return ctz32(static_cast<uint32_t>(w >> 32)) + 32;
-  else
+  }
+  else {
     return ctz32(static_cast<uint32_t>(w));
+  }
 }
 
 #endif

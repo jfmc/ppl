@@ -148,9 +148,9 @@ Box<ITV>::operator[](const dimension_type k) const {
 template <typename ITV>
 inline const ITV&
 Box<ITV>::get_interval(const Variable var) const {
-  if (space_dimension() < var.space_dimension())
+  if (space_dimension() < var.space_dimension()) {
     throw_dimension_incompatible("get_interval(v)", "v", var);
-
+  }
   if (is_empty()) {
     static ITV empty_interval(EMPTY);
     return empty_interval;
@@ -163,14 +163,15 @@ template <typename ITV>
 inline void
 Box<ITV>::set_interval(const Variable var, const ITV& i) {
   const dimension_type space_dim = space_dimension();
-  if (space_dim < var.space_dimension())
+  if (space_dim < var.space_dimension()) {
     throw_dimension_incompatible("set_interval(v, i)", "v", var);
-
-  if (is_empty() && space_dim >= 2)
+  }
+  
+  if (is_empty() && space_dim >= 2) {
     // If the box is empty, and has dimension >= 2, setting only one
     // interval will not make it non-empty.
     return;
-
+  }
   seq[var.id()] = i;
   reset_empty_up_to_date();
 
@@ -240,16 +241,18 @@ Box<ITV>::expand_space_dimension(const Variable var,
                                  const dimension_type m) {
   const dimension_type space_dim = space_dimension();
   // `var' should be one of the dimensions of the vector space.
-  if (var.space_dimension() > space_dim)
+  if (var.space_dimension() > space_dim) {
     throw_dimension_incompatible("expand_space_dimension(v, m)", "v", var);
-
+  }
+  
   // The space dimension of the resulting Box should not
   // overflow the maximum allowed space dimension.
-  if (m > max_space_dimension() - space_dim)
+  if (m > max_space_dimension() - space_dim) {
     throw_invalid_argument("expand_dimension(v, m)",
                            "adding m new space dimensions exceeds "
                            "the maximum allowed space dimension");
-
+  }
+  
   // To expand the space dimension corresponding to variable `var',
   // we append to the box `m' copies of the corresponding interval.
   seq.insert(seq.end(), m, seq[var.id()]);
@@ -273,9 +276,9 @@ Box<ITV>::has_lower_bound(const Variable var,
   PPL_ASSERT(k < seq.size());
   const ITV& seq_k = seq[k];
 
-  if (seq_k.lower_is_boundary_infinity())
+  if (seq_k.lower_is_boundary_infinity()) {
     return false;
-
+  }
   closed = !seq_k.lower_is_open();
 
   PPL_DIRTY_TEMP(mpq_class, lr);
@@ -297,9 +300,10 @@ Box<ITV>::has_upper_bound(const Variable var,
   PPL_ASSERT(k < seq.size());
   const ITV& seq_k = seq[k];
 
-  if (seq_k.upper_is_boundary_infinity())
+  if (seq_k.upper_is_boundary_infinity()) {
     return false;
-
+  }
+  
   closed = !seq_k.upper_is_open();
 
   PPL_DIRTY_TEMP(mpq_class, ur);
@@ -315,9 +319,10 @@ inline void
 Box<ITV>::add_constraint(const Constraint& c) {
   const dimension_type c_space_dim = c.space_dimension();
   // Dimension-compatibility check.
-  if (c_space_dim > space_dimension())
+  if (c_space_dim > space_dimension()) {
     throw_dimension_incompatible("add_constraint(c)", c);
-
+  }
+  
   add_constraint_no_check(c);
 }
 
@@ -325,9 +330,10 @@ template <typename ITV>
 inline void
 Box<ITV>::add_constraints(const Constraint_System& cs) {
   // Dimension-compatibility check.
-  if (cs.space_dimension() > space_dimension())
+  if (cs.space_dimension() > space_dimension()) {
     throw_dimension_incompatible("add_constraints(cs)", cs);
-
+  }
+  
   add_constraints_no_check(cs);
 }
 
@@ -342,17 +348,19 @@ inline void
 Box<ITV>::add_congruence(const Congruence& cg) {
   const dimension_type cg_space_dim = cg.space_dimension();
   // Dimension-compatibility check.
-  if (cg_space_dim > space_dimension())
+  if (cg_space_dim > space_dimension()) {
     throw_dimension_incompatible("add_congruence(cg)", cg);
-
+  }
+  
   add_congruence_no_check(cg);
 }
 
 template <typename ITV>
 inline void
 Box<ITV>::add_congruences(const Congruence_System& cgs) {
-  if (cgs.space_dimension() > space_dimension())
+  if (cgs.space_dimension() > space_dimension()) {
     throw_dimension_incompatible("add_congruences(cgs)", cgs);
+  }
   add_congruences_no_check(cgs);
 }
 
@@ -451,13 +459,15 @@ inline void
 Box<ITV>::refine_with_constraint(const Constraint& c) {
   const dimension_type c_space_dim = c.space_dimension();
   // Dimension-compatibility check.
-  if (c_space_dim > space_dimension())
+  if (c_space_dim > space_dimension()) {
     throw_dimension_incompatible("refine_with_constraint(c)", c);
-
+  }
+  
   // If the box is already empty, there is nothing left to do.
-  if (marked_empty())
+  if (marked_empty()) {
     return;
-
+  }
+  
   refine_no_check(c);
 }
 
@@ -465,13 +475,14 @@ template <typename ITV>
 inline void
 Box<ITV>::refine_with_constraints(const Constraint_System& cs) {
   // Dimension-compatibility check.
-  if (cs.space_dimension() > space_dimension())
+  if (cs.space_dimension() > space_dimension()) {
     throw_dimension_incompatible("refine_with_constraints(cs)", cs);
-
+  }
+  
   // If the box is already empty, there is nothing left to do.
-  if (marked_empty())
+  if (marked_empty()) {
     return;
-
+  }
   refine_no_check(cs);
 }
 
@@ -480,13 +491,13 @@ inline void
 Box<ITV>::refine_with_congruence(const Congruence& cg) {
   const dimension_type cg_space_dim = cg.space_dimension();
   // Dimension-compatibility check.
-  if (cg_space_dim > space_dimension())
+  if (cg_space_dim > space_dimension()) {
     throw_dimension_incompatible("refine_with_congruence(cg)", cg);
-
+  }
   // If the box is already empty, there is nothing left to do.
-  if (marked_empty())
+  if (marked_empty()) {
     return;
-
+  }
   refine_no_check(cg);
 }
 
@@ -494,13 +505,15 @@ template <typename ITV>
 inline void
 Box<ITV>::refine_with_congruences(const Congruence_System& cgs) {
   // Dimension-compatibility check.
-  if (cgs.space_dimension() > space_dimension())
+  if (cgs.space_dimension() > space_dimension()) {
     throw_dimension_incompatible("refine_with_congruences(cgs)", cgs);
-
+  }
+  
   // If the box is already empty, there is nothing left to do.
-  if (marked_empty())
+  if (marked_empty()) {
     return;
-
+  }
+  
   refine_no_check(cgs);
 }
 
@@ -509,13 +522,14 @@ inline void
 Box<ITV>::propagate_constraint(const Constraint& c) {
   const dimension_type c_space_dim = c.space_dimension();
   // Dimension-compatibility check.
-  if (c_space_dim > space_dimension())
+  if (c_space_dim > space_dimension()) {
     throw_dimension_incompatible("propagate_constraint(c)", c);
-
+  }
+  
   // If the box is already empty, there is nothing left to do.
-  if (marked_empty())
+  if (marked_empty()) {
     return;
-
+  }
   propagate_constraint_no_check(c);
 }
 
@@ -524,13 +538,15 @@ inline void
 Box<ITV>::propagate_constraints(const Constraint_System& cs,
                                 const dimension_type max_iterations) {
   // Dimension-compatibility check.
-  if (cs.space_dimension() > space_dimension())
+  if (cs.space_dimension() > space_dimension()) {
     throw_dimension_incompatible("propagate_constraints(cs)", cs);
-
+  }
+  
   // If the box is already empty, there is nothing left to do.
-  if (marked_empty())
+  if (marked_empty()) {
     return;
-
+  }
+  
   propagate_constraints_no_check(cs, max_iterations);
 }
 
@@ -539,21 +555,25 @@ inline void
 Box<ITV>::unconstrain(const Variable var) {
   const dimension_type var_id = var.id();
   // Dimension-compatibility check.
-  if (space_dimension() < var_id + 1)
+  if (space_dimension() < var_id + 1) {
     throw_dimension_incompatible("unconstrain(var)", var_id + 1);
-
+  }
+  
   // If the box is already empty, there is nothing left to do.
-  if (marked_empty())
+  if (marked_empty()) {
     return;
-
+  }
+  
   // Here the box might still be empty (but we haven't detected it yet):
   // check emptiness of the interval for `var' before cylindrification.
   ITV& seq_var = seq[var_id];
-  if (seq_var.is_empty())
+  if (seq_var.is_empty()) {
     set_empty();
-  else
+  }
+  else {
     seq_var.assign(UNIVERSE);
-
+  }
+  
   PPL_ASSERT(OK());
 }
 

@@ -172,9 +172,10 @@ Grid::reduce_parameter_with_line(Grid_Generator& row,
   // all other parameters to match.
   for (dimension_type index = rows.size(); index-- > 0; ) {
     Grid_Generator& gen = rows[index];
-    if (gen.is_parameter_or_point())
+    if (gen.is_parameter_or_point()) {
       // Do not scale the last coefficient.
       gen.expr.mul_assign(reduced_pivot_col, 0, num_columns);
+    }
   }
 
   // Subtract from row a multiple of pivot such that the result in
@@ -222,8 +223,9 @@ Grid::reduce_congruence_with_equality(Congruence& row,
   // other proper congruences in the same way.
   for (dimension_type index = sys.size(); index-- > 0; ) {
     Congruence& cg = sys[index];
-    if (cg.is_proper_congruence())
+    if (cg.is_proper_congruence()) {
       cg.scale(reduced_pivot_col);
+    }
   }
   // Subtract from row a multiple of pivot such that the result in
   // row[column] is zero.
@@ -238,8 +240,9 @@ Grid::rows_are_zero(M& system, dimension_type first,
                     dimension_type last, dimension_type row_size) {
   while (first <= last) {
     const R& row = system[first++];
-    if (!row.expr.all_zeroes(0, row_size))
+    if (!row.expr.all_zeroes(0, row_size)) {
       return false;
+    }
   }
   return true;
 }
@@ -253,9 +256,10 @@ Grid::simplify(Grid_Generator_System& ggs, Dimension_Kinds& dim_kinds) {
   // Subtract one to allow for the parameter divisor column
   const dimension_type num_columns = ggs.space_dimension() + 1;
 
-  if (dim_kinds.size() != num_columns)
+  if (dim_kinds.size() != num_columns) {
     dim_kinds.resize(num_columns);
-
+  }
+  
   const dimension_type num_rows = ggs.num_rows();
 
   // For each dimension `dim' move or construct a row into position
@@ -273,9 +277,10 @@ Grid::simplify(Grid_Generator_System& ggs, Dimension_Kinds& dim_kinds) {
       ++row_index;
     }
 
-    if (row_index == num_rows)
+    if (row_index == num_rows) {
       // Element in column `dim' is zero in all rows from the pivot.
       dim_kinds[dim] = GEN_VIRTUAL;
+    }
     else {
       if (row_index != pivot_index) {
         using std::swap;
@@ -290,12 +295,14 @@ Grid::simplify(Grid_Generator_System& ggs, Dimension_Kinds& dim_kinds) {
         ++row_index;
         Grid_Generator& row = ggs.sys.rows[row_index];
 
-        if (row.expr.get(dim) == 0)
+        if (row.expr.get(dim) == 0) {
           continue;
-
-        if (row.is_line())
-          if (pivot_is_line)
+        }
+        
+        if (row.is_line()) {
+          if (pivot_is_line) {
             reduce_line_with_line(row, pivot, dim);
+          }
           else {
             PPL_ASSERT(pivot.is_parameter_or_point());
             using std::swap;
@@ -304,11 +311,13 @@ Grid::simplify(Grid_Generator_System& ggs, Dimension_Kinds& dim_kinds) {
             reduce_parameter_with_line(row, pivot, dim, ggs.sys.rows,
                                        num_columns + 1);
           }
+        }
         else {
           PPL_ASSERT(row.is_parameter_or_point());
-          if (pivot_is_line)
+          if (pivot_is_line) {
             reduce_parameter_with_line(row, pivot, dim, ggs.sys.rows,
                                        num_columns + 1);
+          }
           else {
             PPL_ASSERT(pivot.is_parameter_or_point());
             reduce_pc_with_pc(row, pivot, dim, dim, num_columns);
@@ -316,8 +325,9 @@ Grid::simplify(Grid_Generator_System& ggs, Dimension_Kinds& dim_kinds) {
         }
       }
 
-      if (pivot_is_line)
+      if (pivot_is_line) {
         dim_kinds[dim] = LINE;
+      }
       else {
         PPL_ASSERT(pivot.is_parameter_or_point());
         dim_kinds[dim] = PARAMETER;
@@ -325,9 +335,10 @@ Grid::simplify(Grid_Generator_System& ggs, Dimension_Kinds& dim_kinds) {
 
       // Since we are reducing the system to "strong minimal form",
       // ensure that a positive value follows the leading zeros.
-      if (pivot.expr.get(dim) < 0)
+      if (pivot.expr.get(dim) < 0) {
         pivot.expr.negate(dim, num_columns);
-
+      }
+      
       // Factor this row out of the preceding rows.
       reduce_reduced<Grid_Generator_System>
         (ggs.sys.rows, dim, pivot_index, dim, num_columns - 1, dim_kinds);
@@ -386,9 +397,10 @@ Grid::simplify(Congruence_System& cgs, Dimension_Kinds& dim_kinds) {
   // NOTE: add one for the inhomogeneous term (but not the modulus).
   const dimension_type num_columns = cgs.space_dimension() + 1;
 
-  if (dim_kinds.size() != num_columns)
+  if (dim_kinds.size() != num_columns) {
     dim_kinds.resize(num_columns);
-
+  }
+  
   const dimension_type num_rows = cgs.num_rows();
 
   // For each dimension `dim' move or construct a row into position
@@ -405,10 +417,11 @@ Grid::simplify(Congruence_System& cgs, Dimension_Kinds& dim_kinds) {
       ++row_index;
     }
 
-    if (row_index == num_rows)
+    if (row_index == num_rows) {
       // Element in column `dim' is zero in all rows from the pivot,
       // or `cgs' is empty of rows.
       dim_kinds[dim] = CON_VIRTUAL;
+    }
     else {
       // Here row_index != num_rows.
       if (row_index != pivot_index) {
@@ -424,12 +437,14 @@ Grid::simplify(Congruence_System& cgs, Dimension_Kinds& dim_kinds) {
       while (row_index < num_rows - 1) {
         ++row_index;
         Congruence& row = cgs.rows[row_index];
-        if (row.expr.get(dim) == 0)
+        if (row.expr.get(dim) == 0) {
           continue;
-
+        }
+        
         if (row.is_equality()) {
-          if (pivot_is_equality)
+          if (pivot_is_equality) {
             reduce_equality_with_equality(row, pivot, dim);
+          }
           else {
             PPL_ASSERT(pivot.is_proper_congruence());
             using std::swap;
@@ -440,8 +455,9 @@ Grid::simplify(Congruence_System& cgs, Dimension_Kinds& dim_kinds) {
         }
         else {
           PPL_ASSERT(row.is_proper_congruence());
-          if (pivot_is_equality)
+          if (pivot_is_equality) {
             reduce_congruence_with_equality(row, pivot, dim, cgs.rows);
+          }
           else {
             PPL_ASSERT(pivot.is_proper_congruence());
             reduce_pc_with_pc(row, pivot, dim, 0, dim + 1);
@@ -449,8 +465,9 @@ Grid::simplify(Congruence_System& cgs, Dimension_Kinds& dim_kinds) {
         }
       }
 
-      if (pivot_is_equality)
+      if (pivot_is_equality) {
         dim_kinds[dim] = EQUALITY;
+      }
       else {
         PPL_ASSERT(pivot.is_proper_congruence());
         dim_kinds[dim] = PROPER_CONGRUENCE;
@@ -458,9 +475,10 @@ Grid::simplify(Congruence_System& cgs, Dimension_Kinds& dim_kinds) {
 
       // Since we are reducing the system to "strong minimal form",
       // ensure that a positive value follows the leading zeros.
-      if (pivot.expr.get(dim) < 0)
+      if (pivot.expr.get(dim) < 0) {
         pivot.expr.negate(0, dim + 1);
-
+      }
+      
       // Factor this row out of the preceding ones.
       reduce_reduced<Congruence_System>
         (cgs.rows, dim, pivot_index, 0, dim, dim_kinds, false);
@@ -495,8 +513,9 @@ Grid::simplify(Congruence_System& cgs, Dimension_Kinds& dim_kinds) {
     switch (dim_kinds[0]) {
 
     case PROPER_CONGRUENCE:
-      if (last_row.inhomogeneous_term() % last_row.modulus() == 0)
+      if (last_row.inhomogeneous_term() % last_row.modulus() == 0) {
         break;
+      }
       // The last row is a false proper congruence.
       last_row.set_modulus(Coefficient_zero());
       dim_kinds[0] = EQUALITY;

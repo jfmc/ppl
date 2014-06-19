@@ -160,11 +160,13 @@ PPL::Grid::construct(Grid_Generator_System& ggs) {
   }
 
   // Non-empty valid generator systems have a supporting point, at least.
-  if (!ggs.has_points())
+  if (!ggs.has_points()) {
     throw_invalid_generators("Grid(ggs)", "ggs");
-
-  if (space_dim == 0)
+  }
+  
+  if (space_dim == 0) {
     set_zero_dim_univ();
+  }
   else {
     // Steal the rows from `ggs'.
     gen_sys.m_swap(ggs);
@@ -189,12 +191,14 @@ PPL::Grid::quick_equivalence_test(const Grid& y) const {
   if (x.congruences_are_minimized() && y.congruences_are_minimized()) {
     // Equivalent minimized congruence systems have:
     //  - the same number of congruences; ...
-    if (x.con_sys.num_rows() != y.con_sys.num_rows())
+    if (x.con_sys.num_rows() != y.con_sys.num_rows()) {
       return Grid::TVB_FALSE;
+    }
     //  - the same number of equalities; ...
     const dimension_type x_num_equalities = x.con_sys.num_equalities();
-    if (x_num_equalities != y.con_sys.num_equalities())
+    if (x_num_equalities != y.con_sys.num_equalities()) {
       return Grid::TVB_FALSE;
+    }
     //  - and if there are no equalities, the same congruences.
     //    Delay this test: try cheaper tests on generators first.
     css_normalized = (x_num_equalities == 0);
@@ -203,8 +207,9 @@ PPL::Grid::quick_equivalence_test(const Grid& y) const {
   if (x.generators_are_minimized() && y.generators_are_minimized()) {
     // Equivalent minimized generator systems have:
     //  - the same number of generators; ...
-    if (x.gen_sys.num_rows() != y.gen_sys.num_rows())
+    if (x.gen_sys.num_rows() != y.gen_sys.num_rows()) {
       return Grid::TVB_FALSE;
+    }
     //  - the same number of lines; ...
     const dimension_type x_num_lines = x.gen_sys.num_lines();
     if (x_num_lines != y.gen_sys.num_lines())
@@ -212,10 +217,12 @@ PPL::Grid::quick_equivalence_test(const Grid& y) const {
       //  - and if there are no lines, the same generators.
     if (x_num_lines == 0) {
       // Check for syntactic identity.
-      if (x.gen_sys == y.gen_sys)
+      if (x.gen_sys == y.gen_sys) {
         return Grid::TVB_TRUE;
-      else
+      }
+      else {
         return Grid::TVB_FALSE;
+      }
     }
   }
 
@@ -223,10 +230,12 @@ PPL::Grid::quick_equivalence_test(const Grid& y) const {
   //       checks.
 
   if (css_normalized) {
-    if (x.con_sys == y.con_sys)
+    if (x.con_sys == y.con_sys) {
       return Grid::TVB_TRUE;
-    else
+    }
+    else {
       return Grid::TVB_FALSE;
+    }
   }
 
   return Grid::TVB_DONT_KNOW;
@@ -241,15 +250,18 @@ PPL::Grid::is_included_in(const Grid& y) const {
   const Grid& x = *this;
 
 #if BE_LAZY
-  if (!x.generators_are_up_to_date() && !x.update_generators())
+  if (!x.generators_are_up_to_date() && !x.update_generators()) {
     // Updating found `x' empty.
     return true;
-  if (!y.congruences_are_up_to_date())
+  }
+  if (!y.congruences_are_up_to_date()) {
     y.update_congruences();
+  }
 #else
-  if (!x.generators_are_minimized() && !x.minimize())
+  if (!x.generators_are_minimized() && !x.minimize()) {
     // Minimizing found `x' empty.
     return true;
+  }
   if (!y.congruences_are_minimized())
     y.minimize();
 #endif
@@ -262,8 +274,9 @@ PPL::Grid::is_included_in(const Grid& y) const {
 
   const dimension_type num_rows = gs.num_rows();
   for (dimension_type i = num_rows; i-- > 0; ) {
-    if (!cgs.satisfies_all_congruences(gs[i]))
+    if (!cgs.satisfies_all_congruences(gs[i])) {
       return false;
+    }
   }
 
   // Inclusion holds.
@@ -274,18 +287,20 @@ bool
 PPL::Grid::bounds(const Linear_Expression& expr,
                   const char* method_call) const {
   // The dimension of `expr' must be at most the dimension of *this.
-  if (space_dim < expr.space_dimension())
+  if (space_dim < expr.space_dimension()) {
     throw_dimension_incompatible(method_call, "e", expr);
-
+  }
   // A zero-dimensional or empty grid bounds everything.
   if (space_dim == 0
       || marked_empty()
-      || (!generators_are_up_to_date() && !update_generators()))
+      || (!generators_are_up_to_date() && !update_generators())) {
     return true;
-  if (!generators_are_minimized() && !minimize())
+  }
+  if (!generators_are_minimized() && !minimize()) {
     // Minimizing found `this' empty.
     return true;
-
+  }
+  
   return bounds_no_check(expr);
 }
 
@@ -302,9 +317,10 @@ PPL::Grid::bounds_no_check(const Linear_Expression& expr) const {
     // unbounded.
     if (g.is_line_or_parameter()) {
       const int sp_sign = Scalar_Products::homogeneous_sign(expr, g);
-      if (sp_sign != 0)
+      if (sp_sign != 0) {
         // `*this' does not bound `expr'.
         return false;
+      }
     }
   }
   return true;
@@ -351,8 +367,9 @@ PPL::Grid::frequency_no_check(const Linear_Expression& expr,
     const Grid_Generator& gen = gen_sys[row];
     Scalar_Products::homogeneous_assign(sp, expr, gen);
     if (gen.is_line()) {
-      if (sgn(sp) != 0)
+      if (sgn(sp) != 0) {
           return false;
+      }
       continue;
     }
     // `gen' must be a parameter.
@@ -395,14 +412,16 @@ PPL::Grid::max_min(const Linear_Expression& expr,
                    Coefficient& ext_n, Coefficient& ext_d, bool& included,
                    Generator* point) const {
   if (bounds(expr, method_call)) {
-    if (marked_empty())
+    if (marked_empty()) {
       return false;
+    }
     if (space_dim == 0) {
       ext_n = 0;
       ext_d = 1;
       included = true;
-      if (point != 0)
+      if (point != 0) {
         *point = Generator::point();
+      }
       return true;
     }
     // Grid::bounds above ensures the generators are up to date.
@@ -467,9 +486,10 @@ PPL::Grid::update_congruences() const {
 
   Grid& gr = const_cast<Grid&>(*this);
 
-  if (!generators_are_minimized())
+  if (!generators_are_minimized()) {
     gr.simplify(gr.gen_sys, gr.dim_kinds);
-
+  }
+  
   // `gen_sys' contained rows before being reduced, so it should
   // contain at least a single point afterward.
   PPL_ASSERT(!gen_sys.has_no_rows());
@@ -491,14 +511,14 @@ PPL::Grid::update_generators() const {
 
   Grid& x = const_cast<Grid&>(*this);
 
-  if (!congruences_are_minimized())
+  if (!congruences_are_minimized()) {
     // Either the system of congruences is consistent, or the grid is
     // empty.
     if (simplify(x.con_sys, x.dim_kinds)) {
       x.set_empty();
       return false;
     }
-
+  }
   // Populate gen_sys with generators characterizing the grid
   // described by con_sys.
   conversion(x.con_sys, x.gen_sys, x.dim_kinds);
@@ -512,15 +532,16 @@ PPL::Grid::update_generators() const {
 bool
 PPL::Grid::minimize() const {
   // 0-dimension and empty grids are already minimized.
-  if (marked_empty())
+  if (marked_empty()) {
     return false;
-  if (space_dim == 0)
+  }
+  if (space_dim == 0) {
     return true;
-
+  }
   // Are both systems already minimized?
-  if (congruences_are_minimized() && generators_are_minimized())
+  if (congruences_are_minimized() && generators_are_minimized()) {
     return true;
-
+  }
   // Invoke update_generators, update_congruences or simplify,
   // depending on the state of the systems.
   if (congruences_are_up_to_date()) {
@@ -586,8 +607,9 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
   // Check that the divisors in gen_sys are equal.
   for (dimension_type i = row + 1; i < num_rows; ++i) {
     const Grid_Generator& g = gen_sys[i];
-    if (g.is_parameter_or_point())
+    if (g.is_parameter_or_point()) {
       PPL_ASSERT(gen_sys_divisor == g.divisor());
+    }
   }
 #endif // !defined(NDEBUG)
 
@@ -595,13 +617,14 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
   divisor = gen_sys_divisor;
   // Adjust sys to include the gen_sys divisor.
   normalize_divisors(sys, divisor);
-  if (divisor != gen_sys_divisor)
+  if (divisor != gen_sys_divisor) {
     // Adjust gen_sys to use the new divisor.
     //
     // The points and parameters in gen_sys share a common divisor
     // value, so the new divisor will be the LCM of this common
     // divisor and `divisor', hence the third argument.
     normalize_divisors(gen_sys, divisor, &first_point);
+  }
 }
 
 void
@@ -612,24 +635,27 @@ PPL::Grid::normalize_divisors(Grid_Generator_System& sys,
   if (sys.space_dimension() > 0 && divisor > 0) {
     const dimension_type num_rows = sys.num_rows();
 
-    if (first_point != 0)
+    if (first_point != 0) {
       lcm_assign(divisor, divisor, (*first_point).divisor());
+    }
     else {
       PPL_ASSERT(num_rows > 0);
       // Move to the first point or parameter.
       dimension_type row = 0;
       while (sys[row].is_line()) {
-        if (++row == num_rows)
+        if (++row == num_rows) {
           // All rows are lines.
           return;
+        }
       }
 
       // Calculate the LCM of the given divisor and the divisor of
       // every point or parameter.
       while (row < num_rows) {
         const Grid_Generator& g = sys[row];
-        if (g.is_parameter_or_point())
+        if (g.is_parameter_or_point()) {
           lcm_assign(divisor, divisor, g.divisor());
+        }
         ++row;
       }
     }
@@ -652,8 +678,9 @@ PPL::Grid::add_congruence_no_check(const Congruence& cg) {
 
   // Dealing with a zero-dimensional space grid first.
   if (space_dim == 0) {
-    if (cg.is_inconsistent())
+    if (cg.is_inconsistent()) {
       set_empty();
+    }
     return;
   }
 
@@ -682,8 +709,9 @@ PPL::Grid::add_constraint_no_check(const Constraint& c) {
       set_empty();
       return;
     }
-    if (c.is_tautological())
+    if (c.is_tautological()) {
       return;
+    }
     // Non-trivial inequality constraints are not allowed.
     throw_invalid_constraint("add_constraint(c)", "c");
   }
@@ -702,8 +730,9 @@ PPL::Grid::refine_no_check(const Constraint& c) {
     const Congruence cg(c);
     add_congruence_no_check(cg);
   }
-  else if (c.is_inconsistent())
+  else if (c.is_inconsistent()) {
     set_empty();
+  }
 }
 
 void

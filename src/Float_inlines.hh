@@ -32,10 +32,12 @@ namespace Parma_Polyhedra_Library {
 
 inline int
 float_ieee754_half::inf_sign() const {
-  if (word == NEG_INF)
+  if (word == NEG_INF) {
     return -1;
-  if (word == POS_INF)
+  }
+  if (word == POS_INF) {
     return 1;
+  }
   return 0;
 }
 
@@ -46,10 +48,12 @@ float_ieee754_half::is_nan() const {
 
 inline int
 float_ieee754_half::zero_sign() const {
-  if (word == NEG_ZERO)
+  if (word == NEG_ZERO) {
     return -1;
-  if (word == POS_ZERO)
+  }
+  if (word == POS_ZERO) {
     return 1;
+  }
   return 0;
 }
 
@@ -76,16 +80,18 @@ float_ieee754_half::inc() {
 inline void
 float_ieee754_half::set_max(bool negative) {
   word = WRD_MAX;
-  if (negative)
+  if (negative) {
     word |= SGN_MASK;
+  }
 }
 
 inline void
 float_ieee754_half::build(bool negative, mpz_t mantissa, int exponent) {
   word = static_cast<uint16_t>(mpz_get_ui(mantissa)
                                & ((1UL << MANTISSA_BITS) - 1));
-  if (negative)
+  if (negative) {
     word |= SGN_MASK;
+  }
   const int exponent_repr = exponent + EXPONENT_BIAS;
   PPL_ASSERT(exponent_repr >= 0 && exponent_repr < (1 << EXPONENT_BITS));
   word |= static_cast<uint16_t>(exponent_repr) << MANTISSA_BITS;
@@ -93,10 +99,12 @@ float_ieee754_half::build(bool negative, mpz_t mantissa, int exponent) {
 
 inline int
 float_ieee754_single::inf_sign() const {
-  if (word == NEG_INF)
+  if (word == NEG_INF) {
     return -1;
-  if (word == POS_INF)
+  }
+  if (word == POS_INF) {
     return 1;
+  }
   return 0;
 }
 
@@ -107,10 +115,12 @@ float_ieee754_single::is_nan() const {
 
 inline int
 float_ieee754_single::zero_sign() const {
-  if (word == NEG_ZERO)
+  if (word == NEG_ZERO) {
     return -1;
-  if (word == POS_ZERO)
+  }
+  if (word == POS_ZERO) {
     return 1;
+  }
   return 0;
 }
 
@@ -137,16 +147,18 @@ float_ieee754_single::inc() {
 inline void
 float_ieee754_single::set_max(bool negative) {
   word = WRD_MAX;
-  if (negative)
+  if (negative) {
     word |= SGN_MASK;
+  }
 }
 
 inline void
 float_ieee754_single::build(bool negative, mpz_t mantissa, int exponent) {
   word = static_cast<uint32_t>(mpz_get_ui(mantissa)
                                & ((1UL << MANTISSA_BITS) - 1));
-  if (negative)
+  if (negative) {
     word |= SGN_MASK;
+  }
   const int exponent_repr = exponent + EXPONENT_BIAS;
   PPL_ASSERT(exponent_repr >= 0 && exponent_repr < (1 << EXPONENT_BITS));
   word |= static_cast<uint32_t>(exponent_repr) << MANTISSA_BITS;
@@ -154,12 +166,15 @@ float_ieee754_single::build(bool negative, mpz_t mantissa, int exponent) {
 
 inline int
 float_ieee754_double::inf_sign() const {
-  if (lsp != LSP_INF)
+  if (lsp != LSP_INF) {
     return 0;
-  if (msp == MSP_NEG_INF)
+  }
+  if (msp == MSP_NEG_INF) {
     return -1;
-  if (msp == MSP_POS_INF)
+  }
+  if (msp == MSP_POS_INF) {
     return 1;
+  }
   return 0;
 }
 
@@ -171,12 +186,15 @@ float_ieee754_double::is_nan() const {
 
 inline int
 float_ieee754_double::zero_sign() const {
-  if (lsp != LSP_ZERO)
+  if (lsp != LSP_ZERO) {
     return 0;
-  if (msp == MSP_NEG_ZERO)
+  }
+  if (msp == MSP_NEG_ZERO) {
     return -1;
-  if (msp == MSP_POS_ZERO)
+  }
+  if (msp == MSP_POS_ZERO) {
     return 1;
+  }
   return 0;
 }
 
@@ -196,8 +214,9 @@ float_ieee754_double::dec() {
     --msp;
     lsp = LSP_MAX;
   }
-  else
+  else {
     --lsp;
+  }
 }
 
 inline void
@@ -206,16 +225,18 @@ float_ieee754_double::inc() {
     ++msp;
     lsp = 0;
   }
-  else
+  else {
     ++lsp;
+  }
 }
 
 inline void
 float_ieee754_double::set_max(bool negative) {
   msp = MSP_MAX;
   lsp = LSP_MAX;
-  if (negative)
+  if (negative) {
     msp |= MSP_SGN_MASK;
+  }
 }
 
 inline void
@@ -231,8 +252,9 @@ float_ieee754_double::build(bool negative, mpz_t mantissa, int exponent) {
   m >>= 32;
 #endif
   msp = static_cast<uint32_t>(m & ((1UL << (MANTISSA_BITS - 32)) - 1));
-  if (negative)
+  if (negative) {
     msp |= MSP_SGN_MASK;
+  }
   const int exponent_repr = exponent + EXPONENT_BIAS;
   PPL_ASSERT(exponent_repr >= 0 && exponent_repr < (1 << EXPONENT_BITS));
   msp |= static_cast<uint32_t>(exponent_repr) << (MANTISSA_BITS - 32);
@@ -240,10 +262,12 @@ float_ieee754_double::build(bool negative, mpz_t mantissa, int exponent) {
 
 inline int
 float_ibm_single::inf_sign() const {
-  if (word == NEG_INF)
+  if (word == NEG_INF) {
     return -1;
-  if (word == POS_INF)
+  }
+  if (word == POS_INF) {
     return 1;
+  }
   return 0;
 }
 
@@ -254,10 +278,12 @@ float_ibm_single::is_nan() const {
 
 inline int
 float_ibm_single::zero_sign() const {
-  if (word == NEG_ZERO)
+  if (word == NEG_ZERO) {
     return -1;
-  if (word == POS_ZERO)
+  }
+  if (word == POS_ZERO) {
     return 1;
+  }
   return 0;
 }
 
@@ -284,16 +310,18 @@ float_ibm_single::inc() {
 inline void
 float_ibm_single::set_max(bool negative) {
   word = WRD_MAX;
-  if (negative)
+  if (negative) {
     word |= SGN_MASK;
+  }
 }
 
 inline void
 float_ibm_single::build(bool negative, mpz_t mantissa, int exponent) {
   word = static_cast<uint32_t>(mpz_get_ui(mantissa)
                                & ((1UL << MANTISSA_BITS) - 1));
-  if (negative)
+  if (negative) {
     word |= SGN_MASK;
+  }
   const int exponent_repr = exponent + EXPONENT_BIAS;
   PPL_ASSERT(exponent_repr >= 0 && exponent_repr < (1 << EXPONENT_BITS));
   word |= static_cast<uint32_t>(exponent_repr) << MANTISSA_BITS;
@@ -301,13 +329,16 @@ float_ibm_single::build(bool negative, mpz_t mantissa, int exponent) {
 
 inline int
 float_intel_double_extended::inf_sign() const {
-  if (lsp != LSP_INF)
+  if (lsp != LSP_INF) {
     return 0;
+  }
   const uint32_t a = msp & MSP_NEG_INF;
-  if (a == MSP_NEG_INF)
+  if (a == MSP_NEG_INF) {
     return -1;
-  if (a == MSP_POS_INF)
+  }
+  if (a == MSP_POS_INF) {
     return 1;
+  }
   return 0;
 }
 
@@ -319,13 +350,16 @@ float_intel_double_extended::is_nan() const {
 
 inline int
 float_intel_double_extended::zero_sign() const {
-  if (lsp != LSP_ZERO)
+  if (lsp != LSP_ZERO) {
     return 0;
+  }
   const uint32_t a = msp & MSP_NEG_INF;
-  if (a == MSP_NEG_ZERO)
+  if (a == MSP_NEG_ZERO) {
     return -1;
-  if (a == MSP_POS_ZERO)
+  }
+  if (a == MSP_POS_ZERO) {
     return 1;
+  }
   return 0;
 }
 
@@ -345,8 +379,9 @@ float_intel_double_extended::dec() {
     --msp;
     lsp = ((msp & MSP_NEG_INF) == 0) ? LSP_DMAX : LSP_NMAX;
   }
-  else
+  else {
     --lsp;
+  }
 }
 
 inline void
@@ -355,16 +390,18 @@ float_intel_double_extended::inc() {
     ++msp;
     lsp = LSP_DMAX + 1;
   }
-  else
+  else {
     ++lsp;
+  }
 }
 
 inline void
 float_intel_double_extended::set_max(bool negative) {
   msp = MSP_MAX;
   lsp = LSP_NMAX;
-  if (negative)
+  if (negative) {
     msp |= MSP_SGN_MASK;
+  }
 }
 
 inline void
@@ -383,12 +420,15 @@ float_intel_double_extended::build(bool negative,
 
 inline int
 float_ieee754_quad::inf_sign() const {
-  if (lsp != LSP_INF)
+  if (lsp != LSP_INF) {
     return 0;
-  if (msp == MSP_NEG_INF)
+  }
+  if (msp == MSP_NEG_INF) {
     return -1;
-  if (msp == MSP_POS_INF)
+  }
+  if (msp == MSP_POS_INF) {
     return 1;
+  }
   return 0;
 }
 
@@ -400,12 +440,15 @@ float_ieee754_quad::is_nan() const {
 
 inline int
 float_ieee754_quad::zero_sign() const {
-  if (lsp != LSP_ZERO)
+  if (lsp != LSP_ZERO) {
     return 0;
-  if (msp == MSP_NEG_ZERO)
+  }
+  if (msp == MSP_NEG_ZERO) {
     return -1;
-  if (msp == MSP_POS_ZERO)
+  }
+  if (msp == MSP_POS_ZERO) {
     return 1;
+  }
   return 0;
 }
 
@@ -425,8 +468,9 @@ float_ieee754_quad::dec() {
     --msp;
     lsp = LSP_MAX;
   }
-  else
+  else {
     --lsp;
+  }
 }
 
 inline void
@@ -435,16 +479,18 @@ float_ieee754_quad::inc() {
     ++msp;
     lsp = 0;
   }
-  else
+  else {
     ++lsp;
+  }
 }
 
 inline void
 float_ieee754_quad::set_max(bool negative) {
   msp = MSP_MAX;
   lsp = LSP_MAX;
-  if (negative)
+  if (negative) {
     msp |= MSP_SGN_MASK;
+  }
 }
 
 inline void
@@ -454,8 +500,9 @@ float_ieee754_quad::build(bool negative, mpz_t mantissa, int exponent) {
   lsp = parts[0];
   msp = parts[1];
   msp &= ((static_cast<uint64_t>(1) << (MANTISSA_BITS - 64)) - 1);
-  if (negative)
+  if (negative) {
     msp |= MSP_SGN_MASK;
+  }
   const int exponent_repr = exponent + EXPONENT_BIAS;
   PPL_ASSERT(exponent_repr >= 0 && exponent_repr < (1 << EXPONENT_BITS));
   msp |= static_cast<uint64_t>(exponent_repr) << (MANTISSA_BITS - 64);

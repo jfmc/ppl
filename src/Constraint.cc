@@ -67,9 +67,10 @@ PPL::Constraint::Constraint(const Congruence& cg, Representation r)
   : expr(cg.expression(), r),
     kind_(LINE_OR_EQUALITY),
     topology_(NECESSARILY_CLOSED) {
-  if (!cg.is_equality())
+  if (!cg.is_equality()) {
     throw_invalid_argument("Constraint(cg)",
                            "congruence cg must be an equality.");
+  }
   // Enforce normalization.
   strong_normalize();
   PPL_ASSERT(OK());
@@ -88,10 +89,11 @@ PPL::Constraint::swap_space_dimensions(Variable v1, Variable v2) {
 void
 PPL::Constraint
 ::permute_space_dimensions(const std::vector<Variable>& cycle) {
-  if (cycle.size() < 2)
+  if (cycle.size() < 2) {
     // No-op. No need to call sign_normalize().
     return;
-
+  }
+  
   expr.permute_space_dimensions(cycle);
   // *this is still normalized but may be not strongly normalized:
   // sign normalization is necessary.
@@ -101,71 +103,86 @@ PPL::Constraint
 
 bool
 PPL::Constraint::is_tautological() const {
-  if (expr.all_homogeneous_terms_are_zero())
-    if (is_equality())
+  if (expr.all_homogeneous_terms_are_zero()) {
+    if (is_equality()) {
       return expr.inhomogeneous_term() == 0;
-    else
+    }
+    else {
       // Non-strict inequality constraint.
       return expr.inhomogeneous_term() >= 0;
-  else
+    }
+  }
+  else {
     // There is a non-zero homogeneous coefficient.
-    if (is_necessarily_closed())
+    if (is_necessarily_closed()) {
       return false;
+    }
     else {
       // The constraint is NOT necessarily closed.
       const int eps_sign = sgn(epsilon_coefficient());
-      if (eps_sign > 0)
+      if (eps_sign > 0) {
         // We have found the constraint epsilon >= 0.
         return true;
-      if (eps_sign == 0)
+      }
+      if (eps_sign == 0) {
         // One of the `true' dimensions has a non-zero coefficient.
         return false;
+      }
       else {
         // Here the epsilon coefficient is negative: strict inequality.
-        if (expr.inhomogeneous_term() <= 0)
+        if (expr.inhomogeneous_term() <= 0) {
           // A strict inequality such as `lhs - k > 0',
           // where k is a non negative integer, cannot be trivially true.
           return false;
+        }
         // Checking for another non-zero coefficient.
         // If the check succeeds, we have the inequality `k > 0',
         // where k is a positive integer.
         return expression().all_homogeneous_terms_are_zero();
       }
     }
+  }
 }
 
 bool
 PPL::Constraint::is_inconsistent() const {
-  if (expr.all_homogeneous_terms_are_zero())
+  if (expr.all_homogeneous_terms_are_zero()) {
     // The inhomogeneous term is the only non-zero coefficient.
-    if (is_equality())
+    if (is_equality()) {
       return expr.inhomogeneous_term() != 0;
-    else
+    }
+    else {
       // Non-strict inequality constraint.
       return expr.inhomogeneous_term() < 0;
-  else
+    }
+  }
+  else {
     // There is a non-zero homogeneous coefficient.
-    if (is_necessarily_closed())
+    if (is_necessarily_closed()) {
       return false;
+    }
     else {
       // The constraint is NOT necessarily closed.
-      if (epsilon_coefficient() >= 0)
+      if (epsilon_coefficient() >= 0) {
         // If positive, we have found the constraint epsilon >= 0.
         // If zero, one of the `true' dimensions has a non-zero coefficient.
         // In both cases, it is not trivially false.
         return false;
+      }
       else {
         // Here the epsilon coefficient is negative: strict inequality.
-        if (expr.inhomogeneous_term() > 0)
+        if (expr.inhomogeneous_term() > 0) {
           // A strict inequality such as `lhs + k > 0',
           // where k is a positive integer, cannot be trivially false.
           return false;
+        }
         // Checking for another non-zero coefficient.
         // If the check succeeds, we have the inequality `k > 0',
         // where k is a positive integer.
         return expression().all_homogeneous_terms_are_zero();
       }
     }
+  }
 }
 
 void
@@ -179,10 +196,11 @@ int
 PPL::compare(const Constraint& x, const Constraint& y) {
   const bool x_is_line_or_equality = x.is_line_or_equality();
   const bool y_is_line_or_equality = y.is_line_or_equality();
-  if (x_is_line_or_equality != y_is_line_or_equality)
+  if (x_is_line_or_equality != y_is_line_or_equality) {
     // Equalities (lines) precede inequalities (ray/point).
     return y_is_line_or_equality ? 2 : -2;
-
+  }
+  
   return compare(x.expr, y.expr);
 }
 
@@ -190,16 +208,19 @@ bool
 PPL::Constraint::is_equivalent_to(const Constraint& y) const {
   const Constraint& x = *this;
   const dimension_type x_space_dim = x.space_dimension();
-  if (x_space_dim != y.space_dimension())
+  if (x_space_dim != y.space_dimension()) {
     return false;
-
+  }
+  
   const Type x_type = x.type();
   if (x_type != y.type()) {
     // Check for special cases.
-    if (x.is_tautological())
+    if (x.is_tautological()) {
       return y.is_tautological();
-    else
+    }
+    else {
       return x.is_inconsistent() && y.is_inconsistent();
+    }
   }
 
   if (x_type == STRICT_INEQUALITY) {
@@ -229,8 +250,9 @@ PPL::Constraint::is_equal_to(const Constraint& y) const {
 
 void
 PPL::Constraint::sign_normalize() {
-  if (is_line_or_equality())
+  if (is_line_or_equality()) {
     expr.sign_normalize();
+  }
 }
 
 bool
@@ -301,11 +323,12 @@ PPL::Constraint::ascii_dump(std::ostream& s) const {
     break;
   }
   s << " ";
-  if (topology() == NECESSARILY_CLOSED)
+  if (topology() == NECESSARILY_CLOSED) {
     s << "(C)";
-  else
+  }
+  else {
     s << "(NNC)";
-
+  }
   s << "\n";
 }
 
@@ -316,44 +339,56 @@ PPL::Constraint::ascii_load(std::istream& s) {
 
   expr.ascii_load(s);
 
-  if (!(s >> str))
+  if (!(s >> str)) {
     return false;
-  if (str == "=")
+  }
+  if (str == "=") {
     set_is_equality();
-  else if (str == ">=" || str == ">")
+  }
+  else if (str == ">=" || str == ">") {
     set_is_inequality();
-  else
+  }
+  else {
     return false;
+  }
 
-  if (!(s >> str2))
+  if (!(s >> str2)) {
     return false;
+  }
   if (str2 == "(NNC)") {
     // TODO: Avoid the mark_as_*() methods if possible.
-    if (topology() == NECESSARILY_CLOSED)
+    if (topology() == NECESSARILY_CLOSED) {
       mark_as_not_necessarily_closed();
+    }
   }
-  else
+  else {
     if (str2 == "(C)") {
       // TODO: Avoid the mark_as_*() methods if possible.
-      if (topology() == NOT_NECESSARILY_CLOSED)
+      if (topology() == NOT_NECESSARILY_CLOSED) {
         mark_as_necessarily_closed();
+      }
     }
-    else
+    else {
       return false;
-
+    }
+  }
+  
   // Checking for equality of actual and declared types.
   switch (type()) {
   case EQUALITY:
-    if (str != "=")
+    if (str != "=") {
       return false;
+    }
     break;
   case NONSTRICT_INEQUALITY:
-    if (str != ">=")
+    if (str != ">=") {
       return false;
+    }
     break;
   case STRICT_INEQUALITY:
-    if (str != ">")
+    if (str != ">") {
       return false;
+    }
     break;
   }
 
@@ -369,23 +404,28 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Constraint& c) {
          i_end = c.expression().end(); i != i_end; ++i) {
     cv = *i;
     if (!first) {
-      if (cv > 0)
+      if (cv > 0) {
         s << " + ";
+      }
       else {
         s << " - ";
         neg_assign(cv);
       }
     }
-    else
+    else {
       first = false;
-    if (cv == -1)
+    }
+    if (cv == -1) {
       s << "-";
-    else if (cv != 1)
+    }
+    else if (cv != 1) {
       s << cv << "*";
+    }
     s << i.variable();
   }
-  if (first)
+  if (first) {
     s << Coefficient_zero();
+  }
   const char* relation_symbol = 0;
   switch (c.type()) {
   case Constraint::EQUALITY:

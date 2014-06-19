@@ -54,10 +54,12 @@ Expression_Hide_Inhomo<T>
 ::is_equal_to(const Expression& y) const {
   const dimension_type x_dim = this->space_dimension();
   const dimension_type y_dim = y.space_dimension();
-  if (x_dim != y_dim)
+  if (x_dim != y_dim) {
     return false;
-  if (y.inhomogeneous_term() != 0)
+  }
+  if (y.inhomogeneous_term() != 0) {
     return false;
+  }
   // Note that the inhomogeneous term is not compared.
   return this->inner().is_equal_to(y, 1, x_dim + 1);
 }
@@ -65,10 +67,12 @@ Expression_Hide_Inhomo<T>
 template <typename T>
 inline Coefficient_traits::const_reference
 Expression_Hide_Inhomo<T>::get(dimension_type i) const {
-  if (i == 0)
+  if (i == 0) {
     return Coefficient_zero();
-  else
+  }
+  else {
     return this->inner().get(i);
+  }
 }
 
 template <typename T>
@@ -88,10 +92,12 @@ template <typename T>
 inline bool
 Expression_Hide_Inhomo<T>::all_zeroes(dimension_type start,
                                       dimension_type end) const {
-  if (start == end)
+  if (start == end) {
     return true;
-  if (start == 0)
+  }
+  if (start == 0) {
     ++start;
+  }
   return this->inner().all_zeroes(start, end);
 }
 
@@ -99,8 +105,9 @@ template <typename T>
 inline dimension_type
 Expression_Hide_Inhomo<T>::num_zeroes(dimension_type start,
                                       dimension_type end) const {
-  if (start == end)
+  if (start == end) {
     return 0;
+  }
   dimension_type nz = 0;
   if (start == 0) {
     ++start;
@@ -114,10 +121,12 @@ template <typename T>
 inline Coefficient
 Expression_Hide_Inhomo<T>::gcd(dimension_type start,
                                dimension_type end) const {
-  if (start == end)
+  if (start == end) {
     return Coefficient_zero();
-  if (start == 0)
+  }
+  if (start == 0) {
     ++start;
+  }
   return this->inner().gcd(start, end);
 }
 
@@ -131,10 +140,12 @@ template <typename T>
 inline dimension_type
 Expression_Hide_Inhomo<T>::last_nonzero(dimension_type first,
                                         dimension_type last) const {
-  if (first == last)
+  if (first == last) {
     return last;
-  if (first == 0)
+  }
+  if (first == 0) {
     ++first;
+  }
   return this->inner().last_nonzero(first, last);
 }
 
@@ -142,10 +153,12 @@ template <typename T>
 inline dimension_type
 Expression_Hide_Inhomo<T>::first_nonzero(dimension_type first,
                                          dimension_type last) const {
-  if (first == last)
+  if (first == last) {
     return last;
-  if (first == 0)
+  }
+  if (first == 0) {
     ++first;
+  }
   return this->inner().first_nonzero(first, last);
 }
 
@@ -154,10 +167,12 @@ inline bool
 Expression_Hide_Inhomo<T>
 ::all_zeroes_except(const Variables_Set& vars,
                     dimension_type start, dimension_type end) const {
-  if (start == end)
+  if (start == end) {
     return true;
-  if (start == 0)
+  }
+  if (start == 0) {
     ++start;
+  }
   return this->inner().all_zeroes_except(vars, start, end);
 }
 
@@ -167,8 +182,9 @@ Expression_Hide_Inhomo<T>
 ::has_a_free_dimension_helper(std::set<dimension_type>& y) const {
   bool had_0 = (y.count(0) == 1);
   this->inner().has_a_free_dimension_helper(y);
-  if (had_0)
+  if (had_0) {
     y.insert(0);
+  }
 }
 
 template <typename T>
@@ -177,10 +193,12 @@ inline bool
 Expression_Hide_Inhomo<T>
 ::is_equal_to(const Expression& y,
               dimension_type start, dimension_type end) const {
-  if (start == end)
+  if (start == end) {
     return true;
-  if (start == 0)
+  }
+  if (start == 0) {
     ++start;
+  }
   return this->inner().is_equal_to(y, start, end);
 }
 
@@ -192,10 +210,12 @@ Expression_Hide_Inhomo<T>
               Coefficient_traits::const_reference c1,
               Coefficient_traits::const_reference c2,
               dimension_type start, dimension_type end) const {
-  if (start == end)
+  if (start == end) {
     return true;
-  if (start == 0)
+  }
+  if (start == 0) {
     ++start;
+  }
   return this->inner().is_equal_to(y, c1, c2, start, end);
 }
 

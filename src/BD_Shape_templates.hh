@@ -256,7 +256,7 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
     if (!ph_cs.has_strict_inequalities()) {
       lp.add_constraints(ph_cs);
     }
-    else
+    else {
       // Adding to `lp' a topologically closed version of `ph_cs'.
       for (Constraint_System::const_iterator i = ph_cs.begin(),
              ph_cs_end = ph_cs.end(); i != ph_cs_end; ++i) {
@@ -269,7 +269,8 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
           lp.add_constraint(c);
         }
       }
-
+    }
+    
     // Check for unsatisfiability.
     if (!lp.is_satisfiable()) {
       *this = BD_Shape<T>(num_dimensions, EMPTY);
@@ -1024,9 +1025,10 @@ BD_Shape<T>::is_shortest_path_reduced() const {
   // A shortest-path reduced dbm is just a dbm with an indication of
   // those constraints that are redundant. If there is no indication
   // of the redundant constraints, then it cannot be reduced.
-  if (!marked_shortest_path_reduced())
+  if (!marked_shortest_path_reduced()) {
     return false;
-
+  }
+  
   const BD_Shape x_copy = *this;
   x_copy.shortest_path_closure_assign();
   // If we just discovered emptiness, it cannot be reduced.
@@ -1109,20 +1111,24 @@ BD_Shape<T>::is_shortest_path_reduced() const {
         dimension_type leader_j = leader[j];
         // Only the connectedness with equivalent variables
         // is considered.
-        if (j != leader_j)
+        if (j != leader_j) {
           if (!redundancy_dbm[i][j]) {
-            if (t == 1)
+            if (t == 1) {
               // Two non-leaders cannot be connected with the same leader.
               return false;
-            else
-              if (leader_j != i)
+            }
+            else {
+              if (leader_j != i) {
                 // The variables are not in the same equivalence class.
                 return false;
+              }
               else {
                 ++t;
                 var_conn[i] = j;
               }
+            }
           }
+        }
       }
     }
     // Case b: non-leader.
@@ -4957,13 +4963,15 @@ BD_Shape<T>
       if (low_coeff != 0 || high_coeff != 0) {
         assign_r(low_coeff, lsv_coefficient.lower(), ROUND_NOT_NEEDED);
         assign_r(high_coeff, lsv_coefficient.upper(), ROUND_NOT_NEEDED);
-        if (low_coeff != 0 || high_coeff != 0)
+        if (low_coeff != 0 || high_coeff != 0) {
           do_update = true;
+        }
         else {
           assign_r(low_coeff, rsv_coefficient.lower(), ROUND_NOT_NEEDED);
           assign_r(high_coeff, rsv_coefficient.upper(), ROUND_NOT_NEEDED);
-          if (low_coeff != 0 || high_coeff != 0)
+          if (low_coeff != 0 || high_coeff != 0) {
             do_update = true;
+          }
         }
       }
       else {
@@ -4972,13 +4980,15 @@ BD_Shape<T>
         if (low_coeff != 0 || high_coeff != 0) {
           assign_r(low_coeff, lsv_coefficient.lower(), ROUND_NOT_NEEDED);
           assign_r(high_coeff, lsv_coefficient.upper(), ROUND_NOT_NEEDED);
-          if (low_coeff != 0 || high_coeff != 0)
+          if (low_coeff != 0 || high_coeff != 0) {
             do_update = true;
+          }
           else {
             assign_r(low_coeff, rsv_coefficient.lower(), ROUND_NOT_NEEDED);
             assign_r(high_coeff, rsv_coefficient.upper(), ROUND_NOT_NEEDED);
-            if (low_coeff != 0 || high_coeff != 0)
+            if (low_coeff != 0 || high_coeff != 0) {
               do_update = true;
+            }
           }
         }
       }
@@ -5009,13 +5019,15 @@ BD_Shape<T>
     bool do_update = false;
     assign_r(low_coeff, lv_coefficient.lower(), ROUND_NOT_NEEDED);
     assign_r(high_coeff, lv_coefficient.upper(), ROUND_NOT_NEEDED);
-    if (low_coeff != 0 || high_coeff != 0)
+    if (low_coeff != 0 || high_coeff != 0) {
       do_update = true;
+    }
     else {
       assign_r(low_coeff, rv_coefficient.lower(), ROUND_NOT_NEEDED);
       assign_r(high_coeff, rv_coefficient.upper(), ROUND_NOT_NEEDED);
-      if (low_coeff != 0 || high_coeff != 0)
+      if (low_coeff != 0 || high_coeff != 0) {
         do_update = true;
+      }
     }
 
     if (do_update) {
@@ -5392,8 +5404,9 @@ BD_Shape<T>
       // Approximating `sc_expr'.
       if (pos_pinf_count <= 1) {
         const N& up_approx_i = dbm_0[i_dim];
-        if (!is_plus_infinity(up_approx_i))
+        if (!is_plus_infinity(up_approx_i)) {
           add_mul_assign_r(pos_sum, coeff_i, up_approx_i, ROUND_UP);
+        }
         else {
           ++pos_pinf_count;
           pos_pinf_index = i_dim;

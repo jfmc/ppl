@@ -90,8 +90,9 @@ Expression_Hide_Last<T>
 ::is_equal_to(const Expression& y) const {
   const dimension_type x_dim = space_dimension();
   const dimension_type y_dim = y.space_dimension();
-  if (x_dim != y_dim)
+  if (x_dim != y_dim) {
     return false;
+  }
   return is_equal_to(y, 0, x_dim + 1);
 }
 
@@ -175,8 +176,9 @@ template <typename T>
 inline void
 Expression_Hide_Last<T>
 ::has_a_free_dimension_helper(std::set<dimension_type>& x) const {
-  if (x.empty())
+  if (x.empty()) {
     return;
+  }
   PPL_ASSERT(*(--x.end()) <= space_dimension());
   this->inner().has_a_free_dimension_helper(x);
 }

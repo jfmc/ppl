@@ -34,19 +34,22 @@ bool Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>
             FP_Linear_Form& result) const {
   FP_Linear_Form linearized_second_operand;
   if (!second_operand->linearize(int_store, lf_store,
-                                linearized_second_operand))
+                                linearized_second_operand)) {
     return false;
+  }
   FP_Interval_Type intervalized_second_operand;
   this->intervalize(linearized_second_operand, int_store,
                     intervalized_second_operand);
 
   // Check if we may divide by zero.
   if (intervalized_second_operand.lower() <= 0
-      && intervalized_second_operand.upper() >= 0)
+      && intervalized_second_operand.upper() >= 0) {
     return false;
-
-  if (!first_operand->linearize(int_store, lf_store, result))
+  }
+  
+  if (!first_operand->linearize(int_store, lf_store, result)) {
     return false;
+  }
   FP_Linear_Form rel_error;
   relative_error(result, rel_error);
   result /= intervalized_second_operand;

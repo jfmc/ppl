@@ -98,10 +98,11 @@ Generator_System::set_space_dimension(dimension_type space_dim) {
   const dimension_type old_space_dim = space_dimension();
   sys.set_space_dimension_no_ok(space_dim);
 
-  if (space_dim < old_space_dim)
+  if (space_dim < old_space_dim) {
     // We may have invalid lines and rays now.
     remove_invalid_lines_and_rays();
-
+  }
+  
 #ifndef NDEBUG
   for (dimension_type i = 0; i < sys.num_rows(); ++i)
     PPL_ASSERT(sys[i].OK());
@@ -320,8 +321,9 @@ Generator_System_const_iterator::operator->() const {
 inline Generator_System_const_iterator&
 Generator_System_const_iterator::operator++() {
   ++i;
-  if (!gsp->is_necessarily_closed())
+  if (!gsp->is_necessarily_closed()) {
     skip_forward();
+  }
   return *this;
 }
 

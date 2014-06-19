@@ -62,8 +62,9 @@ Bit_Matrix::remove_trailing_rows(const dimension_type n) {
   // The number of rows to be erased cannot be greater
   // than the actual number of the rows of the matrix.
   PPL_ASSERT(n <= rows.size());
-  if (n != 0)
+  if (n != 0) {
     rows.resize(rows.size() - n);
+  }
   PPL_ASSERT(OK());
 }
 
