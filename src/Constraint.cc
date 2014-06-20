@@ -92,7 +92,7 @@ PPL::Constraint
   if (cycle.size() < 2) {
     // No-op. No need to call sign_normalize().
     return;
-  !}
+  }
 
   expr.permute_space_dimensions(cycle);
   // *this is still normalized but may be not strongly normalized:
