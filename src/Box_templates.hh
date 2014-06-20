@@ -63,8 +63,9 @@ Box<ITV>::Box(dimension_type num_dimensions, Degenerate_Element kind)
     }
     set_empty_up_to_date();
   }
-  else
+  else {
     set_empty();
+  }
   PPL_ASSERT(OK());
 }
 
@@ -111,13 +112,15 @@ Box<ITV>::Box(const Box<Other_ITV>& y, Complexity_Class)
     // status(y.status) {
     status() {
   // FIXME: remove when the above is fixed.
-  if (y.marked_empty())
+  if (y.marked_empty()) {
     set_empty();
-
-  if (!y.marked_empty())
+  }
+  
+  if (!y.marked_empty()) {
     for (dimension_type k = y.space_dimension(); k-- > 0; ) {
       seq[k].assign(y.seq[k]);
     }
+  }
   PPL_ASSERT(OK());
 }
 
@@ -180,12 +183,13 @@ Box<ITV>::Box(const Generator_System& gs)
     }
   }
 
-  if (!point_seen)
+  if (!point_seen) {
     // The generator system is not empty, but contains no points.
     throw std::invalid_argument("PPL::Box<ITV>::Box(gs):\n"
                                 "the non-empty generator system gs "
                                 "contains no points.");
-
+  }
+  
   // Going through all the lines, rays and closure points.
   for (Generator_System::const_iterator gs_i = gs_begin;
        gs_i != gs_end; ++gs_i) {
@@ -276,9 +280,10 @@ Box<ITV>::Box(const BD_Shape<T>& bds, Complexity_Class)
 
     // Set the upper bound.
     const Coeff& u = dbm_0[i+1];
-    if (!is_plus_infinity(u))
+    if (!is_plus_infinity(u)) {
       upper.set(LESS_OR_EQUAL, u, true);
-
+    }
+    
     // Set the lower bound.
     const Coeff& negated_l = bds.dbm[i+1][0];
     if (!is_plus_infinity(negated_l)) {
@@ -312,9 +317,10 @@ Box<ITV>::Box(const Octagonal_Shape<T>& oct, Complexity_Class)
   set_empty_up_to_date();
 
   const dimension_type space_dim = space_dimension();
-  if (space_dim == 0)
+  if (space_dim == 0) {
     return;
-
+  }
+  
   PPL_DIRTY_TEMP(mpq_class, lower_bound);
   PPL_DIRTY_TEMP(mpq_class, upper_bound);
   for (dimension_type i = space_dim; i-- > 0; ) {
@@ -366,9 +372,10 @@ Box<ITV>::Box(const Polyhedron& ph, Complexity_Class complexity)
 
   // b) the polyhedron is zero-dimensional; or ...
   const dimension_type space_dim = ph.space_dimension();
-  if (space_dim == 0)
+  if (space_dim == 0) {
     return;
-
+  }
+  
   // c) the polyhedron is already described by a generator system.
   if (ph.generators_are_up_to_date() && !ph.has_pending_constraints()) {
     Box tmp(ph.generators());
@@ -395,9 +402,10 @@ Box<ITV>::Box(const Polyhedron& ph, Complexity_Class complexity)
   else if (complexity == SIMPLEX_COMPLEXITY) {
     MIP_Problem lp(space_dim);
     const Constraint_System& ph_cs = ph.constraints();
-    if (!ph_cs.has_strict_inequalities())
+    if (!ph_cs.has_strict_inequalities()) {
       lp.add_constraints(ph_cs);
-    else
+    }
+    else {
       // Adding to `lp' a topologically closed version of `ph_cs'.
       for (Constraint_System::const_iterator i = ph_cs.begin(),
              ph_cs_end = ph_cs.end(); i != ph_cs_end; ++i) {
@@ -406,9 +414,11 @@ Box<ITV>::Box(const Polyhedron& ph, Complexity_Class complexity)
           const Linear_Expression expr(c.expression());
           lp.add_constraint(expr >= 0);
         }
-        else
+        else {
           lp.add_constraint(c);
+        }
       }
+    }
     // Check for unsatisfiability.
     if (!lp.is_satisfiable()) {
       set_empty();
@@ -450,8 +460,9 @@ Box<ITV>::Box(const Polyhedron& ph, Complexity_Class complexity)
   }
   else {
     PPL_ASSERT(complexity == ANY_COMPLEXITY);
-    if (ph.is_empty())
+    if (ph.is_empty()) {
       set_empty();
+    }
     else {
       Box tmp(ph.generators());
       m_swap(tmp);
@@ -479,9 +490,10 @@ Box<ITV>::Box(const Grid& gr, Complexity_Class)
 
   const dimension_type space_dim = gr.space_dimension();
 
-  if (space_dim == 0)
+  if (space_dim == 0) {
     return;
-
+  }
+  
   if (!gr.generators_are_up_to_date() && !gr.update_generators()) {
     // Updating found the grid empty.
     set_empty();
@@ -506,8 +518,9 @@ Box<ITV>::Box(const Grid& gr, Complexity_Class)
       bound.canonicalize();
       seq_i.build(i_constraint(EQUAL, bound));
     }
-    else
+    else {
       seq_i.assign(UNIVERSE);
+    }
   }
 }
 
@@ -532,8 +545,9 @@ template <typename ITV>
 inline void
 Box<ITV>::add_space_dimensions_and_embed(const dimension_type m) {
   // Adding no dimensions is a no-op.
-  if (m == 0)
+  if (m == 0) {
     return;
+  }
   check_space_dimension_overflow(m, max_space_dimension() - space_dimension(),
                                  "PPL::Box::",
                                  "add_space_dimensions_and_embed(m)",
@@ -549,8 +563,9 @@ template <typename ITV>
 inline void
 Box<ITV>::add_space_dimensions_and_project(const dimension_type m) {
   // Adding no dimensions is a no-op.
-  if (m == 0)
+  if (m == 0) {
     return;
+  }
   check_space_dimension_overflow(m, max_space_dimension() - space_dimension(),
                                  "PPL::Box::",
                                  "add_space_dimensions_and_project(m)",
@@ -565,18 +580,22 @@ template <typename ITV>
 bool
 operator==(const Box<ITV>& x, const Box<ITV>& y) {
   const dimension_type x_space_dim = x.space_dimension();
-  if (x_space_dim != y.space_dimension())
+  if (x_space_dim != y.space_dimension()) {
     return false;
-
-  if (x.is_empty())
+  }
+  
+  if (x.is_empty()) {
     return y.is_empty();
-
-  if (y.is_empty())
+  }
+  
+  if (y.is_empty()) {
     return x.is_empty();
-
+  }
+  
   for (dimension_type k = x_space_dim; k-- > 0; ) {
-    if (x.seq[k] != y.seq[k])
+    if (x.seq[k] != y.seq[k]) {
       return false;
+    }
   }
   return true;
 }
@@ -587,14 +606,15 @@ Box<ITV>::bounds(const Linear_Expression& expr, const bool from_above) const {
   // `expr' should be dimension-compatible with `*this'.
   const dimension_type expr_space_dim = expr.space_dimension();
   const dimension_type space_dim = space_dimension();
-  if (space_dim < expr_space_dim)
+  if (space_dim < expr_space_dim) {
     throw_dimension_incompatible((from_above
                                   ? "bounds_from_above(e)"
                                   : "bounds_from_below(e)"), "e", expr);
+  }
   // A zero-dimensional or empty Box bounds everything.
-  if (space_dim == 0 || is_empty())
+  if (space_dim == 0 || is_empty()) {
     return true;
-
+  }
   const int from_above_sign = from_above ? 1 : -1;
   // TODO: This loop can be optimized more, if needed, exploiting the
   // (possible) sparseness of expr.
@@ -603,15 +623,17 @@ Box<ITV>::bounds(const Linear_Expression& expr, const bool from_above) const {
     const Variable v = i.variable();
     switch (sgn(*i) * from_above_sign) {
     case 1:
-      if (seq[v.id()].upper_is_boundary_infinity())
+      if (seq[v.id()].upper_is_boundary_infinity()) {
         return false;
+      }
       break;
     case 0:
       PPL_UNREACHABLE;
       break;
     case -1:
-      if (seq[v.id()].lower_is_boundary_infinity())
+      if (seq[v.id()].lower_is_boundary_infinity()) {
         return false;
+      }
       break;
     }
   }
@@ -625,9 +647,10 @@ interval_relation(const ITV& i,
                   Coefficient_traits::const_reference numer,
                   Coefficient_traits::const_reference denom) {
 
-  if (i.is_universe())
+  if (i.is_universe()) {
     return Poly_Con_Relation::strictly_intersects();
-
+  }
+  
   PPL_DIRTY_TEMP(mpq_class, bound);
   assign_r(bound.get_num(), numer, ROUND_NOT_NEEDED);
   assign_r(bound.get_den(), denom, ROUND_NOT_NEEDED);
@@ -659,15 +682,18 @@ interval_relation(const ITV& i,
       case 1:
         return Poly_Con_Relation::is_disjoint();
       case 0:
-        if (i.lower_is_open())
+        if (i.lower_is_open()) {
           return Poly_Con_Relation::is_disjoint();
-        if (i.is_singleton())
+        }
+        if (i.is_singleton()) {
           return Poly_Con_Relation::is_included()
             && Poly_Con_Relation::saturates();
+        }
         return Poly_Con_Relation::strictly_intersects();
       case -1:
-        if (i.upper_is_boundary_infinity())
+        if (i.upper_is_boundary_infinity()) {
           return Poly_Con_Relation::strictly_intersects();
+        }
         else {
           assign_r(bound_diff, i.upper(), ROUND_NOT_NEEDED);
           sub_assign_r(bound_diff, bound_diff, bound, ROUND_NOT_NEEDED);
@@ -675,10 +701,12 @@ interval_relation(const ITV& i,
           case 1:
             return Poly_Con_Relation::strictly_intersects();
           case 0:
-            if (i.upper_is_open())
+            if (i.upper_is_open()) {
               return Poly_Con_Relation::is_disjoint();
-            else
+            }
+            else {
               return Poly_Con_Relation::strictly_intersects();
+            }
           case -1:
             return Poly_Con_Relation::is_disjoint();
           }
@@ -698,10 +726,12 @@ interval_relation(const ITV& i,
         return Poly_Con_Relation::strictly_intersects();
       case 0:
         if (constraint_type == Constraint::STRICT_INEQUALITY
-            || i.upper_is_open())
+            || i.upper_is_open()) {
           return Poly_Con_Relation::is_disjoint();
-        else
+        }
+        else {
           return Poly_Con_Relation::strictly_intersects();
+        }
       case -1:
         return Poly_Con_Relation::is_disjoint();
       }
@@ -716,22 +746,26 @@ interval_relation(const ITV& i,
         if (constraint_type == Constraint::NONSTRICT_INEQUALITY
             || i.lower_is_open()) {
           Poly_Con_Relation result = Poly_Con_Relation::is_included();
-          if (i.is_singleton())
+          if (i.is_singleton()) {
             result = result && Poly_Con_Relation::saturates();
+          }
           return result;
         }
         else {
           PPL_ASSERT(constraint_type == Constraint::STRICT_INEQUALITY
                  && !i.lower_is_open());
-          if (i.is_singleton())
+          if (i.is_singleton()) {
             return Poly_Con_Relation::is_disjoint()
               && Poly_Con_Relation::saturates();
-          else
+          }
+          else {
             return Poly_Con_Relation::strictly_intersects();
+          }
         }
       case -1:
-        if (i.upper_is_boundary_infinity())
+        if (i.upper_is_boundary_infinity()) {
           return Poly_Con_Relation::strictly_intersects();
+        }
         else {
           assign_r(bound_diff, i.upper(), ROUND_NOT_NEEDED);
           sub_assign_r(bound_diff, bound_diff, bound, ROUND_NOT_NEEDED);
@@ -740,10 +774,12 @@ interval_relation(const ITV& i,
             return Poly_Con_Relation::strictly_intersects();
           case 0:
             if (constraint_type == Constraint::STRICT_INEQUALITY
-                || i.upper_is_open())
+                || i.upper_is_open()) {
               return Poly_Con_Relation::is_disjoint();
-            else
+            }
+            else {
               return Poly_Con_Relation::strictly_intersects();
+            }
           case -1:
             return Poly_Con_Relation::is_disjoint();
           }
@@ -753,8 +789,9 @@ interval_relation(const ITV& i,
   }
   else {
     // `c' is an upper bound.
-    if (i.upper_is_boundary_infinity())
+    if (i.upper_is_boundary_infinity()) {
       return Poly_Con_Relation::strictly_intersects();
+    }
     else {
       assign_r(bound_diff, i.upper(), ROUND_NOT_NEEDED);
       sub_assign_r(bound_diff, bound_diff, bound, ROUND_NOT_NEEDED);
@@ -765,22 +802,26 @@ interval_relation(const ITV& i,
         if (constraint_type == Constraint::NONSTRICT_INEQUALITY
             || i.upper_is_open()) {
           Poly_Con_Relation result = Poly_Con_Relation::is_included();
-          if (i.is_singleton())
+          if (i.is_singleton()) {
             result = result && Poly_Con_Relation::saturates();
+          }
           return result;
         }
         else {
           PPL_ASSERT(constraint_type == Constraint::STRICT_INEQUALITY
                  && !i.upper_is_open());
-          if (i.is_singleton())
+          if (i.is_singleton()) {
             return Poly_Con_Relation::is_disjoint()
               && Poly_Con_Relation::saturates();
-          else
+          }
+          else {
             return Poly_Con_Relation::strictly_intersects();
+          }
         }
       case 1:
-        if (i.lower_is_boundary_infinity())
+        if (i.lower_is_boundary_infinity()) {
           return Poly_Con_Relation::strictly_intersects();
+        }
         else {
           assign_r(bound_diff, i.lower(), ROUND_NOT_NEEDED);
           sub_assign_r(bound_diff, bound_diff, bound, ROUND_NOT_NEEDED);
@@ -789,10 +830,12 @@ interval_relation(const ITV& i,
             return Poly_Con_Relation::strictly_intersects();
           case 0:
             if (constraint_type == Constraint::STRICT_INEQUALITY
-                || i.lower_is_open())
+                || i.lower_is_open()) {
               return Poly_Con_Relation::is_disjoint();
-            else
+            }
+            else {
               return Poly_Con_Relation::strictly_intersects();
+            }
           case 1:
             return Poly_Con_Relation::is_disjoint();
           }
@@ -813,20 +856,23 @@ Box<ITV>::relation_with(const Congruence& cg) const {
   const dimension_type space_dim = space_dimension();
 
   // Dimension-compatibility check.
-  if (cg_space_dim > space_dim)
+  if (cg_space_dim > space_dim) {
     throw_dimension_incompatible("relation_with(cg)", cg);
-
-  if (is_empty())
+  }
+  if (is_empty()) {
     return Poly_Con_Relation::saturates()
       && Poly_Con_Relation::is_included()
       && Poly_Con_Relation::is_disjoint();
-
+  }
+  
   if (space_dim == 0) {
-    if (cg.is_inconsistent())
+    if (cg.is_inconsistent()) {
       return Poly_Con_Relation::is_disjoint();
-    else
+    }
+    else {
       return Poly_Con_Relation::saturates()
         && Poly_Con_Relation::is_included();
+    }
   }
 
   if (cg.is_equality()) {
@@ -849,9 +895,9 @@ Box<ITV>::relation_with(const Congruence& cg) const {
     r += t;
   }
 
-  if (r.lower_is_boundary_infinity() || r.upper_is_boundary_infinity())
+  if (r.lower_is_boundary_infinity() || r.upper_is_boundary_infinity()) {
     return Poly_Con_Relation::strictly_intersects();
-
+  }
 
   // Find the value that satisfies the congruence and is
   // nearest to the lower bound such that the point lies on or above it.
@@ -863,8 +909,9 @@ Box<ITV>::relation_with(const Congruence& cg) const {
   v = cg.inhomogeneous_term() % mod;
   assign_r(lower, r.lower(), ROUND_DOWN);
   v -= ((lower / mod) * mod);
-  if (v + lower > 0)
+  if (v + lower > 0) {
     v -= mod;
+  }
   return interval_relation(r, Constraint::EQUALITY, v);
 }
 
@@ -875,52 +922,61 @@ Box<ITV>::relation_with(const Constraint& c) const {
   const dimension_type space_dim = space_dimension();
 
   // Dimension-compatibility check.
-  if (c_space_dim > space_dim)
+  if (c_space_dim > space_dim) {
     throw_dimension_incompatible("relation_with(c)", c);
-
-  if (is_empty())
+  }
+  
+  if (is_empty()) {
     return Poly_Con_Relation::saturates()
       && Poly_Con_Relation::is_included()
       && Poly_Con_Relation::is_disjoint();
-
+  }
+  
   if (space_dim == 0) {
     if ((c.is_equality() && c.inhomogeneous_term() != 0)
-        || (c.is_inequality() && c.inhomogeneous_term() < 0))
+        || (c.is_inequality() && c.inhomogeneous_term() < 0)) {
       return Poly_Con_Relation::is_disjoint();
-    else if (c.is_strict_inequality() && c.inhomogeneous_term() == 0)
+    }
+    else if (c.is_strict_inequality() && c.inhomogeneous_term() == 0) {
       // The constraint 0 > 0 implicitly defines the hyperplane 0 = 0;
       // thus, the zero-dimensional point also saturates it.
       return Poly_Con_Relation::saturates()
         && Poly_Con_Relation::is_disjoint();
-    else if (c.is_equality() || c.inhomogeneous_term() == 0)
+    }
+    else if (c.is_equality() || c.inhomogeneous_term() == 0) {
       return Poly_Con_Relation::saturates()
         && Poly_Con_Relation::is_included();
-    else
+    }
+    else {
       // The zero-dimensional point saturates
       // neither the positivity constraint 1 >= 0,
       // nor the strict positivity constraint 1 > 0.
       return Poly_Con_Relation::is_included();
+    }
   }
 
   dimension_type c_num_vars = 0;
   dimension_type c_only_var = 0;
 
-  if (Box_Helpers::extract_interval_constraint(c, c_num_vars, c_only_var))
-    if (c_num_vars == 0)
+  if (Box_Helpers::extract_interval_constraint(c, c_num_vars, c_only_var)) {
+    if (c_num_vars == 0) {
       // c is a trivial constraint.
       switch (sgn(c.inhomogeneous_term())) {
       case -1:
         return Poly_Con_Relation::is_disjoint();
       case 0:
-        if (c.is_strict_inequality())
+        if (c.is_strict_inequality()) {
           return Poly_Con_Relation::saturates()
             && Poly_Con_Relation::is_disjoint();
-        else
+        }
+        else {
           return Poly_Con_Relation::saturates()
             && Poly_Con_Relation::is_included();
+        }
       case 1:
         return Poly_Con_Relation::is_included();
       }
+    }
     else {
       // c is an interval constraint.
       return interval_relation(seq[c_only_var],
@@ -928,6 +984,7 @@ Box<ITV>::relation_with(const Constraint& c) const {
                                c.inhomogeneous_term(),
                                c.coefficient(Variable(c_only_var)));
     }
+  }
   else {
     // Deal with a non-trivial and non-interval constraint.
     PPL_DIRTY_TEMP(Rational_Interval, r);
@@ -961,25 +1018,29 @@ Box<ITV>::relation_with(const Generator& g) const {
   const dimension_type g_space_dim = g.space_dimension();
 
   // Dimension-compatibility check.
-  if (space_dim < g_space_dim)
+  if (space_dim < g_space_dim) {
     throw_dimension_incompatible("relation_with(g)", g);
-
+  }
+  
   // The empty box cannot subsume a generator.
-  if (is_empty())
+  if (is_empty()) {
     return Poly_Gen_Relation::nothing();
-
+  }
+  
   // A universe box in a zero-dimensional space subsumes
   // all the generators of a zero-dimensional space.
-  if (space_dim == 0)
+  if (space_dim == 0) {
     return Poly_Gen_Relation::subsumes();
-
+  }
+  
   if (g.is_line_or_ray()) {
     if (g.is_line()) {
       const Generator::expr_type& e = g.expression();
       for (Generator::expr_type::const_iterator i = e.begin(), i_end = e.end();
            i != i_end; ++i) {
-        if (!seq[i.variable().id()].is_universe())
+        if (!seq[i.variable().id()].is_universe()) {
           return Poly_Gen_Relation::nothing();
+        }
       }
       return Poly_Gen_Relation::subsumes();
     }
@@ -991,15 +1052,17 @@ Box<ITV>::relation_with(const Generator& g) const {
         const Variable v = i.variable();
         switch (sgn(*i)) {
         case 1:
-          if (!seq[v.id()].upper_is_boundary_infinity())
+          if (!seq[v.id()].upper_is_boundary_infinity()) {
             return Poly_Gen_Relation::nothing();
+          }
           break;
         case 0:
           PPL_UNREACHABLE;
           break;
         case -1:
-          if (!seq[v.id()].lower_is_boundary_infinity())
+          if (!seq[v.id()].lower_is_boundary_infinity()) {
             return Poly_Gen_Relation::nothing();
+          }
           break;
         }
       }
@@ -1016,8 +1079,9 @@ Box<ITV>::relation_with(const Generator& g) const {
   // Generator::expr_type::const_iterator.
   for (dimension_type i = g_space_dim; i-- > 0; ) {
     const ITV& seq_i = seq[i];
-    if (seq_i.is_universe())
+    if (seq_i.is_universe()) {
       continue;
+    }
     assign_r(g_coord.get_num(), g.coefficient(Variable(i)), ROUND_NOT_NEEDED);
     assign_r(g_coord.get_den(), g_divisor, ROUND_NOT_NEEDED);
     g_coord.canonicalize();
@@ -1026,11 +1090,13 @@ Box<ITV>::relation_with(const Generator& g) const {
       assign_r(bound, seq_i.lower(), ROUND_NOT_NEEDED);
       if (g_coord <= bound) {
         if (seq_i.lower_is_open()) {
-          if (g.is_point() || g_coord != bound)
+          if (g.is_point() || g_coord != bound) {
             return Poly_Gen_Relation::nothing();
+          }
         }
-        else if (g_coord != bound)
+        else if (g_coord != bound) {
           return Poly_Gen_Relation::nothing();
+        }
       }
     }
     // Check upper bound.
@@ -1038,11 +1104,13 @@ Box<ITV>::relation_with(const Generator& g) const {
       assign_r(bound, seq_i.upper(), ROUND_NOT_NEEDED);
       if (g_coord >= bound) {
         if (seq_i.upper_is_open()) {
-          if (g.is_point() || g_coord != bound)
+          if (g.is_point() || g_coord != bound) {
             return Poly_Gen_Relation::nothing();
+          }
         }
-        else if (g_coord != bound)
+        else if (g_coord != bound) {
           return Poly_Gen_Relation::nothing();
+        }
       }
     }
   }
@@ -1059,14 +1127,17 @@ Box<ITV>::max_min(const Linear_Expression& expr,
   // `expr' should be dimension-compatible with `*this'.
   const dimension_type space_dim = space_dimension();
   const dimension_type expr_space_dim = expr.space_dimension();
-  if (space_dim < expr_space_dim)
+  if (space_dim < expr_space_dim) {
     throw_dimension_incompatible((maximize
                                   ? "maximize(e, ...)"
                                   : "minimize(e, ...)"), "e", expr);
+  }
+  
   // Deal with zero-dim Box first.
   if (space_dim == 0) {
-    if (marked_empty())
+    if (marked_empty()) {
       return false;
+    }
     else {
       ext_n = expr.inhomogeneous_term();
       ext_d = 1;
@@ -1076,9 +1147,10 @@ Box<ITV>::max_min(const Linear_Expression& expr,
   }
 
   // For an empty Box we simply return false.
-  if (is_empty())
+  if (is_empty()) {
     return false;
-
+  }
+  
   PPL_DIRTY_TEMP(mpq_class, result);
   assign_r(result, expr.inhomogeneous_term(), ROUND_NOT_NEEDED);
   bool is_included = true;
@@ -1095,19 +1167,22 @@ Box<ITV>::max_min(const Linear_Expression& expr,
         return false;
       assign_r(bound_i, seq_i.upper(), ROUND_NOT_NEEDED);
       add_mul_assign_r(result, bound_i, expr_i, ROUND_NOT_NEEDED);
-      if (seq_i.upper_is_open())
+      if (seq_i.upper_is_open()) {
         is_included = false;
+      }
       break;
     case 0:
       PPL_UNREACHABLE;
       break;
     case -1:
-      if (seq_i.lower_is_boundary_infinity())
+      if (seq_i.lower_is_boundary_infinity()) {
         return false;
+      }
       assign_r(bound_i, seq_i.lower(), ROUND_NOT_NEEDED);
       add_mul_assign_r(result, bound_i, expr_i, ROUND_NOT_NEEDED);
-      if (seq_i.lower_is_open())
+      if (seq_i.lower_is_open()) {
         is_included = false;
+      }
       break;
     }
   }
@@ -1126,9 +1201,9 @@ Box<ITV>::max_min(const Linear_Expression& expr,
                   Coefficient& ext_n, Coefficient& ext_d,
                   bool& included,
                   Generator& g) const {
-  if (!max_min(expr, maximize, ext_n, ext_d, included))
+  if (!max_min(expr, maximize, ext_n, ext_d, included)) {
     return false;
-
+  }
   // Compute generator `g'.
   Linear_Expression g_expr;
   PPL_DIRTY_TEMP(Coefficient, g_divisor);
@@ -1151,11 +1226,12 @@ Box<ITV>::max_min(const Linear_Expression& expr,
       // If 0 belongs to the interval, choose it
       // (and directly proceed to the next iteration).
       // FIXME: name qualification issue.
-      if (seq_i.contains(0))
+      if (seq_i.contains(0)) {
         continue;
-      if (!seq_i.lower_is_boundary_infinity())
-        if (seq_i.lower_is_open())
-          if (!seq_i.upper_is_boundary_infinity())
+      }
+      if (!seq_i.lower_is_boundary_infinity()) {
+        if (seq_i.lower_is_open()) {
+          if (!seq_i.upper_is_boundary_infinity()) {
             if (seq_i.upper_is_open()) {
               // Bounded and open interval: compute middle point.
               assign_r(g_coord, seq_i.lower(), ROUND_NOT_NEEDED);
@@ -1164,24 +1240,30 @@ Box<ITV>::max_min(const Linear_Expression& expr,
               g_coord += q_seq_i_upper;
               g_coord /= 2;
             }
-            else
+            else {
               // The upper bound is in the interval.
               assign_r(g_coord, seq_i.upper(), ROUND_NOT_NEEDED);
+            }
+          }
           else {
             // Lower is open, upper is unbounded.
             assign_r(g_coord, seq_i.lower(), ROUND_NOT_NEEDED);
             ++g_coord;
           }
-        else
+        }
+        else {
           // The lower bound is in the interval.
           assign_r(g_coord, seq_i.lower(), ROUND_NOT_NEEDED);
+        }
+      }
       else {
         // Lower is unbounded, hence upper is bounded
         // (since we know that 0 does not belong to the interval).
         PPL_ASSERT(!seq_i.upper_is_boundary_infinity());
         assign_r(g_coord, seq_i.upper(), ROUND_NOT_NEEDED);
-        if (seq_i.upper_is_open())
+        if (seq_i.upper_is_open()) {
           --g_coord;
+        }
       }
       break;
     case -1:
@@ -1208,21 +1290,25 @@ bool
 Box<ITV>::contains(const Box& y) const {
   const Box& x = *this;
   // Dimension-compatibility check.
-  if (x.space_dimension() != y.space_dimension())
+  if (x.space_dimension() != y.space_dimension()) {
     x.throw_dimension_incompatible("contains(y)", y);
-
+  }
+  
   // If `y' is empty, then `x' contains `y'.
-  if (y.is_empty())
+  if (y.is_empty()) {
     return true;
-
+  }
+  
   // If `x' is empty, then `x' cannot contain `y'.
-  if (x.is_empty())
+  if (x.is_empty()) {
     return false;
-
+  }
+  
   for (dimension_type k = x.seq.size(); k-- > 0; ) {
     // FIXME: fix this name qualification issue.
-    if (!x.seq[k].contains(y.seq[k]))
+    if (!x.seq[k].contains(y.seq[k])) {
       return false;
+    }
   }
   return true;
 }
@@ -1232,18 +1318,21 @@ bool
 Box<ITV>::is_disjoint_from(const Box& y) const {
   const Box& x = *this;
   // Dimension-compatibility check.
-  if (x.space_dimension() != y.space_dimension())
+  if (x.space_dimension() != y.space_dimension()) {
     x.throw_dimension_incompatible("is_disjoint_from(y)", y);
-
+  }
+  
   // If any of `x' or `y' is marked empty, then they are disjoint.
   // Note: no need to use `is_empty', as the following loop is anyway correct.
-  if (x.marked_empty() || y.marked_empty())
+  if (x.marked_empty() || y.marked_empty()) {
     return true;
-
+  }
+  
   for (dimension_type k = x.seq.size(); k-- > 0; ) {
     // FIXME: fix this name qualification issue.
-    if (x.seq[k].is_disjoint_from(y.seq[k]))
+    if (x.seq[k].is_disjoint_from(y.seq[k])) {
       return true;
+    }
   }
   return false;
 }
@@ -1254,12 +1343,14 @@ Box<ITV>::upper_bound_assign_if_exact(const Box& y) {
   Box& x = *this;
 
   // Dimension-compatibility check.
-  if (x.space_dimension() != y.space_dimension())
+  if (x.space_dimension() != y.space_dimension()) {
     x.throw_dimension_incompatible("upper_bound_assign_if_exact(y)", y);
-
+  }
+  
   // The lub of a box with an empty box is equal to the first box.
-  if (y.is_empty())
+  if (y.is_empty()) {
     return true;
+  }
   if (x.is_empty()) {
     x = y;
     return true;
@@ -1272,23 +1363,28 @@ Box<ITV>::upper_bound_assign_if_exact(const Box& y) {
     const ITV& x_seq_i = x.seq[i];
     const ITV& y_seq_i = y.seq[i];
 
-    if (!x_seq_i.can_be_exactly_joined_to(y_seq_i))
+    if (!x_seq_i.can_be_exactly_joined_to(y_seq_i)) {
       return false;
-
+    }
+    
     // Note: the use of `y_i_does_not_contain_x_i' is needed
     // because we want to temporarily preserve the old value
     // of `y_j_does_not_contain_x_j'.
     bool y_i_does_not_contain_x_i = !y_seq_i.contains(x_seq_i);
-    if (y_i_does_not_contain_x_i && x_j_does_not_contain_y_j)
+    if (y_i_does_not_contain_x_i && x_j_does_not_contain_y_j) {
       return false;
-    if (!x_seq_i.contains(y_seq_i)) {
-      if (y_j_does_not_contain_x_j)
-        return false;
-      else
-        x_j_does_not_contain_y_j = true;
     }
-    if (y_i_does_not_contain_x_i)
+    if (!x_seq_i.contains(y_seq_i)) {
+      if (y_j_does_not_contain_x_j) {
+        return false;
+      }
+      else {
+        x_j_does_not_contain_y_j = true;
+      }
+    }
+    if (y_i_does_not_contain_x_i) {
       y_j_does_not_contain_x_j = true;
+    }
   }
 
   // The upper bound is exact: compute it into *this.
@@ -1316,8 +1412,9 @@ Box<ITV>::OK() const {
   // A box that is not marked empty must have meaningful intervals.
   if (!marked_empty()) {
     for (dimension_type k = seq.size(); k-- > 0; ) {
-      if (!seq[k].OK())
+      if (!seq[k].OK()) {
         return false;
+      }
     }
   }
 
@@ -1329,16 +1426,19 @@ dimension_type
 Box<ITV>::affine_dimension() const {
   dimension_type d = space_dimension();
   // A zero-space-dim box always has affine dimension zero.
-  if (d == 0)
+  if (d == 0) {
     return 0;
-
+  }
+  
   // An empty box has affine dimension zero.
-  if (is_empty())
+  if (is_empty()) {
     return 0;
-
+  }
+  
   for (dimension_type k = d; k-- > 0; ) {
-    if (seq[k].is_singleton())
+    if (seq[k].is_singleton()) {
       --d;
+    }
   }
 
   return d;
@@ -1362,11 +1462,13 @@ Box<ITV>::check_empty() const {
 template <typename ITV>
 bool
 Box<ITV>::is_universe() const {
-  if (marked_empty())
+  if (marked_empty()) {
     return false;
+  }
   for (dimension_type k = seq.size(); k-- > 0; ) {
-    if (!seq[k].is_universe())
+    if (!seq[k].is_universe()) {
       return false;
+    }
   }
   return true;
 }
@@ -1374,12 +1476,14 @@ Box<ITV>::is_universe() const {
 template <typename ITV>
 bool
 Box<ITV>::is_topologically_closed() const {
-  if (ITV::is_always_topologically_closed() || is_empty())
+  if (ITV::is_always_topologically_closed() || is_empty()) {
     return true;
-
+  }
+  
   for (dimension_type k = seq.size(); k-- > 0; ) {
-    if (!seq[k].is_topologically_closed())
+    if (!seq[k].is_topologically_closed()) {
       return false;
+    }
   }
   return true;
 }
@@ -1387,11 +1491,13 @@ Box<ITV>::is_topologically_closed() const {
 template <typename ITV>
 bool
 Box<ITV>::is_discrete() const {
-  if (is_empty())
+  if (is_empty()) {
     return true;
+  }
   for (dimension_type k = seq.size(); k-- > 0; ) {
-    if (!seq[k].is_singleton())
+    if (!seq[k].is_singleton()) {
       return false;
+    }
   }
   return true;
 }
@@ -1399,11 +1505,13 @@ Box<ITV>::is_discrete() const {
 template <typename ITV>
 bool
 Box<ITV>::is_bounded() const {
-  if (is_empty())
+  if (is_empty()) {
     return true;
+  }
   for (dimension_type k = seq.size(); k-- > 0; ) {
-    if (!seq[k].is_bounded())
+    if (!seq[k].is_bounded()) {
       return false;
+    }
   }
   return true;
 }
@@ -1411,11 +1519,13 @@ Box<ITV>::is_bounded() const {
 template <typename ITV>
 bool
 Box<ITV>::contains_integer_point() const {
-  if (marked_empty())
+  if (marked_empty()) {
     return false;
+  }
   for (dimension_type k = seq.size(); k-- > 0; ) {
-    if (!seq[k].contains_integer_point())
+    if (!seq[k].contains_integer_point()) {
       return false;
+    }
   }
   return true;
 }
@@ -1427,9 +1537,10 @@ Box<ITV>::frequency(const Linear_Expression& expr,
                   Coefficient& val_n, Coefficient& val_d) const {
   dimension_type space_dim = space_dimension();
   // The dimension of `expr' must be at most the dimension of *this.
-  if (space_dim < expr.space_dimension())
+  if (space_dim < expr.space_dimension()) {
     throw_dimension_incompatible("frequency(e, ...)", "e", expr);
-
+  }
+  
   // Check if `expr' has a constant value.
   // If it is constant, set the frequency `freq_n' to 0
   // and return true. Otherwise the values for \p expr
@@ -1438,8 +1549,9 @@ Box<ITV>::frequency(const Linear_Expression& expr,
   // Space dimension is 0: if empty, then return false;
   // otherwise the frequency is 0 and the value is the inhomogeneous term.
   if (space_dim == 0) {
-    if (is_empty())
+    if (is_empty()) {
       return false;
+    }
     freq_n = 0;
     freq_d = 1;
     val_n = expr.inhomogeneous_term();
@@ -1448,9 +1560,10 @@ Box<ITV>::frequency(const Linear_Expression& expr,
   }
 
   // For an empty Box, we simply return false.
-  if (is_empty())
+  if (is_empty()) {
     return false;
-
+  }
+  
   // The Box has at least 1 dimension and is not empty.
   PPL_DIRTY_TEMP_COEFFICIENT(numer);
   PPL_DIRTY_TEMP_COEFFICIENT(denom);
@@ -1492,11 +1605,13 @@ bool
 Box<ITV>::constrains(Variable var) const {
   // `var' should be one of the dimensions of the polyhedron.
   const dimension_type var_space_dim = var.space_dimension();
-  if (space_dimension() < var_space_dim)
+  if (space_dimension() < var_space_dim) {
     throw_dimension_incompatible("constrains(v)", "v", var);
-
-  if (marked_empty() || !seq[var_space_dim-1].is_universe())
+  }
+  
+  if (marked_empty() || !seq[var_space_dim-1].is_universe()) {
     return true;
+  }
   // Now force an emptiness check.
   return is_empty();
 }
@@ -1507,26 +1622,29 @@ Box<ITV>::unconstrain(const Variables_Set& vars) {
   // The cylindrification with respect to no dimensions is a no-op.
   // This case also captures the only legal cylindrification
   // of a box in a 0-dim space.
-  if (vars.empty())
+  if (vars.empty()) {
     return;
-
+  }
+  
   // Dimension-compatibility check.
   const dimension_type min_space_dim = vars.space_dimension();
-  if (space_dimension() < min_space_dim)
+  if (space_dimension() < min_space_dim) {
     throw_dimension_incompatible("unconstrain(vs)", min_space_dim);
-
+  }
   // If the box is already empty, there is nothing left to do.
-  if (marked_empty())
+  if (marked_empty()) {
     return;
-
+  }
+  
   // Here the box might still be empty (but we haven't detected it yet):
   // check emptiness of the interval for each of the variables in
   // `vars' before cylindrification.
   for (Variables_Set::const_iterator vsi = vars.begin(),
          vsi_end = vars.end(); vsi != vsi_end; ++vsi) {
     ITV& seq_vsi = seq[*vsi];
-    if (!seq_vsi.is_empty())
+    if (!seq_vsi.is_empty()) {
       seq_vsi.assign(UNIVERSE);
+    }
     else {
       set_empty();
       break;
@@ -1538,9 +1656,10 @@ Box<ITV>::unconstrain(const Variables_Set& vars) {
 template <typename ITV>
 void
 Box<ITV>::topological_closure_assign() {
-  if (ITV::is_always_topologically_closed() || is_empty())
+  if (ITV::is_always_topologically_closed() || is_empty()) {
     return;
-
+  }
+  
   for (dimension_type k = seq.size(); k-- > 0; ) {
     seq[k].topological_closure_assign();
   }
@@ -1578,8 +1697,9 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
 
   // Wrapping no variable only requires refining with *cs_p, if any.
   if (vars.empty()) {
-    if (cs_p != 0)
+    if (cs_p != 0) {
       refine_with_constraints(*cs_p);
+    }
     return;
   }
 
@@ -1595,9 +1715,10 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
   }
 
   // Wrapping an empty polyhedron is a no-op.
-  if (x.is_empty())
+  if (x.is_empty()) {
     return;
-
+  }
+  
   // FIXME: temporarily (ab-) using Coefficient.
   // Set `min_value' and `max_value' to the minimum and maximum values
   // a variable of width `w' and signedness `s' can take.
@@ -1730,12 +1851,14 @@ template <typename ITV>
 void
 Box<ITV>::drop_some_non_integer_points(Complexity_Class) {
   if (std::numeric_limits<typename ITV::boundary_type>::is_integer
-      && !ITV::info_type::store_open)
+      && !ITV::info_type::store_open) {
     return;
-
-  if (marked_empty())
+  }
+  
+  if (marked_empty()) {
     return;
-
+  }
+  
   for (dimension_type k = seq.size(); k-- > 0; ) {
     seq[k].drop_some_non_integer_points();
   }
@@ -1749,17 +1872,19 @@ Box<ITV>::drop_some_non_integer_points(const Variables_Set& vars,
                                        Complexity_Class) {
   // Dimension-compatibility check.
   const dimension_type min_space_dim = vars.space_dimension();
-  if (space_dimension() < min_space_dim)
+  if (space_dimension() < min_space_dim) {
     throw_dimension_incompatible("drop_some_non_integer_points(vs, cmpl)",
                                  min_space_dim);
-
+  }
   if (std::numeric_limits<typename ITV::boundary_type>::is_integer
-      && !ITV::info_type::store_open)
+      && !ITV::info_type::store_open) {
     return;
-
-  if (marked_empty())
+  }
+  
+  if (marked_empty()) {
     return;
-
+  }
+  
   for (Variables_Set::const_iterator v_i = vars.begin(),
          v_end = vars.end(); v_i != v_end; ++v_i) {
     seq[*v_i].drop_some_non_integer_points();
@@ -1775,12 +1900,14 @@ Box<ITV>::intersection_assign(const Box& y) {
   const dimension_type space_dim = space_dimension();
 
   // Dimension-compatibility check.
-  if (space_dim != y.space_dimension())
+  if (space_dim != y.space_dimension()) {
     x.throw_dimension_incompatible("intersection_assign(y)", y);
-
+  }
+  
   // If one of the two boxes is empty, the intersection is empty.
-  if (x.marked_empty())
+  if (x.marked_empty()) {
     return;
+  }
   if (y.marked_empty()) {
     x.set_empty();
     return;
@@ -1788,9 +1915,10 @@ Box<ITV>::intersection_assign(const Box& y) {
 
   // If both boxes are zero-dimensional, then at this point they are
   // necessarily non-empty, so that their intersection is non-empty too.
-  if (space_dim == 0)
+  if (space_dim == 0) {
     return;
-
+  }
+  
   // FIXME: here we may conditionally exploit a capability of the
   // underlying interval to eagerly detect empty results.
   reset_empty_up_to_date();
@@ -1808,12 +1936,14 @@ Box<ITV>::upper_bound_assign(const Box& y) {
   Box& x = *this;
 
   // Dimension-compatibility check.
-  if (x.space_dimension() != y.space_dimension())
+  if (x.space_dimension() != y.space_dimension()) {
     x.throw_dimension_incompatible("upper_bound_assign(y)", y);
-
+  }
+  
   // The lub of a box with an empty box is equal to the first box.
-  if (y.is_empty())
+  if (y.is_empty()) {
     return;
+  }
   if (x.is_empty()) {
     x = y;
     return;
@@ -1834,12 +1964,14 @@ Box<ITV>::concatenate_assign(const Box& y) {
   const dimension_type y_space_dim = y.space_dimension();
 
   // If `y' is marked empty, the result will be empty too.
-  if (y.marked_empty())
+  if (y.marked_empty()) {
     x.set_empty();
+  }
 
   // If `y' is a 0-dim space box, there is nothing left to do.
-  if (y_space_dim == 0)
+  if (y_space_dim == 0) {
     return;
+  }
   // The resulting space dimension must be at most the maximum.
   check_space_dimension_overflow(y.space_dimension(),
                                  max_space_dimension() - space_dimension(),
@@ -1863,9 +1995,10 @@ Box<ITV>::concatenate_assign(const Box& y) {
   std::copy(y.seq.begin(), y.seq.end(),
             std::back_insert_iterator<Sequence>(x.seq));
   // Update the `empty_up_to_date' flag.
-  if (!y.status.test_empty_up_to_date())
+  if (!y.status.test_empty_up_to_date()) {
     reset_empty_up_to_date();
-
+  }
+  
   PPL_ASSERT(x.OK());
 }
 
@@ -1875,9 +2008,10 @@ Box<ITV>::difference_assign(const Box& y) {
   const dimension_type space_dim = space_dimension();
 
   // Dimension-compatibility check.
-  if (space_dim != y.space_dimension())
+  if (space_dim != y.space_dimension()) {
     throw_dimension_incompatible("difference_assign(y)", y);
-
+  }
+  
   Box& x = *this;
   if (x.is_empty() || y.is_empty())
     return;
@@ -1891,8 +2025,9 @@ Box<ITV>::difference_assign(const Box& y) {
 
   case 1:
     x.seq[0].difference_assign(y.seq[0]);
-    if (x.seq[0].is_empty())
+    if (x.seq[0].is_empty()) {
       x.set_empty();
+    }
     break;
 
   default:
@@ -1901,10 +2036,12 @@ Box<ITV>::difference_assign(const Box& y) {
       dimension_type number_non_contained = 0;
       for (dimension_type i = space_dim; i-- > 0; ) {
         if (!y.seq[i].contains(x.seq[i])) {
-          if (++number_non_contained == 1)
+          if (++number_non_contained == 1) {
             index_non_contained = i;
-          else
+          }
+          else {
             break;
+          }
         }
       }
 
@@ -1916,8 +2053,9 @@ Box<ITV>::difference_assign(const Box& y) {
       case 1:
         x.seq[index_non_contained]
           .difference_assign(y.seq[index_non_contained]);
-        if (x.seq[index_non_contained].is_empty())
+        if (x.seq[index_non_contained].is_empty()) {
           x.set_empty();
+        }
         break;
       default:
         // Nothing to do: the difference is `x'.
@@ -1935,17 +2073,19 @@ Box<ITV>::simplify_using_context_assign(const Box& y) {
   Box& x = *this;
   const dimension_type num_dims = x.space_dimension();
   // Dimension-compatibility check.
-  if (num_dims != y.space_dimension())
+  if (num_dims != y.space_dimension()) {
     x.throw_dimension_incompatible("simplify_using_context_assign(y)", y);
-
+  }
+  
   // Filter away the zero-dimensional case.
   if (num_dims == 0) {
     if (y.marked_empty()) {
       x.set_nonempty();
       return false;
     }
-    else
+    else {
       return !x.marked_empty();
+    }
   }
 
   // Filter away the case when `y' is empty.
@@ -1960,8 +2100,9 @@ Box<ITV>::simplify_using_context_assign(const Box& y) {
   if (x.is_empty()) {
     // Find in `y' a non-universe interval, if any.
     for (dimension_type i = 0; i < num_dims; ++i) {
-      if (y.seq[i].is_universe())
+      if (y.seq[i].is_universe()) {
         x.seq[i].assign(UNIVERSE);
+      }
       else {
         // Set x.seq[i] so as to contradict y.seq[i], if possible.
         ITV& seq_i = x.seq[i];
@@ -2015,13 +2156,15 @@ Box<ITV>::time_elapse_assign(const Box& y) {
   const dimension_type x_space_dim = x.space_dimension();
 
   // Dimension-compatibility check.
-  if (x_space_dim != y.space_dimension())
+  if (x_space_dim != y.space_dimension()) {
     x.throw_dimension_incompatible("time_elapse_assign(y)", y);
-
+  }
+  
   // Dealing with the zero-dimensional case.
   if (x_space_dim == 0) {
-    if (y.marked_empty())
+    if (y.marked_empty()) {
       x.set_empty();
+    }
     return;
   }
 
@@ -2036,12 +2179,16 @@ Box<ITV>::time_elapse_assign(const Box& y) {
   for (dimension_type i = x_space_dim; i-- > 0; ) {
     ITV& x_seq_i = x.seq[i];
     const ITV& y_seq_i = y.seq[i];
-    if (!x_seq_i.lower_is_boundary_infinity())
-      if (y_seq_i.lower_is_boundary_infinity() || y_seq_i.lower() < 0)
+    if (!x_seq_i.lower_is_boundary_infinity()) {
+      if (y_seq_i.lower_is_boundary_infinity() || y_seq_i.lower() < 0) {
         x_seq_i.lower_extend();
-    if (!x_seq_i.upper_is_boundary_infinity())
-      if (y_seq_i.upper_is_boundary_infinity() || y_seq_i.upper() > 0)
+      }
+    }
+    if (!x_seq_i.upper_is_boundary_infinity()) {
+      if (y_seq_i.upper_is_boundary_infinity() || y_seq_i.upper() > 0) {
         x_seq_i.upper_extend();
+      }
+    }
   }
   PPL_ASSERT(x.OK());
 }
@@ -2061,10 +2208,11 @@ Box<ITV>::remove_space_dimensions(const Variables_Set& vars) {
 
   // Dimension-compatibility check.
   const dimension_type vsi_space_dim = vars.space_dimension();
-  if (old_space_dim < vsi_space_dim)
+  if (old_space_dim < vsi_space_dim) {
     throw_dimension_incompatible("remove_space_dimensions(vs)",
                                  vsi_space_dim);
-
+  }
+  
   const dimension_type new_space_dim = old_space_dim - vars.size();
 
   // If the box is empty (this must be detected), then resizing is all
@@ -2129,9 +2277,10 @@ template <typename Partial_Function>
 void
 Box<ITV>::map_space_dimensions(const Partial_Function& pfunc) {
   const dimension_type space_dim = space_dimension();
-  if (space_dim == 0)
+  if (space_dim == 0) {
     return;
-
+  }
+  
   if (pfunc.has_empty_codomain()) {
     // All dimensions vanish: the box becomes zero_dimensional.
     remove_higher_space_dimensions(0);
@@ -2150,8 +2299,9 @@ Box<ITV>::map_space_dimensions(const Partial_Function& pfunc) {
   // Map the intervals, exchanging the indexes.
   for (dimension_type i = 0; i < space_dim; ++i) {
     dimension_type new_i;
-    if (pfunc.maps(i, new_i))
+    if (pfunc.maps(i, new_i)) {
       swap(seq[i], tmp.seq[new_i]);
+    }
   }
   m_swap(tmp);
   PPL_ASSERT(OK());
@@ -2163,23 +2313,26 @@ Box<ITV>::fold_space_dimensions(const Variables_Set& vars,
                                 const Variable dest) {
   const dimension_type space_dim = space_dimension();
   // `dest' should be one of the dimensions of the box.
-  if (dest.space_dimension() > space_dim)
+  if (dest.space_dimension() > space_dim) {
     throw_dimension_incompatible("fold_space_dimensions(vs, v)", "v", dest);
-
+  }
+  
   // The folding of no dimensions is a no-op.
-  if (vars.empty())
+  if (vars.empty()) {
     return;
-
+  }
+  
   // All variables in `vars' should be dimensions of the box.
-  if (vars.space_dimension() > space_dim)
+  if (vars.space_dimension() > space_dim) {
     throw_dimension_incompatible("fold_space_dimensions(vs, v)",
                                  vars.space_dimension());
-
+  }
   // Moreover, `dest.id()' should not occur in `vars'.
-  if (vars.find(dest.id()) != vars.end())
+  if (vars.find(dest.id()) != vars.end()) {
     throw_invalid_argument("fold_space_dimensions(vs, v)",
                            "v should not occur in vs");
-
+  }
+  
   // Note: the check for emptiness is needed for correctness.
   if (!is_empty()) {
     // Join the interval corresponding to variable `dest' with the intervals
@@ -2201,28 +2354,32 @@ Box<ITV>::add_constraint_no_check(const Constraint& c) {
   dimension_type c_num_vars = 0;
   dimension_type c_only_var = 0;
   // Throw an exception if c is not an interval constraints.
-  if (!Box_Helpers::extract_interval_constraint(c, c_num_vars, c_only_var))
+  if (!Box_Helpers::extract_interval_constraint(c, c_num_vars, c_only_var)) {
     throw_invalid_argument("add_constraint(c)",
                            "c is not an interval constraint");
-
+  }
+  
   // Throw an exception if c is a nontrivial strict constraint
   // and ITV does not support open boundaries.
   if (c.is_strict_inequality() && c_num_vars != 0
-      && ITV::is_always_topologically_closed())
+      && ITV::is_always_topologically_closed()) {
     throw_invalid_argument("add_constraint(c)",
                            "c is a nontrivial strict constraint");
-
+  }
+  
   // Avoid doing useless work if the box is known to be empty.
-  if (marked_empty())
+  if (marked_empty()) {
     return;
-
+  }
+  
   const Coefficient& n = c.inhomogeneous_term();
   if (c_num_vars == 0) {
     // Dealing with a trivial constraint.
     if (n < 0
         || (c.is_equality() && n != 0)
-        || (c.is_strict_inequality() && n == 0))
+        || (c.is_strict_inequality() && n == 0)) {
       set_empty();
+    }
     return;
   }
 
@@ -2256,30 +2413,35 @@ Box<ITV>::add_congruence_no_check(const Congruence& cg) {
       set_empty();
       return;
     }
-    else if (cg.is_tautological())
+    else if (cg.is_tautological()) {
       return;
-    else
+    }
+    else {
       throw_invalid_argument("add_congruence(cg)",
                              "cg is a nontrivial proper congruence");
+    }
   }
 
   PPL_ASSERT(cg.is_equality());
   dimension_type cg_num_vars = 0;
   dimension_type cg_only_var = 0;
   // Throw an exception if c is not an interval congruence.
-  if (!Box_Helpers::extract_interval_congruence(cg, cg_num_vars, cg_only_var))
+  if (!Box_Helpers::extract_interval_congruence(cg, cg_num_vars, cg_only_var)) {
     throw_invalid_argument("add_congruence(cg)",
                            "cg is not an interval congruence");
-
+  }
+  
   // Avoid doing useless work if the box is known to be empty.
-  if (marked_empty())
+  if (marked_empty()) {
     return;
-
+  }
+  
   const Coefficient& n = cg.inhomogeneous_term();
   if (cg_num_vars == 0) {
     // Dealing with a trivial equality congruence.
-    if (n != 0)
+    if (n != 0) {
       set_empty();
+    }
     return;
   }
 
@@ -2321,8 +2483,9 @@ Box<ITV>::refine_no_check(const Constraint& c) {
     // Dealing with a trivial constraint.
     if (n < 0
         || (c.is_equality() && n != 0)
-        || (c.is_strict_inequality() && n == 0))
+        || (c.is_strict_inequality() && n == 0)) {
       set_empty();
+    }
     return;
   }
 
@@ -2352,8 +2515,9 @@ Box<ITV>::refine_no_check(const Congruence& cg) {
   if (cg.is_proper_congruence()) {
     // A proper congruences is also an interval constraint
     // if and only if it is trivial.
-    if (cg.is_inconsistent())
+    if (cg.is_inconsistent()) {
       set_empty();
+    }
     return;
   }
 
@@ -2429,8 +2593,9 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
     // Constraint c is trivial: check if it is inconsistent.
     if (c_inhomogeneous_term < 0
         || (c_inhomogeneous_term == 0
-            && c_type != Constraint::NONSTRICT_INEQUALITY))
+            && c_type != Constraint::NONSTRICT_INEQUALITY)) {
       set_empty();
+    }
     return;
   }
 
@@ -2446,66 +2611,83 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
     const Coefficient& a_k = *k;
     const Variable k_var = k.variable();
     const int sgn_a_k = sgn(a_k);
-    if (sgn_a_k == 0)
+    if (sgn_a_k == 0) {
       continue;
+    }
     Result r;
     if (sgn_a_k > 0) {
       open = (c_type == Constraint::STRICT_INEQUALITY) ? T_YES : T_NO;
-      if (open == T_NO)
+      if (open == T_NO) {
         maybe_reset_fpu_inexact<Temp_Boundary_Type>();
+      }
       r = assign_r(t_bound, c_inhomogeneous_term, ROUND_UP);
-      if (propagate_constraint_check_result(r, open))
+      if (propagate_constraint_check_result(r, open)) {
         goto maybe_refine_upper_1;
+      }
       r = neg_assign_r(t_bound, t_bound, ROUND_DOWN);
-      if (propagate_constraint_check_result(r, open))
+      if (propagate_constraint_check_result(r, open)) {
         goto maybe_refine_upper_1;
+      }
       for (Constraint::expr_type::const_iterator i = c_e.begin(),
             i_end = c_e.lower_bound(Variable(last_k)); i != i_end; ++i) {
         const Variable i_var = i.variable();
-        if (i_var.id() == k_var.id())
+        if (i_var.id() == k_var.id()) {
           continue;
+        }
         const Coefficient& a_i = *i;
         const int sgn_a_i = sgn(a_i);
         ITV& x_i = seq[i_var.id()];
         if (sgn_a_i < 0) {
-          if (x_i.lower_is_boundary_infinity())
+          if (x_i.lower_is_boundary_infinity()) {
             goto maybe_refine_upper_1;
+          }
           r = assign_r(t_a, a_i, ROUND_DOWN);
-          if (propagate_constraint_check_result(r, open))
+          if (propagate_constraint_check_result(r, open)) {
             goto maybe_refine_upper_1;
+          }
           r = assign_r(t_x, x_i.lower(), ROUND_DOWN);
-          if (propagate_constraint_check_result(r, open))
+          if (propagate_constraint_check_result(r, open)) {
             goto maybe_refine_upper_1;
-          if (x_i.lower_is_open())
+          }
+          if (x_i.lower_is_open()) {
             open = T_YES;
+          }
           r = sub_mul_assign_r(t_bound, t_a, t_x, ROUND_DOWN);
-          if (propagate_constraint_check_result(r, open))
+          if (propagate_constraint_check_result(r, open)) {
             goto maybe_refine_upper_1;
+          }
         }
         else {
           PPL_ASSERT(sgn_a_i > 0);
-          if (x_i.upper_is_boundary_infinity())
+          if (x_i.upper_is_boundary_infinity()) {
             goto maybe_refine_upper_1;
+          }
           r = assign_r(t_a, a_i, ROUND_UP);
-          if (propagate_constraint_check_result(r, open))
+          if (propagate_constraint_check_result(r, open)) {
             goto maybe_refine_upper_1;
+          }
           r = assign_r(t_x, x_i.upper(), ROUND_UP);
-          if (propagate_constraint_check_result(r, open))
+          if (propagate_constraint_check_result(r, open)) {
             goto maybe_refine_upper_1;
-          if (x_i.upper_is_open())
+          }
+          if (x_i.upper_is_open()) {
             open = T_YES;
+          }
           r = sub_mul_assign_r(t_bound, t_a, t_x, ROUND_DOWN);
-          if (propagate_constraint_check_result(r, open))
+          if (propagate_constraint_check_result(r, open)) {
             goto maybe_refine_upper_1;
+          }
         }
       }
       r = assign_r(t_a, a_k, ROUND_UP);
-      if (propagate_constraint_check_result(r, open))
+      if (propagate_constraint_check_result(r, open)) {
         goto maybe_refine_upper_1;
+      }
       r = div_assign_r(t_bound, t_bound, t_a, ROUND_DOWN);
-      if (propagate_constraint_check_result(r, open))
+      if (propagate_constraint_check_result(r, open)) {
         goto maybe_refine_upper_1;
-
+      }
+      
       // Refine the lower bound of `seq[k]' with `t_bound'.
       if (open == T_MAYBE
           && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1)
@@ -2517,67 +2699,83 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
       }
       reset_empty_up_to_date();
     maybe_refine_upper_1:
-      if (c_type != Constraint::EQUALITY)
+      if (c_type != Constraint::EQUALITY) {
         continue;
+      }
       open = T_NO;
       maybe_reset_fpu_inexact<Temp_Boundary_Type>();
       r = assign_r(t_bound, c_inhomogeneous_term, ROUND_DOWN);
-      if (propagate_constraint_check_result(r, open))
+      if (propagate_constraint_check_result(r, open)) {
         goto next_k;
+      }
       r = neg_assign_r(t_bound, t_bound, ROUND_UP);
-      if (propagate_constraint_check_result(r, open))
+      if (propagate_constraint_check_result(r, open)) {
         goto next_k;
+      }
       for (Constraint::expr_type::const_iterator i = c_e.begin(),
             i_end = c_e.lower_bound(Variable(c_space_dim)); i != i_end; ++i) {
         const Variable i_var = i.variable();
-        if (i_var.id() == k_var.id())
+        if (i_var.id() == k_var.id()) {
           continue;
+        }
         const Coefficient& a_i = *i;
         const int sgn_a_i = sgn(a_i);
         ITV& x_i = seq[i_var.id()];
         if (sgn_a_i < 0) {
-          if (x_i.upper_is_boundary_infinity())
+          if (x_i.upper_is_boundary_infinity()) {
             goto next_k;
+          }
           r = assign_r(t_a, a_i, ROUND_UP);
-          if (propagate_constraint_check_result(r, open))
+          if (propagate_constraint_check_result(r, open)) {
             goto next_k;
+          }
           r = assign_r(t_x, x_i.upper(), ROUND_UP);
-          if (propagate_constraint_check_result(r, open))
+          if (propagate_constraint_check_result(r, open)) {
             goto next_k;
-          if (x_i.upper_is_open())
+          }
+          if (x_i.upper_is_open()) {
             open = T_YES;
+          }
           r = sub_mul_assign_r(t_bound, t_a, t_x, ROUND_UP);
-          if (propagate_constraint_check_result(r, open))
+          if (propagate_constraint_check_result(r, open)) {
             goto next_k;
+          }
         }
         else {
           PPL_ASSERT(sgn_a_i > 0);
-          if (x_i.lower_is_boundary_infinity())
+          if (x_i.lower_is_boundary_infinity()) {
             goto next_k;
+          }
           r = assign_r(t_a, a_i, ROUND_DOWN);
-          if (propagate_constraint_check_result(r, open))
+          if (propagate_constraint_check_result(r, open)) {
             goto next_k;
+          }
           r = assign_r(t_x, x_i.lower(), ROUND_DOWN);
-          if (propagate_constraint_check_result(r, open))
+          if (propagate_constraint_check_result(r, open)) {
             goto next_k;
+          }
           if (x_i.lower_is_open())
             open = T_YES;
           r = sub_mul_assign_r(t_bound, t_a, t_x, ROUND_UP);
-          if (propagate_constraint_check_result(r, open))
+          if (propagate_constraint_check_result(r, open)) {
             goto next_k;
+          }
         }
       }
       r = assign_r(t_a, a_k, ROUND_DOWN);
-      if (propagate_constraint_check_result(r, open))
+      if (propagate_constraint_check_result(r, open)) {
         goto next_k;
+      }
       r = div_assign_r(t_bound, t_bound, t_a, ROUND_UP);
-      if (propagate_constraint_check_result(r, open))
+      if (propagate_constraint_check_result(r, open)) {
         goto next_k;
-
+      }
+      
       // Refine the upper bound of seq[k] with t_bound.
       if (open == T_MAYBE
-          && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1)
+          && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1) {
         open = T_YES;
+      }
       const Relation_Symbol rel
         = (open == T_YES) ? LESS_THAN : LESS_OR_EQUAL;
       seq[k_var.id()].add_constraint(i_constraint(rel, t_bound));
@@ -2586,61 +2784,76 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
     else {
       PPL_ASSERT(sgn_a_k < 0);
       open = (c_type == Constraint::STRICT_INEQUALITY) ? T_YES : T_NO;
-      if (open == T_NO)
+      if (open == T_NO) {
         maybe_reset_fpu_inexact<Temp_Boundary_Type>();
+      }
       r = assign_r(t_bound, c_inhomogeneous_term, ROUND_UP);
-      if (propagate_constraint_check_result(r, open))
+      if (propagate_constraint_check_result(r, open)) {
         goto maybe_refine_upper_2;
+      }
       r = neg_assign_r(t_bound, t_bound, ROUND_DOWN);
-      if (propagate_constraint_check_result(r, open))
+      if (propagate_constraint_check_result(r, open)) {
         goto maybe_refine_upper_2;
+      }
       for (Constraint::expr_type::const_iterator i = c_e.begin(),
             i_end = c_e.lower_bound(Variable(c_space_dim)); i != i_end; ++i) {
         const Variable i_var = i.variable();
-        if (i_var.id() == k_var.id())
+        if (i_var.id() == k_var.id()) {
           continue;
+        }
         const Coefficient& a_i = *i;
         const int sgn_a_i = sgn(a_i);
         ITV& x_i = seq[i_var.id()];
         if (sgn_a_i < 0) {
-          if (x_i.lower_is_boundary_infinity())
+          if (x_i.lower_is_boundary_infinity()) {
             goto maybe_refine_upper_2;
+          }
           r = assign_r(t_a, a_i, ROUND_DOWN);
-          if (propagate_constraint_check_result(r, open))
+          if (propagate_constraint_check_result(r, open)) {
             goto maybe_refine_upper_2;
+          }
           r = assign_r(t_x, x_i.lower(), ROUND_DOWN);
-          if (propagate_constraint_check_result(r, open))
+          if (propagate_constraint_check_result(r, open)) {
             goto maybe_refine_upper_2;
-          if (x_i.lower_is_open())
+          }
+          if (x_i.lower_is_open()) {
             open = T_YES;
+          }
           r = sub_mul_assign_r(t_bound, t_a, t_x, ROUND_UP);
-          if (propagate_constraint_check_result(r, open))
+          if (propagate_constraint_check_result(r, open)) {
             goto maybe_refine_upper_2;
+          }
         }
         else {
           PPL_ASSERT(sgn_a_i > 0);
-          if (x_i.upper_is_boundary_infinity())
+          if (x_i.upper_is_boundary_infinity()) {
             goto maybe_refine_upper_2;
+          }
           r = assign_r(t_a, a_i, ROUND_UP);
-          if (propagate_constraint_check_result(r, open))
+          if (propagate_constraint_check_result(r, open)) {
             goto maybe_refine_upper_2;
+          }
           r = assign_r(t_x, x_i.upper(), ROUND_UP);
-          if (propagate_constraint_check_result(r, open))
+          if (propagate_constraint_check_result(r, open)) {
             goto maybe_refine_upper_2;
-          if (x_i.upper_is_open())
+          }
+          if (x_i.upper_is_open()) {
             open = T_YES;
+          }
           r = sub_mul_assign_r(t_bound, t_a, t_x, ROUND_DOWN);
-          if (propagate_constraint_check_result(r, open))
+          if (propagate_constraint_check_result(r, open)) {
             goto maybe_refine_upper_2;
+          }
         }
       }
       r = assign_r(t_a, a_k, ROUND_UP);
-      if (propagate_constraint_check_result(r, open))
+      if (propagate_constraint_check_result(r, open)) {
         goto maybe_refine_upper_2;
+      }
       r = div_assign_r(t_bound, t_bound, t_a, ROUND_UP);
-      if (propagate_constraint_check_result(r, open))
+      if (propagate_constraint_check_result(r, open)) {
         goto maybe_refine_upper_2;
-
+      }
       // Refine the upper bound of seq[k] with t_bound.
       if (open == T_MAYBE
           && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1)
@@ -2652,67 +2865,84 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
       }
       reset_empty_up_to_date();
     maybe_refine_upper_2:
-      if (c_type != Constraint::EQUALITY)
+      if (c_type != Constraint::EQUALITY) {
         continue;
+      }
       open = T_NO;
       maybe_reset_fpu_inexact<Temp_Boundary_Type>();
       r = assign_r(t_bound, c_inhomogeneous_term, ROUND_DOWN);
-      if (propagate_constraint_check_result(r, open))
+      if (propagate_constraint_check_result(r, open)) {
         goto next_k;
+      }
       r = neg_assign_r(t_bound, t_bound, ROUND_UP);
-      if (propagate_constraint_check_result(r, open))
+      if (propagate_constraint_check_result(r, open)) {
         goto next_k;
+      }
       for (Constraint::expr_type::const_iterator i = c_e.begin(),
             i_end = c_e.lower_bound(Variable(c_space_dim)); i != i_end; ++i) {
         const Variable i_var = i.variable();
-        if (i_var.id() == k_var.id())
+        if (i_var.id() == k_var.id()) {
           continue;
+        }
         const Coefficient& a_i = *i;
         const int sgn_a_i = sgn(a_i);
         ITV& x_i = seq[i_var.id()];
         if (sgn_a_i < 0) {
-          if (x_i.upper_is_boundary_infinity())
+          if (x_i.upper_is_boundary_infinity()) {
             goto next_k;
+          }
           r = assign_r(t_a, a_i, ROUND_UP);
-          if (propagate_constraint_check_result(r, open))
+          if (propagate_constraint_check_result(r, open)) {
             goto next_k;
+          }
           r = assign_r(t_x, x_i.upper(), ROUND_UP);
-          if (propagate_constraint_check_result(r, open))
+          if (propagate_constraint_check_result(r, open)) {
             goto next_k;
-          if (x_i.upper_is_open())
+          }
+          if (x_i.upper_is_open()) {
             open = T_YES;
+          }
           r = sub_mul_assign_r(t_bound, t_a, t_x, ROUND_UP);
-          if (propagate_constraint_check_result(r, open))
+          if (propagate_constraint_check_result(r, open)) {
             goto next_k;
+          }
         }
         else {
           PPL_ASSERT(sgn_a_i > 0);
-          if (x_i.lower_is_boundary_infinity())
+          if (x_i.lower_is_boundary_infinity()) {
             goto next_k;
+          }
           r = assign_r(t_a, a_i, ROUND_DOWN);
-          if (propagate_constraint_check_result(r, open))
+          if (propagate_constraint_check_result(r, open)) {
             goto next_k;
+          }
           r = assign_r(t_x, x_i.lower(), ROUND_DOWN);
-          if (propagate_constraint_check_result(r, open))
+          if (propagate_constraint_check_result(r, open)) {
             goto next_k;
-          if (x_i.lower_is_open())
+          }
+          if (x_i.lower_is_open()) {
             open = T_YES;
+          }
           r = sub_mul_assign_r(t_bound, t_a, t_x, ROUND_UP);
-          if (propagate_constraint_check_result(r, open))
+          if (propagate_constraint_check_result(r, open)) {
             goto next_k;
+          }
         }
       }
       r = assign_r(t_a, a_k, ROUND_DOWN);
-      if (propagate_constraint_check_result(r, open))
+      if (propagate_constraint_check_result(r, open)) {
         goto next_k;
+      }
       r = div_assign_r(t_bound, t_bound, t_a, ROUND_DOWN);
-      if (propagate_constraint_check_result(r, open))
+      if (propagate_constraint_check_result(r, open)) {
         goto next_k;
-
+      }
+      
       // Refine the lower bound of seq[k] with t_bound.
       if (open == T_MAYBE
-          && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1)
+          && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1) {
         open = T_YES;
+      }
       const Relation_Symbol rel
         = (open == T_YES) ? GREATER_THAN : GREATER_OR_EQUAL;
       seq[k_var.id()].add_constraint(i_constraint(rel, t_bound));
@@ -2750,8 +2980,9 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
     for (Constraint::expr_type::const_iterator j = c_e.begin(),
           j_end = c_e.lower_bound(Variable(c_space_dim)); j != j_end; ++j) {
       const Variable j_var = j.variable();
-      if (i_var == j_var)
+      if (i_var == j_var) {
         continue;
+      }
       q.add_assign(q, p[j_var.id()]);
     }
     q.div_assign(q, k[i_var.id()]);
@@ -2830,9 +3061,10 @@ Box<ITV>::affine_image(const Variable var,
                        const Linear_Expression& expr,
                        Coefficient_traits::const_reference denominator) {
   // The denominator cannot be zero.
-  if (denominator == 0)
+  if (denominator == 0) {
     throw_invalid_argument("affine_image(v, e, d)", "d == 0");
-
+  }
+  
   // Dimension-compatibility checks.
   const dimension_type space_dim = space_dimension();
   const dimension_type expr_space_dim = expr.space_dimension();
@@ -2840,12 +3072,14 @@ Box<ITV>::affine_image(const Variable var,
     throw_dimension_incompatible("affine_image(v, e, d)", "e", expr);
   // `var' should be one of the dimensions of the polyhedron.
   const dimension_type var_space_dim = var.space_dimension();
-  if (space_dim < var_space_dim)
+  if (space_dim < var_space_dim) {
     throw_dimension_incompatible("affine_image(v, e, d)", "v", var);
-
-  if (is_empty())
+  }
+  
+  if (is_empty()) {
     return;
-
+  }
+  
   Tmp_Interval_Type expr_value;
   Tmp_Interval_Type temp0;
   Tmp_Interval_Type temp1;
@@ -2879,16 +3113,20 @@ Box<ITV>::affine_form_image(const Variable var,
   // Dimension-compatibility checks.
   const dimension_type space_dim = space_dimension();
   const dimension_type lf_space_dim = lf.space_dimension();
-  if (space_dim < lf_space_dim)
+  if (space_dim < lf_space_dim) {
     throw_dimension_incompatible("affine_form_image(var, lf)", "lf", lf);
+  }
+  
   // `var' should be one of the dimensions of the polyhedron.
   const dimension_type var_space_dim = var.space_dimension();
-  if (space_dim < var_space_dim)
+  if (space_dim < var_space_dim) {
     throw_dimension_incompatible("affine_form_image(var, lf)", "var", var);
-
-  if (is_empty())
+  }
+  
+  if (is_empty()) {
     return;
-
+  }
+  
   // Intervalization of 'lf'.
   ITV result = lf.inhomogeneous_term();
   for (dimension_type i = 0; i < lf_space_dim; ++i) {
@@ -2909,22 +3147,26 @@ Box<ITV>::affine_preimage(const Variable var,
                           Coefficient_traits::const_reference
                           denominator) {
   // The denominator cannot be zero.
-  if (denominator == 0)
+  if (denominator == 0) {
     throw_invalid_argument("affine_preimage(v, e, d)", "d == 0");
-
+  }
+  
   // Dimension-compatibility checks.
   const dimension_type x_space_dim = space_dimension();
   const dimension_type expr_space_dim = expr.space_dimension();
-  if (x_space_dim < expr_space_dim)
+  if (x_space_dim < expr_space_dim) {
     throw_dimension_incompatible("affine_preimage(v, e, d)", "e", expr);
+  }
   // `var' should be one of the dimensions of the polyhedron.
   const dimension_type var_space_dim = var.space_dimension();
-  if (x_space_dim < var_space_dim)
+  if (x_space_dim < var_space_dim) {
     throw_dimension_incompatible("affine_preimage(v, e, d)", "v", var);
-
-  if (is_empty())
+  }
+  
+  if (is_empty()) {
     return;
-
+  }
+  
   const Coefficient& expr_v = expr.coefficient(var);
   const bool invertible = (expr_v != 0);
   if (!invertible) {
@@ -2945,10 +3187,12 @@ Box<ITV>::affine_preimage(const Variable var,
     }
     ITV& x_seq_v = seq[var.id()];
     expr_value.intersect_assign(x_seq_v);
-    if (expr_value.is_empty())
+    if (expr_value.is_empty()) {
       set_empty();
-    else
+    }
+    else {
       x_seq_v.assign(UNIVERSE);
+    }
   }
   else {
     // The affine transformation is invertible.
@@ -2979,27 +3223,31 @@ Box<ITV>
   // The dimension of `lb_expr' and `ub_expr' should not be
   // greater than the dimension of `*this'.
   const dimension_type lb_space_dim = lb_expr.space_dimension();
-  if (space_dim < lb_space_dim)
+  if (space_dim < lb_space_dim) {
     throw_dimension_incompatible("bounded_affine_image(v, lb, ub, d)",
                                  "lb", lb_expr);
+  }
   const dimension_type ub_space_dim = ub_expr.space_dimension();
-  if (space_dim < ub_space_dim)
+  if (space_dim < ub_space_dim) {
     throw_dimension_incompatible("bounded_affine_image(v, lb, ub, d)",
                                  "ub", ub_expr);
+  }
     // `var' should be one of the dimensions of the box.
   const dimension_type var_space_dim = var.space_dimension();
-  if (space_dim < var_space_dim)
+  if (space_dim < var_space_dim) {
     throw_dimension_incompatible("affine_image(v, e, d)", "v", var);
-
+  }
   // Any image of an empty box is empty.
-  if (is_empty())
+  if (is_empty()) {
     return;
-
+  }
   // Add the constraint implied by the `lb_expr' and `ub_expr'.
-  if (denominator > 0)
+  if (denominator > 0) {
     refine_with_constraint(lb_expr <= ub_expr);
-  else
+  }
+  else {
     refine_with_constraint(lb_expr >= ub_expr);
+  }
 
   // Check whether `var' occurs in `lb_expr' and/or `ub_expr'.
   if (lb_expr.coefficient(var) == 0) {
@@ -3008,10 +3256,12 @@ Box<ITV>
                              LESS_OR_EQUAL,
                              ub_expr,
                              denominator);
-    if (denominator > 0)
+    if (denominator > 0) {
       refine_with_constraint(lb_expr <= denominator*var);
-    else
+    }
+    else {
       refine_with_constraint(denominator*var <= lb_expr);
+    }
   }
   else if (ub_expr.coefficient(var) == 0) {
     // Here `var' can only occur in `lb_expr'.
@@ -3019,10 +3269,12 @@ Box<ITV>
                              GREATER_OR_EQUAL,
                              lb_expr,
                              denominator);
-    if (denominator > 0)
+    if (denominator > 0) {
       refine_with_constraint(denominator*var <= ub_expr);
-    else
+    }
+    else {
       refine_with_constraint(ub_expr <= denominator*var);
+    }
   }
   else {
     // Here `var' occurs in both `lb_expr' and `ub_expr'.  As boxes
@@ -3114,30 +3366,35 @@ Box<ITV>
                           Coefficient_traits::const_reference denominator) {
   // The denominator cannot be zero.
   const dimension_type space_dim = space_dimension();
-  if (denominator == 0)
+  if (denominator == 0) {
     throw_invalid_argument("bounded_affine_preimage(v, lb, ub, d)", "d == 0");
-
+  }
+  
   // Dimension-compatibility checks.
   // `var' should be one of the dimensions of the polyhedron.
   const dimension_type var_space_dim = var.space_dimension();
-  if (space_dim < var_space_dim)
+  if (space_dim < var_space_dim) {
     throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub, d)",
                                  "v", var);
+  }
   // The dimension of `lb_expr' and `ub_expr' should not be
   // greater than the dimension of `*this'.
   const dimension_type lb_space_dim = lb_expr.space_dimension();
-  if (space_dim < lb_space_dim)
+  if (space_dim < lb_space_dim) {
     throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub, d)",
                                  "lb", lb_expr);
+  }
   const dimension_type ub_space_dim = ub_expr.space_dimension();
-  if (space_dim < ub_space_dim)
+  if (space_dim < ub_space_dim) {
     throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub, d)",
                                  "ub", ub_expr);
-
+  }
+  
   // Any preimage of an empty polyhedron is empty.
-  if (marked_empty())
+  if (marked_empty()) {
     return;
-
+  }
+  
   const bool negative_denom = (denominator < 0);
   const Coefficient& lb_var_coeff = lb_expr.coefficient(var);
   const Coefficient& ub_var_coeff = ub_expr.coefficient(var);
@@ -3145,10 +3402,12 @@ Box<ITV>
   // If the implied constraint between `ub_expr and `lb_expr' is
   // independent of `var', then impose it now.
   if (lb_var_coeff == ub_var_coeff) {
-    if (negative_denom)
+    if (negative_denom) {
       refine_with_constraint(lb_expr >= ub_expr);
-    else
+    }
+    else {
       refine_with_constraint(lb_expr <= ub_expr);
+    }
   }
 
   ITV& seq_var = seq[var.id()];
@@ -3157,8 +3416,9 @@ Box<ITV>
     // so the sign and its (unsigned) value are separated.
     PPL_DIRTY_TEMP_COEFFICIENT(pos_denominator);
     pos_denominator = denominator;
-    if (negative_denom)
+    if (negative_denom) {
       neg_assign(pos_denominator, pos_denominator);
+    }
     // Store all the information about the upper and lower bounds
     // for `var' before making this interval unbounded.
     bool open_lower = seq_var.lower_is_open();
@@ -3170,8 +3430,9 @@ Box<ITV>
       assign_r(q_seq_var_lower, seq_var.lower(), ROUND_NOT_NEEDED);
       assign_r(numer_lower, q_seq_var_lower.get_num(), ROUND_NOT_NEEDED);
       assign_r(denom_lower, q_seq_var_lower.get_den(), ROUND_NOT_NEEDED);
-      if (negative_denom)
+      if (negative_denom) {
         neg_assign(denom_lower, denom_lower);
+      }
       numer_lower *= pos_denominator;
       seq_var.lower_extend();
     }
@@ -3184,8 +3445,9 @@ Box<ITV>
       assign_r(q_seq_var_upper, seq_var.upper(), ROUND_NOT_NEEDED);
       assign_r(numer_upper, q_seq_var_upper.get_num(), ROUND_NOT_NEEDED);
       assign_r(denom_upper, q_seq_var_upper.get_den(), ROUND_NOT_NEEDED);
-      if (negative_denom)
+      if (negative_denom) {
         neg_assign(denom_upper, denom_upper);
+      }
       numer_upper *= pos_denominator;
       seq_var.upper_extend();
     }
@@ -3211,13 +3473,16 @@ Box<ITV>
         assign_r(q.get_num(), numer_lower, ROUND_NOT_NEEDED);
         assign_r(q.get_den(), denom_lower, ROUND_NOT_NEEDED);
         q.canonicalize();
-        if (!included)
+        if (!included) {
           open_lower = true;
+        }
         Relation_Symbol rel;
-        if ((ub_var_coeff >= 0) ? !negative_denom : negative_denom)
+        if ((ub_var_coeff >= 0) ? !negative_denom : negative_denom) {
           rel = open_lower ? GREATER_THAN : GREATER_OR_EQUAL;
-        else
+        }
+        else {
           rel = open_lower ? LESS_THAN : LESS_OR_EQUAL;
+        }
         seq_var.add_constraint(i_constraint(rel, q));
         if (seq_var.is_empty()) {
           set_empty();
@@ -3247,13 +3512,16 @@ Box<ITV>
         assign_r(q.get_num(), numer_upper, ROUND_NOT_NEEDED);
         assign_r(q.get_den(), denom_upper, ROUND_NOT_NEEDED);
         q.canonicalize();
-        if (!included)
+        if (!included) {
           open_upper = true;
+        }
         Relation_Symbol rel;
-        if ((lb_var_coeff >= 0) ? !negative_denom : negative_denom)
+        if ((lb_var_coeff >= 0) ? !negative_denom : negative_denom) {
           rel = open_upper ? LESS_THAN : LESS_OR_EQUAL;
-        else
+        }
+        else {
           rel = open_upper ? GREATER_THAN : GREATER_OR_EQUAL;
+        }
         seq_var.add_constraint(i_constraint(rel, q));
         if (seq_var.is_empty()) {
           set_empty();
@@ -3266,10 +3534,12 @@ Box<ITV>
   // If the implied constraint between `ub_expr and `lb_expr' is
   // dependent on `var', then impose on the new box.
   if (lb_var_coeff != ub_var_coeff) {
-    if (denominator > 0)
+    if (denominator > 0) {
       refine_with_constraint(lb_expr <= ub_expr);
-    else
+    }
+    else {
       refine_with_constraint(lb_expr >= ub_expr);
+    }
   }
 
   PPL_ASSERT(OK());
@@ -3283,38 +3553,43 @@ Box<ITV>
                            const Linear_Expression& expr,
                            Coefficient_traits::const_reference denominator) {
   // The denominator cannot be zero.
-  if (denominator == 0)
+  if (denominator == 0) {
     throw_invalid_argument("generalized_affine_image(v, r, e, d)", "d == 0");
-
+  }
+  
   // Dimension-compatibility checks.
   const dimension_type space_dim = space_dimension();
   // The dimension of `expr' should not be greater than the dimension
   // of `*this'.
-  if (space_dim < expr.space_dimension())
+  if (space_dim < expr.space_dimension()) {
     throw_dimension_incompatible("generalized_affine_image(v, r, e, d)",
                                  "e", expr);
+  }
   // `var' should be one of the dimensions of the box.
   const dimension_type var_space_dim = var.space_dimension();
-  if (space_dim < var_space_dim)
+  if (space_dim < var_space_dim) {
     throw_dimension_incompatible("generalized_affine_image(v, r, e, d)",
                                  "v", var);
-
+  }
+  
   // The relation symbol cannot be a disequality.
-  if (relsym == NOT_EQUAL)
+  if (relsym == NOT_EQUAL) {
     throw_invalid_argument("generalized_affine_image(v, r, e, d)",
                            "r is the disequality relation symbol");
-
+  }
+  
   // First compute the affine image.
   affine_image(var, expr, denominator);
 
-  if (relsym == EQUAL)
+  if (relsym == EQUAL) {
     // The affine relation is indeed an affine function.
     return;
-
+  }
   // Any image of an empty box is empty.
-  if (is_empty())
+  if (is_empty()) {
     return;
-
+  }
+  
   ITV& seq_var = seq[var.id()];
   switch (relsym) {
   case LESS_OR_EQUAL:
@@ -3350,27 +3625,30 @@ Box<ITV>
                               Coefficient_traits::const_reference denominator)
 {
   // The denominator cannot be zero.
-  if (denominator == 0)
+  if (denominator == 0) {
     throw_invalid_argument("generalized_affine_preimage(v, r, e, d)",
                            "d == 0");
-
+  }
   // Dimension-compatibility checks.
   const dimension_type space_dim = space_dimension();
   // The dimension of `expr' should not be greater than the dimension
   // of `*this'.
-  if (space_dim < expr.space_dimension())
+  if (space_dim < expr.space_dimension()) {
     throw_dimension_incompatible("generalized_affine_preimage(v, r, e, d)",
                                  "e", expr);
+  }
   // `var' should be one of the dimensions of the box.
   const dimension_type var_space_dim = var.space_dimension();
-  if (space_dim < var_space_dim)
+  if (space_dim < var_space_dim) {
     throw_dimension_incompatible("generalized_affine_preimage(v, r, e, d)",
                                  "v", var);
+  }
   // The relation symbol cannot be a disequality.
-  if (relsym == NOT_EQUAL)
+  if (relsym == NOT_EQUAL) {
     throw_invalid_argument("generalized_affine_preimage(v, r, e, d)",
                            "r is the disequality relation symbol");
-
+  }
+  
   // Check whether the affine relation is indeed an affine function.
   if (relsym == EQUAL) {
     affine_preimage(var, expr, denominator);
@@ -3497,25 +3775,29 @@ Box<ITV>
   // of `*this'.
   dimension_type lhs_space_dim = lhs.space_dimension();
   const dimension_type space_dim = space_dimension();
-  if (space_dim < lhs_space_dim)
+  if (space_dim < lhs_space_dim) {
     throw_dimension_incompatible("generalized_affine_image(e1, r, e2)",
                                  "e1", lhs);
+  }
   // The dimension of `rhs' should not be greater than the dimension
   // of `*this'.
   const dimension_type rhs_space_dim = rhs.space_dimension();
-  if (space_dim < rhs_space_dim)
+  if (space_dim < rhs_space_dim) {
     throw_dimension_incompatible("generalized_affine_image(e1, r, e2)",
                                  "e2", rhs);
-
+  }
+  
   // The relation symbol cannot be a disequality.
-  if (relsym == NOT_EQUAL)
+  if (relsym == NOT_EQUAL) {
     throw_invalid_argument("generalized_affine_image(e1, r, e2)",
                            "r is the disequality relation symbol");
-
+  }
+  
   // Any image of an empty box is empty.
-  if (marked_empty())
+  if (marked_empty()) {
     return;
-
+  }
+  
   // Compute the maximum and minimum value reached by the rhs on the box.
   PPL_DIRTY_TEMP(Coefficient, max_numer);
   PPL_DIRTY_TEMP(Coefficient, max_denom);
@@ -3601,10 +3883,12 @@ Box<ITV>
         {
           I_Constraint<mpq_class> l;
           I_Constraint<mpq_class> u;
-          if (max_rhs)
+          if (max_rhs) {
             u.set(max_included ? LESS_OR_EQUAL : LESS_THAN, q_max);
-          if (min_rhs)
+          }
+          if (min_rhs) {
             l.set(min_included ? GREATER_OR_EQUAL : GREATER_THAN, q_min);
+          }
           seq_var.build(l, u);
           break;
         }
@@ -3639,19 +3923,23 @@ Box<ITV>
           seq_var.assign(UNIVERSE);
         break;
       case GREATER_THAN:
-        if (min_rhs)
+        if (min_rhs) {
           seq_var.build(i_constraint(LESS_THAN, q_min));
-        else
+        }
+        else {
           seq_var.assign(UNIVERSE);
+        }
         break;
       case EQUAL:
         {
           I_Constraint<mpq_class> l;
           I_Constraint<mpq_class> u;
-          if (max_rhs)
+          if (max_rhs) {
             l.set(max_included ? GREATER_OR_EQUAL : GREATER_THAN, q_max);
-          if (min_rhs)
+          }
+          if (min_rhs) {
             u.set(min_included ? LESS_OR_EQUAL : LESS_THAN, q_min);
+          }
           seq_var.build(l, u);
           break;
         }
@@ -3660,14 +3948,17 @@ Box<ITV>
           Relation_Symbol rel = max_included ? GREATER_OR_EQUAL : GREATER_THAN;
           seq_var.build(i_constraint(rel, q_max));
         }
-        else
+        else {
           seq_var.assign(UNIVERSE);
+        }
         break;
       case LESS_THAN:
-        if (max_rhs)
+        if (max_rhs) {
           seq_var.build(i_constraint(GREATER_THAN, q_max));
-        else
+        }
+        else {
           seq_var.assign(UNIVERSE);
+        }
         break;
       default:
         // The NOT_EQUAL case has been already dealt with.
@@ -3715,16 +4006,18 @@ Box<ITV>::generalized_affine_preimage(const Linear_Expression& lhs,
   // of `*this'.
   dimension_type lhs_space_dim = lhs.space_dimension();
   const dimension_type space_dim = space_dimension();
-  if (space_dim < lhs_space_dim)
+  if (space_dim < lhs_space_dim) {
     throw_dimension_incompatible("generalized_affine_image(e1, r, e2)",
                                  "e1", lhs);
+  }
   // The dimension of `rhs' should not be greater than the dimension
   // of `*this'.
   const dimension_type rhs_space_dim = rhs.space_dimension();
-  if (space_dim < rhs_space_dim)
+  if (space_dim < rhs_space_dim) {
     throw_dimension_incompatible("generalized_affine_image(e1, r, e2)",
                                  "e2", rhs);
-
+  }
+  
   // The relation symbol cannot be a disequality.
   if (relsym == NOT_EQUAL) {
     throw_invalid_argument("generalized_affine_image(e1, r, e2)",
@@ -3947,10 +4240,12 @@ Box<ITV>::constraints() const {
     PPL_DIRTY_TEMP(Coefficient, d);
     bool closed = false;
     if (has_lower_bound(v_k, n, d, closed)) {
-      if (closed)
+      if (closed) {
         cs.insert(d * v_k >= n);
-      else
+      }
+      else {
         cs.insert(d * v_k > n);
+      }
     }
     if (has_upper_bound(v_k, n, d, closed)) {
       if (closed) {
