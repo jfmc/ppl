@@ -42,7 +42,7 @@ PPL::Grid_Generator_System::insert(Grid_Generator_System& gs, Recycle_Input) {
   else {
     gs.set_space_dimension(space_dimension());
   }
-  
+
   for (dimension_type i = 0; i < gs_num_rows; ++i) {
     sys.insert(gs.sys.rows[i], Recycle_Input());
   }

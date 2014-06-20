@@ -155,7 +155,7 @@ ascii_load(std::istream& is, Representation& r) {
   if (!(is >> s)) {
     return false;
   }
-  
+
   if (s == "DENSE")  {
     r = DENSE;
     return true;

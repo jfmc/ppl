@@ -146,19 +146,19 @@ CO_Tree::erase(dimension_type key) {
   if (empty()) {
     return end();
   }
-  
+
   tree_iterator itr(*this);
   itr.go_down_searching_key(key);
 
   if (itr.index() == key) {
     return erase(itr);
   }
-  
+
   iterator result(itr);
   if (result.index() < key) {
     ++result;
   }
-  
+
   PPL_ASSERT(result == end() || result.index() > key);
 #ifndef NDEBUG
   iterator last = end();

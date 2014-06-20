@@ -148,7 +148,7 @@ BD_Shape<T>::Status::OK() const {
     // Zero-dim universe is OK.
     return true;
   }
-  
+
   if (test_empty()) {
     Status copy = *this;
     copy.reset_empty();
@@ -245,14 +245,14 @@ BD_Shape<T>::Status::ascii_load(std::istream& s) {
   if (positive) {
     set_zero_dim_univ();
   }
-  
+
   if (!get_field(s, empty, positive)) {
     return false;
   }
   if (positive) {
     set_empty();
   }
-  
+
   if (!get_field(s, sp_closed, positive)) {
     return false;
   }
@@ -262,7 +262,7 @@ BD_Shape<T>::Status::ascii_load(std::istream& s) {
   else {
     reset_shortest_path_closed();
   }
-  
+
   if (!get_field(s, sp_reduced, positive)) {
     return false;
   }
@@ -272,7 +272,7 @@ BD_Shape<T>::Status::ascii_load(std::istream& s) {
   else {
     reset_shortest_path_reduced();
   }
-  
+
   // Check invariants.
   PPL_ASSERT(OK());
   return true;

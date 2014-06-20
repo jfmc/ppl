@@ -497,7 +497,7 @@ PPL::Dense_Row::ascii_load(std::istream& s) {
   if (!(s >> new_size)) {
     return false;
   }
-  
+
   resize(new_size);
 
   for (dimension_type col = 0; col < new_size; ++col) {
@@ -602,7 +602,7 @@ PPL::operator==(const Dense_Row& x, const Dense_Row& y) {
   if (x_size != y_size) {
     return false;
   }
-  
+
   for (dimension_type i = x_size; i-- > 0; ) {
     if (x[i] != y[i]) {
       return false;

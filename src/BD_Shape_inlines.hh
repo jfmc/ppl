@@ -198,7 +198,7 @@ BD_Shape<T>::refine_with_constraint(const Constraint& c) {
   if (c_space_dim > space_dimension()) {
     throw_dimension_incompatible("refine_with_constraint(c)", c);
   }
-  
+
   if (!marked_empty()) {
     refine_no_check(c);
   }
@@ -212,7 +212,7 @@ BD_Shape<T>::refine_with_constraints(const Constraint_System& cs) {
     throw_invalid_argument("refine_with_constraints(cs)",
                            "cs and *this are space-dimension incompatible");
   }
-  
+
   for (Constraint_System::const_iterator i = cs.begin(),
          cs_end = cs.end(); !marked_empty() && i != cs_end; ++i) {
     refine_no_check(*i);
@@ -227,7 +227,7 @@ BD_Shape<T>::refine_with_congruence(const Congruence& cg) {
   if (cg_space_dim > space_dimension()) {
     throw_dimension_incompatible("refine_with_congruence(cg)", cg);
   }
-  
+
   if (!marked_empty()) {
     refine_no_check(cg);
   }
@@ -448,7 +448,7 @@ operator==(const BD_Shape<T>& x, const BD_Shape<T>& y) {
   if (x_space_dim != y.space_dimension()) {
     return false;
   }
-  
+
   // Zero-dim BDSs are equal if and only if they are both empty or universe.
   if (x_space_dim == 0) {
     if (x.marked_empty()) {
@@ -498,7 +498,7 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   if (x_space_dim != y.space_dimension()) {
     return false;
   }
-  
+
   // Zero-dim BDSs are equal if and only if they are both empty or universe.
   if (x_space_dim == 0) {
     if (x.marked_empty() == y.marked_empty()) {
@@ -568,7 +568,7 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   if (x_space_dim != y.space_dimension()) {
     return false;
   }
-  
+
   // Zero-dim BDSs are equal if and only if they are both empty or universe.
   if (x_space_dim == 0) {
     if (x.marked_empty() == y.marked_empty()) {
@@ -782,7 +782,7 @@ BD_Shape<T>
     throw_dimension_incompatible("remove_higher_space_dimensions(nd)",
                                  new_dimension);
   }
-  
+
   // The removal of no dimensions from any BDS is a no-op.
   // Note that this case also captures the only legal removal of
   // dimensions from a zero-dim space BDS.
@@ -800,7 +800,7 @@ BD_Shape<T>
   if (marked_shortest_path_reduced()) {
     reset_shortest_path_reduced();
   }
-  
+
   // If we removed _all_ dimensions from a non-empty BDS,
   // the zero-dim universe BDS has been obtained.
   if (new_dimension == 0 && !marked_empty()) {

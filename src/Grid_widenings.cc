@@ -80,7 +80,7 @@ PPL::Grid::congruence_widening_assign(const Grid& y, unsigned* tp) {
   if (x.space_dim != y.space_dim) {
     throw_dimension_incompatible("widening_assign(y)", "y", y);
   }
-  
+
   // Assume `y' is contained in or equal to `x'.
   PPL_EXPECT_HEAVY(copy_contains(x, y));
 
@@ -88,7 +88,7 @@ PPL::Grid::congruence_widening_assign(const Grid& y, unsigned* tp) {
   if (x.space_dim == 0 || x.marked_empty() || y.marked_empty()) {
     return;
   }
-  
+
   // Ensure that the `x' congruences are in minimal form.
   if (x.congruences_are_up_to_date()) {
     if (!x.congruences_are_minimized()) {
@@ -103,7 +103,7 @@ PPL::Grid::congruence_widening_assign(const Grid& y, unsigned* tp) {
   else {
     x.update_congruences();
   }
-  
+
   // Ensure that the `y' congruences are in minimal form.
   Grid& yy = const_cast<Grid&>(y);
   if (yy.congruences_are_up_to_date()) {
@@ -119,7 +119,7 @@ PPL::Grid::congruence_widening_assign(const Grid& y, unsigned* tp) {
   else {
     yy.update_congruences();
   }
-  
+
   if (con_sys.num_equalities() < yy.con_sys.num_equalities()) {
     return;
   }
@@ -132,7 +132,7 @@ PPL::Grid::congruence_widening_assign(const Grid& y, unsigned* tp) {
     // All congruences were selected, thus the result is `x'.
     return;
   }
-  
+
   // A strict subset of the congruences was selected.
 
   Grid result(x.space_dim);
@@ -190,13 +190,13 @@ PPL::Grid::limited_congruence_extrapolation_assign(const Grid& y,
   if (x.marked_empty()) {
     return;
   }
-  
+
   // The limited widening between two grids in a zero-dimensional
   // space is also a grid in a zero-dimensional space.
   if (x.space_dim == 0) {
     return;
   }
-  
+
   // Update the generators of `x': these are used to select, from the
   // congruences in `cgs', those that must be added to the widened
   // grid.
@@ -204,7 +204,7 @@ PPL::Grid::limited_congruence_extrapolation_assign(const Grid& y,
     // `x' is empty.
     return;
   }
-  
+
   if (tp == NULL || *tp == 0) {
     // Widening may change the grid, so add the congruences.
     Congruence_System new_cgs;
@@ -224,7 +224,7 @@ PPL::Grid::limited_congruence_extrapolation_assign(const Grid& y,
     // There are tokens, so widening will leave the grid the same.
     x.congruence_widening_assign(y, tp);
   }
-  
+
   PPL_ASSERT(OK());
 }
 
@@ -286,7 +286,7 @@ PPL::Grid::generator_widening_assign(const Grid& y, unsigned* tp) {
   if (x.space_dim != y.space_dim) {
     throw_dimension_incompatible("generator_widening_assign(y)", "y", y);
   }
-  
+
   // Assume `y' is contained in or equal to `x'.
   PPL_EXPECT_HEAVY(copy_contains(x, y));
 
@@ -294,7 +294,7 @@ PPL::Grid::generator_widening_assign(const Grid& y, unsigned* tp) {
   if (x.space_dim == 0 || x.marked_empty() || y.marked_empty()) {
     return;
   }
-  
+
   // Ensure that the `x' generators are in minimal form.
   if (x.generators_are_up_to_date()) {
     if (!x.generators_are_minimized()) {
@@ -306,11 +306,11 @@ PPL::Grid::generator_widening_assign(const Grid& y, unsigned* tp) {
   else {
     x.update_generators();
   }
-  
+
   if (x.marked_empty()) {
     return;
   }
-  
+
   // Ensure that the `y' generators are in minimal form.
   Grid& yy = const_cast<Grid&>(y);
   if (yy.generators_are_up_to_date()) {
@@ -323,15 +323,15 @@ PPL::Grid::generator_widening_assign(const Grid& y, unsigned* tp) {
   else {
     yy.update_generators();
   }
-  
+
   if (gen_sys.num_rows() > yy.gen_sys.num_rows()) {
     return;
   }
-  
+
   if (gen_sys.num_lines() > yy.gen_sys.num_lines()) {
     return;
   }
-  
+
   // Copy into `ggs' the generators of `x' that are common to `y',
   // according to the grid widening.
   Grid_Generator_System ggs;
@@ -341,7 +341,7 @@ PPL::Grid::generator_widening_assign(const Grid& y, unsigned* tp) {
     // All parameters are kept as parameters, thus the result is `x'.
     return;
   }
-  
+
   // A strict subset of the parameters was selected.
 
   Grid result(x.space_dim, EMPTY);
@@ -360,7 +360,7 @@ PPL::Grid::generator_widening_assign(const Grid& y, unsigned* tp) {
     // No tokens.
     x.m_swap(result);
   }
-  
+
   PPL_ASSERT(x.OK(true));
 }
 
@@ -404,7 +404,7 @@ PPL::Grid::limited_generator_extrapolation_assign(const Grid& y,
   if (x.space_dim == 0) {
     return;
   }
-  
+
   // Update the generators of `x': these are used to select, from the
   // congruences in `cgs', those that must be added to the widened
   // grid.
@@ -412,7 +412,7 @@ PPL::Grid::limited_generator_extrapolation_assign(const Grid& y,
     // `x' is empty.
     return;
   }
-  
+
   if (tp == NULL || *tp == 0) {
     // Widening may change the grid, so add the congruences.
     Congruence_System new_cgs;
@@ -432,7 +432,7 @@ PPL::Grid::limited_generator_extrapolation_assign(const Grid& y,
     // There are tokens, so widening will leave the grid the same.
     x.generator_widening_assign(y, tp);
   }
-  
+
   PPL_ASSERT(OK());
 }
 
@@ -444,7 +444,7 @@ PPL::Grid::widening_assign(const Grid& y, unsigned* tp) {
   if (x.space_dim != y.space_dim) {
     throw_dimension_incompatible("widening_assign(y)", "y", y);
   }
-  
+
   // Assume `y' is contained in or equal to `x'.
   PPL_EXPECT_HEAVY(copy_contains(x, y));
 
@@ -476,14 +476,14 @@ PPL::Grid::limited_extrapolation_assign(const Grid& y,
     throw_dimension_incompatible("limited_extrapolation_assign(y, cgs)",
                                  "y", y);
   }
-  
+
   // `cgs' must be dimension-compatible with the two grids.
   const dimension_type cgs_space_dim = cgs.space_dimension();
   if (x.space_dim < cgs_space_dim) {
     throw_dimension_incompatible("limited_extrapolation_assign(y, cgs)",
                                  "cgs", cgs);
   }
-  
+
   const dimension_type cgs_num_rows = cgs.num_rows();
   // If `cgs' is empty (of rows), fall back to ordinary widening.
   if (cgs_num_rows == 0) {
@@ -500,13 +500,13 @@ PPL::Grid::limited_extrapolation_assign(const Grid& y,
   if (x.marked_empty()) {
     return;
   }
-  
+
   // The limited widening between two grids in a zero-dimensional
   // space is also a grid in a zero-dimensional space.
   if (x.space_dim == 0) {
     return;
   }
-  
+
   // Update the generators of `x': these are used to select, from the
   // congruences in `cgs', those that must be added to the widened
   // grid.
@@ -514,7 +514,7 @@ PPL::Grid::limited_extrapolation_assign(const Grid& y,
     // `x' is empty.
     return;
   }
-  
+
   if (tp == NULL || *tp == 0) {
     // Widening may change the grid, so add the congruences.
     Congruence_System new_cgs;
@@ -534,6 +534,6 @@ PPL::Grid::limited_extrapolation_assign(const Grid& y,
     // There are tokens, so widening will leave the grid the same.
     x.widening_assign(y, tp);
   }
-  
+
   PPL_ASSERT(OK());
 }

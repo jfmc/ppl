@@ -65,7 +65,7 @@ const FP_Interval_Type& compute_absolute_error(
       if (ieee754_single_result != ZERO_INTERVAL) {
         return ieee754_single_result;
       }
-      
+
       to_compute = &ieee754_single_result;
       f_base = float_ieee754_single::BASE;
       f_exponent_bias = float_ieee754_single::EXPONENT_BIAS;
@@ -75,7 +75,7 @@ const FP_Interval_Type& compute_absolute_error(
       if (ieee754_double_result != ZERO_INTERVAL) {
         return ieee754_double_result;
       }
-      
+
       to_compute = &ieee754_double_result;
       f_base = float_ieee754_double::BASE;
       f_exponent_bias = float_ieee754_double::EXPONENT_BIAS;
@@ -85,7 +85,7 @@ const FP_Interval_Type& compute_absolute_error(
       if (ibm_single_result != ZERO_INTERVAL) {
         return ibm_single_result;
       }
-      
+
       to_compute = &ibm_single_result;
       f_base = float_ibm_single::BASE;
       f_exponent_bias = float_ibm_single::EXPONENT_BIAS;
@@ -95,7 +95,7 @@ const FP_Interval_Type& compute_absolute_error(
       if (ieee754_quad_result != ZERO_INTERVAL) {
         return ieee754_quad_result;
       }
-      
+
       to_compute = &ieee754_quad_result;
       f_base = float_ieee754_quad::BASE;
       f_exponent_bias = float_ieee754_quad::EXPONENT_BIAS;
@@ -105,7 +105,7 @@ const FP_Interval_Type& compute_absolute_error(
       if (intel_double_extended_result != ZERO_INTERVAL) {
         return intel_double_extended_result;
       }
-      
+
       to_compute = &intel_double_extended_result;
       f_base = float_intel_double_extended::BASE;
       f_exponent_bias = float_intel_double_extended::EXPONENT_BIAS;

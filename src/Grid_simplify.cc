@@ -259,7 +259,7 @@ Grid::simplify(Grid_Generator_System& ggs, Dimension_Kinds& dim_kinds) {
   if (dim_kinds.size() != num_columns) {
     dim_kinds.resize(num_columns);
   }
-  
+
   const dimension_type num_rows = ggs.num_rows();
 
   // For each dimension `dim' move or construct a row into position
@@ -298,7 +298,7 @@ Grid::simplify(Grid_Generator_System& ggs, Dimension_Kinds& dim_kinds) {
         if (row.expr.get(dim) == 0) {
           continue;
         }
-        
+
         if (row.is_line()) {
           if (pivot_is_line) {
             reduce_line_with_line(row, pivot, dim);
@@ -338,7 +338,7 @@ Grid::simplify(Grid_Generator_System& ggs, Dimension_Kinds& dim_kinds) {
       if (pivot.expr.get(dim) < 0) {
         pivot.expr.negate(dim, num_columns);
       }
-      
+
       // Factor this row out of the preceding rows.
       reduce_reduced<Grid_Generator_System>
         (ggs.sys.rows, dim, pivot_index, dim, num_columns - 1, dim_kinds);
@@ -400,7 +400,7 @@ Grid::simplify(Congruence_System& cgs, Dimension_Kinds& dim_kinds) {
   if (dim_kinds.size() != num_columns) {
     dim_kinds.resize(num_columns);
   }
-  
+
   const dimension_type num_rows = cgs.num_rows();
 
   // For each dimension `dim' move or construct a row into position
@@ -440,7 +440,7 @@ Grid::simplify(Congruence_System& cgs, Dimension_Kinds& dim_kinds) {
         if (row.expr.get(dim) == 0) {
           continue;
         }
-        
+
         if (row.is_equality()) {
           if (pivot_is_equality) {
             reduce_equality_with_equality(row, pivot, dim);
@@ -478,7 +478,7 @@ Grid::simplify(Congruence_System& cgs, Dimension_Kinds& dim_kinds) {
       if (pivot.expr.get(dim) < 0) {
         pivot.expr.negate(0, dim + 1);
       }
-      
+
       // Factor this row out of the preceding ones.
       reduce_reduced<Congruence_System>
         (cgs.rows, dim, pivot_index, 0, dim, dim_kinds, false);

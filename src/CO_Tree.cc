@@ -54,13 +54,13 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1) {
   if (itr == end()) {
     return insert(key1);
   }
-  
+
   iterator candidate1 = bisect_near(itr, key1);
 
   if (key1 == candidate1.index()) {
     return candidate1;
   }
-  
+
   dimension_type candidate2_index = dfs_index(candidate1);
 
   if (key1 < candidate1.index()) {
@@ -85,7 +85,7 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1) {
     return iterator(insert_precise(key1, Coefficient_zero(),
                                    candidate1_node));
   }
-  
+
   tree_iterator candidate2_node(*this, candidate2_index);
 
   // Adjacent nodes in an in-order visit of a tree always have different
@@ -122,7 +122,7 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1,
   if (itr == end()) {
     return insert(key1, data1);
   }
-  
+
   iterator candidate1 = bisect_near(itr, key1);
 
   if (key1 == candidate1.index()) {
@@ -153,7 +153,7 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1,
     // Use candidate1
     return iterator(insert_precise(key1, data1, candidate1_node));
   }
-  
+
   tree_iterator candidate2_node(*this, candidate2_index);
 
   // Adjacent nodes in an in-order visit of a tree always have different
@@ -230,7 +230,7 @@ PPL::CO_Tree::bisect_in(dimension_type first, dimension_type last,
     if (indexes[new_half] == key) {
       return new_half;
     }
-    
+
     if (indexes[new_half] > key) {
 
       while (indexes[half] == unused_index) {
@@ -266,7 +266,7 @@ PPL::CO_Tree::bisect_near(dimension_type hint, dimension_type key) const {
   if (indexes[hint] == key) {
     return hint;
   }
-  
+
   dimension_type new_hint;
   dimension_type offset = 1;
 
@@ -294,7 +294,7 @@ PPL::CO_Tree::bisect_near(dimension_type hint, dimension_type key) const {
       else {
         new_hint = hint - offset;
       }
-      
+
       PPL_ASSERT(new_hint > 0);
       PPL_ASSERT(new_hint <= reserved_size);
 
@@ -380,7 +380,7 @@ PPL::CO_Tree::bisect_near(dimension_type hint, dimension_type key) const {
   if (hint == new_hint) {
     return hint;
   }
-  
+
   --new_hint;
 
   while (indexes[new_hint] == unused_index) {
@@ -578,7 +578,7 @@ PPL::CO_Tree::erase(tree_iterator itr) {
     // deleted_node is an ancestor of itr
     itr = deleted_node;
   }
-  
+
   itr.go_down_searching_key(deleted_key);
 
   iterator result(itr);
@@ -586,7 +586,7 @@ PPL::CO_Tree::erase(tree_iterator itr) {
   if (result.index() < deleted_key) {
     ++result;
   }
-  
+
   PPL_ASSERT(OK());
   PPL_ASSERT(result == end() || result.index() > deleted_key);
 #ifndef NDEBUG
@@ -663,7 +663,7 @@ PPL::CO_Tree::structure_OK() const {
   if (size_ > reserved_size) {
     return false;
   }
-  
+
   if (reserved_size == 0) {
     if (indexes != NULL) {
       return false;
@@ -674,7 +674,7 @@ PPL::CO_Tree::structure_OK() const {
     if (max_depth != 0) {
       return false;
     }
-    
+
     return true;
   }
 
@@ -684,19 +684,19 @@ PPL::CO_Tree::structure_OK() const {
   if (reserved_size != (static_cast<dimension_type>(1) << max_depth) - 1) {
     return false;
   }
-  
+
   if (data == NULL) {
     return false;
   }
-  
+
   if (indexes == NULL) {
     return false;
   }
-  
+
   if (max_depth == 0) {
     return false;
   }
-  
+
   if (size_ == 0) {
 
     // This const_cast could be removed by adding a const_tree_iterator,
@@ -705,7 +705,7 @@ PPL::CO_Tree::structure_OK() const {
     if (itr.index() != unused_index) {
       return false;
     }
-    
+
   }
   else {
     // This const_cast could be removed by adding a const_tree_iterator,
@@ -741,7 +741,7 @@ PPL::CO_Tree::structure_OK() const {
   if (cached_const_end != const_iterator(*this, reserved_size + 1)) {
     return false;
   }
-  
+
   return true;
 }
 
@@ -884,7 +884,7 @@ PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
     // The existing element and the element with index key we want to add.
     subtree_size = 2;
   }
-  
+
   while (is_greater_than_ratio(subtree_size, subtree_reserved_size,
                                max_density_percent
                                + ((itr_depth_minus_1
@@ -1128,7 +1128,7 @@ PPL::CO_Tree::move_data_from(CO_Tree& tree) {
   if (tree.size_ == 0) {
     return;
   }
-  
+
   tree_iterator root(*this);
 
   dimension_type source_index = 1;
@@ -1395,14 +1395,14 @@ PPL::CO_Tree::tree_iterator::OK() const {
   if (i == 0 || i > tree.reserved_size) {
     return false;
   }
-  
+
   // This assumes two's complement encoding.
   const dimension_type correct_offset = i & -i;
 
   if (offset != correct_offset) {
     return false;
   }
-  
+
   return true;
 }
 

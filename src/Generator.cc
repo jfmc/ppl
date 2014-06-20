@@ -71,7 +71,7 @@ PPL::Generator::point(const Linear_Expression& e,
   if (d < 0) {
     neg_assign(g.expr);
   }
-  
+
   // Enforce normalization.
   g.expr.normalize();
   return g;
@@ -107,7 +107,7 @@ PPL::Generator::closure_point(const Linear_Expression& e,
   if (d < 0) {
     neg_assign(g.expr);
   }
-  
+
   // Enforce normalization.
   g.expr.normalize();
   return g;
@@ -131,7 +131,7 @@ PPL::Generator::ray(const Linear_Expression& e, Representation r) {
     throw std::invalid_argument("PPL::ray(e):\n"
                                 "e == 0, but the origin cannot be a ray.");
   }
-  
+
   Linear_Expression ec(e, r);
   ec.set_inhomogeneous_term(0);
   const Generator g(ec, Generator::RAY, NECESSARILY_CLOSED);
@@ -146,7 +146,7 @@ PPL::Generator::line(const Linear_Expression& e, Representation r) {
     throw std::invalid_argument("PPL::line(e):\n"
                                 "e == 0, but the origin cannot be a line.");
   }
-  
+
   Linear_Expression ec(e, r);
   ec.set_inhomogeneous_term(0);
   const Generator g(ec, Generator::LINE, NECESSARILY_CLOSED);
@@ -176,7 +176,7 @@ PPL::Generator::remove_space_dimensions(const Variables_Set& vars) {
     if (is_not_necessarily_closed()) {
       set_epsilon_coefficient(1);
     }
-    
+
     PPL_ASSERT(OK());
     return false;
   }
@@ -194,7 +194,7 @@ PPL::Generator
     // No-op. No need to call sign_normalize().
     return;
   }
-  
+
   expr.permute_space_dimensions(cycle);
 
   // *this is still normalized but may be not strongly normalized: sign
@@ -218,7 +218,7 @@ PPL::compare(const Generator& x, const Generator& y) {
     // Equalities (lines) precede inequalities (ray/point).
     return y_is_line_or_equality ? 2 : -2;
   }
-  
+
   return compare(x.expr, y.expr);
 }
 
@@ -229,12 +229,12 @@ PPL::Generator::is_equivalent_to(const Generator& y) const {
   if (x_space_dim != y.space_dimension()) {
     return false;
   }
-  
+
   const Type x_type = x.type();
   if (x_type != y.type()) {
     return false;
   }
-  
+
   if (x_type == POINT
       && !(x.is_necessarily_closed() && y.is_necessarily_closed())) {
     // Due to the presence of epsilon-coefficients, syntactically

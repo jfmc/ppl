@@ -166,7 +166,7 @@ Box<ITV>::set_interval(const Variable var, const ITV& i) {
   if (space_dim < var.space_dimension()) {
     throw_dimension_incompatible("set_interval(v, i)", "v", var);
   }
-  
+
   if (is_empty() && space_dim >= 2) {
     // If the box is empty, and has dimension >= 2, setting only one
     // interval will not make it non-empty.
@@ -244,7 +244,7 @@ Box<ITV>::expand_space_dimension(const Variable var,
   if (var.space_dimension() > space_dim) {
     throw_dimension_incompatible("expand_space_dimension(v, m)", "v", var);
   }
-  
+
   // The space dimension of the resulting Box should not
   // overflow the maximum allowed space dimension.
   if (m > max_space_dimension() - space_dim) {
@@ -252,7 +252,7 @@ Box<ITV>::expand_space_dimension(const Variable var,
                            "adding m new space dimensions exceeds "
                            "the maximum allowed space dimension");
   }
-  
+
   // To expand the space dimension corresponding to variable `var',
   // we append to the box `m' copies of the corresponding interval.
   seq.insert(seq.end(), m, seq[var.id()]);
@@ -303,7 +303,7 @@ Box<ITV>::has_upper_bound(const Variable var,
   if (seq_k.upper_is_boundary_infinity()) {
     return false;
   }
-  
+
   closed = !seq_k.upper_is_open();
 
   PPL_DIRTY_TEMP(mpq_class, ur);
@@ -322,7 +322,7 @@ Box<ITV>::add_constraint(const Constraint& c) {
   if (c_space_dim > space_dimension()) {
     throw_dimension_incompatible("add_constraint(c)", c);
   }
-  
+
   add_constraint_no_check(c);
 }
 
@@ -333,7 +333,7 @@ Box<ITV>::add_constraints(const Constraint_System& cs) {
   if (cs.space_dimension() > space_dimension()) {
     throw_dimension_incompatible("add_constraints(cs)", cs);
   }
-  
+
   add_constraints_no_check(cs);
 }
 
@@ -351,7 +351,7 @@ Box<ITV>::add_congruence(const Congruence& cg) {
   if (cg_space_dim > space_dimension()) {
     throw_dimension_incompatible("add_congruence(cg)", cg);
   }
-  
+
   add_congruence_no_check(cg);
 }
 
@@ -462,12 +462,12 @@ Box<ITV>::refine_with_constraint(const Constraint& c) {
   if (c_space_dim > space_dimension()) {
     throw_dimension_incompatible("refine_with_constraint(c)", c);
   }
-  
+
   // If the box is already empty, there is nothing left to do.
   if (marked_empty()) {
     return;
   }
-  
+
   refine_no_check(c);
 }
 
@@ -478,7 +478,7 @@ Box<ITV>::refine_with_constraints(const Constraint_System& cs) {
   if (cs.space_dimension() > space_dimension()) {
     throw_dimension_incompatible("refine_with_constraints(cs)", cs);
   }
-  
+
   // If the box is already empty, there is nothing left to do.
   if (marked_empty()) {
     return;
@@ -508,12 +508,12 @@ Box<ITV>::refine_with_congruences(const Congruence_System& cgs) {
   if (cgs.space_dimension() > space_dimension()) {
     throw_dimension_incompatible("refine_with_congruences(cgs)", cgs);
   }
-  
+
   // If the box is already empty, there is nothing left to do.
   if (marked_empty()) {
     return;
   }
-  
+
   refine_no_check(cgs);
 }
 
@@ -525,7 +525,7 @@ Box<ITV>::propagate_constraint(const Constraint& c) {
   if (c_space_dim > space_dimension()) {
     throw_dimension_incompatible("propagate_constraint(c)", c);
   }
-  
+
   // If the box is already empty, there is nothing left to do.
   if (marked_empty()) {
     return;
@@ -541,12 +541,12 @@ Box<ITV>::propagate_constraints(const Constraint_System& cs,
   if (cs.space_dimension() > space_dimension()) {
     throw_dimension_incompatible("propagate_constraints(cs)", cs);
   }
-  
+
   // If the box is already empty, there is nothing left to do.
   if (marked_empty()) {
     return;
   }
-  
+
   propagate_constraints_no_check(cs, max_iterations);
 }
 
@@ -558,12 +558,12 @@ Box<ITV>::unconstrain(const Variable var) {
   if (space_dimension() < var_id + 1) {
     throw_dimension_incompatible("unconstrain(var)", var_id + 1);
   }
-  
+
   // If the box is already empty, there is nothing left to do.
   if (marked_empty()) {
     return;
   }
-  
+
   // Here the box might still be empty (but we haven't detected it yet):
   // check emptiness of the interval for `var' before cylindrification.
   ITV& seq_var = seq[var_id];
@@ -573,7 +573,7 @@ Box<ITV>::unconstrain(const Variable var) {
   else {
     seq_var.assign(UNIVERSE);
   }
-  
+
   PPL_ASSERT(OK());
 }
 

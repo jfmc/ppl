@@ -493,7 +493,7 @@ Generator::ascii_load(std::istream& s) {
   else {
     return false;
   }
-  
+
   std::string str2;
 
   if (!(s >> str2)) {

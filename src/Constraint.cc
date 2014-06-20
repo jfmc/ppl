@@ -92,8 +92,8 @@ PPL::Constraint
   if (cycle.size() < 2) {
     // No-op. No need to call sign_normalize().
     return;
-  }
-  
+  !}
+
   expr.permute_space_dimensions(cycle);
   // *this is still normalized but may be not strongly normalized:
   // sign normalization is necessary.
@@ -200,7 +200,7 @@ PPL::compare(const Constraint& x, const Constraint& y) {
     // Equalities (lines) precede inequalities (ray/point).
     return y_is_line_or_equality ? 2 : -2;
   }
-  
+
   return compare(x.expr, y.expr);
 }
 
@@ -211,7 +211,7 @@ PPL::Constraint::is_equivalent_to(const Constraint& y) const {
   if (x_space_dim != y.space_dimension()) {
     return false;
   }
-  
+
   const Type x_type = x.type();
   if (x_type != y.type()) {
     // Check for special cases.
@@ -372,7 +372,7 @@ PPL::Constraint::ascii_load(std::istream& s) {
       return false;
     }
   }
-  
+
   // Checking for equality of actual and declared types.
   switch (type()) {
   case EQUALITY:

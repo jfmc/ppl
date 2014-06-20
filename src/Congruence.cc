@@ -66,7 +66,7 @@ PPL::Congruence::normalize() {
   if (modulus_ == 0) {
     return;
   }
-  
+
   PPL_DIRTY_TEMP_COEFFICIENT(c);
   c = expr.inhomogeneous_term();
   // Factor the modulus out of the inhomogeneous term.
@@ -91,7 +91,7 @@ PPL::Congruence::strong_normalize() {
   else {
     gcd_assign(gcd, modulus_, gcd);
   }
-  
+
   if (gcd != 0 && gcd != 1) {
     expr /= gcd;
     modulus_ /= gcd;
@@ -105,7 +105,7 @@ PPL::Congruence::scale(Coefficient_traits::const_reference factor) {
     // Nothing to do.
     return;
   }
-  
+
   expr *= factor;
   modulus_ *= factor;
 }
@@ -120,7 +120,7 @@ PPL::Congruence
   if (c == 0) {
     return;
   }
-  
+
   scale(denominator);
 
   expr.linear_combine(e, 1, c, 0, e.space_dimension() + 1);
@@ -219,7 +219,7 @@ PPL::Congruence::is_inconsistent() const {
   if (is_equality()) {
     return (inhomogeneous_term() != 0) && expr.all_homogeneous_terms_are_zero();
   }
-  
+
   return (inhomogeneous_term() % modulus() != 0) && expr.all_homogeneous_terms_are_zero();
 }
 
@@ -239,11 +239,11 @@ PPL::Congruence::ascii_load(std::istream& s) {
   if (!(s >> str) || str != "m") {
     return false;
   }
-  
+
   if (!(s >> modulus_)) {
     return false;
   }
-  
+
   PPL_ASSERT(OK());
   return true;
 }

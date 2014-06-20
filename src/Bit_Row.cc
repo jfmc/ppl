@@ -63,7 +63,7 @@ PPL::Bit_Row::next(unsigned long position) const {
   if (li >= vec_size) {
     return C_Integer<unsigned long>::max;
   }
-  
+
   // Get the first limb.
   mp_srcptr p = vec->_mp_d + li;
 
@@ -105,7 +105,7 @@ PPL::Bit_Row::prev(unsigned long position) const {
   if (position == 0) {
     return C_Integer<unsigned long>::max;
   }
-  
+
   --position;
 
   const mp_size_t vec_size = vec->_mp_size;
@@ -154,7 +154,7 @@ PPL::Bit_Row::operator[](const unsigned long k) const {
   if (i >= static_cast<unsigned long>(vec_size)) {
     return false;
   }
-  
+
   const mp_limb_t limb = *(vec->_mp_d + i);
   return ((limb >> (k % static_cast<unsigned long>(GMP_NUMB_BITS))) & 1U) != 0;
 }
@@ -304,7 +304,7 @@ PPL::operator==(const Bit_Row& x, const Bit_Row& y) {
   if (x_vec_size != y_vec_size) {
     return false;
   }
-  
+
   return mpn_cmp(x.vec->_mp_d, y.vec->_mp_d, x_vec_size) == 0;
 }
 
@@ -319,7 +319,7 @@ PPL::operator!=(const Bit_Row& x, const Bit_Row& y) {
   if (x_vec_size != y_vec_size) {
     return true;
   }
-  
+
   return mpn_cmp(x.vec->_mp_d, y.vec->_mp_d, x_vec_size) != 0;
 }
 

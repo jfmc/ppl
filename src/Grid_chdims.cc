@@ -43,7 +43,7 @@ PPL::Grid::add_space_dimensions(Congruence_System& cgs,
   if (congruences_are_minimized() || generators_are_minimized()) {
     dim_kinds.resize(old_modulus_index + dims, CON_VIRTUAL /* a.k.a. LINE */);
   }
-  
+
   gs.add_universe_rows_and_columns(dims);
 }
 
@@ -154,7 +154,7 @@ PPL::Grid::add_space_dimensions_and_project(dimension_type m) {
   if (m == 0) {
     return;
   }
-  
+
   // The space dimension of the resulting grid should be at most the
   // maximum allowed space dimension.
   check_space_dimension_overflow(m, max_space_dimension() - space_dimension(),
@@ -245,7 +245,7 @@ PPL::Grid::concatenate_assign(const Grid& y) {
   if (added_columns == 0) {
     return;
   }
-  
+
   // If `*this' is a universe 0-dim space grid, the result is `y'.
   if (space_dim == 0) {
     *this = y;
@@ -255,7 +255,7 @@ PPL::Grid::concatenate_assign(const Grid& y) {
   if (!congruences_are_up_to_date()) {
     update_congruences();
   }
-  
+
   con_sys.concatenate(y.congruences());
 
   space_dim += added_columns;
@@ -283,7 +283,7 @@ PPL::Grid::remove_space_dimensions(const Variables_Set& vars) {
   if (space_dim < min_space_dim) {
     throw_dimension_incompatible("remove_space_dimensions(vs)", min_space_dim);
   }
-  
+
   const dimension_type new_space_dim = space_dim - vars.size();
 
   if (marked_empty()
@@ -407,12 +407,12 @@ PPL::Grid::expand_space_dimension(Variable var, dimension_type m) {
   if (var.space_dimension() > space_dim) {
     throw_dimension_incompatible("expand_space_dimension(v, m)", "v", var);
   }
-  
+
   // Adding 0 dimensions leaves the same grid.
   if (m == 0) {
     return;
   }
-  
+
   // The resulting space dimension must be at most the maximum.
   check_space_dimension_overflow(m, max_space_dimension() - space_dimension(),
                                  "PPL::Grid::",
@@ -438,7 +438,7 @@ PPL::Grid::expand_space_dimension(Variable var, dimension_type m) {
     if (coeff == 0) {
       continue;
     }
-    
+
     Congruence cg_copy = cg;
     cg_copy.expr.set_coefficient(var, Coefficient_zero());
 
@@ -461,19 +461,19 @@ PPL::Grid::fold_space_dimensions(const Variables_Set& vars, Variable dest) {
   if (dest.space_dimension() > space_dim) {
     throw_dimension_incompatible("fold_space_dimensions(vs, v)", "v", dest);
   }
-  
+
   // Folding only has effect if dimensions are given.
   if (vars.empty()) {
     return;
   }
-  
+
   // All variables in `vars' must be dimensions of the grid.
   if (vars.space_dimension() > space_dim) {
     throw_dimension_incompatible("fold_space_dimensions(vs, v)",
                                  "vs.space_dimension()",
                                  vars.space_dimension());
   }
-  
+
   // Moreover, `dest.id()' must not occur in `vars'.
   if (vars.find(dest.id()) != vars.end()) {
     throw_invalid_argument("fold_space_dimensions(vs, v)",

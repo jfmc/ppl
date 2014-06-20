@@ -406,7 +406,7 @@ PPL::Affine_Space::limited_extrapolation_assign(const Affine_Space& y,
   if (x.space_dimension() != y.space_dimension()) {
     throw_dimension_incompatible("widening_assign(y)", "y", y);
   }
-  
+
   // Assume `y' is contained in or equal to `x'.
   PPL_EXPECT_HEAVY(copy_contains(x, y));
 }
@@ -437,4 +437,3 @@ PPL::Affine_Space
                                const Affine_Space& as) const {
   throw_dimension_incompatible(method, as_name, as.space_dimension());
 }
-

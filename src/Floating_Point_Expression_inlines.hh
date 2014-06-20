@@ -41,7 +41,7 @@ Floating_Point_Expression<FP_Interval_Type, FP_Format>
   if (!lf.inhomogeneous_term().is_bounded()) {
     return true;
   }
-  
+
   dimension_type dimension = lf.space_dimension();
   for (dimension_type i = 0; i < dimension; ++i) {
     if (!lf.coefficient(Variable(i)).is_bounded()) {

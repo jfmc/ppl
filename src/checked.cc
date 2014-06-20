@@ -348,7 +348,7 @@ parse_number_part(std::istream& is, number_struct& numer) {
   if (empty_mantissa || is.bad()) {
     return V_CVT_STR_UNK;
   }
-  
+
  ok:
   {
     std::string::size_type n = numer.mantissa.size();

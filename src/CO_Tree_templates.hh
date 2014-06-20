@@ -42,7 +42,7 @@ CO_Tree::CO_Tree(Iterator i, dimension_type n) {
       && reserved_size != 3) {
     reserved_size = reserved_size*2 + 1;
   }
-  
+
   init(reserved_size);
 
   tree_iterator root(*this);

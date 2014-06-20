@@ -278,7 +278,7 @@ wrap_assign(PSET& pointset,
     if (!pointset.maximize(x, u_n, u_d, extremum)) {
       goto set_full_range;
     }
-    
+
     div_assign_r(l_n, l_n, l_d, ROUND_DOWN);
     div_assign_r(u_n, u_n, u_d, ROUND_DOWN);
     l_n -= min_value;
@@ -292,7 +292,7 @@ wrap_assign(PSET& pointset,
     if (first_quadrant == 0 && last_quadrant == 0) {
       continue;
     }
-    
+
     // If overflow is impossible, try not to add useless constraints.
     if (o == OVERFLOW_IMPOSSIBLE) {
       if (first_quadrant < 0) {
@@ -307,7 +307,7 @@ wrap_assign(PSET& pointset,
     if (o == OVERFLOW_UNDEFINED || collective_wrap_too_complex) {
       goto set_full_range;
     }
-    
+
     Coefficient& quadrants = u_d;
     quadrants = last_quadrant - first_quadrant + 1;
 
@@ -316,7 +316,7 @@ wrap_assign(PSET& pointset,
     if (result_overflow(res) != 0 || extension > complexity_threshold) {
       goto set_full_range;
     }
-    
+
     if (!wrap_individually && !collective_wrap_too_complex) {
       res = mul_assign_r(collective_wrap_complexity,
                          collective_wrap_complexity, extension, ROUND_IGNORE);

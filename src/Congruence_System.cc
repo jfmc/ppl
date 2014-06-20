@@ -120,7 +120,7 @@ PPL::Congruence_System::insert_verbatim(Congruence& cg, Recycle_Input) {
   else {
     cg.set_space_dimension(space_dimension());
   }
-  
+
   rows.resize(num_rows() + 1);
 
   swap(cg, rows.back());
@@ -171,7 +171,7 @@ PPL::Congruence_System::insert(const Congruence_System& y) {
   if (space_dimension() < y.space_dimension()) {
     set_space_dimension(y.space_dimension());
   }
-  
+
   rows.resize(rows.size() + y_num_rows);
 
   // Copy the rows of `y', with the new space dimension.
@@ -372,7 +372,7 @@ PPL::Congruence_System::ascii_load(std::istream& s) {
   if (!Parma_Polyhedra_Library::ascii_load(s, representation_)) {
     return false;
   }
-  
+
   Congruence c;
   for (dimension_type i = 0; i < num_rows; ++i) {
     if (!c.ascii_load(s)) {

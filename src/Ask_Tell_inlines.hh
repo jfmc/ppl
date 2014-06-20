@@ -205,7 +205,7 @@ Ask_Tell<D>::normalize() const {
   if (normalized) {
     return;
   }
-  
+
   Ask_Tell& x = const_cast<Ask_Tell&>(*this);
   x.reduce();
   x.deduce();

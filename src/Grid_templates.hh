@@ -119,7 +119,7 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
   if (space_dim == 0) {
     return;
   }
-  
+
   if (pfunc.has_empty_codomain()) {
     // All dimensions vanish: the grid becomes zero_dimensional.
     if (marked_empty()
@@ -132,7 +132,7 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
       // Removing all dimensions from a non-empty grid.
       set_zero_dim_univ();
     }
-    
+
     PPL_ASSERT(OK());
     return;
   }
@@ -165,7 +165,7 @@ Grid::map_space_dimensions(const Partial_Function& pfunc) {
           if (k == j) {
             break;
           }
-          
+
           cycle.push_back(Variable(j));
           // Go along the cycle.
           j = k;
@@ -288,7 +288,7 @@ Grid::reduce_reduced(Swapping_Vector<typename M::row_type>& rows,
   if (pivot_dim == 0) {
     return;
   }
-  
+
   PPL_DIRTY_TEMP_COEFFICIENT(pivot_dim_half);
   pivot_dim_half = (pivot_dim + 1) / 2;
   const Dimension_Kind row_kind = sys_dim_kinds[dim];

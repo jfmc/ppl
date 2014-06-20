@@ -44,7 +44,7 @@ PPL::BD_Shape_Helpers::extract_bounded_difference(const Constraint& c,
     // All the inhomogeneous coefficients are zero.
     return true;
   }
-  
+
   ++c_num_vars;
 
   c_second_var = c.expression().first_nonzero(c_first_var + 1, space_dim + 1);
@@ -62,7 +62,7 @@ PPL::BD_Shape_Helpers::extract_bounded_difference(const Constraint& c,
     // The constraint `c' is not a bounded difference.
     return false;
   }
-  
+
   // Make sure that `c' is indeed a bounded difference, i.e., it is of the
   // form:
   // a*x - a*y <=/= b.
@@ -72,7 +72,7 @@ PPL::BD_Shape_Helpers::extract_bounded_difference(const Constraint& c,
     // Constraint `c' is not a bounded difference.
     return false;
   }
-  
+
   c_coeff = c1;
 
   return true;

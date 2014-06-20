@@ -102,7 +102,7 @@ Generator_System::set_space_dimension(dimension_type space_dim) {
     // We may have invalid lines and rays now.
     remove_invalid_lines_and_rays();
   }
-  
+
 #ifndef NDEBUG
   for (dimension_type i = 0; i < sys.num_rows(); ++i)
     PPL_ASSERT(sys[i].OK());

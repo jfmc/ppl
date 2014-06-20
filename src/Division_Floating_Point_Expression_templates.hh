@@ -46,7 +46,7 @@ bool Division_Floating_Point_Expression<FP_Interval_Type, FP_Format>
       && intervalized_second_operand.upper() >= 0) {
     return false;
   }
-  
+
   if (!first_operand->linearize(int_store, lf_store, result)) {
     return false;
   }

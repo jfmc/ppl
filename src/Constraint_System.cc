@@ -372,7 +372,7 @@ PPL::Constraint_System::ascii_load(std::istream& s) {
   if (!sys.ascii_load(s)) {
     return false;
   }
-  
+
   PPL_ASSERT(OK());
   return true;
 }

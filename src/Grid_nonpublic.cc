@@ -163,7 +163,7 @@ PPL::Grid::construct(Grid_Generator_System& ggs) {
   if (!ggs.has_points()) {
     throw_invalid_generators("Grid(ggs)", "ggs");
   }
-  
+
   if (space_dim == 0) {
     set_zero_dim_univ();
   }
@@ -300,7 +300,7 @@ PPL::Grid::bounds(const Linear_Expression& expr,
     // Minimizing found `this' empty.
     return true;
   }
-  
+
   return bounds_no_check(expr);
 }
 
@@ -489,7 +489,7 @@ PPL::Grid::update_congruences() const {
   if (!generators_are_minimized()) {
     gr.simplify(gr.gen_sys, gr.dim_kinds);
   }
-  
+
   // `gen_sys' contained rows before being reduced, so it should
   // contain at least a single point afterward.
   PPL_ASSERT(!gen_sys.has_no_rows());

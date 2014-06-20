@@ -208,7 +208,7 @@ Box<ITV>::Status::ascii_load(std::istream& s) {
   if (positive) {
     set_empty_up_to_date();
   }
-  
+
   if (!get_field(s, Implementation::Boxes::empty, positive)) {
     return false;
   }
@@ -224,7 +224,7 @@ Box<ITV>::Status::ascii_load(std::istream& s) {
   else {
     reset_universe();
   }
-  
+
   // Check invariants.
   PPL_ASSERT(OK());
   return true;

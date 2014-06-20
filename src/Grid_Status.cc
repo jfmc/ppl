@@ -94,14 +94,14 @@ PPL::Grid::Status::ascii_load(std::istream& s) {
   if (positive) {
     set_zero_dim_univ();
   }
-  
+
   if (!get_field(s, empty, positive)) {
     return false;
   }
   if (positive) {
     set_empty();
   }
-  
+
   if (!get_field(s, consys_min, positive)) {
     return false;
   }
@@ -115,7 +115,7 @@ PPL::Grid::Status::ascii_load(std::istream& s) {
   if (!get_field(s, gensys_min, positive)) {
     return false;
   }
-  
+
   if (positive) {
     set_g_minimized();
   }
@@ -126,7 +126,7 @@ PPL::Grid::Status::ascii_load(std::istream& s) {
   if (!get_field(s, consys_upd, positive)) {
     return false;
   }
-  
+
   if (positive) {
     set_c_up_to_date();
   }
@@ -153,7 +153,7 @@ PPL::Grid::Status::ascii_load(std::istream& s) {
   else {
     reset_c_pending();
   }
-  
+
   if (!get_field(s, gensys_pending, positive)) {
     return false;
   }
@@ -163,7 +163,7 @@ PPL::Grid::Status::ascii_load(std::istream& s) {
   else {
     reset_g_pending();
   }
-  
+
   if (!get_field(s, satc_upd, positive)) {
     return false;
   }
@@ -173,7 +173,7 @@ PPL::Grid::Status::ascii_load(std::istream& s) {
   else {
     reset_sat_c_up_to_date();
   }
-  
+
   if (!get_field(s, satg_upd, positive)) {
     return false;
   }
@@ -200,7 +200,7 @@ PPL::Grid::Status::OK() const {
     // Zero-dim universe is OK.
     return true;
   }
-  
+
   if (test_empty()) {
     Status copy = *this;
     copy.reset_empty();

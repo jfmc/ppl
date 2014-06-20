@@ -358,13 +358,13 @@ gcdext_exact(To1& to, To2& s, To3& t, const From1& x, const From2& y,
   if (r != V_EQ) {
     return r;
   }
-   
+
   From2 a_y;
   r = abs<To1_Policy, From2_Policy>(a_y, y, dir);
   if (r != V_EQ) {
     return r;
   }
-  
+
   // If PPL_MATCH_GMP_GCDEXT is defined then s is favored when the absolute
   // values of the given numbers are equal.  For instance if x and y
   // are both 5 then s will be 1 and t will be 0, instead of the other

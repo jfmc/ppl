@@ -270,7 +270,7 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
         }
       }
     }
-    
+
     // Check for unsatisfiability.
     if (!lp.is_satisfiable()) {
       *this = BD_Shape<T>(num_dimensions, EMPTY);
@@ -1028,7 +1028,7 @@ BD_Shape<T>::is_shortest_path_reduced() const {
   if (!marked_shortest_path_reduced()) {
     return false;
   }
-  
+
   const BD_Shape x_copy = *this;
   x_copy.shortest_path_closure_assign();
   // If we just discovered emptiness, it cannot be reduced.

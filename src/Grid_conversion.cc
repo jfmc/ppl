@@ -42,7 +42,7 @@ Grid::lower_triangular(const Congruence_System& sys,
   if (sys.num_rows() > num_columns) {
     return false;
   }
-  
+
   // Check triangularity.
 
   dimension_type row = 0;
@@ -109,7 +109,7 @@ Grid::multiply_grid(const Coefficient& multiplier, Grid_Generator& gen,
   if (multiplier == 1) {
     return;
   }
-  
+
   if (gen.is_line()) {
     // Multiply every element of the line.
     gen.expr *= multiplier;
@@ -134,7 +134,7 @@ Grid::multiply_grid(const Coefficient& multiplier, Congruence& cg,
   if (multiplier == 1) {
     return;
   }
-  
+
   if (cg.is_proper_congruence()) {
     // Multiply every element of every congruence.
     for (dimension_type index = num_rows; index-- > 0; ) {

@@ -261,7 +261,7 @@ Grid::add_congruence(const Congruence& cg) {
   if (space_dim < cg.space_dimension()) {
     throw_dimension_incompatible("add_congruence(cg)", "cg", cg);
   }
-  
+
   if (!marked_empty()) {
     add_congruence_no_check(cg);
   }
@@ -274,7 +274,7 @@ Grid::add_congruences(const Congruence_System& cgs) {
   if (space_dim < cgs.space_dimension()) {
     throw_dimension_incompatible("add_congruences(cgs)", "cgs", cgs);
   }
-  
+
   if (!marked_empty()) {
     Congruence_System cgs_copy = cgs;
     add_recycled_congruences(cgs_copy);
