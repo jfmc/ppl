@@ -128,8 +128,8 @@ void
 Matrix<Row>::remove_column(dimension_type i) {
   for (dimension_type j = rows.size(); j-- > 0; ) {
     rows[j].delete_element_and_shift(i);
-  --num_columns_;
   }
+  --num_columns_;
   PPL_ASSERT(OK());
 }
 
