@@ -144,8 +144,9 @@ template <typename T>
 inline typename Enable_If<Is_Singleton<T>::value
                           || Is_Interval<T>::value, bool>::type
 check_empty_arg(const T& x) {
-  if (f_info(x).may_be_empty)
+  if (f_info(x).may_be_empty) {
     return f_is_empty(x);
+  }
   else {
     PPL_ASSERT(!f_is_empty(x));
     return false;
@@ -163,10 +164,12 @@ inline typename Enable_If<((Is_Singleton<T1>::value
 operator==(const T1& x, const T2& y) {
   PPL_ASSERT(f_OK(x));
   PPL_ASSERT(f_OK(y));
-  if (check_empty_arg(x))
+  if (check_empty_arg(x)) {
     return check_empty_arg(y);
-  else if (check_empty_arg(y))
+  }
+  else if (check_empty_arg(y)) {
     return false;
+  }
   return eq(LOWER, f_lower(x), f_info(x), LOWER, f_lower(y), f_info(y))
     && eq(UPPER, f_upper(x), f_info(x), UPPER, f_upper(y), f_info(y));
 }
@@ -190,10 +193,12 @@ inline typename Enable_If<Is_Singleton<T>::value
 Interval<Boundary, Info>::contains(const T& y) const {
   PPL_ASSERT(OK());
   PPL_ASSERT(f_OK(y));
-  if (check_empty_arg(y))
+  if (check_empty_arg(y)) {
     return true;
-  if (check_empty_arg(*this))
+  }
+  if (check_empty_arg(*this)) {
     return false;
+  }
   return le(LOWER, lower(), info(), LOWER, f_lower(y), f_info(y))
     && ge(UPPER, upper(), info(), UPPER, f_upper(y), f_info(y));
 }
@@ -205,10 +210,12 @@ inline typename Enable_If<Is_Singleton<T>::value
 Interval<Boundary, Info>::strictly_contains(const T& y) const {
   PPL_ASSERT(OK());
   PPL_ASSERT(f_OK(y));
-  if (check_empty_arg(y))
+  if (check_empty_arg(y)) {
     return !check_empty_arg(*this);
-  if (check_empty_arg(*this))
+  }
+  if (check_empty_arg(*this)) {
     return false;
+  }
   return (lt(LOWER, lower(), info(), LOWER, f_lower(y), f_info(y))
           && ge(UPPER, upper(), info(), UPPER, f_upper(y), f_info(y)))
     || (le(LOWER, lower(), info(), LOWER, f_lower(y), f_info(y))
@@ -222,8 +229,9 @@ inline typename Enable_If<Is_Singleton<T>::value
 Interval<Boundary, Info>::is_disjoint_from(const T& y) const {
   PPL_ASSERT(OK());
   PPL_ASSERT(f_OK(y));
-  if (check_empty_arg(*this) || check_empty_arg(y))
+  if (check_empty_arg(*this) || check_empty_arg(y)) {
     return true;
+  }
   return gt(LOWER, lower(), info(), UPPER, f_upper(y), f_info(y))
     || lt(UPPER, upper(), info(), LOWER, f_lower(y), f_info(y));
 }
@@ -234,8 +242,9 @@ inline typename Enable_If<Is_Singleton<From>::value
                           || Is_Interval<From>::value, I_Result>::type
 Interval<To_Boundary, To_Info>::assign(const From& x) {
   PPL_ASSERT(f_OK(x));
-  if (check_empty_arg(x))
+  if (check_empty_arg(x)) {
     return assign(EMPTY);
+  }
   PPL_DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
   const Result rl = Boundary_NS::assign(LOWER, lower(), to_info,
@@ -253,10 +262,12 @@ inline typename Enable_If<Is_Singleton<From>::value
                           || Is_Interval<From>::value, I_Result>::type
 Interval<To_Boundary, To_Info>::join_assign(const From& x) {
   PPL_ASSERT(f_OK(x));
-  if (check_empty_arg(*this))
+  if (check_empty_arg(*this)) {
     return assign(x);
-  if (check_empty_arg(x))
+  }
+  if (check_empty_arg(x)) {
     return combine(V_EQ, V_EQ);
+  }
   Result rl;
   Result ru;
   rl = min_assign(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x));
@@ -274,10 +285,12 @@ inline typename Enable_If<((Is_Singleton<From1>::value
 Interval<To_Boundary, To_Info>::join_assign(const From1& x, const From2& y) {
   PPL_ASSERT(f_OK(x));
   PPL_ASSERT(f_OK(y));
-  if (check_empty_arg(x))
+  if (check_empty_arg(x)) {
     return assign(y);
-  if (check_empty_arg(y))
+  }
+  if (check_empty_arg(y)) {
     return assign(x);
+  }
   PPL_DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
   Result rl;
@@ -353,15 +366,17 @@ inline typename Enable_If<Is_Singleton<From>::value
 Interval<To_Boundary, To_Info>::difference_assign(const From& x) {
   PPL_ASSERT(f_OK(x));
   if (lt(UPPER, upper(), info(), LOWER, f_lower(x), f_info(x))
-      || gt(LOWER, lower(), info(), UPPER, f_upper(x), f_info(x)))
+      || gt(LOWER, lower(), info(), UPPER, f_upper(x), f_info(x))) {
     return combine(V_EQ, V_EQ);
+  }
   bool nl = ge(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x));
   bool nu = le(UPPER, upper(), info(), UPPER, f_upper(x), f_info(x));
   Result rl = V_EQ;
   Result ru = V_EQ;
   if (nl) {
-    if (nu)
+    if (nu) {
       return assign(EMPTY);
+    }
     else {
       info().clear_boundary_properties(LOWER);
       rl = complement(LOWER, lower(), info(), UPPER, f_upper(x), f_info(x));
@@ -388,15 +403,17 @@ Interval<To_Boundary, To_Info>::difference_assign(const From1& x,
   PPL_DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
   if (lt(UPPER, f_upper(x), f_info(x), LOWER, f_lower(y), f_info(y))
-      || gt(LOWER, f_lower(x), f_info(x), UPPER, f_upper(y), f_info(y)))
+      || gt(LOWER, f_lower(x), f_info(x), UPPER, f_upper(y), f_info(y))) {
     return assign(x);
+  }
   bool nl = ge(LOWER, f_lower(x), f_info(x), LOWER, f_lower(y), f_info(y));
   bool nu = le(UPPER, f_upper(x), f_info(x), UPPER, f_upper(y), f_info(y));
   Result rl = V_EQ;
   Result ru = V_EQ;
   if (nl) {
-    if (nu)
+    if (nu) {
       return assign(EMPTY);
+    }
     else {
       rl = complement(LOWER, lower(), info(), UPPER, f_upper(y), f_info(y));
       ru = Boundary_NS::assign(UPPER, upper(), info(), UPPER, f_upper(x), f_info(x));
@@ -420,13 +437,15 @@ Interval<To_Boundary, To_Info>
 ::refine_existential(Relation_Symbol rel, const From& x) {
   PPL_ASSERT(OK());
   PPL_ASSERT(f_OK(x));
-  if (check_empty_arg(x))
+  if (check_empty_arg(x)) {
     return assign(EMPTY);
+  }
   switch (rel) {
   case LESS_THAN:
     {
-      if (lt(UPPER, upper(), info(), UPPER, f_upper(x), f_info(x)))
+      if (lt(UPPER, upper(), info(), UPPER, f_upper(x), f_info(x))) {
         return combine(V_EQ, V_EQ);
+      }
       info().clear_boundary_properties(UPPER);
       Boundary_NS::assign(UPPER, upper(), info(),
                           UPPER, f_upper(x), f_info(x), true);
@@ -434,8 +453,9 @@ Interval<To_Boundary, To_Info>
     }
   case LESS_OR_EQUAL:
     {
-      if (le(UPPER, upper(), info(), UPPER, f_upper(x), f_info(x)))
+      if (le(UPPER, upper(), info(), UPPER, f_upper(x), f_info(x))) {
         return combine(V_EQ, V_EQ);
+      }
       info().clear_boundary_properties(UPPER);
       Boundary_NS::assign(UPPER, upper(), info(),
                           UPPER, f_upper(x), f_info(x));
@@ -443,8 +463,9 @@ Interval<To_Boundary, To_Info>
     }
   case GREATER_THAN:
     {
-      if (gt(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x)))
+      if (gt(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x))) {
         return combine(V_EQ, V_EQ);
+      }
       info().clear_boundary_properties(LOWER);
       Boundary_NS::assign(LOWER, lower(), info(),
                           LOWER, f_lower(x), f_info(x), true);
@@ -452,8 +473,9 @@ Interval<To_Boundary, To_Info>
     }
   case GREATER_OR_EQUAL:
     {
-      if (ge(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x)))
+      if (ge(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x))) {
         return combine(V_EQ, V_EQ);
+      }
       info().clear_boundary_properties(LOWER);
       Boundary_NS::assign(LOWER, lower(), info(),
                           LOWER, f_lower(x), f_info(x));
@@ -463,14 +485,18 @@ Interval<To_Boundary, To_Info>
     return intersect_assign(x);
   case NOT_EQUAL:
     {
-      if (!f_is_singleton(x))
+      if (!f_is_singleton(x)) {
         return combine(V_EQ, V_EQ);
-      if (check_empty_arg(*this))
+      }
+      if (check_empty_arg(*this)) {
         return I_EMPTY;
-      if (eq(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x)))
+      }
+      if (eq(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x))) {
         remove_inf();
-      if (eq(UPPER, upper(), info(), UPPER, f_upper(x), f_info(x)))
+      }
+      if (eq(UPPER, upper(), info(), UPPER, f_upper(x), f_info(x))) {
         remove_sup();
+      }
       return I_ANY;
     }
   default:
@@ -487,13 +513,15 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel,
                                                  const From& x) {
   PPL_ASSERT(OK());
   PPL_ASSERT(f_OK(x));
-  if (check_empty_arg(x))
+  if (check_empty_arg(x)) {
     return combine(V_EQ, V_EQ);
+  }
   switch (rel) {
   case LESS_THAN:
     {
-      if (lt(UPPER, upper(), info(), LOWER, f_lower(x), f_info(x)))
+      if (lt(UPPER, upper(), info(), LOWER, f_lower(x), f_info(x))) {
         return combine(V_EQ, V_EQ);
+      }
       info().clear_boundary_properties(UPPER);
       Result ru = Boundary_NS::assign(UPPER, upper(), info(),
                                       LOWER, f_lower(x), SCALAR_INFO,
@@ -503,8 +531,9 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel,
     }
   case LESS_OR_EQUAL:
     {
-      if (le(UPPER, upper(), info(), LOWER, f_lower(x), f_info(x)))
+      if (le(UPPER, upper(), info(), LOWER, f_lower(x), f_info(x))) {
         return combine(V_EQ, V_EQ);
+      }
       info().clear_boundary_properties(UPPER);
       Result ru = Boundary_NS::assign(UPPER, upper(), info(),
                                       LOWER, f_lower(x), SCALAR_INFO);
@@ -513,8 +542,9 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel,
     }
   case GREATER_THAN:
     {
-      if (gt(LOWER, lower(), info(), UPPER, f_upper(x), f_info(x)))
+      if (gt(LOWER, lower(), info(), UPPER, f_upper(x), f_info(x))) {
         return combine(V_EQ, V_EQ);
+      }
       info().clear_boundary_properties(LOWER);
       Result rl = Boundary_NS::assign(LOWER, lower(), info(),
                                       UPPER, f_upper(x), SCALAR_INFO,
@@ -524,8 +554,9 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel,
     }
   case GREATER_OR_EQUAL:
     {
-      if (ge(LOWER, lower(), info(), UPPER, f_upper(x), f_info(x)))
+      if (ge(LOWER, lower(), info(), UPPER, f_upper(x), f_info(x))) {
         return combine(V_EQ, V_EQ);
+      }
       info().clear_boundary_properties(LOWER);
       Result rl = Boundary_NS::assign(LOWER, lower(), info(),
                                       UPPER, f_upper(x), SCALAR_INFO);
@@ -533,17 +564,21 @@ Interval<To_Boundary, To_Info>::refine_universal(Relation_Symbol rel,
       return I_ANY;
     }
   case EQUAL:
-    if (!f_is_singleton(x))
+    if (!f_is_singleton(x)) {
       return assign(EMPTY);
+    }
     return intersect_assign(x);
   case NOT_EQUAL:
     {
-      if (check_empty_arg(*this))
+      if (check_empty_arg(*this)) {
         return I_EMPTY;
-      if (eq(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x)))
+      }
+      if (eq(LOWER, lower(), info(), LOWER, f_lower(x), f_info(x))) {
         remove_inf();
-      if (eq(UPPER, upper(), info(), UPPER, f_upper(x), f_info(x)))
+      }
+      if (eq(UPPER, upper(), info(), UPPER, f_upper(x), f_info(x))) {
         remove_sup();
+      }
       return I_ANY;
     }
   default:
@@ -558,8 +593,9 @@ inline typename Enable_If<Is_Singleton<From>::value
                           || Is_Interval<From>::value, I_Result>::type
 Interval<To_Boundary, To_Info>::neg_assign(const From& x) {
   PPL_ASSERT(f_OK(x));
-  if (check_empty_arg(x))
+  if (check_empty_arg(x)) {
     return assign(EMPTY);
+  }
   PPL_DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
   Result rl;
@@ -582,19 +618,24 @@ inline typename Enable_If<((Is_Singleton<From1>::value
 Interval<To_Boundary, To_Info>::add_assign(const From1& x, const From2& y) {
   PPL_ASSERT(f_OK(x));
   PPL_ASSERT(f_OK(y));
-  if (check_empty_arg(x) || check_empty_arg(y))
+  if (check_empty_arg(x) || check_empty_arg(y)) {
     return assign(EMPTY);
+  }
   int inf_sign = Parma_Polyhedra_Library::infinity_sign(x);
   if (inf_sign != 0) {
-    if (Parma_Polyhedra_Library::infinity_sign(y) == -inf_sign)
+    if (Parma_Polyhedra_Library::infinity_sign(y) == -inf_sign) {
       return assign(EMPTY);
+    }
   }
-  else
+  else {
     inf_sign = Parma_Polyhedra_Library::infinity_sign(y);
-  if (inf_sign < 0)
+  }
+  if (inf_sign < 0) {
     return assign(MINUS_INFINITY);
-  else if (inf_sign > 0)
+  }
+  else if (inf_sign > 0) {
     return assign(PLUS_INFINITY);
+  }
   PPL_DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
   Result rl = Boundary_NS::add_assign(LOWER, lower(), to_info,
@@ -617,20 +658,24 @@ inline typename Enable_If<((Is_Singleton<From1>::value
 Interval<To_Boundary, To_Info>::sub_assign(const From1& x, const From2& y) {
   PPL_ASSERT(f_OK(x));
   PPL_ASSERT(f_OK(y));
-  if (check_empty_arg(x) || check_empty_arg(y))
+  if (check_empty_arg(x) || check_empty_arg(y)) {
     return assign(EMPTY);
+  }
   int inf_sign = Parma_Polyhedra_Library::infinity_sign(x);
   if (inf_sign != 0) {
-    if (Parma_Polyhedra_Library::infinity_sign(y) == inf_sign)
+    if (Parma_Polyhedra_Library::infinity_sign(y) == inf_sign) {
       return assign(EMPTY);
+    }
   }
-  else
+  else {
     inf_sign = -Parma_Polyhedra_Library::infinity_sign(y);
-  if (inf_sign < 0)
+  }
+  if (inf_sign < 0) {
     return assign(MINUS_INFINITY);
-  else if (inf_sign > 0)
+  }
+  else if (inf_sign > 0) {
     return assign(PLUS_INFINITY);
-
+  }
   PPL_DIRTY_TEMP(To_Info, to_info);
   to_info.clear();
   Result rl;
@@ -669,8 +714,9 @@ inline typename Enable_If<((Is_Singleton<From1>::value
 Interval<To_Boundary, To_Info>::mul_assign(const From1& x, const From2& y) {
   PPL_ASSERT(f_OK(x));
   PPL_ASSERT(f_OK(y));
-  if (check_empty_arg(x) || check_empty_arg(y))
+  if (check_empty_arg(x) || check_empty_arg(y)) {
     return assign(EMPTY);
+  }
   int xls = sgn_b(LOWER, f_lower(x), f_info(x));
   int xus = (xls > 0) ? 1 : sgn_b(UPPER, f_upper(x), f_info(x));
   int yls = sgn_b(LOWER, f_lower(y), f_info(y));
@@ -689,16 +735,21 @@ Interval<To_Boundary, To_Info>::mul_assign(const From1& x, const From2& y) {
       ls = xls;
       us = xus;
     inf:
-      if (ls == 0 && us == 0)
+      if (ls == 0 && us == 0) {
         return assign(EMPTY);
-      if (ls == -us)
+      }
+      if (ls == -us) {
         return set_infinities();
-      if (ls < 0 || us < 0)
+      }
+      if (ls < 0 || us < 0) {
         inf_sign = -inf_sign;
-      if (inf_sign < 0)
+      }
+      if (inf_sign < 0) {
         return assign(MINUS_INFINITY);
-      else
+      }
+      else {
         return assign(PLUS_INFINITY);
+      }
     }
   }
 
@@ -838,24 +889,30 @@ inline typename Enable_If<((Is_Singleton<From1>::value
 Interval<To_Boundary, To_Info>::div_assign(const From1& x, const From2& y) {
   PPL_ASSERT(f_OK(x));
   PPL_ASSERT(f_OK(y));
-  if (check_empty_arg(x) || check_empty_arg(y))
+  if (check_empty_arg(x) || check_empty_arg(y)) {
     return assign(EMPTY);
+  }
   int yls = sgn_b(LOWER, f_lower(y), f_info(y));
   int yus = (yls > 0) ? 1 : sgn_b(UPPER, f_upper(y), f_info(y));
-  if (yls == 0 && yus == 0)
+  if (yls == 0 && yus == 0) {
     return assign(EMPTY);
+  }
   int inf_sign = Parma_Polyhedra_Library::infinity_sign(x);
   if (inf_sign != 0) {
-    if (Parma_Polyhedra_Library::infinity_sign(y) != 0)
+    if (Parma_Polyhedra_Library::infinity_sign(y) != 0) {
       return assign(EMPTY);
-    if (yls == -yus)
+    }
+    if (yls == -yus) {
       return set_infinities();
+    }
     if (yls < 0 || yus < 0)
     inf_sign = -inf_sign;
-    if (inf_sign < 0)
+    if (inf_sign < 0) {
       return assign(MINUS_INFINITY);
-    else
+    }
+    else {
       return assign(PLUS_INFINITY);
+    }
   }
   int xls = sgn_b(LOWER, f_lower(x), f_info(x));
   int xus = (xls > 0) ? 1 : sgn_b(UPPER, f_upper(x), f_info(x));
@@ -1025,22 +1082,27 @@ operator/(const Interval<B, Info>& x, const Interval<B, Info>& y) {
 template <typename Boundary, typename Info>
 inline std::ostream&
 operator<<(std::ostream& os, const Interval<Boundary, Info>& x) {
-  if (check_empty_arg(x))
+  if (check_empty_arg(x)) {
     return os << "[]";
+  }
   if (x.is_singleton()) {
     output(os, x.lower(), Numeric_Format(), ROUND_NOT_NEEDED);
     return os;
   }
   os << (x.lower_is_open() ? "(" : "[");
-  if (x.info().get_boundary_property(LOWER, SPECIAL))
+  if (x.info().get_boundary_property(LOWER, SPECIAL)) {
     os << "-inf";
-  else
+  }
+  else {
     output(os, x.lower(), Numeric_Format(), ROUND_NOT_NEEDED);
+  }
   os << ", ";
-  if (x.info().get_boundary_property(UPPER, SPECIAL))
+  if (x.info().get_boundary_property(UPPER, SPECIAL)) {
     os << "+inf";
-  else
+  }
+  else {
     output(os, x.upper(), Numeric_Format(), ROUND_NOT_NEEDED);
+  }
   os << (x.upper_is_open() ? ")" : "]");
   return os;
 }
@@ -1063,18 +1125,24 @@ inline bool
 Interval<Boundary, Info>::ascii_load(std::istream& s) {
   using Parma_Polyhedra_Library::ascii_load;
   std::string str;
-  if (!(s >> str) || str != "info")
+  if (!(s >> str) || str != "info") {
     return false;
-  if (!info().ascii_load(s))
+  }
+  if (!info().ascii_load(s)) {
     return false;
-  if (!(s >> str) || str != "lower")
+  }
+  if (!(s >> str) || str != "lower") {
     return false;
-  if (!ascii_load(s, lower()))
+  }
+  if (!ascii_load(s, lower())) {
     return false;
-  if (!(s >> str) || str != "upper")
+  }
+  if (!(s >> str) || str != "upper") {
     return false;
-  if (!ascii_load(s, upper()))
+  }
+  if (!ascii_load(s, upper())) {
     return false;
+  }
   PPL_ASSERT(OK());
   return true;
 }

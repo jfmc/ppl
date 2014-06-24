@@ -107,11 +107,13 @@ inline
 Octagonal_Shape<T>::Octagonal_Shape(const dimension_type num_dimensions,
                                     const Degenerate_Element kind)
   : matrix(num_dimensions), space_dim(num_dimensions), status() {
-  if (kind == EMPTY)
+  if (kind == EMPTY) {
     set_empty();
-  else if (num_dimensions > 0)
+  }
+  else if (num_dimensions > 0) {
     // A (non zero-dim) universe octagon is strongly closed.
     set_strongly_closed();
+  }
   PPL_ASSERT(OK());
 }
 
@@ -132,10 +134,12 @@ Octagonal_Shape<T>::Octagonal_Shape(const Octagonal_Shape<U>& y,
     space_dim(y.space_dim),
     status() {
   // TODO: handle flags properly, possibly taking special cases into account.
-  if (y.marked_empty())
+  if (y.marked_empty()) {
     set_empty();
-  else if (y.marked_zero_dim_univ())
+  }
+  else if (y.marked_zero_dim_univ()) {
     set_zero_dim_univ();
+  }
 }
 
 template <typename T>
@@ -144,9 +148,10 @@ Octagonal_Shape<T>::Octagonal_Shape(const Constraint_System& cs)
   : matrix(cs.space_dimension()),
     space_dim(cs.space_dimension()),
     status() {
-  if (cs.space_dimension() > 0)
+  if (cs.space_dimension() > 0) {
     // A (non zero-dim) universe octagon is strongly closed.
     set_strongly_closed();
+  }
   add_constraints(cs);
 }
 
@@ -156,9 +161,10 @@ Octagonal_Shape<T>::Octagonal_Shape(const Congruence_System& cgs)
   : matrix(cgs.space_dimension()),
     space_dim(cgs.space_dimension()),
     status() {
-  if (cgs.space_dimension() > 0)
+  if (cgs.space_dimension() > 0) {
     // A (non zero-dim) universe octagon is strongly closed.
     set_strongly_closed();
+  }
   add_congruences(cgs);
 }
 
@@ -171,8 +177,9 @@ Octagonal_Shape<T>::Octagonal_Shape(const Box<Interval>& box,
     space_dim(box.space_dimension()),
     status() {
   // Check for emptiness for maximum precision.
-  if (box.is_empty())
+  if (box.is_empty()) {
     set_empty();
+  }
   else if (box.space_dimension() > 0) {
     // A (non zero-dim) universe OS is strongly closed.
     set_strongly_closed();
@@ -187,9 +194,10 @@ Octagonal_Shape<T>::Octagonal_Shape(const Grid& grid,
   : matrix(grid.space_dimension()),
     space_dim(grid.space_dimension()),
     status() {
-  if (grid.space_dimension() > 0)
+  if (grid.space_dimension() > 0) {
     // A (non zero-dim) universe OS is strongly closed.
     set_strongly_closed();
+  }
   // Taking minimized congruences ensures maximum precision.
   refine_with_congruences(grid.minimized_congruences());
 }
@@ -203,8 +211,9 @@ Octagonal_Shape<T>::Octagonal_Shape(const BD_Shape<U>& bd,
     space_dim(bd.space_dimension()),
     status() {
   // Check for emptiness for maximum precision.
-  if (bd.is_empty())
+  if (bd.is_empty()) {
     set_empty();
+  }
   else if (bd.space_dimension() > 0) {
     // A (non zero-dim) universe OS is strongly closed.
     set_strongly_closed();
@@ -321,26 +330,30 @@ Octagonal_Shape<T>::topological_closure_assign() {
 template <typename T>
 inline bool
 operator==(const Octagonal_Shape<T>& x, const Octagonal_Shape<T>& y) {
-  if (x.space_dim != y.space_dim)
+  if (x.space_dim != y.space_dim) {
     // Dimension-incompatible OSs are different.
     return false;
-
+  }
   // Zero-dim OSs are equal if and only if they are both empty or universe.
   if (x.space_dim == 0) {
-    if (x.marked_empty())
+    if (x.marked_empty()) {
       return y.marked_empty();
-    else
+    }
+    else {
       return !y.marked_empty();
+    }
   }
 
   x.strong_closure_assign();
   y.strong_closure_assign();
   // If one of two octagons is empty, then they are equal if and only if
   // the other octagon is empty too.
-  if (x.marked_empty())
+  if (x.marked_empty()) {
     return y.marked_empty();
-  if (y.marked_empty())
+  }
+  if (y.marked_empty()) {
     return false;
+  }
   // Strong closure is a canonical form.
   return x.matrix == y.matrix;
 }
@@ -395,8 +408,9 @@ Octagonal_Shape<T>::add_octagonal_constraint(const dimension_type i,
   N& r_i_j = matrix[i][j];
   if (r_i_j > k) {
     r_i_j = k;
-    if (marked_strongly_closed())
+    if (marked_strongly_closed()) {
       reset_strongly_closed();
+    }
   }
 }
 
@@ -453,21 +467,24 @@ template <typename T>
 inline void
 Octagonal_Shape<T>::refine_with_constraint(const Constraint& c) {
   // Dimension-compatibility check.
-  if (c.space_dimension() > space_dimension())
+  if (c.space_dimension() > space_dimension()) {
     throw_dimension_incompatible("refine_with_constraint(c)", c);
-
-  if (!marked_empty())
+  }
+  
+  if (!marked_empty()) {
     refine_no_check(c);
+  }
 }
 
 template <typename T>
 inline void
 Octagonal_Shape<T>::refine_with_constraints(const Constraint_System& cs) {
   // Dimension-compatibility check.
-  if (cs.space_dimension() > space_dimension())
+  if (cs.space_dimension() > space_dimension()) {
     throw_invalid_argument("refine_with_constraints(cs)",
                            "cs and *this are space-dimension incompatible");
-
+  }
+  
   for (Constraint_System::const_iterator i = cs.begin(),
          cs_end = cs.end(); !marked_empty() && i != cs_end; ++i) {
     refine_no_check(*i);
@@ -479,21 +496,23 @@ inline void
 Octagonal_Shape<T>::refine_with_congruence(const Congruence& cg) {
   const dimension_type cg_space_dim = cg.space_dimension();
   // Dimension-compatibility check.
-  if (cg_space_dim > space_dimension())
+  if (cg_space_dim > space_dimension()) {
     throw_dimension_incompatible("refine_with_congruence(cg)", cg);
-
-  if (!marked_empty())
+  }
+  if (!marked_empty()) {
     refine_no_check(cg);
+  }
 }
 
 template <typename T>
 void
 Octagonal_Shape<T>::refine_with_congruences(const Congruence_System& cgs) {
   // Dimension-compatibility check.
-  if (cgs.space_dimension() > space_dimension())
+  if (cgs.space_dimension() > space_dimension()) {
     throw_invalid_argument("refine_with_congruences(cgs)",
                            "cgs and *this are space-dimension incompatible");
-
+  }
+  
   for (Congruence_System::const_iterator i = cgs.begin(),
          cgs_end = cgs.end(); !marked_empty() && i != cgs_end; ++i) {
     refine_no_check(*i);
@@ -507,8 +526,9 @@ Octagonal_Shape<T>::refine_no_check(const Congruence& cg) {
   PPL_ASSERT(cg.space_dimension() <= space_dimension());
 
   if (cg.is_proper_congruence()) {
-    if (cg.is_inconsistent())
+    if (cg.is_inconsistent()) {
       set_empty();
+    }
     // Other proper congruences are just ignored.
     return;
   }
@@ -535,9 +555,10 @@ inline void
 Octagonal_Shape<T>
 ::remove_higher_space_dimensions(const dimension_type new_dimension) {
   // Dimension-compatibility check.
-  if (new_dimension > space_dim)
+  if (new_dimension > space_dim) {
     throw_dimension_incompatible("remove_higher_space_dimension(nd)",
                                  new_dimension);
+  }
   // The removal of no dimensions from any octagon is a no-op.
   // Note that this case also captures the only legal removal of
   // dimensions from an octagon in a 0-dim space.
@@ -550,8 +571,9 @@ Octagonal_Shape<T>
   matrix.shrink(new_dimension);
   // When we remove all dimensions from a non-empty octagon,
   // we obtain the zero-dimensional universe octagon.
-  if (new_dimension == 0 && !marked_empty())
+  if (new_dimension == 0 && !marked_empty()) {
     set_zero_dim_univ();
+  }
   space_dim = new_dimension;
   PPL_ASSERT(OK());
 }
@@ -599,8 +621,9 @@ template <typename T>
 inline void
 Octagonal_Shape<T>::time_elapse_assign(const Octagonal_Shape& y) {
   // Dimension-compatibility check.
-  if (space_dimension() != y.space_dimension())
+  if (space_dimension() != y.space_dimension()) {
     throw_dimension_incompatible("time_elapse_assign(y)", y);
+  }
   // Compute time-elapse on polyhedra.
   // TODO: provide a direct implementation.
   C_Polyhedron ph_x(constraints());
@@ -675,15 +698,17 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
                             Temp& tmp1,
                             Temp& tmp2) {
   // Dimension-compatibility check.
-  if (x.space_dim != y.space_dim)
+  if (x.space_dim != y.space_dim) {
     return false;
-
+  }
   // Zero-dim OSs are equal if and only if they are both empty or universe.
   if (x.space_dim == 0) {
-    if (x.marked_empty() == y.marked_empty())
+    if (x.marked_empty() == y.marked_empty()) {
       assign_r(r, 0, ROUND_NOT_NEEDED);
-    else
+    }
+    else {
       assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
+    }
     return true;
   }
 
@@ -694,10 +719,12 @@ rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   // If one of two OSs is empty, then they are equal if and only if
   // the other OS is empty too.
   if (x.marked_empty() ||  y.marked_empty()) {
-    if (x.marked_empty() == y.marked_empty())
+    if (x.marked_empty() == y.marked_empty()) {
       assign_r(r, 0, ROUND_NOT_NEEDED);
-    else
+    }
+    else {
       assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
+    }
     return true;
   }
 
@@ -740,15 +767,18 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
                           Temp& tmp1,
                           Temp& tmp2) {
   // Dimension-compatibility check.
-  if (x.space_dim != y.space_dim)
+  if (x.space_dim != y.space_dim) {
     return false;
-
+  }
+  
   // Zero-dim OSs are equal if and only if they are both empty or universe.
   if (x.space_dim == 0) {
-    if (x.marked_empty() == y.marked_empty())
+    if (x.marked_empty() == y.marked_empty()) {
       assign_r(r, 0, ROUND_NOT_NEEDED);
-    else
+    }
+    else {
       assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
+    }
     return true;
   }
 
@@ -759,10 +789,12 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   // If one of two OSs is empty, then they are equal if and only if
   // the other OS is empty too.
   if (x.marked_empty() ||  y.marked_empty()) {
-    if (x.marked_empty() == y.marked_empty())
+    if (x.marked_empty() == y.marked_empty()) {
       assign_r(r, 0, ROUND_NOT_NEEDED);
-    else
+    }
+    else {
       assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
+    }
     return true;
   }
 
@@ -805,15 +837,17 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
                            Temp& tmp1,
                            Temp& tmp2) {
   // Dimension-compatibility check.
-  if (x.space_dim != y.space_dim)
+  if (x.space_dim != y.space_dim) {
     return false;
-
+  }
   // Zero-dim OSs are equal if and only if they are both empty or universe.
   if (x.space_dim == 0) {
-    if (x.marked_empty() == y.marked_empty())
+    if (x.marked_empty() == y.marked_empty()) {
       assign_r(r, 0, ROUND_NOT_NEEDED);
-    else
+    }
+    else {
       assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
+    }
     return true;
   }
 
@@ -824,10 +858,12 @@ l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   // If one of two OSs is empty, then they are equal if and only if
   // the other OS is empty too.
   if (x.marked_empty() ||  y.marked_empty()) {
-    if (x.marked_empty() == y.marked_empty())
+    if (x.marked_empty() == y.marked_empty()) {
       assign_r(r, 0, ROUND_NOT_NEEDED);
-    else
+    }
+    else {
       assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
+    }
     return true;
   }
 

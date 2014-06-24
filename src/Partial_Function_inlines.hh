@@ -42,9 +42,10 @@ Partial_Function::has_empty_codomain() const {
 
 inline dimension_type
 Partial_Function::max_in_codomain() const {
-  if (has_empty_codomain())
+  if (has_empty_codomain()) {
     throw std::runtime_error("Partial_Function::max_in_codomain() called"
                              " when has_empty_codomain()");
+  }
   PPL_ASSERT(codomain.begin() != codomain.end()
              && max == *codomain.rbegin());
   return max;
@@ -60,27 +61,31 @@ Partial_Function::insert(dimension_type i, dimension_type j) {
 
   // Expand `vec' if needed.
   const dimension_type sz = vec.size();
-  if (i >= sz)
+  if (i >= sz) {
     vec.insert(vec.end(), i - sz + 1, not_a_dimension());
-
+  }
+  
   // We cannot remap the same index to another one.
   PPL_ASSERT(i < vec.size() && vec[i] == not_a_dimension());
   vec[i] = j;
 
   // Maybe update `max'.
-  if (j > max)
+  if (j > max) {
     max = j;
+  }
   PPL_ASSERT(codomain.begin() != codomain.end()
              && max == *codomain.rbegin());
 }
 
 inline bool
 Partial_Function::maps(dimension_type i, dimension_type& j) const {
-  if (i >= vec.size())
+  if (i >= vec.size()) {
     return false;
+  }
   const dimension_type vec_i = vec[i];
-  if (vec_i == not_a_dimension())
+  if (vec_i == not_a_dimension()) {
     return false;
+  }
   j = vec_i;
   return true;
 }

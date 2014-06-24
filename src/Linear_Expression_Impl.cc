@@ -39,8 +39,9 @@ Linear_Expression_Impl<Dense_Row>::OK() const {
 template <>
 bool
 Linear_Expression_Impl<Sparse_Row>::OK() const {
-  if (row.size() == 0)
+  if (row.size() == 0) {
     return false;
+  }
   for (Sparse_Row::const_iterator i = row.begin(),
          i_end = row.end(); i != i_end; ++i) {
     if (*i == 0) {
@@ -59,9 +60,10 @@ void
 Linear_Expression_Impl<Dense_Row>
 ::remove_space_dimensions(const Variables_Set& vars) {
   PPL_ASSERT(vars.space_dimension() <= space_dimension());
-  if (vars.empty())
+  if (vars.empty()) {
     return;
-
+  }
+  
   // For each variable to be removed, replace the corresponding coefficient
   // by shifting left the coefficient to the right that will be kept.
   Variables_Set::const_iterator vsi = vars.begin();
@@ -92,9 +94,10 @@ void
 Linear_Expression_Impl<Sparse_Row>
 ::remove_space_dimensions(const Variables_Set& vars) {
   PPL_ASSERT(vars.space_dimension() <= space_dimension());
-  if (vars.empty())
+  if (vars.empty()) {
     return;
-
+  }
+  
   // For each variable to be removed, replace the corresponding coefficient
   // by shifting left the coefficient to the right that will be kept.
   Variables_Set::const_iterator vsi = vars.begin();
@@ -104,8 +107,9 @@ Linear_Expression_Impl<Sparse_Row>
   dimension_type num_removed = 0;
   while (vsi != vsi_end) {
     // Delete the element.
-    if (src != row_end && src.index() == *vsi + 1)
+    if (src != row_end && src.index() == *vsi + 1) {
       src = row.reset(src);
+    }
     ++num_removed;
     ++vsi;
     if (vsi != vsi_end) {
@@ -136,8 +140,9 @@ template <>
 bool
 Linear_Expression_Impl<Dense_Row>::is_zero() const {
   for (dimension_type i = row.size(); i-- > 0; ) {
-    if (row[i] != 0)
+    if (row[i] != 0) {
       return false;
+    }
   }
   return true;
 }
@@ -146,8 +151,9 @@ template <>
 bool
 Linear_Expression_Impl<Dense_Row>::all_homogeneous_terms_are_zero() const {
   for (dimension_type i = 1; i < row.size(); ++i) {
-    if (row[i] != 0)
+    if (row[i] != 0) {
       return false;
+    }
   }
   return true;
 }
@@ -157,8 +163,9 @@ bool
 Linear_Expression_Impl<Dense_Row>::all_zeroes(dimension_type start,
                                               dimension_type end) const {
   for (dimension_type i = start; i < end; ++i) {
-    if (row[i] != 0)
+    if (row[i] != 0) {
       return false;
+    }
   }
   return true;
 }
@@ -170,8 +177,9 @@ Linear_Expression_Impl<Dense_Row>::num_zeroes(dimension_type start,
   PPL_ASSERT(start <= end);
   dimension_type result = 0;
   for (dimension_type i = start; i < end; ++i) {
-    if (row[i] == 0)
+    if (row[i] == 0) {
       ++result;
+    }
   }
   return result;
 }
@@ -183,27 +191,32 @@ Linear_Expression_Impl<Dense_Row>::gcd(dimension_type start,
   dimension_type i;
 
   for (i = start; i < end; ++i) {
-    if (row[i] != 0)
+    if (row[i] != 0) {
       break;
+    }
   }
 
-  if (i == end)
+  if (i == end) {
     return 0;
-
+  }
+  
   PPL_ASSERT(row[i] != 0);
 
   Coefficient result = row[i];
   ++i;
 
-  if (result < 0)
+  if (result < 0) {
     neg_assign(result);
-
+  }
+  
   for ( ; i < end; ++i) {
-    if (row[i] == 0)
+    if (row[i] == 0) {
       continue;
+    }
     gcd_assign(result, row[i], result);
-    if (result == 1)
+    if (result == 1) {
       return result;
+    }
   }
 
   return result;
@@ -216,21 +229,24 @@ Linear_Expression_Impl<Sparse_Row>::gcd(dimension_type start,
   Sparse_Row::const_iterator i = row.lower_bound(start);
   Sparse_Row::const_iterator i_end = row.lower_bound(end);
 
-  if (i == i_end)
+  if (i == i_end) {
     return 0;
-
+  }
+  
   PPL_ASSERT(*i != 0);
 
   Coefficient result = *i;
   ++i;
 
-  if (result < 0)
+  if (result < 0) {
     neg_assign(result);
-
+  }
+  
   for ( ; i != i_end; ++i) {
     gcd_assign(result, *i, result);
-    if (result == 1)
+    if (result == 1) {
       return result;
+    }
   }
 
   return result;
@@ -244,8 +260,9 @@ Linear_Expression_Impl<Dense_Row>
   Variables_Set::const_iterator j_end = vars.end();
 
   for ( ; j != j_end; ++j) {
-    if (row[*j + 1] != 0)
+    if (row[*j + 1] != 0) {
       return false;
+    }
   }
 
   return true;
@@ -262,10 +279,12 @@ Linear_Expression_Impl<Sparse_Row>
 
   for ( ; j != j_end; ++j) {
     i = row.lower_bound(i, *j + 1);
-    if (i == i_end)
+    if (i == i_end) {
       break;
-    if (i.index() == *j + 1)
+    }
+    if (i.index() == *j + 1) {
       return false;
+    }
   }
 
   return true;
@@ -277,13 +296,15 @@ Linear_Expression_Impl<Dense_Row>
 ::all_zeroes_except(const Variables_Set& vars,
                     dimension_type start, dimension_type end) const {
   if (start == 0) {
-    if (row[0] != 0)
+    if (row[0] != 0) {
       return false;
+    }
     ++start;
   }
   for (dimension_type i = start; i < end; ++i) {
-    if (row[i] != 0 && vars.count(i - 1) == 0)
+    if (row[i] != 0 && vars.count(i - 1) == 0) {
       return false;
+    }
   }
   return true;
 }
@@ -294,12 +315,14 @@ Linear_Expression_Impl<Sparse_Row>
 ::all_zeroes_except(const Variables_Set& vars,
                     dimension_type start, dimension_type end) const {
   PPL_ASSERT(start <= end);
-  if (start == end)
+  if (start == end) {
     return true;
+  }
   if (start == 0) {
-    if (row.find(0) != row.end())
+    if (row.find(0) != row.end()) {
       return false;
-
+    }
+    
     start = 1;
   }
 
@@ -307,8 +330,9 @@ Linear_Expression_Impl<Sparse_Row>
   PPL_ASSERT(start <= end);
   for (Sparse_Row::const_iterator i = row.lower_bound(start),
          i_end = row.lower_bound(end); i != i_end; ++i) {
-    if (vars.count(i.index() - 1) == 0)
+    if (vars.count(i.index() - 1) == 0) {
       return false;
+    }
   }
 
   return true;
@@ -318,8 +342,9 @@ template <>
 dimension_type
 Linear_Expression_Impl<Dense_Row>::last_nonzero() const {
   for (dimension_type i = row.size(); i-- > 0; ) {
-    if (row[i] != 0)
+    if (row[i] != 0) {
       return i;
+    }
   }
   return 0;
 }
@@ -331,8 +356,9 @@ Linear_Expression_Impl<Dense_Row>
   PPL_ASSERT(first <= last);
   PPL_ASSERT(last <= row.size());
   for (dimension_type i = first; i < last; ++i) {
-    if (row[i] != 0)
+    if (row[i] != 0) {
       return i;
+    }
   }
 
   return last;
@@ -345,8 +371,9 @@ Linear_Expression_Impl<Dense_Row>
   PPL_ASSERT(first <= last);
   PPL_ASSERT(last <= row.size());
   for (dimension_type i = last; i-- > first; ) {
-    if (row[i] != 0)
+    if (row[i] != 0) {
       return i;
+    }
   }
 
   return last;
@@ -359,8 +386,9 @@ Linear_Expression_Impl<Dense_Row>
   typedef std::set<dimension_type> set_t;
   set_t result;
   for (set_t::const_iterator i = x.begin(), i_end = x.end(); i != i_end; ++i) {
-    if (row[*i] == 0)
+    if (row[*i] == 0) {
       result.insert(*i);
+    }
   }
   using std::swap;
   swap(x, result);
@@ -378,10 +406,12 @@ Linear_Expression_Impl<Sparse_Row>
   set_t::const_iterator i_end = x.end();
   for ( ; i != i_end; ++i) {
     itr = row.lower_bound(itr, *i);
-    if (itr == itr_end)
+    if (itr == itr_end) {
       break;
-    if (itr.index() != *i)
+    }
+    if (itr.index() != *i) {
       result.insert(*i);
+    }
   }
   for ( ; i != i_end; ++i) {
     result.insert(*i);
@@ -402,8 +432,9 @@ Linear_Expression_Impl<Dense_Row>
   PPL_ASSERT(end <= row.size());
   PPL_ASSERT(end <= y.row.size());
   for (dimension_type i = start; i < end; ++i) {
-    if (row[i] != 0 && y.row[i] != 0)
+    if (row[i] != 0 && y.row[i] != 0) {
       return true;
+    }
   }
   return false;
 }
@@ -421,8 +452,9 @@ Linear_Expression_Impl<Sparse_Row>
   PPL_ASSERT(end <= y.row.size());
   for (Sparse_Row::const_iterator i = row.lower_bound(start),
         i_end = row.lower_bound(end); i != i_end; ++i) {
-    if (y.row[i.index()] != 0)
+    if (y.row[i.index()] != 0) {
       return true;
+    }
   }
   return false;
 }
@@ -452,12 +484,15 @@ Linear_Expression_Impl<Sparse_Row>
   Sparse_Row::const_iterator j = y.row.lower_bound(start);
   Sparse_Row::const_iterator j_end = y.row.lower_bound(end);
   while (i != i_end && j != j_end) {
-    if (i.index() == j.index())
+    if (i.index() == j.index()) {
       return true;
-    if (i.index() < j.index())
+    }
+    if (i.index() < j.index()) {
       ++i;
-    else
+    }
+    else {
       ++j;
+    }
   }
   return false;
 }

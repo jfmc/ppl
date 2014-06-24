@@ -55,8 +55,9 @@ Pointset_Powerset<PSET>::Pointset_Powerset(dimension_type num_dimensions,
                                            Degenerate_Element kind)
   : Base(), space_dim(num_dimensions) {
   Pointset_Powerset& x = *this;
-  if (kind == UNIVERSE)
+  if (kind == UNIVERSE) {
     x.sequence.push_back(Determinate<PSET>(PSET(num_dimensions, kind)));
+  }
   PPL_ASSERT_HEAVY(x.OK());
 }
 
@@ -74,11 +75,13 @@ Pointset_Powerset<PSET>::Pointset_Powerset(const C_Polyhedron& ph,
   : Base(), space_dim(ph.space_dimension()) {
   Pointset_Powerset& x = *this;
   if (complexity == ANY_COMPLEXITY) {
-    if (ph.is_empty())
+    if (ph.is_empty()) {
       return;
+    }
   }
-  else
+  else {
     x.reduced = false;
+  }
   x.sequence.push_back(Determinate<PSET>(PSET(ph, complexity)));
   x.reduced = false;
   PPL_ASSERT_HEAVY(OK());
@@ -91,11 +94,13 @@ Pointset_Powerset<PSET>::Pointset_Powerset(const NNC_Polyhedron& ph,
   : Base(), space_dim(ph.space_dimension()) {
   Pointset_Powerset& x = *this;
   if (complexity == ANY_COMPLEXITY) {
-    if (ph.is_empty())
+    if (ph.is_empty()) {
       return;
+    }
   }
-  else
+  else {
     x.reduced = false;
+  }
   x.sequence.push_back(Determinate<PSET>(PSET(ph, complexity)));
   PPL_ASSERT_HEAVY(OK());
 }
@@ -121,11 +126,13 @@ Pointset_Powerset<PSET>
   : Base(), space_dim(prp.space_dimension()) {
   Pointset_Powerset& x = *this;
   if (complexity == ANY_COMPLEXITY) {
-    if (prp.is_empty())
+    if (prp.is_empty()) {
       return;
+    }
   }
-  else
+  else {
     x.reduced = false;
+  }
   x.sequence.push_back(Determinate<PSET>(PSET(prp, complexity)));
   x.reduced = false;
   PPL_ASSERT_HEAVY(OK());
@@ -137,8 +144,9 @@ Pointset_Powerset<PSET>::Pointset_Powerset(const Box<Interval>& box,
                                            Complexity_Class)
   : Base(), space_dim(box.space_dimension()) {
   Pointset_Powerset& x = *this;
-  if (!box.is_empty())
+  if (!box.is_empty()) {
     x.sequence.push_back(Determinate<PSET>(PSET(box)));
+  }
   PPL_ASSERT_HEAVY(OK());
 }
 
@@ -148,8 +156,9 @@ Pointset_Powerset<PSET>::Pointset_Powerset(const Octagonal_Shape<T>& os,
                                            Complexity_Class)
   : Base(), space_dim(os.space_dimension()) {
   Pointset_Powerset& x = *this;
-  if (!os.is_empty())
+  if (!os.is_empty()) {
     x.sequence.push_back(Determinate<PSET>(PSET(os)));
+  }
   PPL_ASSERT_HEAVY(OK());
 }
 
@@ -159,8 +168,9 @@ Pointset_Powerset<PSET>::Pointset_Powerset(const BD_Shape<T>& bds,
                                            Complexity_Class)
   : Base(), space_dim(bds.space_dimension()) {
   Pointset_Powerset& x = *this;
-  if (!bds.is_empty())
+  if (!bds.is_empty()) {
     x.sequence.push_back(Determinate<PSET>(PSET(bds)));
+  }
   PPL_ASSERT_HEAVY(OK());
 }
 

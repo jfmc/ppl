@@ -66,10 +66,12 @@ reset_bit(T& bits, unsigned int bit) {
 template <typename T>
 inline void
 set_bit(T& bits, unsigned int bit, bool value) {
-  if (value)
+  if (value) {
     bits |= static_cast<T>(1) << bit;
-  else
+  }
+  else {
     reset_bit(bits, bit);
+  }
 }
 
 template <typename T>
@@ -145,10 +147,12 @@ public:
   }
   bool get_boundary_property(Boundary_Type,
                              const Boundary_NS::Property& p) const {
-    if (p.type == Boundary_NS::Property::OPEN_)
+    if (p.type == Boundary_NS::Property::OPEN_) {
       return open;
-    else
+    }
+    else {
       return Boundary_NS::Property::unsupported_value;
+    }
   }
 
   void ascii_dump(std::ostream& s) const;
@@ -198,18 +202,22 @@ public:
     switch (p.type) {
     case Boundary_NS::Property::SPECIAL_:
       if (store_special) {
-        if (t == LOWER)
+        if (t == LOWER) {
           set_bit(bitset, lower_special_bit, value);
-        else
+        }
+        else {
           set_bit(bitset, upper_special_bit, value);
+        }
       }
       break;
     case Boundary_NS::Property::OPEN_:
       if (store_open) {
-        if (t == LOWER)
+        if (t == LOWER) {
           set_bit(bitset, lower_open_bit, value);
-        else
+        }
+        else {
           set_bit(bitset, upper_open_bit, value);
+        }
       }
       break;
     default:
@@ -219,19 +227,25 @@ public:
   bool get_boundary_property(Boundary_Type t, const Boundary_NS::Property& p) const {
     switch (p.type) {
     case Boundary_NS::Property::SPECIAL_:
-      if (!store_special)
+      if (!store_special) {
         return false;
-      if (t == LOWER)
+      }
+      if (t == LOWER) {
         return get_bit(bitset, lower_special_bit);
-      else
+      }
+      else {
         return get_bit(bitset, upper_special_bit);
+      }
     case Boundary_NS::Property::OPEN_:
-      if (!store_open)
+      if (!store_open) {
         return false;
-      else if (t == LOWER)
+      }
+      else if (t == LOWER) {
         return get_bit(bitset, lower_open_bit);
-      else
+      }
+      else {
         return get_bit(bitset, upper_open_bit);
+      }
     default:
       return false;
     }
@@ -239,16 +253,19 @@ public:
   void set_interval_property(const Interval_NS::Property& p, bool value = true) {
     switch (p.type) {
     case Interval_NS::Property::CARDINALITY_0_:
-      if (cache_empty)
+      if (cache_empty) {
         set_bit(bitset, cardinality_0_bit, value);
+      }
       break;
     case Interval_NS::Property::CARDINALITY_1_:
-      if (cache_singleton)
+      if (cache_singleton) {
         set_bit(bitset, cardinality_1_bit, value);
+      }
       break;
     case Interval_NS::Property::CARDINALITY_IS_:
-      if (cache_empty || cache_singleton)
+      if (cache_empty || cache_singleton) {
         set_bit(bitset, cardinality_is_bit, value);
+      }
       break;
     default:
       break;

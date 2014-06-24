@@ -150,16 +150,18 @@ indirect_sort_and_unique(typename Sort_Comparer::size_type num_elems,
 
   const index_type num_sorted = static_cast<index_type>(iv_end - iv_begin);
   const index_type num_duplicates = num_elems - num_sorted;
-  if (num_duplicates == 0)
+  if (num_duplicates == 0) {
     return 0;
-
+  }
+  
   // There were duplicates: swap the rows according to `iv'.
   index_type dst = 0;
   while (dst < num_sorted && dst == iv[dst]) {
     ++dst;
   }
-  if (dst == num_sorted)
+  if (dst == num_sorted) {
     return num_duplicates;
+  }
   do {
     const index_type src = iv[dst];
     indirect_swap(src, dst);

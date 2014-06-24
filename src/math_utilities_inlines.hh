@@ -78,15 +78,17 @@ div_round_up(T& to,
 template <typename N>
 inline void
 min_assign(N& x, const N& y) {
-  if (x > y)
+  if (x > y) {
     x = y;
+  }
 }
 
 template <typename N>
 inline void
 max_assign(N& x, const N& y) {
-  if (x < y)
+  if (x < y) {
     x = y;
+  }
 }
 
 template <typename T>
@@ -107,8 +109,9 @@ is_additive_inverse(const T& x, const T& y) {
 
 inline bool
 is_canonical(const mpq_class& x) {
-  if (x.get_den() <= 0)
+  if (x.get_den() <= 0) {
     return false;
+  }
   PPL_DIRTY_TEMP(mpq_class, temp);
   temp = x;
   temp.canonicalize();

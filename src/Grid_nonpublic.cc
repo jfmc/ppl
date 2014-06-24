@@ -684,8 +684,9 @@ PPL::Grid::add_congruence_no_check(const Congruence& cg) {
     return;
   }
 
-  if (!congruences_are_up_to_date())
+  if (!congruences_are_up_to_date()) {
     update_congruences();
+  }
 
   con_sys.insert(cg);
 

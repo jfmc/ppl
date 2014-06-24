@@ -91,8 +91,9 @@ Linear_Form<C>::space_dimension() const {
 template <typename C>
 inline const C&
 Linear_Form<C>::coefficient(Variable v) const {
-  if (v.space_dimension() > space_dimension())
+  if (v.space_dimension() > space_dimension()) {
     return zero;
+  }
   return vec[v.id()+1];
 }
 
@@ -212,13 +213,15 @@ inline bool
 Linear_Form<C>::ascii_load(std::istream& s) {
   using namespace IO_Operators;
   dimension_type new_dim;
-  if (!(s >> new_dim))
+  if (!(s >> new_dim)) {
     return false;
-
+  }
+  
   vec.resize(new_dim + 1, zero);
   for (dimension_type i = 0; i <= new_dim; ++i) {
-    if (!(s >> vec[i]))
+    if (!(s >> vec[i])) {
       return false;
+    }
   }
 
   PPL_ASSERT(OK());
@@ -229,12 +232,13 @@ Linear_Form<C>::ascii_load(std::istream& s) {
 template <typename C>
 inline bool
 Linear_Form<C>::overflows() const {
-  if (!inhomogeneous_term().is_bounded())
+  if (!inhomogeneous_term().is_bounded()) {
     return true;
-
+  }
   for (dimension_type i = space_dimension(); i-- > 0; ) {
-    if (!coefficient(Variable(i)).is_bounded())
+    if (!coefficient(Variable(i)).is_bounded()) {
       return true;
+    }
   }
 
   return false;

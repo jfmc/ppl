@@ -64,9 +64,10 @@ Polyhedron::Status::test_zero_dim_univ() const {
 inline void
 Polyhedron::Status::reset_zero_dim_univ() {
   // This is a no-op if the current status is not zero-dim.
-  if (flags == ZERO_DIM_UNIV)
+  if (flags == ZERO_DIM_UNIV) {
     // In the zero-dim space, if it is not the universe it is empty.
     flags = EMPTY;
+  }
 }
 
 inline void

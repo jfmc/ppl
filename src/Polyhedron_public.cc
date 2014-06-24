@@ -66,8 +66,9 @@ PPL::Polyhedron::affine_dimension() const {
   dimension_type d = space_dim;
   for (Constraint_System::const_iterator i = cs.begin(),
          cs_end = cs.end(); i != cs_end; ++i) {
-    if (i->is_equality())
+    if (i->is_equality()) {
       --d;
+    }
   }
   return d;
 }
@@ -102,11 +103,13 @@ PPL::Polyhedron::constraints() const {
   // If the polyhedron has pending generators, we process them to obtain
   // the constraints. No processing is needed if the polyhedron has
   // pending constraints.
-  if (has_pending_generators())
+  if (has_pending_generators()) {
     process_pending_generators();
-  else if (!constraints_are_up_to_date())
+  }
+  else if (!constraints_are_up_to_date()) {
     update_constraints();
-
+  }
+  
   // TODO: reconsider whether to really sort constraints at this stage.
 #if ENSURE_SORTEDNESS
   // We insist in returning a sorted system of constraints,
@@ -121,10 +124,12 @@ const PPL::Constraint_System&
 PPL::Polyhedron::minimized_constraints() const {
   // `minimize()' or `strongly_minimize_constraints()'
   // will process any pending constraints or generators.
-  if (is_necessarily_closed())
+  if (is_necessarily_closed()) {
     minimize();
-  else
+  }
+  else {
     strongly_minimize_constraints();
+  }
   return constraints();
 }
 
@@ -176,8 +181,9 @@ PPL::Polyhedron::generators() const {
   // return a sorted system of generators: this is needed so that the
   // const_iterator could correctly filter out the matched closure points.
   if (!is_necessarily_closed()
-      && generators_are_minimized() && !has_pending_generators())
+      && generators_are_minimized() && !has_pending_generators()) {
     obtain_sorted_generators();
+  }
 #endif
   return gen_sys;
 }
@@ -186,10 +192,12 @@ const PPL::Generator_System&
 PPL::Polyhedron::minimized_generators() const {
   // `minimize()' or `strongly_minimize_generators()'
   // will process any pending constraints or generators.
-  if (is_necessarily_closed())
+  if (is_necessarily_closed()) {
     minimize();
-  else
+  }
+  else {
     strongly_minimize_generators();
+  }
   // Note: calling generators() on a strongly minimized NNC generator
   // system will also ensure sortedness, which is required to correctly
   // filter away the matched closure points.
@@ -199,63 +207,72 @@ PPL::Polyhedron::minimized_generators() const {
 PPL::Poly_Con_Relation
 PPL::Polyhedron::relation_with(const Constraint& c) const {
   // Dimension-compatibility check.
-  if (space_dim < c.space_dimension())
+  if (space_dim < c.space_dimension()) {
     throw_dimension_incompatible("relation_with(c)", "c", c);
-
-  if (marked_empty())
+  }
+  
+  if (marked_empty()) {
     return Poly_Con_Relation::saturates()
       && Poly_Con_Relation::is_included()
       && Poly_Con_Relation::is_disjoint();
-
+  }
   if (space_dim == 0) {
     if (c.is_inconsistent())
-      if (c.is_strict_inequality() && c.inhomogeneous_term() == 0)
+      if (c.is_strict_inequality() && c.inhomogeneous_term() == 0) {
         // The constraint 0 > 0 implicitly defines the hyperplane 0 = 0;
         // thus, the zero-dimensional point also saturates it.
         return Poly_Con_Relation::saturates()
           && Poly_Con_Relation::is_disjoint();
-      else
+      }
+      else {
         return Poly_Con_Relation::is_disjoint();
-    else if (c.is_equality() || c.inhomogeneous_term() == 0)
+      }
+    else if (c.is_equality() || c.inhomogeneous_term() == 0) {
       return Poly_Con_Relation::saturates()
         && Poly_Con_Relation::is_included();
-    else
+    }
+    else {
       // The zero-dimensional point saturates
       // neither the positivity constraint 1 >= 0,
       // nor the strict positivity constraint 1 > 0.
       return Poly_Con_Relation::is_included();
+    }
   }
 
   if ((has_pending_constraints() && !process_pending_constraints())
-      || (!generators_are_up_to_date() && !update_generators()))
+      || (!generators_are_up_to_date() && !update_generators())) {
     // The polyhedron is empty.
     return Poly_Con_Relation::saturates()
       && Poly_Con_Relation::is_included()
       && Poly_Con_Relation::is_disjoint();
-
+  }
   return gen_sys.relation_with(c);
 }
 
 PPL::Poly_Gen_Relation
 PPL::Polyhedron::relation_with(const Generator& g) const {
   // Dimension-compatibility check.
-  if (space_dim < g.space_dimension())
+  if (space_dim < g.space_dimension()) {
     throw_dimension_incompatible("relation_with(g)", "g", g);
-
+  }
+  
   // The empty polyhedron cannot subsume a generator.
-  if (marked_empty())
+  if (marked_empty()) {
     return Poly_Gen_Relation::nothing();
-
+  }
+  
   // A universe polyhedron in a zero-dimensional space subsumes
   // all the generators of a zero-dimensional space.
-  if (space_dim == 0)
+  if (space_dim == 0) {
     return Poly_Gen_Relation::subsumes();
-
-  if (has_pending_generators())
+  }
+  
+  if (has_pending_generators()) {
     process_pending_generators();
-  else if (!constraints_are_up_to_date())
+  }
+  else if (!constraints_are_up_to_date()) {
     update_constraints();
-
+  }
   return
     con_sys.satisfies_all_constraints(g)
     ? Poly_Gen_Relation::subsumes()
@@ -266,34 +283,38 @@ PPL::Poly_Con_Relation
 PPL::Polyhedron::relation_with(const Congruence& cg) const {
   const dimension_type cg_space_dim = cg.space_dimension();
   // Dimension-compatibility check.
-  if (space_dim < cg_space_dim)
+  if (space_dim < cg_space_dim) {
     throw_dimension_incompatible("relation_with(cg)", "cg", cg);
-
+  }
+  
   if (cg.is_equality()) {
     const Constraint c(cg);
     return relation_with(c);
   }
 
-  if (marked_empty())
+  if (marked_empty()) {
     return Poly_Con_Relation::saturates()
       && Poly_Con_Relation::is_included()
       && Poly_Con_Relation::is_disjoint();
-
+  }
+  
   if (space_dim == 0) {
-    if (cg.is_inconsistent())
+    if (cg.is_inconsistent()) {
       return Poly_Con_Relation::is_disjoint();
-    else
+    }
+    else {
       return Poly_Con_Relation::saturates()
         && Poly_Con_Relation::is_included();
+    }
   }
 
   if ((has_pending_constraints() && !process_pending_constraints())
-      || (!generators_are_up_to_date() && !update_generators()))
+      || (!generators_are_up_to_date() && !update_generators())) {
     // The polyhedron is empty.
     return Poly_Con_Relation::saturates()
       && Poly_Con_Relation::is_included()
       && Poly_Con_Relation::is_disjoint();
-
+  }
   // Build the equality corresponding to the congruence (ignoring the modulus).
   Linear_Expression expr(cg.expression());
   const Constraint c(expr == 0);
@@ -321,13 +342,14 @@ PPL::Polyhedron::relation_with(const Congruence& cg) const {
   const Coefficient& modulus = cg.modulus();
   PPL_DIRTY_TEMP_COEFFICIENT(signed_distance);
   signed_distance = sp_point % modulus;
-  if (signed_distance == 0)
+  if (signed_distance == 0) {
     // The point is lying on the hyperplane.
     return relation_with(expr == 0);
-  else
+  }
+  else {
     // The point is not lying on the hyperplane.
     expr += signed_distance;
-
+  }
   // Build first halfspace constraint.
   const bool positive = (signed_distance > 0);
   const Constraint first_halfspace = positive ? (expr >= 0) : (expr <= 0);
@@ -335,40 +357,46 @@ PPL::Polyhedron::relation_with(const Congruence& cg) const {
   const Poly_Con_Relation first_rels = relation_with(first_halfspace);
   PPL_ASSERT(!first_rels.implies(Poly_Con_Relation::saturates())
              && !first_rels.implies(Poly_Con_Relation::is_disjoint()));
-  if (first_rels.implies(Poly_Con_Relation::strictly_intersects()))
+  if (first_rels.implies(Poly_Con_Relation::strictly_intersects())) {
     return Poly_Con_Relation::strictly_intersects();
-
+  }
+  
   // Build second halfspace.
-  if (positive)
+  if (positive) {
     expr -= modulus;
-  else
+  }
+  else {
     expr += modulus;
+  }
   const Constraint second_halfspace = positive ? (expr <= 0) : (expr >= 0);
 
   PPL_ASSERT(first_rels == Poly_Con_Relation::is_included());
   const Poly_Con_Relation second_rels = relation_with(second_halfspace);
   PPL_ASSERT(!second_rels.implies(Poly_Con_Relation::saturates())
              && !second_rels.implies(Poly_Con_Relation::is_disjoint()));
-  if (second_rels.implies(Poly_Con_Relation::strictly_intersects()))
+  if (second_rels.implies(Poly_Con_Relation::strictly_intersects())) {
     return Poly_Con_Relation::strictly_intersects();
-
+  }
+  
   PPL_ASSERT(second_rels == Poly_Con_Relation::is_included());
   return Poly_Con_Relation::is_disjoint();
 }
 
 bool
 PPL::Polyhedron::is_universe() const {
-  if (marked_empty())
+  if (marked_empty()) {
     return false;
-
-  if (space_dim == 0)
+  }
+  
+  if (space_dim == 0) {
     return true;
-
+  }
   if (!has_pending_generators() && constraints_are_up_to_date()) {
     // Search for a constraint that is not a tautology.
     for (dimension_type i = con_sys.num_rows(); i-- > 0; ) {
-      if (!con_sys[i].is_tautological())
+      if (!con_sys[i].is_tautological()) {
         return false;
+      }
     }
     // All the constraints are tautologies.
     return true;
@@ -420,8 +448,9 @@ PPL::Polyhedron::is_universe() const {
     }
     // If no pending rays and lines were found,
     // then it is not the universe polyhedron.
-    if (num_pending_rays == 0 && num_pending_lines == 0)
+    if (num_pending_rays == 0 && num_pending_lines == 0) {
       return false;
+    }
     // Factor away the lines already seen (to be on the safe side,
     // we assume they are all linearly independent).
     if (num_lines + num_pending_lines < space_dim) {
@@ -429,8 +458,9 @@ PPL::Polyhedron::is_universe() const {
         = space_dim - (num_lines + num_pending_lines);
       // In order to span an n dimensional space (where n = num_dims_missing),
       // at least n+1 rays are needed.
-      if (num_rays + num_pending_rays <= num_dims_missing)
+      if (num_rays + num_pending_rays <= num_dims_missing) {
         return false;
+      }
     }
   }
   else {
@@ -440,29 +470,35 @@ PPL::Polyhedron::is_universe() const {
       PPL_ASSERT(num_rays == 0 || num_lines < space_dim);
       return num_lines == space_dim;
     }
-    else
+    else {
       // Only the fast-fail test can be computed: in order to span
       // an n dimensional space (where n = space_dim - num_lines),
       // at least n+1 rays are needed.
-      if (num_lines < space_dim && num_lines + num_rays <= space_dim)
+      if (num_lines < space_dim && num_lines + num_rays <= space_dim) {
         return false;
+      }
+    }
   }
 
   // We need the polyhedron in minimal form.
-  if (has_pending_generators())
+  if (has_pending_generators()) {
     process_pending_generators();
-  else if (!constraints_are_minimized())
+  }
+  else if (!constraints_are_minimized()) {
     minimize();
-  if (is_necessarily_closed())
+  }
+  if (is_necessarily_closed()) {
     return con_sys.num_rows() == 1
       && con_sys[0].is_inequality()
       && con_sys[0].is_tautological();
+  }
   else {
     // NNC polyhedron.
     if (con_sys.num_rows() != 2
         || con_sys[0].is_equality()
-        || con_sys[1].is_equality())
+        || con_sys[1].is_equality()) {
       return false;
+    }
     else {
       // If the system of constraints contains two rows that
       // are not equalities, we are sure that they are
@@ -490,14 +526,16 @@ PPL::Polyhedron::is_bounded() const {
   if (space_dim == 0
       || marked_empty()
       || (has_pending_constraints() && !process_pending_constraints())
-      || (!generators_are_up_to_date() && !update_generators()))
+      || (!generators_are_up_to_date() && !update_generators())) {
     return true;
-
+  }
+  
   // If the system of generators contains any line or a ray,
   // then the polyhedron is unbounded.
   for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
-    if (gen_sys[i].is_line_or_ray())
+    if (gen_sys[i].is_line_or_ray()) {
       return false;
+    }
   }
 
   // The system of generators is composed only by
@@ -508,14 +546,16 @@ PPL::Polyhedron::is_bounded() const {
 bool
 PPL::Polyhedron::is_topologically_closed() const {
   // Necessarily closed polyhedra are trivially closed.
-  if (is_necessarily_closed())
+  if (is_necessarily_closed()) {
     return true;
+  }
   // Any empty or zero-dimensional polyhedron is closed.
   if (marked_empty()
       || space_dim == 0
-      || (has_something_pending() && !process_pending()))
+      || (has_something_pending() && !process_pending())) {
     return true;
-
+  }
+  
   // At this point there are no pending constraints or generators.
   PPL_ASSERT(!has_something_pending());
 
@@ -537,8 +577,9 @@ PPL::Polyhedron::is_topologically_closed() const {
             break;
           }
         }
-        if (gen_sys_i_has_no_matching_point)
+        if (gen_sys_i_has_no_matching_point) {
           return false;
+        }
       }
     }
     // All closure points are matched.
@@ -554,26 +595,29 @@ PPL::Polyhedron::is_topologically_closed() const {
 bool
 PPL::Polyhedron::contains_integer_point() const {
   // Any empty polyhedron does not contain integer points.
-  if (marked_empty())
+  if (marked_empty()) {
     return false;
-
+  }
   // A zero-dimensional, universe polyhedron has, by convention, an
   // integer point.
-  if (space_dim == 0)
+  if (space_dim == 0) {
     return true;
-
+  }
+  
   // CHECKME: do we really want to call conversion to check for emptiness?
-  if (has_pending_constraints() && !process_pending())
+  if (has_pending_constraints() && !process_pending()) {
     // Empty again.
     return false;
-
+  }
+  
   // FIXME: do also exploit info regarding rays and lines, if possible.
   // Is any integer point already available?
   PPL_ASSERT(!has_pending_constraints());
   if (generators_are_up_to_date())
     for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
-      if (gen_sys[i].is_point() && gen_sys[i].divisor() == 1)
+      if (gen_sys[i].is_point() && gen_sys[i].divisor() == 1) {
         return true;
+      }
     }
 
   const Constraint_System& cs = constraints();
@@ -614,16 +658,18 @@ PPL::Polyhedron::contains_integer_point() const {
       // Further tighten the constraint if the inhomogeneous term
       // was integer, i.e., if `homogeneous_gcd' divides `inhomogeneous'.
       gcd_assign(gcd, homogeneous_gcd, inhomogeneous);
-      if (gcd == homogeneous_gcd)
+      if (gcd == homogeneous_gcd) {
         le -= 1;
+      }
       mip.add_constraint(le >= 0);
     }
     else {
       // Equality or non-strict inequality.
       // If possible, avoid useless gcd computations.
-      if (inhomogeneous == 0)
+      if (inhomogeneous == 0) {
         // The inhomogeneous term cannot be tightened.
         mip.add_constraint(c);
+      }
       else {
         // Compute the GCD of the coefficients of c
         // (disregarding the inhomogeneous term)
@@ -635,10 +681,11 @@ PPL::Polyhedron::contains_integer_point() const {
           PPL_ASSERT(c.is_inconsistent());
           return false;
         }
-        else if (homogeneous_gcd == 1)
+        else if (homogeneous_gcd == 1) {
           // The normalized inhomogeneous term is integer:
           // add the constraint as-is.
           mip.add_constraint(c);
+        }
         else {
           PPL_ASSERT(homogeneous_gcd > 1);
           // Here the normalized inhomogeneous term is rational:
@@ -649,8 +696,9 @@ PPL::Polyhedron::contains_integer_point() const {
           gcd_assign(gcd, homogeneous_gcd, inhomogeneous);
           PPL_ASSERT(gcd == 1);
 #endif
-          if (c.type() == Constraint::EQUALITY)
+          if (c.type() == Constraint::EQUALITY) {
             return false;
+          }
           // Extract the homogeneous part of the constraint.
           Linear_Expression le(c.expression());
           le -= inhomogeneous;
@@ -678,22 +726,24 @@ bool
 PPL::Polyhedron::constrains(const Variable var) const {
   // `var' should be one of the dimensions of the polyhedron.
   const dimension_type var_space_dim = var.space_dimension();
-  if (space_dim < var_space_dim)
+  if (space_dim < var_space_dim) {
     throw_dimension_incompatible("constrains(v)", "v", var);
-
+  }
+  
   // An empty polyhedron constrains all variables.
-  if (marked_empty())
+  if (marked_empty()) {
     return true;
-
+  }
+  
   if (generators_are_up_to_date() && !has_pending_constraints()) {
     // Since generators are up-to-date and there are no pending
     // constraints, the generator system (since it is well formed)
     // contains a point.  Hence the polyhedron is not empty.
-    if (constraints_are_up_to_date() && !has_pending_generators())
+    if (constraints_are_up_to_date() && !has_pending_generators()) {
       // Here a variable is constrained if and only if it is
       // syntactically constrained.
       goto syntactic_check;
-
+    }
     if (generators_are_minimized()) {
       // Try a quick, incomplete check for the universe polyhedron:
       // a universe polyhedron constrains no variable.
@@ -702,12 +752,14 @@ PPL::Polyhedron::constrains(const Variable var) const {
       dimension_type num_lines = 0;
       const dimension_type first_pending = gen_sys.first_pending_row();
       for (dimension_type i = first_pending; i-- > 0; ) {
-        if (gen_sys[i].is_line())
+        if (gen_sys[i].is_line()) {
           ++num_lines;
+        }
       }
 
-      if (num_lines == space_dim)
+      if (num_lines == space_dim) {
         return false;
+      }
     }
 
     // Scan generators: perhaps we will find a generator equivalent to
@@ -724,17 +776,23 @@ PPL::Polyhedron::constrains(const Variable var) const {
           if (gen_sys_i.expression().all_zeroes(1, var_id)
               && gen_sys_i.expression().all_zeroes(var_id + 1, space_dim + 1)) {
 
-            if (gen_sys_i.is_line())
+            if (gen_sys_i.is_line()) {
               return true;
-            if (sign > 0)
-              if (have_negative_ray)
+            }
+            if (sign > 0) {
+              if (have_negative_ray) {
                 return true;
-              else
+              }
+              else {
                 have_positive_ray = true;
-            else if (have_positive_ray)
+              }
+            }
+            else if (have_positive_ray) {
               return true;
-            else
+            }
+            else {
               have_negative_ray = true;
+            }
           }
         }
       }
@@ -744,21 +802,25 @@ PPL::Polyhedron::constrains(const Variable var) const {
     // up-to-date and there are no pending constraints, then the
     // generator system (since it is well formed) contains a point.
     // Hence the polyhedron is not empty.
-    if (has_pending_generators())
+    if (has_pending_generators()) {
       process_pending_generators();
-    else if (!constraints_are_up_to_date())
+    }
+    else if (!constraints_are_up_to_date()) {
       update_constraints();
+    }
     goto syntactic_check;
   }
 
   // We must minimize to detect emptiness and obtain constraints.
-  if (!minimize())
+  if (!minimize()) {
     return true;
+  }
 
  syntactic_check:
   for (dimension_type i = con_sys.num_rows(); i-- > 0; ) {
-    if (con_sys[i].coefficient(var) != 0)
+    if (con_sys[i].coefficient(var) != 0) {
       return true;
+    }
   }
   return false;
 }
@@ -780,9 +842,10 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
   }
 
   // Check whether the status information is legal.
-  if (!status.OK())
+  if (!status.OK()) {
     goto bomb;
-
+  }
+  
   if (marked_empty()) {
     if (check_not_empty) {
       // The caller does not want the polyhedron to be empty.
@@ -802,8 +865,9 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 #endif
       goto bomb;
     }
-    if (con_sys.has_no_rows())
+    if (con_sys.has_no_rows()) {
       return true;
+    }
     else {
       if (con_sys.space_dimension() != space_dim) {
 #ifndef NDEBUG
@@ -969,12 +1033,16 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       dimension_type num_points = 0;
       dimension_type num_closure_points = 0;
       dimension_type eps_index = gen_sys.space_dimension() + 1;
-      for (dimension_type i = gen_sys.num_rows(); i-- > 0; )
-        if (!gen_sys[i].is_line_or_ray())
-          if (gen_sys[i][eps_index] > 0)
+      for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
+        if (!gen_sys[i].is_line_or_ray()) {
+          if (gen_sys[i][eps_index] > 0) {
             ++num_points;
-          else
+          }
+          else {
             ++num_closure_points;
+          }
+        }
+      }
       if (num_points > num_closure_points) {
 #ifndef NDEBUG
         cerr << "# POINTS > # CLOSURE_POINTS" << endl;
@@ -1227,8 +1295,9 @@ PPL::Polyhedron::add_constraint(const Constraint& c) {
   // Topology-compatibility check.
   if (c.is_strict_inequality() && is_necessarily_closed()) {
     // Trivially true/false strict inequalities are legal.
-    if (c.is_tautological())
+    if (c.is_tautological()) {
       return;
+    }
     if (c.is_inconsistent()) {
       set_empty();
       return;
@@ -1239,24 +1308,29 @@ PPL::Polyhedron::add_constraint(const Constraint& c) {
 
   // Dimension-compatibility check:
   // the dimension of `c' can not be greater than space_dim.
-  if (space_dim < c.space_dimension())
+  if (space_dim < c.space_dimension()) {
     throw_dimension_incompatible("add_constraint(c)", "c", c);
-
-  if (!marked_empty())
+  }
+  
+  if (!marked_empty()) {
     refine_no_check(c);
+  }
+  
 }
 
 void
 PPL::Polyhedron::add_congruence(const Congruence& cg) {
   // Dimension-compatibility check:
   // the dimension of `cg' can not be greater than space_dim.
-  if (space_dim < cg.space_dimension())
+  if (space_dim < cg.space_dimension()) {
     throw_dimension_incompatible("add_congruence(cg)", "cg", cg);
-
+  }
+  
   // Handle the case of proper congruences first.
   if (cg.is_proper_congruence()) {
-    if (cg.is_tautological())
+    if (cg.is_tautological()){
       return;
+    }
     if (cg.is_inconsistent()) {
       set_empty();
       return;
@@ -1268,11 +1342,13 @@ PPL::Polyhedron::add_congruence(const Congruence& cg) {
 
   PPL_ASSERT(cg.is_equality());
   // Handle empty and 0-dim cases first.
-  if (marked_empty())
+  if (marked_empty()) {
     return;
+  }
   if (space_dim == 0) {
-    if (cg.is_inconsistent())
+    if (cg.is_inconsistent()) {
       set_empty();
+    }
     return;
   }
 
@@ -1285,24 +1361,27 @@ PPL::Polyhedron::add_congruence(const Congruence& cg) {
 void
 PPL::Polyhedron::add_generator(const Generator& g) {
   // Topology-compatibility check.
-  if (g.is_closure_point() && is_necessarily_closed())
+  if (g.is_closure_point() && is_necessarily_closed()) {
     throw_topology_incompatible("add_generator(g)", "g", g);
+  }
   // Dimension-compatibility check:
   // the dimension of `g' can not be greater than space_dim.
   const dimension_type g_space_dim = g.space_dimension();
-  if (space_dim < g_space_dim)
+  if (space_dim < g_space_dim) {
     throw_dimension_incompatible("add_generator(g)", "g", g);
-
+  }
   // Dealing with a zero-dimensional space polyhedron first.
   if (space_dim == 0) {
     // It is not possible to create 0-dim rays or lines.
     PPL_ASSERT(g.is_point() || g.is_closure_point());
     // Closure points can only be inserted in non-empty polyhedra.
     if (marked_empty()) {
-      if (g.type() != Generator::POINT)
+      if (g.type() != Generator::POINT) {
         throw_invalid_generator("add_generator(g)", "g");
-      else
+      }
+      else {
         set_zero_dim_univ();
+      }
     }
     PPL_ASSERT_HEAVY(OK());
     return;
@@ -1313,8 +1392,9 @@ PPL::Polyhedron::add_generator(const Generator& g) {
       || (!generators_are_up_to_date() && !update_generators())) {
     // Here the polyhedron is empty:
     // the specification says we can only insert a point.
-    if (!g.is_point())
+    if (!g.is_point()) {
       throw_invalid_generator("add_generator(g)", "g");
+    }
     if (g.is_necessarily_closed() || !is_necessarily_closed()) {
       gen_sys.insert(g);
       // Since `gen_sys' was empty, after inserting `g' we have to resize
@@ -1355,10 +1435,12 @@ PPL::Polyhedron::add_generator(const Generator& g) {
     if (g.is_necessarily_closed() || !is_necessarily_closed()) {
       // Since `gen_sys' is not empty, the topology and space dimension
       // of the inserted generator are automatically adjusted.
-      if (has_pending)
+      if (has_pending) {
         gen_sys.insert_pending(g);
-      else
+      }
+      else {
         gen_sys.insert(g);
+      }
       if (!is_necessarily_closed() && g.is_point()) {
         // In the NNC topology, each point has to be matched by
         // a corresponding closure point:
@@ -1369,10 +1451,12 @@ PPL::Polyhedron::add_generator(const Generator& g) {
         PPL_ASSERT(gen_sys.sys.rows.back().OK());
         PPL_ASSERT(gen_sys.sys.OK());
         // Re-insert the point (which is already normalized).
-        if (has_pending)
+        if (has_pending) {
           gen_sys.insert_pending(g);
-        else
+        }
+        else {
           gen_sys.insert(g);
+        }
       }
     }
     else {
@@ -1385,22 +1469,28 @@ PPL::Polyhedron::add_generator(const Generator& g) {
       const Linear_Expression nc_expr(g.expression());
       switch (g.type()) {
       case Generator::LINE:
-        if (has_pending)
+        if (has_pending) {
           gen_sys.insert_pending(Generator::line(nc_expr));
-        else
+        }
+        else {
           gen_sys.insert(Generator::line(nc_expr));
+        }
         break;
       case Generator::RAY:
-        if (has_pending)
+        if (has_pending) {
           gen_sys.insert_pending(Generator::ray(nc_expr));
-        else
+        }
+        else {
           gen_sys.insert(Generator::ray(nc_expr));
+        }
         break;
       case Generator::POINT:
-        if (has_pending)
+        if (has_pending) {
           gen_sys.insert_pending(Generator::point(nc_expr, g.divisor()));
-        else
+        }
+        else {
           gen_sys.insert(Generator::point(nc_expr, g.divisor()));
+        }
         break;
       case Generator::CLOSURE_POINT:
         PPL_UNREACHABLE;
@@ -1408,8 +1498,9 @@ PPL::Polyhedron::add_generator(const Generator& g) {
       }
     }
 
-    if (has_pending)
+    if (has_pending) {
       set_generators_pending();
+    }
     else {
       // After adding the new generator,
       // constraints are no longer up-to-date.
@@ -1429,9 +1520,10 @@ PPL::Polyhedron::add_recycled_constraints(Constraint_System& cs) {
     for (Constraint_System::const_iterator i = cs.begin(),
            i_end = cs.end(); i != i_end; ++i) {
       if (i->is_strict_inequality()
-          && !i->is_inconsistent())
+          && !i->is_inconsistent()) {
         throw_topology_incompatible("add_recycled_constraints(cs)",
                                     "cs", cs);
+      }
     }
     // If we reach this point, all strict inequalities were inconsistent.
     set_empty();
@@ -1441,12 +1533,13 @@ PPL::Polyhedron::add_recycled_constraints(Constraint_System& cs) {
   // Dimension-compatibility check:
   // the dimension of `cs' can not be greater than space_dim.
   const dimension_type cs_space_dim = cs.space_dimension();
-  if (space_dim < cs_space_dim)
+  if (space_dim < cs_space_dim) {
     throw_dimension_incompatible("add_recycled_constraints(cs)", "cs", cs);
-
+  }
   // Adding no constraints is a no-op.
-  if (cs.has_no_rows())
+  if (cs.has_no_rows()) {
     return;
+  }
 
   if (space_dim == 0) {
     // In a 0-dimensional space the constraints are
@@ -1454,22 +1547,26 @@ PPL::Polyhedron::add_recycled_constraints(Constraint_System& cs) {
     // inconsistent (e.g., 1 == 0 or -1 >= 0 or 0 > 0).
     // In a system of constraints `begin()' and `end()' are equal
     // if and only if the system only contains tautologies.
-    if (cs.begin() != cs.end())
+    if (cs.begin() != cs.end()) {
       // There is a constraint, it must be inconsistent,
       // the polyhedron is empty.
       status.set_empty();
+    }
     return;
   }
 
-  if (marked_empty())
+  if (marked_empty()) {
     return;
-
+  }
+  
   // The constraints (possibly with pending rows) are required.
-  if (has_pending_generators())
+  if (has_pending_generators()) {
     process_pending_generators();
-  else if (!constraints_are_up_to_date())
+  }
+  else if (!constraints_are_up_to_date()) {
     update_constraints();
-
+  }
+  
   // Adjust `cs' to the right topology and space dimension.
   // NOTE: we already checked for topology compatibility.
   cs.adjust_topology_and_space_dimension(topology(), space_dim);
@@ -1504,23 +1601,27 @@ PPL::Polyhedron::add_constraints(const Constraint_System& cs) {
 void
 PPL::Polyhedron::add_recycled_generators(Generator_System& gs) {
   // Topology compatibility check.
-  if (is_necessarily_closed() && gs.has_closure_points())
+  if (is_necessarily_closed() && gs.has_closure_points()) {
     throw_topology_incompatible("add_recycled_generators(gs)", "gs", gs);
+  }
   // Dimension-compatibility check:
   // the dimension of `gs' can not be greater than space_dim.
   const dimension_type gs_space_dim = gs.space_dimension();
-  if (space_dim < gs_space_dim)
+  if (space_dim < gs_space_dim) {
     throw_dimension_incompatible("add_recycled_generators(gs)", "gs", gs);
-
+  }
+  
   // Adding no generators is a no-op.
-  if (gs.has_no_rows())
+  if (gs.has_no_rows()) {
     return;
-
+  }
+  
   // Adding valid generators to a zero-dimensional polyhedron
   // transform it in the zero-dimensional universe polyhedron.
   if (space_dim == 0) {
-    if (marked_empty() && !gs.has_points())
+    if (marked_empty() && !gs.has_points()) {
       throw_invalid_generators("add_recycled_generators(gs)", "gs");
+    }
     set_zero_dim_univ();
     PPL_ASSERT_HEAVY(OK(true));
     return;
@@ -1531,16 +1632,18 @@ PPL::Polyhedron::add_recycled_generators(Generator_System& gs) {
   gs.adjust_topology_and_space_dimension(topology(), space_dim);
   // For NNC polyhedra, each point must be matched by
   // the corresponding closure point.
-  if (!is_necessarily_closed())
+  if (!is_necessarily_closed()) {
     gs.add_corresponding_closure_points();
-
+  }
+  
   // The generators (possibly with pending rows) are required.
   if ((has_pending_constraints() && !process_pending_constraints())
       || (!generators_are_up_to_date() && !minimize())) {
     // We have just discovered that `*this' is empty.
     // So `gs' must contain at least one point.
-    if (!gs.has_points())
+    if (!gs.has_points()) {
       throw_invalid_generators("add_recycled_generators(gs)", "gs");
+    }
     // The polyhedron is no longer empty and generators are up-to-date.
     swap(gen_sys, gs);
     if (gen_sys.num_pending_rows() > 0) {
@@ -1596,9 +1699,10 @@ PPL::Polyhedron::add_generators(const Generator_System& gs) {
 void
 PPL::Polyhedron::add_congruences(const Congruence_System& cgs) {
   // Dimension-compatibility check.
-  if (space_dim < cgs.space_dimension())
+  if (space_dim < cgs.space_dimension()) {
     throw_dimension_incompatible("add_congruences(cgs)", "cgs", cgs);
-
+  }
+  
   Constraint_System cs;
   bool inserted = false;
   for (Congruence_System::const_iterator i = cgs.begin(),
@@ -1618,40 +1722,47 @@ PPL::Polyhedron::add_congruences(const Congruence_System& cgs) {
         set_empty();
         return;
       }
-      if (!cg.is_tautological())
+      if (!cg.is_tautological()) {
         throw_invalid_argument("add_congruences(cgs)",
                                "cgs has a non-trivial, proper congruence");
+      }
     }
   }
   // Only add cs if it contains something.
-  if (inserted)
+  if (inserted) {
     add_recycled_constraints(cs);
+  }
 }
 
 void
 PPL::Polyhedron::refine_with_constraint(const Constraint& c) {
   // Dimension-compatibility check.
-  if (space_dim < c.space_dimension())
+  if (space_dim < c.space_dimension()) {
     throw_dimension_incompatible("refine_with_constraint(c)", "c", c);
+  }
   // If the polyhedron is known to be empty, do nothing.
-  if (!marked_empty())
+  if (!marked_empty()) {
     refine_no_check(c);
+  }
 }
 
 void
 PPL::Polyhedron::refine_with_congruence(const Congruence& cg) {
   // Dimension-compatibility check.
-  if (space_dim < cg.space_dimension())
+  if (space_dim < cg.space_dimension()) {
     throw_dimension_incompatible("refine_with_congruence(cg)", "cg", cg);
-
+  }
+  
   // If the polyhedron is known to be empty, do nothing.
-  if (marked_empty())
+  if (marked_empty()) {
     return;
-
+  }
+  
   // Dealing with a zero-dimensional space polyhedron first.
   if (space_dim == 0) {
-    if (!cg.is_tautological())
+    if (!cg.is_tautological()) {
       set_empty();
+    }
     return;
   }
 
@@ -1668,47 +1779,55 @@ PPL::Polyhedron::refine_with_constraints(const Constraint_System& cs) {
 
   // Dimension-compatibility check.
   const dimension_type cs_space_dim = cs.space_dimension();
-  if (space_dim < cs_space_dim)
+  if (space_dim < cs_space_dim) {
     throw_dimension_incompatible("refine_with_constraints(cs)a",
                                  "cs", cs);
-
+  }
   // Adding no constraints is a no-op.
-  if (cs.has_no_rows())
+  if (cs.has_no_rows()) {
     return;
-
+  }
+  
   if (space_dim == 0) {
     // In a 0-dimensional space the constraints are
     // tautologies (e.g., 0 == 0 or 1 >= 0 or 1 > 0) or
     // inconsistent (e.g., 1 == 0 or -1 >= 0 or 0 > 0).
     // In a system of constraints `begin()' and `end()' are equal
     // if and only if the system only contains tautologies.
-    if (cs.begin() != cs.end())
+    if (cs.begin() != cs.end()) {
       // There is a constraint, it must be inconsistent,
       // the polyhedron is empty.
       status.set_empty();
+    }
     return;
   }
 
-  if (marked_empty())
+  if (marked_empty()) {
     return;
-
+  }
+  
   // The constraints (possibly with pending rows) are required.
-  if (has_pending_generators())
+  if (has_pending_generators()) {
     process_pending_generators();
-  else if (!constraints_are_up_to_date())
+  }
+  else if (!constraints_are_up_to_date()) {
     update_constraints();
-
+  }
+  
   const bool adding_pending = can_have_something_pending();
   for (dimension_type i = cs.num_rows(); i-- > 0; ) {
     const Constraint& c = cs[i];
 
-    if (c.is_necessarily_closed() || !is_necessarily_closed())
+    if (c.is_necessarily_closed() || !is_necessarily_closed()) {
       // Since `con_sys' is not empty, the topology and space dimension
       // of the inserted constraint are automatically adjusted.
-      if (adding_pending)
+      if (adding_pending) {
         con_sys.insert_pending(c);
-      else
+      }
+      else {
         con_sys.insert(c);
+      }
+    }
     else {
       // Here we know that *this is necessarily closed so even if c is
       // topologically closed, by barely invoking `con_sys.insert(c)' we
@@ -1716,21 +1835,27 @@ PPL::Polyhedron::refine_with_constraints(const Constraint_System& cs) {
       // wrong.  Thus, we insert a topology closed and "topology
       // corrected" version of `c'.
       const Linear_Expression nc_expr(c.expression());
-      if (c.is_equality())
-        if (adding_pending)
+      if (c.is_equality()) {
+        if (adding_pending) {
           con_sys.insert_pending(nc_expr == 0);
-        else
+        }
+        else {
           con_sys.insert(nc_expr == 0);
-      else
-        if (adding_pending)
+        }
+      }else {
+        if (adding_pending) {
           con_sys.insert_pending(nc_expr >= 0);
-        else
+        }
+        else {
           con_sys.insert(nc_expr >= 0);
+        }
+      }
     }
   }
 
-  if (adding_pending)
+  if (adding_pending) {
     set_constraints_pending();
+  }
   else {
     // Constraints are not minimized and generators are not up-to-date.
     clear_constraints_minimized();
@@ -1774,16 +1899,17 @@ PPL::Polyhedron::refine_with_congruences(const Congruence_System& cgs) {
 void
 PPL::Polyhedron::unconstrain(const Variable var) {
   // Dimension-compatibility check.
-  if (space_dim < var.space_dimension())
+  if (space_dim < var.space_dimension()) {
     throw_dimension_incompatible("unconstrain(var)", var.space_dimension());
-
+  }
   // Do something only if the polyhedron is non-empty.
   if (marked_empty()
       || (has_pending_constraints() && !process_pending_constraints())
-      || (!generators_are_up_to_date() && !update_generators()))
+      || (!generators_are_up_to_date() && !update_generators())) {
     // Empty: do nothing.
     return;
-
+  }
+  
   PPL_ASSERT(generators_are_up_to_date());
   // Since `gen_sys' is not empty, the topology and space dimension
   // of the inserted generator are automatically adjusted.
@@ -1811,16 +1937,18 @@ PPL::Polyhedron::unconstrain(const Variables_Set& vars) {
 
   // Dimension-compatibility check.
   const dimension_type min_space_dim = vars.space_dimension();
-  if (space_dim < min_space_dim)
+  if (space_dim < min_space_dim) {
     throw_dimension_incompatible("unconstrain(vs)", min_space_dim);
-
+  }
+  
   // Do something only if the polyhedron is non-empty.
   if (marked_empty()
       || (has_pending_constraints() && !process_pending_constraints())
-      || (!generators_are_up_to_date() && !update_generators()))
+      || (!generators_are_up_to_date() && !update_generators())) {
     // Empty: do nothing.
     return;
-
+  }
+  
   PPL_ASSERT(generators_are_up_to_date());
   // Since `gen_sys' is not empty, the topology and space dimension
   // of the inserted generators are automatically adjusted.
@@ -1848,15 +1976,17 @@ void
 PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
   Polyhedron& x = *this;
   // Topology compatibility check.
-  if (x.topology() != y.topology())
+  if (x.topology() != y.topology()) {
     throw_topology_incompatible("intersection_assign(y)", "y", y);
+  }
   // Dimension-compatibility check.
-  if (x.space_dim != y.space_dim)
+  if (x.space_dim != y.space_dim) {
     throw_dimension_incompatible("intersection_assign(y)", "y", y);
-
+  }
   // If one of the two polyhedra is empty, the intersection is empty.
-  if (x.marked_empty())
+  if (x.marked_empty()) {
     return;
+  }
   if (y.marked_empty()) {
     x.set_empty();
     return;
@@ -1865,20 +1995,25 @@ PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
   // If both polyhedra are zero-dimensional,
   // then at this point they are necessarily non-empty,
   // so that their intersection is non-empty too.
-  if (x.space_dim == 0)
+  if (x.space_dim == 0) {
     return;
-
+  }
+  
   // Both systems of constraints have to be up-to-date,
   // possibly having pending constraints.
-  if (x.has_pending_generators())
+  if (x.has_pending_generators()) {
     x.process_pending_generators();
-  else if (!x.constraints_are_up_to_date())
+  }
+  else if (!x.constraints_are_up_to_date()) {
     x.update_constraints();
-
-  if (y.has_pending_generators())
+  }
+  
+  if (y.has_pending_generators()) {
     y.process_pending_generators();
-  else if (!y.constraints_are_up_to_date())
+  }
+  else if (!y.constraints_are_up_to_date()) {
     y.update_constraints();
+  }
 
   // Here both systems are up-to-date and possibly have pending constraints
   // (but they cannot have pending generators).
@@ -1896,10 +2031,12 @@ PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
     // If both constraint systems are (fully) sorted, then we can
     // merge them; otherwise we simply add the second to the first.
     if (x.con_sys.is_sorted()
-        && y.con_sys.is_sorted() && !y.has_pending_constraints())
+        && y.con_sys.is_sorted() && !y.has_pending_constraints()) {
       x.con_sys.merge_rows_assign(y.con_sys);
-    else
+    }
+    else {
       x.con_sys.insert(y.con_sys);
+    }
     // Generators are no longer up-to-date and constraints are no
     // longer minimized.
     x.clear_generators_up_to_date();
@@ -1947,13 +2084,15 @@ drop_redundant_inequalities(std::vector<const PPL::Constraint*>& ineqs_p,
 
   // Perform quick redundancy test based on the number of saturators.
   for (dimension_type i = num_rows; i-- > 0; ) {
-    if (sat[i].empty())
+    if (sat[i].empty()) {
       // Masked equalities are redundant.
       ineqs_p[i] = 0;
+    }
     else {
       const dimension_type num_sat = num_cols_sat - sat[i].count_ones();
-      if (num_sat < min_sat)
+      if (num_sat < min_sat) {
         ineqs_p[i] = 0;
+      }
     }
   }
 
@@ -1969,9 +2108,10 @@ drop_redundant_inequalities(std::vector<const PPL::Constraint*>& ineqs_p,
             ineqs_p[i] = 0;
             break;
           }
-          else
+          else {
             // Here `sat[j] == sat[i]'.
             ineqs_p[j] = 0;
+          }
         }
       }
     }
@@ -1989,9 +2129,10 @@ PPL::Polyhedron::add_to_system_and_check_independence(Linear_System1& eq_sys,
   eq_sys.insert(eq);
   const PPL::dimension_type eq_sys_num_rows = eq_sys.num_rows();
   const PPL::dimension_type rank = eq_sys.gauss(eq_sys_num_rows);
-  if (rank == eq_sys_num_rows)
+  if (rank == eq_sys_num_rows) {
     // eq is linearly independent from eq_sys.
     return true;
+  }
   else {
     // eq is not linearly independent from eq_sys.
     PPL_ASSERT(rank == eq_sys_num_rows - 1);
@@ -2004,20 +2145,23 @@ bool
 PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
   Polyhedron& x = *this;
   // Topology compatibility check.
-  if (x.topology() != y.topology())
+  if (x.topology() != y.topology()) {
     throw_topology_incompatible("simplify_using_context_assign(y)", "y", y);
+  }
   // Dimension-compatibility check.
-  if (x.space_dim != y.space_dim)
+  if (x.space_dim != y.space_dim) {
     throw_dimension_incompatible("simplify_using_context_assign(y)", "y", y);
-
+  }
+  
   // Filter away the zero-dimensional case.
   if (x.space_dim == 0) {
     if (y.is_empty()) {
       x.set_zero_dim_univ();
       return false;
     }
-    else
+    else {
       return !x.is_empty();
+    }
   }
 
   // If `y' is empty, the biggest enlargement for `x' is the universe.
@@ -2088,14 +2232,16 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
     // Compute into `z' the minimized intersection of `x' and `y'.
     const bool x_first = (x_cs_num_rows > y_cs_num_rows);
     Polyhedron z(x_first ? x : y);
-    if (x_first)
+    if (x_first) {
       z.add_constraints(y_cs);
+    }
     else {
       // Only copy (and then recycle) the non-redundant constraints.
       Constraint_System tmp_cs;
       for (dimension_type i = 0; i < x_cs_num_rows; ++i) {
-        if (!redundant_by_y[i])
+        if (!redundant_by_y[i]) {
           tmp_cs.insert(x_cs[i]);
+        }
       }
       z.add_recycled_constraints(tmp_cs);
     }
@@ -2143,20 +2289,24 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
             if (x.is_necessarily_closed()) {
               if (g.is_line()) {
                 // Lines must saturate the constraint.
-                if (sp_sign != 0)
+                if (sp_sign != 0) {
                   goto ruled_out;
+                }
               }
               else {
                 // `g' is either a ray, a point or a closure point.
                 if (c.is_inequality()) {
                   // `c' is a non-strict inequality.
-                  if (sp_sign < 0)
+                  if (sp_sign < 0) {
                     goto ruled_out;
+                  }
                 }
-                else
+                else {
                   // `c' is an equality.
-                  if (sp_sign != 0)
+                  if (sp_sign != 0) {
                     goto ruled_out;
+                  }
+                }
               }
             }
             else
@@ -2164,24 +2314,28 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
               switch (g.type()) {
               case Generator::LINE:
                 // Lines must saturate the constraint.
-                if (sp_sign != 0)
+                if (sp_sign != 0) {
                   goto ruled_out;
+                }
                 break;
               case Generator::POINT:
                 // Have to perform the special test when dealing with
                 // a strict inequality.
                 switch (c.type()) {
                 case Constraint::EQUALITY:
-                  if (sp_sign != 0)
+                  if (sp_sign != 0) {
                     goto ruled_out;
+                  }
                   break;
                 case Constraint::NONSTRICT_INEQUALITY:
-                  if (sp_sign < 0)
+                  if (sp_sign < 0) {
                     goto ruled_out;
+                  }
                   break;
                 case Constraint::STRICT_INEQUALITY:
-                  if (sp_sign <= 0)
+                  if (sp_sign <= 0) {
                     goto ruled_out;
+                  }
                   break;
                 }
                 break;
@@ -2191,13 +2345,16 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
                 if (c.is_inequality()) {
                   // Constraint `c' is either a strict or a non-strict
                   // inequality.
-                  if (sp_sign < 0)
+                  if (sp_sign < 0) {
                     goto ruled_out;
+                  }
                 }
-                else
+                else{
                   // Constraint `c' is an equality.
-                  if (sp_sign != 0)
+                  if (sp_sign != 0) {
                     goto ruled_out;
+                  }
+                }
                 break;
               }
 
@@ -2277,9 +2434,10 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
             // x_cs_i is linear independent.
             non_redundant_eq.insert(x_cs_i);
             ++num_non_redundant_eq;
-            if (num_non_redundant_eq == needed_non_redundant_eq)
+            if (num_non_redundant_eq == needed_non_redundant_eq) {
               // Already found all the needed equalities.
               break;
+            }
           }
         }
         // NOTE: if num_non_redundant_eq < needed_non_redundant_eq
@@ -2297,13 +2455,15 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
       std::vector<const Constraint*> non_redundant_ineq_p;
       // Fill non_redundant_ineq_p with (pointers to) inequalities
       // from y_cs ...
-      for (dimension_type i = y_cs_num_eq; i < y_cs_num_rows; ++i)
+      for (dimension_type i = y_cs_num_eq; i < y_cs_num_rows; ++i) {
         non_redundant_ineq_p.push_back(&y_cs[i]);
+      }
       // ... and (pointers to) non-redundant inequalities from x_cs.
-      for (dimension_type i = x_cs_num_eq; i < x_cs_num_rows; ++i)
-        if (!redundant_by_y[i])
+      for (dimension_type i = x_cs_num_eq; i < x_cs_num_rows; ++i) {
+        if (!redundant_by_y[i]) {
           non_redundant_ineq_p.push_back(&x_cs[i]);
-
+        }
+      }
       const dimension_type non_redundant_ineq_p_size
         = non_redundant_ineq_p.size();
       const dimension_type y_cs_num_ineq = y_cs_num_rows - y_cs_num_eq;
@@ -2314,9 +2474,11 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
       for (dimension_type i = sat_num_rows; i-- > 0; ) {
         const Constraint& non_redundant_ineq_i = *(non_redundant_ineq_p[i]);
         Bit_Row& sat_i = sat[i];
-        for (dimension_type j = z_gs_num_rows; j-- > 0; )
-          if (Scalar_Products::sign(non_redundant_ineq_i, z_gs[j]) != 0)
+        for (dimension_type j = z_gs_num_rows; j-- > 0; ) {
+          if (Scalar_Products::sign(non_redundant_ineq_i, z_gs[j]) != 0) {
             sat_i.set(j);
+          }
+        }
         if (sat_i.empty() && num_non_redundant_eq < needed_non_redundant_eq) {
           // `non_redundant_ineq_i' is actually masking an equality
           // and we are still looking for some masked inequalities.
@@ -2345,9 +2507,11 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
       // i.e., those having indices no smaller than y_cs_num_ineq.
       for (dimension_type i = y_cs_num_ineq;
            i < non_redundant_ineq_p_size;
-           ++i)
-        if (non_redundant_ineq_p[i] != 0)
+           ++i) {
+        if (non_redundant_ineq_p[i] != 0) {
           result_cs.insert(*non_redundant_ineq_p[i]);
+        }
+      }
     }
   }
 
@@ -2362,15 +2526,18 @@ void
 PPL::Polyhedron::poly_hull_assign(const Polyhedron& y) {
   Polyhedron& x = *this;
   // Topology compatibility check.
-  if (x.topology() != y.topology())
+  if (x.topology() != y.topology()) {
     throw_topology_incompatible("poly_hull_assign(y)", "y", y);
+  }
   // Dimension-compatibility check.
-  if (x.space_dim != y.space_dim)
+  if (x.space_dim != y.space_dim) {
     throw_dimension_incompatible("poly_hull_assign(y)", "y", y);
-
+  }
+  
   // The poly-hull of a polyhedron `p' with an empty polyhedron is `p'.
-  if (y.marked_empty())
+  if (y.marked_empty()) {
     return;
+  }
   if (x.marked_empty()) {
     x = y;
     return;
@@ -2379,9 +2546,10 @@ PPL::Polyhedron::poly_hull_assign(const Polyhedron& y) {
   // If both polyhedra are zero-dimensional,
   // then at this point they are necessarily universe polyhedra,
   // so that their poly-hull is the universe polyhedron too.
-  if (x.space_dim == 0)
+  if (x.space_dim == 0) {
     return;
-
+  }
+  
   // Both systems of generators have to be up-to-date,
   // possibly having pending generators.
   if ((x.has_pending_constraints() && !x.process_pending_constraints())
@@ -2391,10 +2559,10 @@ PPL::Polyhedron::poly_hull_assign(const Polyhedron& y) {
     return;
   }
   if ((y.has_pending_constraints() && !y.process_pending_constraints())
-      || (!y.generators_are_up_to_date() && !y.update_generators()))
+      || (!y.generators_are_up_to_date() && !y.update_generators())) {
     // Discovered `y' empty when updating generators.
     return;
-
+  }
   // Here both systems are up-to-date and possibly have pending generators
   // (but they cannot have pending constraints).
   PPL_ASSERT(!x.has_pending_constraints() && x.generators_are_up_to_date());
@@ -2411,10 +2579,12 @@ PPL::Polyhedron::poly_hull_assign(const Polyhedron& y) {
     // If both generator systems are (fully) sorted, then we can merge
     // them; otherwise we simply add the second to the first.
     if (x.gen_sys.is_sorted()
-        && y.gen_sys.is_sorted() && !y.has_pending_generators())
+        && y.gen_sys.is_sorted() && !y.has_pending_generators()) {
       x.gen_sys.merge_rows_assign(y.gen_sys);
-    else
+    }
+    else {
       x.gen_sys.insert(y.gen_sys);
+    }
     // Constraints are no longer up-to-date
     // and generators are no longer minimized.
     x.clear_constraints_up_to_date();
@@ -2428,19 +2598,23 @@ void
 PPL::Polyhedron::poly_difference_assign(const Polyhedron& y) {
   Polyhedron& x = *this;
   // Topology compatibility check.
-  if (x.topology() != y.topology())
+  if (x.topology() != y.topology()) {
     throw_topology_incompatible("poly_difference_assign(y)", "y", y);
   // Dimension-compatibility check.
-  if (x.space_dim != y.space_dim)
+  }
+  if (x.space_dim != y.space_dim) {
     throw_dimension_incompatible("poly_difference_assign(y)", "y", y);
-
+  }
+  
   // The difference of a polyhedron `p' and an empty polyhedron is `p'.
-  if (y.marked_empty())
+  if (y.marked_empty()) {
     return;
+  }
   // The difference of an empty polyhedron and of a polyhedron `p' is empty.
-  if (x.marked_empty())
+  if (x.marked_empty()) {
     return;
-
+  }
+  
   // If both polyhedra are zero-dimensional,
   // then at this point they are necessarily universe polyhedra,
   // so that their difference is empty.
@@ -2459,8 +2633,9 @@ PPL::Polyhedron::poly_difference_assign(const Polyhedron& y) {
 
   // Being lazy here is only harmful.
   // `minimize()' will process any pending constraints or generators.
-  if (!y.minimize())
+  if (!y.minimize()) {
     return;
+  }
   x.minimize();
 
   Polyhedron new_polyhedron(topology(), x.space_dim, EMPTY);
@@ -2483,19 +2658,22 @@ PPL::Polyhedron::poly_difference_assign(const Polyhedron& y) {
     const Linear_Expression e(c.expression());
     switch (c.type()) {
     case Constraint::NONSTRICT_INEQUALITY:
-      if (is_necessarily_closed())
+      if (is_necessarily_closed()) {
         z.refine_no_check(e <= 0);
-      else
+      }
+      else {
         z.refine_no_check(e < 0);
+      }
       break;
     case Constraint::STRICT_INEQUALITY:
       z.refine_no_check(e <= 0);
       break;
     case Constraint::EQUALITY:
-      if (is_necessarily_closed())
+      if (is_necessarily_closed()) {
         // We have already filtered out the case
         // when `x' is included in `y': the result is `x'.
         return;
+      }
       else {
         Polyhedron w = x;
         w.refine_no_check(e < 0);
@@ -2517,22 +2695,24 @@ affine_image(const Variable var,
              const Linear_Expression& expr,
              Coefficient_traits::const_reference denominator) {
   // The denominator cannot be zero.
-  if (denominator == 0)
+  if (denominator == 0) {
     throw_invalid_argument("affine_image(v, e, d)", "d == 0");
-
+  }
   // Dimension-compatibility checks.
   // The dimension of `expr' should not be greater than the dimension
   // of `*this'.
-  if (space_dim < expr.space_dimension())
+  if (space_dim < expr.space_dimension()) {
     throw_dimension_incompatible("affine_image(v, e, d)", "e", expr);
   // `var' should be one of the dimensions of the polyhedron.
+  }
   const dimension_type var_space_dim = var.space_dimension();
-  if (space_dim < var_space_dim)
+  if (space_dim < var_space_dim) {
     throw_dimension_incompatible("affine_image(v, e, d)", "v", var);
-
-  if (marked_empty())
+  }
+  if (marked_empty()) {
     return;
-
+  }
+  
   if (expr.coefficient(var) != 0) {
     // The transformation is invertible:
     // minimality and saturators are preserved, so that
@@ -2540,10 +2720,12 @@ affine_image(const Variable var,
     if (generators_are_up_to_date()) {
       // Generator_System::affine_image() requires the third argument
       // to be a positive Coefficient.
-      if (denominator > 0)
+      if (denominator > 0) {
         gen_sys.affine_image(var, expr, denominator);
-      else
+      }
+      else{
         gen_sys.affine_image(var, -expr, -denominator);
+      }
     }
     if (constraints_are_up_to_date()) {
       // To build the inverse transformation,
@@ -2569,18 +2751,22 @@ affine_image(const Variable var,
   else {
     // The transformation is not invertible.
     // We need an up-to-date system of generators.
-    if (has_something_pending())
+    if (has_something_pending()) {
       remove_pending_to_obtain_generators();
-    else if (!generators_are_up_to_date())
+    }
+    else if (!generators_are_up_to_date()) {
       minimize();
+    }
     if (!marked_empty()) {
       // Generator_System::affine_image() requires the third argument
       // to be a positive Coefficient.
-      if (denominator > 0)
+      if (denominator > 0) {
         gen_sys.affine_image(var, expr, denominator);
-      else
+      }
+      else {
         gen_sys.affine_image(var, -expr, -denominator);
-
+      }
+      
       clear_constraints_up_to_date();
       clear_generators_minimized();
       clear_sat_c_up_to_date();
@@ -2597,32 +2783,38 @@ affine_preimage(const Variable var,
                 const Linear_Expression& expr,
                 Coefficient_traits::const_reference denominator) {
   // The denominator cannot be zero.
-  if (denominator == 0)
+  if (denominator == 0) {
     throw_invalid_argument("affine_preimage(v, e, d)", "d == 0");
-
+  }
+  
   // Dimension-compatibility checks.
   // The dimension of `expr' should not be greater than the dimension
   // of `*this'.
-  if (space_dim < expr.space_dimension())
+  if (space_dim < expr.space_dimension()) {
     throw_dimension_incompatible("affine_preimage(v, e, d)", "e", expr);
   // `var' should be one of the dimensions of the polyhedron.
+  }
   const dimension_type var_space_dim = var.space_dimension();
-  if (space_dim < var_space_dim)
+  if (space_dim < var_space_dim) {
     throw_dimension_incompatible("affine_preimage(v, e, d)", "v", var);
-
-  if (marked_empty())
+  }
+  
+  if (marked_empty()) {
     return;
-
+  }
+  
   if (expr.coefficient(var) != 0) {
     // The transformation is invertible:
     // minimality and saturators are preserved.
     if (constraints_are_up_to_date()) {
       // Constraint_System::affine_preimage() requires the third argument
       // to be a positive Coefficient.
-      if (denominator > 0)
+      if (denominator > 0) {
         con_sys.affine_preimage(var, expr, denominator);
-      else
+      }
+      else {
         con_sys.affine_preimage(var, -expr, -denominator);
+      }
     }
     if (generators_are_up_to_date()) {
       // To build the inverse transformation,
@@ -2648,16 +2840,20 @@ affine_preimage(const Variable var,
   else {
     // The transformation is not invertible.
     // We need an up-to-date system of constraints.
-    if (has_something_pending())
+    if (has_something_pending()) {
       remove_pending_to_obtain_constraints();
-    else if (!constraints_are_up_to_date())
+    }
+    else if (!constraints_are_up_to_date()) {
       minimize();
+    }
     // Constraint_System::affine_preimage() requires the third argument
     // to be a positive Coefficient.
-    if (denominator > 0)
+    if (denominator > 0) {
       con_sys.affine_preimage(var, expr, denominator);
-    else
+    }
+    else {
       con_sys.affine_preimage(var, -expr, -denominator);
+    }
     // Generators, minimality and saturators are no longer valid.
     clear_generators_up_to_date();
     clear_constraints_minimized();
@@ -2674,30 +2870,35 @@ bounded_affine_image(const Variable var,
                      const Linear_Expression& ub_expr,
                      Coefficient_traits::const_reference denominator) {
   // The denominator cannot be zero.
-  if (denominator == 0)
+  if (denominator == 0) {
     throw_invalid_argument("bounded_affine_image(v, lb, ub, d)", "d == 0");
-
+  }
+  
   // Dimension-compatibility checks.
   // `var' should be one of the dimensions of the polyhedron.
   const dimension_type var_space_dim = var.space_dimension();
-  if (space_dim < var_space_dim)
+  if (space_dim < var_space_dim) {
     throw_dimension_incompatible("bounded_affine_image(v, lb, ub, d)",
                                  "v", var);
+  }
   // The dimension of `lb_expr' and `ub_expr' should not be
   // greater than the dimension of `*this'.
   const dimension_type lb_space_dim = lb_expr.space_dimension();
-  if (space_dim < lb_space_dim)
+  if (space_dim < lb_space_dim) {
     throw_dimension_incompatible("bounded_affine_image(v, lb, ub, d)",
                                  "lb", lb_expr);
+  }
   const dimension_type ub_space_dim = ub_expr.space_dimension();
-  if (space_dim < ub_space_dim)
+  if (space_dim < ub_space_dim) {
     throw_dimension_incompatible("bounded_affine_image(v, lb, ub, d)",
                                  "ub", ub_expr);
-
+  }
+  
   // Any image of an empty polyhedron is empty.
-  if (marked_empty())
+  if (marked_empty()) {
     return;
-
+  }
+  
   // Check whether `var' occurs in `lb_expr' and/or `ub_expr'.
   if (lb_expr.coefficient(var) == 0) {
     // Here `var' may only occur in `ub_expr'.
@@ -2705,10 +2906,12 @@ bounded_affine_image(const Variable var,
                              LESS_OR_EQUAL,
                              ub_expr,
                              denominator);
-    if (denominator > 0)
+    if (denominator > 0) {
       refine_no_check(lb_expr <= denominator*var);
-    else
+    }
+    else {
       refine_no_check(denominator*var <= lb_expr);
+    }
   }
   else if (ub_expr.coefficient(var) == 0) {
     // Here `var' only occurs in `lb_expr'.
@@ -2716,10 +2919,12 @@ bounded_affine_image(const Variable var,
                              GREATER_OR_EQUAL,
                              lb_expr,
                              denominator);
-    if (denominator > 0)
+    if (denominator > 0) {
       refine_no_check(denominator*var <= ub_expr);
-    else
+    }
+    else {
       refine_no_check(ub_expr <= denominator*var);
+    }
   }
   else {
     // Here `var' occurs in both `lb_expr' and `ub_expr'.
@@ -2733,9 +2938,10 @@ bounded_affine_image(const Variable var,
                              GREATER_OR_EQUAL,
                              lb_expr,
                              denominator);
-    if (!marked_empty())
+    if (!marked_empty()) {
       // Now apply the affine upper bound, as recorded in `new_var'.
       refine_no_check(new_var >= var);
+    }
     // Remove the temporarily added dimension.
     remove_higher_space_dimensions(space_dim-1);
   }
@@ -2749,30 +2955,35 @@ bounded_affine_preimage(const Variable var,
                         const Linear_Expression& ub_expr,
                         Coefficient_traits::const_reference denominator) {
   // The denominator cannot be zero.
-  if (denominator == 0)
+  if (denominator == 0) {
     throw_invalid_argument("bounded_affine_preimage(v, lb, ub, d)", "d == 0");
-
+  }
+  
   // Dimension-compatibility checks.
   // `var' should be one of the dimensions of the polyhedron.
   const dimension_type var_space_dim = var.space_dimension();
-  if (space_dim < var_space_dim)
+  if (space_dim < var_space_dim) {
     throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub, d)",
                                  "v", var);
+  }
   // The dimension of `lb_expr' and `ub_expr' should not be
   // greater than the dimension of `*this'.
   const dimension_type lb_space_dim = lb_expr.space_dimension();
-  if (space_dim < lb_space_dim)
+  if (space_dim < lb_space_dim) {
     throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub, d)",
                                  "lb", lb_expr);
+  }
   const dimension_type ub_space_dim = ub_expr.space_dimension();
-  if (space_dim < ub_space_dim)
+  if (space_dim < ub_space_dim) {
     throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub, d)",
                                  "ub", ub_expr);
-
+  }
+  
   // Any preimage of an empty polyhedron is empty.
-  if (marked_empty())
+  if (marked_empty()) {
     return;
-
+  }
+  
   // Check whether `var' occurs in neither `lb_expr' nor `ub_expr'.
   if (lb_expr.coefficient(var) == 0 && ub_expr.coefficient(var) == 0) {
     if (denominator > 0) {
@@ -2792,11 +3003,13 @@ bounded_affine_preimage(const Variable var,
     add_space_dimensions_and_embed(1);
 
     // Swap dimensions `var' and `new_var'.
-    if (constraints_are_up_to_date())
+    if (constraints_are_up_to_date()) {
       con_sys.swap_space_dimensions(var, new_var);
-    if (generators_are_up_to_date())
+    }
+    if (generators_are_up_to_date()){
       gen_sys.swap_space_dimensions(var, new_var);
-
+    }
+    
     // Constrain the new dimension as dictated by `lb_expr' and `ub_expr'.
     // (we force minimization because we will need the generators).
     if (denominator > 0) {
@@ -2820,43 +3033,49 @@ generalized_affine_image(const Variable var,
                          const Linear_Expression& expr,
                          Coefficient_traits::const_reference denominator) {
   // The denominator cannot be zero.
-  if (denominator == 0)
+  if (denominator == 0) {
     throw_invalid_argument("generalized_affine_image(v, r, e, d)", "d == 0");
-
+  }
+  
   // Dimension-compatibility checks.
   // The dimension of `expr' should not be greater than the dimension
   // of `*this'.
-  if (space_dim < expr.space_dimension())
+  if (space_dim < expr.space_dimension()) {
     throw_dimension_incompatible("generalized_affine_image(v, r, e, d)",
                                  "e", expr);
+  }
   // `var' should be one of the dimensions of the polyhedron.
   const dimension_type var_space_dim = var.space_dimension();
-  if (space_dim < var_space_dim)
+  if (space_dim < var_space_dim) {
     throw_dimension_incompatible("generalized_affine_image(v, r, e, d)",
                                  "v", var);
-
+  }
+  
   // Strict relation symbols are only admitted for NNC polyhedra.
   if (is_necessarily_closed()
-      && (relsym == LESS_THAN || relsym == GREATER_THAN))
+      && (relsym == LESS_THAN || relsym == GREATER_THAN)) {
     throw_invalid_argument("generalized_affine_image(v, r, e, d)",
                            "r is a strict relation symbol");
+  }
   // The relation symbol cannot be a disequality.
-  if (relsym == NOT_EQUAL)
+  if (relsym == NOT_EQUAL) {
     throw_invalid_argument("generalized_affine_image(v, r, e, d)",
                            "r is the disequality relation symbol");
-
+  }
+  
   // First compute the affine image.
   affine_image(var, expr, denominator);
 
-  if (relsym == EQUAL)
+  if (relsym == EQUAL) {
     // The affine relation is indeed an affine function.
     return;
-
+  }
   // Any image of an empty polyhedron is empty.
   // Note: DO check for emptiness here, as we will later add a ray.
-  if (is_empty())
+  if (is_empty()) {
     return;
-
+  }
+  
   switch (relsym) {
   case LESS_OR_EQUAL:
     add_generator(ray(-var));
@@ -2894,10 +3113,12 @@ generalized_affine_image(const Variable var,
           old_gen.expr.normalize();
           PPL_ASSERT(old_gen.OK());
           // Displace `new_gen' by `var' (i.e., along the new ray).
-          if (relsym == GREATER_THAN)
+          if (relsym == GREATER_THAN) {
             new_gen.expr += var;
-          else
+          }
+          else {
             new_gen.expr -= var;
+          }
           new_gen.expr.normalize();
           PPL_ASSERT(new_gen.OK());
         }
@@ -2928,32 +3149,37 @@ generalized_affine_preimage(const Variable var,
                             const Linear_Expression& expr,
                             Coefficient_traits::const_reference denominator) {
   // The denominator cannot be zero.
-  if (denominator == 0)
+  if (denominator == 0) {
     throw_invalid_argument("generalized_affine_preimage(v, r, e, d)",
                            "d == 0");
-
+  }
+  
   // Dimension-compatibility checks.
   // The dimension of `expr' should not be greater than the dimension
   // of `*this'.
-  if (space_dim < expr.space_dimension())
+  if (space_dim < expr.space_dimension()) {
     throw_dimension_incompatible("generalized_affine_preimage(v, r, e, d)",
                                  "e", expr);
+  }
   // `var' should be one of the dimensions of the polyhedron.
   const dimension_type var_space_dim = var.space_dimension();
-  if (space_dim < var_space_dim)
+  if (space_dim < var_space_dim) {
     throw_dimension_incompatible("generalized_affine_preimage(v, r, e, d)",
                                  "v", var);
-
+  }
+  
   // Strict relation symbols are only admitted for NNC polyhedra.
   if (is_necessarily_closed()
-      && (relsym == LESS_THAN || relsym == GREATER_THAN))
+      && (relsym == LESS_THAN || relsym == GREATER_THAN)) {
     throw_invalid_argument("generalized_affine_preimage(v, r, e, d)",
                            "r is a strict relation symbol");
+  }
   // The relation symbol cannot be a disequality.
-  if (relsym == NOT_EQUAL)
+  if (relsym == NOT_EQUAL) {
     throw_invalid_argument("generalized_affine_preimage(v, r, e, d)",
                            "r is the disequality relation symbol");
-
+  }
+  
   // Check whether the affine relation is indeed an affine function.
   if (relsym == EQUAL) {
     affine_preimage(var, expr, denominator);
@@ -3033,30 +3259,34 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
   // The dimension of `lhs' should not be greater than the dimension
   // of `*this'.
   dimension_type lhs_space_dim = lhs.space_dimension();
-  if (space_dim < lhs_space_dim)
+  if (space_dim < lhs_space_dim) {
     throw_dimension_incompatible("generalized_affine_image(e1, r, e2)",
                                  "e1", lhs);
+  }
   // The dimension of `rhs' should not be greater than the dimension
   // of `*this'.
   const dimension_type rhs_space_dim = rhs.space_dimension();
-  if (space_dim < rhs_space_dim)
+  if (space_dim < rhs_space_dim) {
     throw_dimension_incompatible("generalized_affine_image(e1, r, e2)",
                                  "e2", rhs);
-
+  }
+  
   // Strict relation symbols are only admitted for NNC polyhedra.
   if (is_necessarily_closed()
-      && (relsym == LESS_THAN || relsym == GREATER_THAN))
+      && (relsym == LESS_THAN || relsym == GREATER_THAN)) {
     throw_invalid_argument("generalized_affine_image(e1, r, e2)",
                            "r is a strict relation symbol");
+  }
   // The relation symbol cannot be a disequality.
-  if (relsym == NOT_EQUAL)
+  if (relsym == NOT_EQUAL) {
     throw_invalid_argument("generalized_affine_image(e1, r, e2)",
                            "r is the disequality relation symbol");
-
+  }
   // Any image of an empty polyhedron is empty.
-  if (marked_empty())
+  if (marked_empty()) {
     return;
-
+  }
+  
   // Compute the actual space dimension of `lhs',
   // i.e., the highest dimension having a non-zero coefficient in `lhs'.
   lhs_space_dim = lhs.last_nonzero();
@@ -3188,30 +3418,34 @@ PPL::Polyhedron::generalized_affine_preimage(const Linear_Expression& lhs,
   // The dimension of `lhs' should not be greater than the dimension
   // of `*this'.
   dimension_type lhs_space_dim = lhs.space_dimension();
-  if (space_dim < lhs_space_dim)
+  if (space_dim < lhs_space_dim) {
     throw_dimension_incompatible("generalized_affine_preimage(e1, r, e2)",
                                  "e1", lhs);
+  }
   // The dimension of `rhs' should not be greater than the dimension
   // of `*this'.
   const dimension_type rhs_space_dim = rhs.space_dimension();
-  if (space_dim < rhs_space_dim)
+  if (space_dim < rhs_space_dim) {
     throw_dimension_incompatible("generalized_affine_preimage(e1, r, e2)",
                                  "e2", rhs);
-
+  }
+  
   // Strict relation symbols are only admitted for NNC polyhedra.
   if (is_necessarily_closed()
-      && (relsym == LESS_THAN || relsym == GREATER_THAN))
+      && (relsym == LESS_THAN || relsym == GREATER_THAN)) {
     throw_invalid_argument("generalized_affine_preimage(e1, r, e2)",
                            "r is a strict relation symbol");
+  }
   // The relation symbol cannot be a disequality.
-  if (relsym == NOT_EQUAL)
+  if (relsym == NOT_EQUAL) {
     throw_invalid_argument("generalized_affine_preimage(e1, r, e2)",
                            "r is the disequality relation symbol");
-
+  }
   // Any preimage of an empty polyhedron is empty.
-  if (marked_empty())
+  if (marked_empty()) {
     return;
-
+  }
+  
   // Compute the actual space dimension of `lhs',
   // i.e., the highest dimension having a non-zero coefficient in `lhs'.
   lhs_space_dim = lhs.last_nonzero();
@@ -3316,16 +3550,19 @@ void
 PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
   Polyhedron& x = *this;
   // Topology compatibility check.
-  if (x.topology() != y.topology())
+  if (x.topology() != y.topology()) {
     throw_topology_incompatible("time_elapse_assign(y)", "y", y);
+  }
   // Dimension-compatibility checks.
-  if (x.space_dim != y.space_dim)
+  if (x.space_dim != y.space_dim) {
     throw_dimension_incompatible("time_elapse_assign(y)", "y", y);
-
+  }
+  
   // Dealing with the zero-dimensional case.
   if (x.space_dim == 0) {
-    if (y.marked_empty())
+    if (y.marked_empty()) {
       x.set_empty();
+    }
     return;
   }
 
@@ -3414,9 +3651,9 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
   // Namely, this happens when `y' was the singleton polyhedron
   // having the origin as the one and only point.
   // In such a case, the resulting polyhedron is equal to `x'.
-  if (gs_num_rows == 0)
+  if (gs_num_rows == 0) {
     return;
-
+  }
   // If the polyhedron can have something pending, we add `gs'
   // to `gen_sys' as pending rows
   if (x.can_have_something_pending()) {
@@ -3426,8 +3663,9 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
   // Otherwise, the two systems are merged.
   // `Linear_System::merge_rows_assign()' requires both systems to be sorted.
   else {
-    if (!x.gen_sys.is_sorted())
+    if (!x.gen_sys.is_sorted()) {
       x.gen_sys.sort_rows();
+    }
     gs.sort_rows();
     x.gen_sys.merge_rows_assign(gs);
     // Only the system of generators is up-to-date.
@@ -3442,9 +3680,10 @@ PPL::Polyhedron::frequency(const Linear_Expression& expr,
                            Coefficient& freq_n, Coefficient& freq_d,
                            Coefficient& val_n, Coefficient& val_d) const {
   // The dimension of `expr' must be at most the dimension of *this.
-  if (space_dim < expr.space_dimension())
+  if (space_dim < expr.space_dimension()) {
     throw_dimension_incompatible("frequency(e, ...)", "e", expr);
-
+  }
+  
   // If the `expr' has a constant value, then the frequency
   // `freq_n' is 0. Otherwise the values for \p expr are not discrete
   // and we return false.
@@ -3452,8 +3691,9 @@ PPL::Polyhedron::frequency(const Linear_Expression& expr,
   // Space dimension is 0: if empty, then return false;
   // otherwise the frequency is 1 and the value is 0.
   if (space_dim == 0) {
-    if (is_empty())
+    if (is_empty()) {
       return false;
+    }
     freq_n = 0;
     freq_d = 1;
     val_n = expr.inhomogeneous_term();
@@ -3464,9 +3704,10 @@ PPL::Polyhedron::frequency(const Linear_Expression& expr,
   // For an empty polyhedron, we simply return false.
   if (marked_empty()
       || (has_pending_constraints() && !process_pending_constraints())
-      || (!generators_are_up_to_date() && !update_generators()))
+      || (!generators_are_up_to_date() && !update_generators())) {
     return false;
-
+  }
+  
   // The polyhedron has updated, possibly pending generators.
   // The following loop will iterate through the generator
   // to see if `expr' has a constant value.
@@ -3483,9 +3724,10 @@ PPL::Polyhedron::frequency(const Linear_Expression& expr,
     // Lines and rays in `*this' can cause `expr' to be non-constant.
     if (gen_sys_i.is_line_or_ray()) {
       const int sp_sign = sgn(sp);
-      if (sp_sign != 0)
+      if (sp_sign != 0) {
         // `expr' is unbounded in `*this'.
         return false;
+      }
     }
     else {
       // We have a point or a closure point.
@@ -3500,8 +3742,9 @@ PPL::Polyhedron::frequency(const Linear_Expression& expr,
         first_candidate = false;
         value = candidate;
       }
-      else if (candidate != value)
+      else if (candidate != value) {
         return false;
+      }
     }
   }
 
@@ -3527,21 +3770,24 @@ PPL::Polyhedron::frequency(const Linear_Expression& expr,
 void
 PPL::Polyhedron::topological_closure_assign() {
   // Necessarily closed polyhedra are trivially closed.
-  if (is_necessarily_closed())
+  if (is_necessarily_closed()) {
     return;
+  }
   // Any empty or zero-dimensional polyhedron is closed.
-  if (marked_empty() || space_dim == 0)
+  if (marked_empty() || space_dim == 0) {
     return;
-
+  }
+  
   // The computation can be done using constraints or generators.
   // If we use constraints, we will change them, so that having pending
   // constraints would be useless. If we use generators, we add generators,
   // so that having pending generators still makes sense.
 
   // Process any pending constraints.
-  if (has_pending_constraints() && !process_pending_constraints())
+  if (has_pending_constraints() && !process_pending_constraints()) {
     return;
-
+  }
+  
   // Use constraints only if they are available and
   // there are no pending generators.
   if (!has_pending_generators() && constraints_are_up_to_date()) {
@@ -3576,8 +3822,9 @@ PPL::Polyhedron::topological_closure_assign() {
     PPL_ASSERT(generators_are_up_to_date());
     // Add the corresponding point to each closure point.
     gen_sys.add_corresponding_points();
-    if (can_have_something_pending())
+    if (can_have_something_pending()) {
       set_generators_pending();
+    }
     else {
       // We cannot have pending generators; this also implies
       // that generators may have lost their sortedness.
@@ -3596,31 +3843,37 @@ bool
 PPL::operator==(const Polyhedron& x, const Polyhedron& y) {
   // If the two polyhedra are topology-incompatible or dimension-incompatible,
   // then they cannot be the same polyhedron.
-  if (x.topology() != y.topology() || x.space_dim != y.space_dim)
+  if (x.topology() != y.topology() || x.space_dim != y.space_dim) {
     return false;
-
-  if (x.marked_empty())
+  }
+  
+  if (x.marked_empty()) {
     return y.is_empty();
-  else if (y.marked_empty())
+  }
+  else if (y.marked_empty()) {
     return x.is_empty();
-  else if (x.space_dim == 0)
+  }
+  else if (x.space_dim == 0) {
     return true;
-
+  }
+  
   switch (x.quick_equivalence_test(y)) {
   case Polyhedron::TVB_TRUE:
     return true;
-
   case Polyhedron::TVB_FALSE:
     return false;
-
   default:
-    if (x.is_included_in(y))
-      if (x.marked_empty())
+    if (x.is_included_in(y)) {
+      if (x.marked_empty()) {
         return y.is_empty();
-      else
+      }
+      else {
         return y.is_included_in(x);
-    else
+      }
+    }
+    else {
       return false;
+    }
   }
 }
 
@@ -3629,23 +3882,30 @@ PPL::Polyhedron::contains(const Polyhedron& y) const {
   const Polyhedron& x = *this;
 
   // Topology compatibility check.
-  if (x.topology() != y.topology())
+  if (x.topology() != y.topology()) {
     throw_topology_incompatible("contains(y)", "y", y);
-
+  }
+  
   // Dimension-compatibility check.
-  if (x.space_dim != y.space_dim)
+  if (x.space_dim != y.space_dim) {
     throw_dimension_incompatible("contains(y)", "y", y);
-
-  if (y.marked_empty())
+  }
+  
+  if (y.marked_empty()) {
     return true;
-  else if (x.marked_empty())
+  }
+  else if (x.marked_empty()) {
     return y.is_empty();
-  else if (y.space_dim == 0)
+  }
+  else if (y.space_dim == 0) {
     return true;
-  else if (x.quick_equivalence_test(y) == Polyhedron::TVB_TRUE)
+  }
+  else if (x.quick_equivalence_test(y) == Polyhedron::TVB_TRUE) {
     return true;
-  else
+  }
+  else {
     return y.is_included_in(x);
+  }
 }
 
 bool
@@ -3682,45 +3942,58 @@ bool
 PPL::Polyhedron::ascii_load(std::istream& s) {
   std::string str;
 
-  if (!(s >> str) || str != "space_dim")
+  if (!(s >> str) || str != "space_dim") {
     return false;
+  }
 
-  if (!(s >> space_dim))
+  if (!(s >> space_dim)) {
     return false;
+  }
 
-  if (!status.ascii_load(s))
+  if (!status.ascii_load(s)) {
     return false;
+  }
 
-  if (!(s >> str) || str != "con_sys")
+  if (!(s >> str) || str != "con_sys") {
     return false;
+  }
 
-  if (!(s >> str) || (str != "(not_up-to-date)" && str != "(up-to-date)"))
+  if (!(s >> str) || (str != "(not_up-to-date)" && str != "(up-to-date)")) {
     return false;
+  }
 
-  if (!con_sys.ascii_load(s))
+  if (!con_sys.ascii_load(s)) {
     return false;
+  }
 
-  if (!(s >> str) || str != "gen_sys")
+  if (!(s >> str) || str != "gen_sys") {
     return false;
+  }
 
-  if (!(s >> str) || (str != "(not_up-to-date)" && str != "(up-to-date)"))
+  if (!(s >> str) || (str != "(not_up-to-date)" && str != "(up-to-date)")) {
     return false;
+  }
 
-  if (!gen_sys.ascii_load(s))
+  if (!gen_sys.ascii_load(s)) {
     return false;
-
-  if (!(s >> str) || str != "sat_c")
+  }
+  
+  if (!(s >> str) || str != "sat_c") {
     return false;
-
-  if (!sat_c.ascii_load(s))
+  }
+  
+  if (!sat_c.ascii_load(s)) {
     return false;
-
-  if (!(s >> str) || str != "sat_g")
+  }
+  
+  if (!(s >> str) || str != "sat_g") {
     return false;
-
-  if (!sat_g.ascii_load(s))
+  }
+  
+  if (!sat_g.ascii_load(s)) {
     return false;
-
+  }
+  
   // Check invariants.
   PPL_ASSERT_HEAVY(OK());
   return true;
@@ -3743,24 +4016,28 @@ PPL::Polyhedron::wrap_assign(const Variables_Set& vars,
                              const Constraint_System* cs_p,
                              unsigned complexity_threshold,
                              bool wrap_individually) {
-  if (is_necessarily_closed())
+  if (is_necessarily_closed()) {
     Implementation::wrap_assign(static_cast<C_Polyhedron&>(*this),
                                 vars, w, r, o, cs_p,
                                 complexity_threshold, wrap_individually,
                                 "C_Polyhedron");
-  else
+  }
+  else {
     Implementation::wrap_assign(static_cast<NNC_Polyhedron&>(*this),
                                 vars, w, r, o, cs_p,
                                 complexity_threshold, wrap_individually,
                                 "NNC_Polyhedron");
+  }
 }
 
 /*! \relates Parma_Polyhedra_Library::Polyhedron */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Polyhedron& ph) {
-  if (ph.is_empty())
+  if (ph.is_empty()) {
     s << "false";
-  else
+  }
+  else {
     s << ph.minimized_constraints();
+  }
   return s;
 }

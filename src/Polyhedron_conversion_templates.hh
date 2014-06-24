@@ -418,9 +418,10 @@ Polyhedron::conversion(Source_Linear_System& source,
                               source_k,
                               dest.sys.rows[index_non_zero]);
       WEIGHT_ADD_MUL(17, source_space_dim);
-      if (scalar_prod[index_non_zero] != 0)
+      if (scalar_prod[index_non_zero] != 0) {
         // The generator does not saturate the constraint.
         break;
+      }
       // Check if the client has requested abandoning all expensive
       // computations.  If so, the exception specified by the client
       // is thrown now.
@@ -631,9 +632,10 @@ Polyhedron::conversion(Source_Linear_System& source,
           swap(scalar_prod[sup_bound], scalar_prod[inf_bound]);
           dest_sorted = false;
         }
-        else
+        else {
           // sp_sign > 0: this generator has to be moved in Q+.
           ++sup_bound;
+        }
       }
 
       if (sup_bound == dest_num_rows) {
@@ -801,11 +803,12 @@ Polyhedron::conversion(Source_Linear_System& source,
                   // represented by the constraint `source_k'.
                   // Thus, the added scalar product is 0.
                   PPL_ASSERT(scalar_prod.size() >= dest_num_rows);
-                  if (scalar_prod.size() <= dest_num_rows)
+                  if (scalar_prod.size() <= dest_num_rows) {
                     scalar_prod.push_back(Coefficient_zero());
-                  else
+                  }
+                  else {
                     scalar_prod[dest_num_rows] = Coefficient_zero();
-
+                  }
                   dest.sys.rows.resize(dest.sys.rows.size() + 1);
                   swap(dest.sys.rows.back(), new_row);
                   // Increment the number of generators.
@@ -900,7 +903,7 @@ Polyhedron::conversion(Source_Linear_System& source,
     const dimension_type num_removed_rows = recyclable_dest_rows.size();
     sat.remove_trailing_rows(num_removed_rows);
   }
-  if (dest_sorted)
+  if (dest_sorted) {
     // If the non-pending generators in `dest' are still declared to be
     // sorted, then we have to also check for the sortedness of the
     // pending generators.
@@ -910,8 +913,8 @@ Polyhedron::conversion(Source_Linear_System& source,
         dest_sorted = false;
         break;
       }
-     }
-
+    }
+  }
 #ifndef NDEBUG
   // The previous code can modify the rows' fields, exploiting the friendness.
   // Check that all rows are OK now.

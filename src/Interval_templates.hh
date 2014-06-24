@@ -100,11 +100,13 @@ Interval<Boundary, Info>::CC76_widening_assign(const From& y,
     if (y_ub < x_ub) {
       Iterator k = std::lower_bound(first, last, x_ub);
       if (k != last) {
-        if (x_ub < *k)
+        if (x_ub < *k) {
           x_ub = *k;
+        }
       }
-      else
+      else {
         x.upper_extend();
+      }
     }
   }
 
@@ -117,17 +119,21 @@ Interval<Boundary, Info>::CC76_widening_assign(const From& y,
       Iterator k = std::lower_bound(first, last, x_lb);
       if (k != last) {
         if (x_lb < *k) {
-          if (k != first)
+          if (k != first) {
             x_lb = *--k;
-          else
+          }
+          else {
             x.lower_extend();
+          }
         }
       }
       else {
-        if (k != first)
+        if (k != first) {
           x_lb = *--k;
-        else
+        }
+        else {
           x.lower_extend();
+        }
       }
     }
   }
@@ -170,8 +176,9 @@ Interval<Boundary, Info>::Interval(const char* s) {
     break;
   case V_EQ_PLUS_INFINITY: // Fall through.
   case V_LT_PLUS_INFINITY:
-    if (upper_r == V_EQ_PLUS_INFINITY || upper_r == V_LT_PLUS_INFINITY)
+    if (upper_r == V_EQ_PLUS_INFINITY || upper_r == V_LT_PLUS_INFINITY) {
       assign(UNIVERSE);
+    }
     else
       assign(EMPTY);
     break;
@@ -188,10 +195,12 @@ Interval<Boundary, Info>::Interval(const char* s) {
     break;
   case V_EQ_MINUS_INFINITY: // Fall through.
   case V_GT_MINUS_INFINITY:
-    if (lower_r == V_EQ_MINUS_INFINITY || lower_r == V_GT_MINUS_INFINITY)
+    if (lower_r == V_EQ_MINUS_INFINITY || lower_r == V_GT_MINUS_INFINITY) {
       assign(UNIVERSE);
-    else
+    }
+    else {
       assign(EMPTY);
+    }
     break;
   case V_LT_PLUS_INFINITY:
     upper_open = true;
@@ -207,19 +216,24 @@ Interval<Boundary, Info>::Interval(const char* s) {
   if (!lower_boundary_infinity
       && !upper_boundary_infinity
       && (lower_bound > upper_bound
-          || (lower_open && lower_bound == upper_bound)))
+          || (lower_open && lower_bound == upper_bound))) {
     assign(EMPTY);
+  }
   else {
-    if (lower_boundary_infinity)
+    if (lower_boundary_infinity) {
       set_minus_infinity(LOWER, lower(), info(), lower_open);
-    else
+    }
+    else {
       Boundary_NS::assign(LOWER, lower(), info(),
                           LOWER, lower_bound, SCALAR_INFO, lower_open);
-    if (upper_boundary_infinity)
+    }
+    if (upper_boundary_infinity) {
       set_plus_infinity(UPPER, upper(), info(), upper_open);
-    else
+    }
+    else {
       Boundary_NS::assign(UPPER, upper(), info(),
                           UPPER, upper_bound, SCALAR_INFO, upper_open);
+    }
   }
 }
 
@@ -239,54 +253,65 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
   // Eat leading white space.
   char c;
   do {
-    if (!is.get(c))
+    if (!is.get(c)) {
       goto fail;
+    }
   } while (is_space(c));
 
   // Get the opening parenthesis and handle the empty interval case.
-  if (c == '(')
+  if (c == '(') {
     lower_open = true;
+  }
   else if (c == '[') {
-    if (!is.get(c))
+    if (!is.get(c)) {
       goto fail;
+    }
     if (c == ']') {
       // Empty interval.
       x.assign(EMPTY);
       return is;
     }
-    else
+    else {
       is.unget();
+    }
   }
-  else
+  else {
     goto unexpected;
-
+  }
+  
   // Get the lower bound.
   lower_r = input(lower_bound, is, ROUND_DOWN);
-  if (lower_r == V_CVT_STR_UNK || lower_r == V_NAN)
+  if (lower_r == V_CVT_STR_UNK || lower_r == V_NAN) {
     goto fail;
+  }
   lower_r = result_relation_class(lower_r);
 
   // Match the comma separating the lower and upper bounds.
   do {
-    if (!is.get(c))
+    if (!is.get(c)) {
       goto fail;
+    }
   } while (is_space(c));
-  if (c != ',')
+  if (c != ',') {
     goto unexpected;
-
+  }
+  
   // Get the upper bound.
   upper_r = input(upper_bound, is, ROUND_UP);
-  if (upper_r == V_CVT_STR_UNK || upper_r == V_NAN)
+  if (upper_r == V_CVT_STR_UNK || upper_r == V_NAN) {
     goto fail;
+  }
   upper_r = result_relation_class(upper_r);
 
   // Get the closing parenthesis.
   do {
-    if (!is.get(c))
+    if (!is.get(c)) {
       goto fail;
+    }
   } while (is_space(c));
-  if (c == ')')
+  if (c == ')') {
     upper_open = true;
+  }
   else if (c != ']') {
   unexpected:
     is.unget();
@@ -311,10 +336,12 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
     break;
   case V_EQ_PLUS_INFINITY: // Fall through.
   case V_LT_PLUS_INFINITY:
-    if (upper_r == V_EQ_PLUS_INFINITY || upper_r == V_LT_PLUS_INFINITY)
+    if (upper_r == V_EQ_PLUS_INFINITY || upper_r == V_LT_PLUS_INFINITY) {
       x.assign(UNIVERSE);
-    else
+    }
+    else {
       x.assign(EMPTY);
+    }
     return is;
   default:
     PPL_UNREACHABLE;
@@ -331,10 +358,12 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
     upper_open = true;
     // Fall through.
   case V_EQ_MINUS_INFINITY:
-    if (lower_r == V_EQ_MINUS_INFINITY || lower_r == V_GT_MINUS_INFINITY)
+    if (lower_r == V_EQ_MINUS_INFINITY || lower_r == V_GT_MINUS_INFINITY) {
       x.assign(UNIVERSE);
-    else
+    }
+    else {
       x.assign(EMPTY);
+    }
     return is;
   case V_EQ_PLUS_INFINITY: // Fall through.
   case V_LT_PLUS_INFINITY:
@@ -348,19 +377,24 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
   if (!lower_boundary_infinity
       && !upper_boundary_infinity
       && (lower_bound > upper_bound
-          || (lower_open && lower_bound == upper_bound)))
+          || (lower_open && lower_bound == upper_bound))) {
     x.assign(EMPTY);
+  }
   else {
-    if (lower_boundary_infinity)
+    if (lower_boundary_infinity) {
       set_minus_infinity(LOWER, x.lower(), x.info(), lower_open);
-    else
+    }
+    else {
       assign(LOWER, x.lower(), x.info(),
              LOWER, lower_bound, SCALAR_INFO, lower_open);
-    if (upper_boundary_infinity)
+    }
+    if (upper_boundary_infinity) {
       set_plus_infinity(UPPER, x.upper(), x.info(), upper_open);
-    else
+    }
+    else {
       assign(UPPER, x.upper(), x.info(),
              UPPER, upper_bound, SCALAR_INFO, upper_open);
+    }
   }
   return is;
 }
@@ -380,12 +414,14 @@ Interval<Boundary, Info>::simplify_using_context_assign(const From& y) {
   }
   // Weakening the upper bound.
   if (!upper_is_boundary_infinity() && !y.upper_is_boundary_infinity()
-      && y.upper() <= upper())
+      && y.upper() <= upper()) {
     upper_extend();
+  }
   // Weakening the lower bound.
   if (!lower_is_boundary_infinity() && !y.lower_is_boundary_infinity()
-      && y.lower() >= lower())
+      && y.lower() >= lower()) {
     lower_extend();
+  }
   return true;
 }
 

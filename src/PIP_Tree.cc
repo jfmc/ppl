@@ -42,8 +42,9 @@ pos_rem_assign(Coefficient& x,
                Coefficient_traits::const_reference y,
                Coefficient_traits::const_reference z) {
   rem_assign(x, y, z);
-  if (x < 0)
+  if (x < 0) {
     x += z;
+  }
 }
 
 class Add_Mul_Assign_Row_Helper1 {
@@ -121,8 +122,9 @@ merge_assign(Matrix<PIP_Tree_Node::Row>& x, const Constraint_System& y,
   const dimension_type params_size = parameters.size();
   PPL_ASSERT(params_size == x.num_columns() - 1);
   const dimension_type new_rows = Implementation::num_constraints(y);
-  if (new_rows == 0)
+  if (new_rows == 0) {
     return;
+  }
   const dimension_type old_num_rows = x.num_rows();
   x.add_zero_rows(new_rows);
 
@@ -141,19 +143,22 @@ merge_assign(Matrix<PIP_Tree_Node::Row>& x, const Constraint_System& y,
       = y_i->inhomogeneous_term();
     Variables_Set::const_iterator pj = param_begin;
     PIP_Tree_Node::Row::iterator itr = x_i.end();
-    if (inhomogeneous_term != 0)
+    if (inhomogeneous_term != 0) {
       itr = x_i.insert(0, inhomogeneous_term);
+    }
     // itr may still be end() but it can still be used as a hint.
     // TODO: This code could be optimized more (if it's expected that the
     // size of `parameters' will be greater than the number of nonzero
     // coefficients in y_i).
     for (dimension_type j = 1; pj != param_end; ++pj, ++j) {
       const Variable vj(*pj);
-      if (vj.space_dimension() > cs_space_dim)
+      if (vj.space_dimension() > cs_space_dim) {
         break;
+      }
       Coefficient_traits::const_reference c = y_i->coefficient(vj);
-      if (c != 0)
+      if (c != 0) {
         itr = x_i.insert(itr, j, c);
+      }
     }
     WEIGHT_ADD_MUL(102, params_size);
   }
@@ -198,23 +203,26 @@ complement_assign(PIP_Tree_Node::Row& x,
   neg_assign_row(x, y);
   PIP_Tree_Node::Row::iterator itr = x.insert(0);
   Coefficient& x_0 = *itr;
-  if (denom == 1)
+  if (denom == 1) {
     --x_0;
+  }
   else {
     PPL_DIRTY_TEMP_COEFFICIENT(mod);
     pos_rem_assign(mod, x_0, denom);
     x_0 -= (mod == 0) ? denom : mod;
   }
-  if (x_0 == 0)
+  if (x_0 == 0) {
     x.reset(itr);
+  }
 }
 
 // Add to `context' the columns for new artificial parameters.
 inline void
 add_artificial_parameters(Matrix<PIP_Tree_Node::Row>& context,
                           const dimension_type num_art_params) {
-  if (num_art_params > 0)
+  if (num_art_params > 0) {
     context.add_zero_columns(num_art_params);
+  }
 }
 
 // Add to `params' the indices of new artificial parameters.
@@ -285,23 +293,28 @@ column_lower(const Matrix<PIP_Tree_Node::Row>& tableau,
   while (true) {
     const dimension_type mk = mapping[k];
     const bool in_base = basis[k];
-    if (++k >= num_vars)
+    if (++k >= num_vars) {
       return false;
+    }
     if (in_base) {
       // Reconstitute the identity submatrix part of tableau.
       if (mk == ja) {
         // Optimizing for: lhs == lhs_coeff && rhs == 0;
-        if (lhs_coeff == 0)
+        if (lhs_coeff == 0) {
           continue;
-        else
+        }
+        else {
           return lhs_coeff > 0;
+        }
       }
       if (mk == jb) {
         // Optimizing for: lhs == 0 && rhs == rhs_coeff;
-        if (rhs_coeff == 0)
+        if (rhs_coeff == 0) {
           continue;
-        else
+        }
+        else {
           return 0 > rhs_coeff;
+        }
       }
       // Optimizing for: lhs == 0 && rhs == 0;
       continue;
@@ -311,33 +324,42 @@ column_lower(const Matrix<PIP_Tree_Node::Row>& tableau,
       const PIP_Tree_Node::Row& t_mk = tableau[mk];
       Coefficient_traits::const_reference t_mk_ja = t_mk.get(ja);
       Coefficient_traits::const_reference t_mk_jb = t_mk.get(jb);
-      if (t_mk_ja == 0)
-        if (t_mk_jb == 0)
+      if (t_mk_ja == 0) {
+        if (t_mk_jb == 0) {
           continue;
+        }
         else {
           const int rhs_sign = rhs_coeff_sign * sgn(t_mk_jb);
-          if (0 == rhs_sign)
+          if (0 == rhs_sign) {
             continue;
-          else
+          }
+          else {
             return 0 > rhs_sign;
+          }
         }
-      else
+      }
+      else {
         if (t_mk_jb == 0) {
           const int lhs_sign = lhs_coeff_sign * sgn(t_mk_ja);
-          if (lhs_sign == 0)
+          if (lhs_sign == 0) {
             continue;
-          else
+          }
+          else {
             return lhs_sign > 0;
+          }
         }
         else {
           WEIGHT_ADD(2);
           lhs = lhs_coeff * t_mk_ja;
           rhs = rhs_coeff * t_mk_jb;
-          if (lhs == rhs)
+          if (lhs == rhs) {
             continue;
-          else
+          }
+          else {
             return lhs > rhs;
+          }
         }
+      }
     }
   }
   // This point should be unreachable.
@@ -371,9 +393,10 @@ find_lexico_minimal_column_in_set(std::vector<dimension_type>& candidates,
     new_candidates.push_back(*i);
     dimension_type min_column = *i;
     ++i;
-    if (i == i_end)
+    if (i == i_end) {
       // Only one candidate left, so it is the minimum.
       break;
+    }
     PIP_Tree_Node::Row::const_iterator pivot_itr;
     pivot_itr = pivot_row.find(min_column);
     PPL_ASSERT(pivot_itr != pivot_row.end());
@@ -399,9 +422,10 @@ find_lexico_minimal_column_in_set(std::vector<dimension_type>& candidates,
             sij_b = sij_a;
             new_candidates.push_back(min_column);
           }
-          else
+          else {
             // Optimizing for: lhs == 0 && rhs == 0;
             new_candidates.push_back(*i);
+          }
         }
       }
       WEIGHT_ADD_MUL(44, candidates.size());
@@ -412,8 +436,9 @@ find_lexico_minimal_column_in_set(std::vector<dimension_type>& candidates,
       PIP_Tree_Node::Row::const_iterator row_itr = row.lower_bound(min_column);
       PIP_Tree_Node::Row::const_iterator row_end = row.end();
       PPL_DIRTY_TEMP_COEFFICIENT(row_jb);
-      if (row_itr == row_end || row_itr.index() > min_column)
+      if (row_itr == row_end || row_itr.index() > min_column) {
         row_jb = 0;
+      }
       else {
         PPL_ASSERT(row_itr.index() == min_column);
         row_jb = *row_itr;
@@ -428,11 +453,13 @@ find_lexico_minimal_column_in_set(std::vector<dimension_type>& candidates,
 
         PPL_DIRTY_TEMP_COEFFICIENT(lhs);
         PPL_DIRTY_TEMP_COEFFICIENT(rhs);
-        if (row_itr != row_end && row_itr.index() < *i)
+        if (row_itr != row_end && row_itr.index() < *i) {
           row_itr = row.lower_bound(row_itr, *i);
+        }
         PPL_DIRTY_TEMP_COEFFICIENT(row_ja);
-        if (row_itr == row_end || row_itr.index() > *i)
+        if (row_itr == row_end || row_itr.index() > *i) {
           row_ja = 0;
+        }
         else {
           PPL_ASSERT(row_itr.index() == *i);
           row_ja = *row_itr;
@@ -443,9 +470,10 @@ find_lexico_minimal_column_in_set(std::vector<dimension_type>& candidates,
         // rhs is actually the right-hand side with toggled sign.
         lhs = sij_b * row_ja;
         rhs = sij_a * row_jb;
-        if (lhs == rhs)
+        if (lhs == rhs) {
           new_candidates.push_back(*i);
-        else
+        }
+        else {
           if (lhs < rhs) {
             new_candidates.clear();
             min_column = *i;
@@ -453,6 +481,7 @@ find_lexico_minimal_column_in_set(std::vector<dimension_type>& candidates,
             sij_b = sij_a;
             new_candidates.push_back(min_column);
           }
+        }
       }
       WEIGHT_ADD_MUL(68, candidates.size());
     }
@@ -476,16 +505,18 @@ find_lexico_minimal_column(const Matrix<PIP_Tree_Node::Row>& tableau,
   const dimension_type num_columns = tableau.num_columns();
 
   PPL_ASSERT(start_j <= pivot_row.size());
-  if (start_j == pivot_row.size())
+  if (start_j == pivot_row.size()) {
     // There are no candidates, so there is no minimum.
     return false;
-
+  }
+  
   // This is used as a set, it is always sorted.
   std::vector<dimension_type> candidates;
   for (PIP_Tree_Node::Row::const_iterator i = pivot_row.lower_bound(start_j),
          i_end = pivot_row.end(); i != i_end; ++i) {
-    if (*i > 0)
+    if (*i > 0) {
       candidates.push_back(i.index());
+    }
   }
   WEIGHT_ADD_MUL(201, candidates.size());
 
@@ -507,18 +538,21 @@ template <typename Iter>
 void
 gcd_assign_iter(Coefficient& gcd, Iter first, Iter last) {
   PPL_ASSERT(gcd != 0);
-  if (gcd < 0)
+  if (gcd < 0) {
     neg_assign(gcd);
-  if (gcd == 1)
+  }
+  if (gcd == 1) {
     return;
+  }
   WEIGHT_BEGIN();
   for ( ; first != last; ++first) {
     Coefficient_traits::const_reference coeff = *first;
     if (coeff != 0) {
       WEIGHT_ADD(24);
       gcd_assign(gcd, coeff, gcd);
-      if (gcd == 1)
+      if (gcd == 1) {
         return;
+      }
     }
   }
 }
@@ -554,8 +588,9 @@ integral_simplification(PIP_Tree_Node::Row& row) {
 // Divide all coefficients in row x and denominator y by their GCD.
 void
 row_normalize(PIP_Tree_Node::Row& x, Coefficient& denom) {
-  if (denom == 1)
+  if (denom == 1) {
     return;
+  }
   PPL_DIRTY_TEMP_COEFFICIENT(gcd);
   gcd = denom;
   gcd_assign_iter(gcd, x.begin(), x.end());
@@ -631,22 +666,27 @@ compatibility_check_find_pivot_in_set(
         // Reconstitute the identity submatrix part of tableau.
         if (row_index == pj) {
           // Optimizing for: lhs == lhs_coeff && rhs == 0;
-          if (lhs_coeff_sgn == 0)
+          if (lhs_coeff_sgn == 0) {
             new_candidates.push_back(*i);
-          else
+          }
+          else {
             found_better_pivot = (lhs_coeff_sgn > 0);
+          }
         }
         else {
           if (row_index == challenger_j) {
             // Optimizing for: lhs == 0 && rhs == rhs_coeff;
-            if (rhs_coeff_sgn == 0)
+            if (rhs_coeff_sgn == 0) {
               new_candidates.push_back(*i);
-            else
+            }
+            else {
               found_better_pivot = (0 > rhs_coeff_sgn);
+            }
           }
-          else
+          else {
             // Optimizing for: lhs == 0 && rhs == 0;
             new_candidates.push_back(*i);
+          }
         }
         if (found_better_pivot) {
           pj = challenger_j;
@@ -668,8 +708,9 @@ compatibility_check_find_pivot_in_set(
         row_value = *row_itr;
         ++row_itr;
       }
-      else
+      else {
         row_value = 0;
+      }
       PPL_DIRTY_TEMP_COEFFICIENT(row_challenger_value);
       for (++i; i != i_end; ++i) {
         const dimension_type challenger_j = i->first;
@@ -724,8 +765,9 @@ compatibility_check_find_pivot_in_set(
           lhs *= row_value;
           rhs *= row_challenger_value;
 
-          if (lhs == rhs)
+          if (lhs == rhs) {
             new_candidates.push_back(*i);
+          }
           else {
             if (lhs > rhs) {
               pj = challenger_j;
@@ -883,10 +925,11 @@ PIP_Tree_Node::Artificial_Parameter
 ::Artificial_Parameter(const Linear_Expression& expr,
                        Coefficient_traits::const_reference d)
   : Linear_Expression(expr), denom(d) {
-  if (denom == 0)
+  if (denom == 0) {
     throw std::invalid_argument("PIP_Tree_Node::Artificial_Parameter(e, d): "
                                 "denominator d is zero.");
-
+  }
+  
   // Normalize if needed.
   // FIXME: Provide a proper normalization helper.
   Linear_Expression& param_expr = *this;
@@ -899,16 +942,20 @@ PIP_Tree_Node::Artificial_Parameter
 
   Coefficient gcd = param_expr.gcd(0, space_dimension() + 1);
 
-  if (gcd == 1)
+  if (gcd == 1) {
     return;
+  }
 
-  if (gcd == 0)
+  if (gcd == 0) {
     gcd = denom;
-  else
+  }
+  else {
     gcd_assign(gcd, denom, gcd);
+  }
 
-  if (gcd == 1)
+  if (gcd == 1) {
     return;
+  }
 
   // Divide coefficients and denominator by their (non-trivial) GCD.
   PPL_ASSERT(gcd > 1);
@@ -922,10 +969,12 @@ bool
 PIP_Tree_Node::Artificial_Parameter
 ::operator==(const PIP_Tree_Node::Artificial_Parameter& y) const {
   const Artificial_Parameter& x = *this;
-  if (x.space_dimension() != y.space_dimension())
+  if (x.space_dimension() != y.space_dimension()) {
     return false;
-  if (x.denom != y.denom)
+  }
+  if (x.denom != y.denom) {
     return false;
+  }
   return x.is_equal_to(y);
 }
 
@@ -957,14 +1006,18 @@ PIP_Tree_Node::Artificial_Parameter::ascii_dump(std::ostream& s) const {
 bool
 PIP_Tree_Node::Artificial_Parameter::ascii_load(std::istream& s) {
   std::string str;
-  if (!(s >> str) || str != "artificial_parameter")
+  if (!(s >> str) || str != "artificial_parameter") {
     return false;
-  if (!Linear_Expression::ascii_load(s))
+  }
+  if (!Linear_Expression::ascii_load(s)) {
     return false;
-  if (!(s >> str) || str != "/")
+  }
+  if (!(s >> str) || str != "/") {
     return false;
-  if (!(s >> denom))
+  }
+  if (!(s >> denom)) {
     return false;
+  }
   PPL_ASSERT(OK());
   return true;
 }
@@ -1023,10 +1076,12 @@ PIP_Decision_Node::PIP_Decision_Node(const PIP_Problem* owner,
   : PIP_Tree_Node(owner),
     false_child(fcp),
     true_child(tcp) {
-  if (false_child != 0)
+  if (false_child != 0) {
     false_child->set_parent(this);
-  if (true_child != 0)
+  }
+  if (true_child != 0) {
     true_child->set_parent(this);
+  }
 }
 
 PIP_Decision_Node::PIP_Decision_Node(const PIP_Decision_Node& y)
@@ -1060,10 +1115,12 @@ PIP_Solution_Node::set_owner(const PIP_Problem* owner) {
 void
 PIP_Decision_Node::set_owner(const PIP_Problem* owner) {
   owner_ = owner;
-  if (false_child != 0)
+  if (false_child != 0) {
     false_child->set_owner(owner);
-  if (true_child != 0)
+  }
+  if (true_child != 0) {
     true_child->set_owner(owner);
+  }
 }
 
 bool
@@ -1164,8 +1221,9 @@ PIP_Tree_Node
     dimension_type j_index = 1;
     Row::const_iterator i = row.begin();
     Row::const_iterator i_end = row.end();
-    if (i != i_end && i.index() == 0)
+    if (i != i_end && i.index() == 0) {
       ++i;
+    }
     // NOTE: iterating in [1..num_params].
     WEIGHT_BEGIN();
     for ( ; i != i_end; ++i) {
@@ -1197,13 +1255,15 @@ PIP_Solution_Node::OK() const {
 #ifndef NDEBUG
   using std::cerr;
 #endif
-  if (!PIP_Tree_Node::OK())
+  if (!PIP_Tree_Node::OK()) {
     return false;
+  }
 
   // Check that every member used is OK.
 
-  if (!tableau.OK())
+  if (!tableau.OK()) {
     return false;
+  }
 
   // Check coherency of basis, mapping, var_row and var_column
   if (basis.size() != mapping.size()) {
@@ -1265,15 +1325,18 @@ PIP_Solution_Node::OK() const {
 bool
 PIP_Decision_Node::OK() const {
   // Perform base class well-formedness check on this node.
-  if (!PIP_Tree_Node::OK())
+  if (!PIP_Tree_Node::OK()) {
     return false;
-
+  }
+  
   // Recursively check if child nodes are well-formed.
-  if (false_child != 0 && !false_child->OK())
+  if (false_child != 0 && !false_child->OK()) {
     return false;
-  if (true_child != 0 && !true_child->OK())
+  }
+  if (true_child != 0 && !true_child->OK()) {
     return false;
-
+  }
+  
   // Decision nodes should always have a true child.
   if (true_child == 0) {
 #ifndef NDEBUG
@@ -1311,12 +1374,13 @@ PIP_Decision_Node::update_tableau(
                              first_pending_constraint,
                              input_cs,
                              parameters);
-  if (false_child != 0)
+  if (false_child != 0) {
     false_child->update_tableau(pip,
                                 external_space_dim,
                                 first_pending_constraint,
                                 input_cs,
                                 parameters);
+  }
   PPL_ASSERT(OK());
 }
 
@@ -1474,8 +1538,9 @@ PIP_Decision_Node::ascii_dump(std::ostream& s) const {
 
   // Dump false child (if any).
   s << "\nfalse_child: ";
-  if (false_child == 0)
+  if (false_child == 0) {
     s << "BOTTOM\n";
+  }
   else if (const PIP_Decision_Node* const dec = false_child->as_decision()) {
     // Note: this branch should normally be unreachable code.
     // Since a well-formed decision node having a false child should have
@@ -1498,32 +1563,38 @@ PIP_Decision_Node::ascii_load(std::istream& s) {
   std::string str;
 
   // Load base class info.
-  if (!PIP_Tree_Node::ascii_load(s))
+  if (!PIP_Tree_Node::ascii_load(s)) {
     return false;
-
+  }
+  
   // Release the "true" subtree (if any).
   delete true_child;
   true_child = 0;
 
   // Load true child (if any).
-  if (!(s >> str) || str != "true_child:")
+  if (!(s >> str) || str != "true_child:") {
     return false;
-  if (!(s >> str))
+  }
+  if (!(s >> str)) {
     return false;
-  if (str == "BOTTOM")
+  }
+  if (str == "BOTTOM") {
     // Note: normally unreachable code (see comment on ascii_dump).
     true_child = 0;
+  }
   else if (str == "DECISION") {
     PIP_Decision_Node* const dec = new PIP_Decision_Node(0, 0, 0);
     true_child = dec;
-    if (!dec->ascii_load(s))
+    if (!dec->ascii_load(s)) {
       return false;
+    }
   }
   else if (str == "SOLUTION") {
     PIP_Solution_Node* const sol = new PIP_Solution_Node(0);
     true_child = sol;
-    if (!sol->ascii_load(s))
+    if (!sol->ascii_load(s)) {
       return false;
+    }
   }
   else
     // Unknown node kind.
@@ -1534,28 +1605,34 @@ PIP_Decision_Node::ascii_load(std::istream& s) {
   false_child = 0;
 
   // Load false child (if any).
-  if (!(s >> str) || str != "false_child:")
+  if (!(s >> str) || str != "false_child:") {
     return false;
-  if (!(s >> str))
+  }
+  if (!(s >> str)) {
     return false;
-  if (str == "BOTTOM")
+  }
+  if (str == "BOTTOM") {
     false_child = 0;
+  }
   else if (str == "DECISION") {
     // Note: normally unreachable code (see comment on ascii_dump).
     PIP_Decision_Node* const dec = new PIP_Decision_Node(0, 0, 0);
     false_child = dec;
-    if (!dec->ascii_load(s))
+    if (!dec->ascii_load(s)) {
       return false;
+    }
   }
   else if (str == "SOLUTION") {
     PIP_Solution_Node* const sol = new PIP_Solution_Node(0);
     false_child = sol;
-    if (!sol->ascii_load(s))
+    if (!sol->ascii_load(s)) {
       return false;
+    }
   }
-  else
+  else {
     // Unknown node kind.
     return false;
+  }
 
   // Loaded all info.
   PPL_ASSERT(OK());
@@ -1565,8 +1642,9 @@ PIP_Decision_Node::ascii_load(std::istream& s) {
 
 void
 PIP_Solution_Node::Tableau::normalize() {
-  if (denom == 1)
+  if (denom == 1) {
     return;
+  }
 
   const dimension_type num_rows = s.num_rows();
 
@@ -1582,8 +1660,9 @@ PIP_Solution_Node::Tableau::normalize() {
       if (s_ij != 0) {
         WEIGHT_ADD(30);
         gcd_assign(gcd, s_ij, gcd);
-        if (gcd == 1)
+        if (gcd == 1) {
           return;
+        }
       }
     }
     WEIGHT_BEGIN();
@@ -1594,8 +1673,9 @@ PIP_Solution_Node::Tableau::normalize() {
       if (t_ij != 0) {
         WEIGHT_ADD(14);
         gcd_assign(gcd, t_ij, gcd);
-        if (gcd == 1)
+        if (gcd == 1) {
           return;
+        }
       }
     }
   }
@@ -1739,21 +1819,28 @@ PIP_Tree_Node::ascii_dump(std::ostream& s) const {
 bool
 PIP_Tree_Node::ascii_load(std::istream& s) {
   std::string str;
-  if (!(s >> str) || str != "constraints_")
+  if (!(s >> str) || str != "constraints_") {
     return false;
+  }
   constraints_.ascii_load(s);
 
-  if (!(s >> str) || str != "artificial_parameters(")
+  if (!(s >> str) || str != "artificial_parameters(") {
     return false;
+  }
+  
   dimension_type artificial_parameters_size;
-  if (!(s >> artificial_parameters_size))
+  if (!(s >> artificial_parameters_size)) {
     return false;
-  if (!(s >> str) || str != ")")
+  }
+  
+  if (!(s >> str) || str != ")") {
     return false;
+  }
   Artificial_Parameter ap;
   for (dimension_type i = 0; i < artificial_parameters_size; ++i) {
-    if (!ap.ascii_load(s))
+    if (!ap.ascii_load(s)) {
       return false;
+    }
     artificial_parameters.push_back(ap);
   }
 
@@ -1784,20 +1871,26 @@ PIP_Solution_Node::Tableau::ascii_dump(std::ostream& os) const {
 bool
 PIP_Solution_Node::Tableau::ascii_load(std::istream& is) {
   std::string str;
-  if (!(is >> str) || str != "denominator")
+  if (!(is >> str) || str != "denominator") {
     return false;
+  }
   Coefficient d;
-  if (!(is >> d))
+  if (!(is >> d)) {
     return false;
+  }
   denom = d;
-  if (!(is >> str) || str != "variables")
+  if (!(is >> str) || str != "variables") {
     return false;
-  if (!s.ascii_load(is))
+  }
+  if (!s.ascii_load(is)) {
     return false;
-  if (!(is >> str) || str != "parameters")
+  }
+  if (!(is >> str) || str != "parameters") {
     return false;
-  if (!t.ascii_load(is))
+  }
+  if (!t.ascii_load(is)) {
     return false;
+  }
   PPL_ASSERT(OK());
   return true;
 }
@@ -1883,126 +1976,163 @@ PIP_Solution_Node::ascii_load(std::istream& is) {
     return false;
 
   std::string str;
-  if (!(is >> str) || str != "tableau")
+  if (!(is >> str) || str != "tableau") {
     return false;
-  if (!tableau.ascii_load(is))
+  }
+  if (!tableau.ascii_load(is)) {
     return false;
-
-  if (!(is >> str) || str != "basis")
+  }
+  if (!(is >> str) || str != "basis") {
     return false;
+  }
   dimension_type basis_size;
-  if (!(is >> basis_size))
+  if (!(is >> basis_size)) {
     return false;
+  }
   basis.clear();
   for (dimension_type i = 0; i < basis_size; ++i) {
-    if (!(is >> str))
+    if (!(is >> str)) {
       return false;
+    }
     bool val = false;
-    if (str == "true")
+    if (str == "true") {
       val = true;
-    else if (str != "false")
+    }
+    else if (str != "false") {
       return false;
+    }
     basis.push_back(val);
   }
 
-  if (!(is >> str) || str != "mapping")
+  if (!(is >> str) || str != "mapping") {
     return false;
+  }
   dimension_type mapping_size;
-  if (!(is >> mapping_size))
+  if (!(is >> mapping_size)) {
     return false;
+  }
   mapping.clear();
   for (dimension_type i = 0; i < mapping_size; ++i) {
     dimension_type val;
-    if (!(is >> val))
+    if (!(is >> val)) {
       return false;
+    }
     mapping.push_back(val);
   }
 
-  if (!(is >> str) || str != "var_row")
+  if (!(is >> str) || str != "var_row") {
     return false;
+  }
   dimension_type var_row_size;
-  if (!(is >> var_row_size))
+  if (!(is >> var_row_size)) {
     return false;
+  }
   var_row.clear();
   for (dimension_type i = 0; i < var_row_size; ++i) {
     dimension_type val;
-    if (!(is >> val))
+    if (!(is >> val)) {
       return false;
+    }
     var_row.push_back(val);
   }
 
-  if (!(is >> str) || str != "var_column")
+  if (!(is >> str) || str != "var_column") {
     return false;
+  }
   dimension_type var_column_size;
-  if (!(is >> var_column_size))
+  if (!(is >> var_column_size)) {
     return false;
+  }
   var_column.clear();
   for (dimension_type i = 0; i < var_column_size; ++i) {
     dimension_type val;
-    if (!(is >> val))
+    if (!(is >> val)) {
       return false;
+    }
     var_column.push_back(val);
   }
 
-  if (!(is >> str) || str != "special_equality_row")
+  if (!(is >> str) || str != "special_equality_row") {
     return false;
-  if (!(is >> special_equality_row))
+  }
+  if (!(is >> special_equality_row)) {
     return false;
-
-  if (!(is >> str) || str != "big_dimension")
+  }
+  
+  if (!(is >> str) || str != "big_dimension") {
     return false;
-  if (!(is >> big_dimension))
+  }
+  if (!(is >> big_dimension)) {
     return false;
-
-  if (!(is >> str) || str != "sign")
+  }
+  
+  if (!(is >> str) || str != "sign") {
     return false;
+  }
   dimension_type sign_size;
-  if (!(is >> sign_size))
+  if (!(is >> sign_size)) {
     return false;
+  }
+  
   sign.clear();
   for (dimension_type i = 0; i < sign_size; ++i) {
-    if (!(is >> str))
+    if (!(is >> str)) {
       return false;
+    }
     Row_Sign val;
-    if (str == "UNKNOWN")
+    if (str == "UNKNOWN") {
       val = UNKNOWN;
-    else if (str == "ZERO")
+    }
+    else if (str == "ZERO") {
       val = ZERO;
-    else if (str == "POSITIVE")
+    }
+    else if (str == "POSITIVE") {
       val = POSITIVE;
-    else if (str == "NEGATIVE")
+    }
+    else if (str == "NEGATIVE") {
       val = NEGATIVE;
-    else if (str == "MIXED")
+    }
+    else if (str == "MIXED") {
       val = MIXED;
-    else
+    }
+    else {
       return false;
+    }
     sign.push_back(val);
   }
 
-  if (!(is >> str) || str != "solution")
+  if (!(is >> str) || str != "solution") {
     return false;
+  }
   dimension_type solution_size;
-  if (!(is >> solution_size))
+  if (!(is >> solution_size)) {
     return false;
+  }
   solution.clear();
   for (dimension_type i = 0; i < solution_size; ++i) {
     Linear_Expression val;
-    if (!val.ascii_load(is))
+    if (!val.ascii_load(is)) {
       return false;
+    }
     solution.push_back(val);
   }
 
-  if (!(is >> str) || str != "solution_valid")
+  if (!(is >> str) || str != "solution_valid") {
     return false;
-  if (!(is >> str))
+  }
+  if (!(is >> str)) {
     return false;
-  if (str == "true")
+  }
+  if (str == "true") {
     solution_valid = true;
-  else if (str == "false")
+  }
+  else if (str == "false") {
     solution_valid = false;
-  else
+  }
+  else {
     return false;
-
+  }
+  
   PPL_ASSERT(OK());
   return true;
 }
@@ -2014,10 +2144,12 @@ PIP_Solution_Node::row_sign(const Row& x,
     // If a big parameter has been set and its coefficient is not zero,
     // then return the sign of the coefficient.
     Coefficient_traits::const_reference x_big = x.get(big_dimension);
-    if (x_big > 0)
+    if (x_big > 0) {
       return POSITIVE;
-    if (x_big < 0)
+    }
+    if (x_big < 0) {
       return NEGATIVE;
+    }
     // Otherwise x_big == 0, then no big parameter involved.
   }
 
@@ -2025,13 +2157,15 @@ PIP_Solution_Node::row_sign(const Row& x,
   for (Row::const_iterator i = x.begin(), i_end = x.end(); i != i_end; ++i) {
     Coefficient_traits::const_reference x_i = *i;
     if (x_i > 0) {
-      if (sign == NEGATIVE)
+      if (sign == NEGATIVE) {
         return MIXED;
+      }
       sign = POSITIVE;
     }
     else if (x_i < 0) {
-      if (sign == POSITIVE)
+      if (sign == POSITIVE) {
         return MIXED;
+      }
       sign = NEGATIVE;
     }
   }
@@ -2100,9 +2234,10 @@ PIP_Tree_Node::compatibility_check(Matrix<Row>& s) {
     const bool found_positive_pivot_candidate
       = compatibility_check_find_pivot(s, mapping, basis, pi, pj);
 
-    if (!found_positive_pivot_candidate)
+    if (!found_positive_pivot_candidate) {
       return false;
-
+    }
+    
     if (pj == 0) {
       // No negative RHS: fractional optimum found.
       // If it is integer, then the test is successful.
@@ -2112,15 +2247,17 @@ PIP_Tree_Node::compatibility_check(Matrix<Row>& s) {
       // the ordering of cut generation.
       WEIGHT_BEGIN();
       for (dimension_type i = 0; i < num_vars; ++i) {
-        if (basis[i])
+        if (basis[i]) {
           // Basic variable = 0, hence integer.
           continue;
+        }
         // Not a basic variable.
         WEIGHT_ADD(70);
         const dimension_type mi = mapping[i];
         Coefficient_traits::const_reference denom = scaling[mi];
-        if (s[mi].get(0) % denom == 0)
+        if (s[mi].get(0) % denom == 0) {
           continue;
+        }
         // Here constant term is not integer.
         all_integer_vars = false;
         // Generate a new cut.
@@ -2141,10 +2278,12 @@ PIP_Tree_Node::compatibility_check(Matrix<Row>& s) {
         scaling.push_back(denom);
       }
       // Check if an integer solution was found.
-      if (all_integer_vars)
+      if (all_integer_vars) {
         return true;
-      else
+      }
+      else {
         continue;
+      }
     }
 
     // Here we have a positive s[pi][pj] pivot.
@@ -2184,12 +2323,15 @@ PIP_Tree_Node::compatibility_check(Matrix<Row>& s) {
     {
       for (Row::const_iterator
              j = pivot.begin(), j_end = pivot.end(); j != j_end; ++j) {
-        if (j.index() == pj)
+        if (j.index() == pj) {
           continue;
+        }
         Coefficient_traits::const_reference pivot_j = *j;
         // Do nothing if the j-th pivot element is zero.
-        if (pivot_j == 0)
+        if (pivot_j == 0) {
           continue;
+        }
+        
         WEIGHT_BEGIN();
         for (dimension_type i = num_rows; i-- > 0; ) {
           Row& s_i = s[i];
@@ -2271,12 +2413,14 @@ PIP_Solution_Node
   const dimension_type num_added_vars = num_added_dims - num_added_params;
 
   // Resize the two tableau matrices.
-  if (num_added_vars > 0)
+  if (num_added_vars > 0) {
     tableau.s.add_zero_columns(num_added_vars);
-
-  if (num_added_params > 0)
+  }
+  
+  if (num_added_params > 0) {
     tableau.t.add_zero_columns(num_added_params, old_num_params + 1);
-
+  }
+  
   dimension_type new_var_column = old_num_vars;
   const dimension_type initial_space_dim = old_num_vars + old_num_params;
   for (dimension_type i = initial_space_dim; i < external_space_dim; ++i) {
@@ -2296,15 +2440,18 @@ PIP_Solution_Node
         mapping.insert(nth_iter(mapping, new_var_column), new_var_column);
         // Update variable id's of slack variables.
         for (dimension_type j = var_row.size(); j-- > 0; ) {
-          if (var_row[j] >= new_var_column)
+          if (var_row[j] >= new_var_column) {
             ++var_row[j];
+          }
         }
         for (dimension_type j = var_column.size(); j-- > 0; ) {
-          if (var_column[j] >= new_var_column)
+          if (var_column[j] >= new_var_column) {
             ++var_column[j];
+          }
         }
-        if (special_equality_row > 0)
+        if (special_equality_row > 0) {
           ++special_equality_row;
+        }
       }
       var_column.push_back(new_var_column);
       ++new_var_column;
@@ -2341,15 +2488,17 @@ PIP_Solution_Node
       if (constraint.inhomogeneous_term() != 0) {
         Coefficient& p_row0 = p_row[0];
         p_row0 = constraint.inhomogeneous_term();
-        if (constraint.is_strict_inequality())
+        if (constraint.is_strict_inequality()) {
           // Transform (expr > 0) into (expr - 1 >= 0).
           --p_row0;
+        }
         p_row0 *= denom;
       }
       else {
-        if (constraint.is_strict_inequality())
+        if (constraint.is_strict_inequality()) {
           // Transform (expr > 0) into (expr - 1 >= 0).
           neg_assign(p_row[0], denom);
+        }
       }
       WEIGHT_BEGIN();
       dimension_type last_dim = 0;
@@ -2500,13 +2649,16 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
     dimension_type first_mixed = not_a_dim;
     for (dimension_type i = 0; i < num_rows; ++i) {
       Row_Sign& sign_i = sign[i];
-      if (sign_i == UNKNOWN || sign_i == MIXED)
+      if (sign_i == UNKNOWN || sign_i == MIXED) {
         sign_i = row_sign(tableau.t[i], big_dimension);
-
-      if (sign_i == NEGATIVE && first_negative == not_a_dim)
+      }
+      
+      if (sign_i == NEGATIVE && first_negative == not_a_dim) {
         first_negative = i;
-      else if (sign_i == MIXED && first_mixed == not_a_dim)
+      }
+      else if (sign_i == MIXED && first_mixed == not_a_dim) {
         first_mixed = i;
+      }
     }
 
     // If no negative parameter row was found, try to refine the sign of
@@ -2514,33 +2666,39 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
     if (first_negative == not_a_dim && first_mixed != not_a_dim) {
       for (dimension_type i = first_mixed; i < num_rows; ++i) {
         // Consider mixed sign parameter rows only.
-        if (sign[i] != MIXED)
+        if (sign[i] != MIXED) {
           continue;
+        }
         const Row& t_i = tableau.t[i];
         Row_Sign new_sign = ZERO;
         // Check compatibility for constraint t_i(z) >= 0.
-        if (compatibility_check(ctx, t_i))
+        if (compatibility_check(ctx, t_i)) {
           new_sign = POSITIVE;
+        }
         // Check compatibility for constraint t_i(z) < 0,
         // i.e., -t_i(z) - 1 >= 0.
         Row t_i_complement(num_params);
         complement_assign(t_i_complement, t_i, tableau_denom);
-        if (compatibility_check(ctx, t_i_complement))
+        if (compatibility_check(ctx, t_i_complement)) {
           new_sign = (new_sign == POSITIVE) ? MIXED : NEGATIVE;
+        }
         // Update sign for parameter row i.
         sign[i] = new_sign;
         // Maybe update first_negative and first_mixed.
         if (new_sign == NEGATIVE && first_negative == not_a_dim) {
           first_negative = i;
-          if (i == first_mixed)
+          if (i == first_mixed) {
             first_mixed = not_a_dim;
+          }
         }
         else if (new_sign == MIXED) {
-          if (first_mixed == not_a_dim)
+          if (first_mixed == not_a_dim) {
             first_mixed = i;
+          }
         }
-        else if (i == first_mixed)
+        else if (i == first_mixed) {
           first_mixed = not_a_dim;
+        }
       }
     }
 
@@ -2553,8 +2711,9 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       WEIGHT_BEGIN();
       for (dimension_type i = first_mixed; i < num_rows; ++i) {
         // Consider mixed sign parameter rows only.
-        if (sign[i] != MIXED)
+        if (sign[i] != MIXED) {
           continue;
+        }
         // Check for a positive variable coefficient.
         const Row& s_i = tableau.s[i];
         bool has_positive = false;
@@ -2567,8 +2726,9 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
             }
           }
         }
-        if (!has_positive)
+        if (!has_positive) {
           continue;
+        }
         // Check compatibility of constraint t_i(z) > 0.
         Row row(tableau.t[i]);
         PPL_DIRTY_TEMP_COEFFICIENT(mod);
@@ -2580,16 +2740,19 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         // Maybe update sign (and first_* indices).
         if (compatible) {
           // Sign is still mixed.
-          if (first_mixed == not_a_dim)
+          if (first_mixed == not_a_dim) {
             first_mixed = i;
+          }
         }
         else {
           // Sign becomes negative (i.e., no longer mixed).
           sign[i] = NEGATIVE;
-          if (first_negative == not_a_dim)
+          if (first_negative == not_a_dim) {
             first_negative = i;
-          if (first_mixed == i)
+          }
+          if (first_mixed == i) {
             first_mixed = not_a_dim;
+          }
         }
       }
     }
@@ -2609,8 +2772,9 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       dimension_type pi = not_a_dim;
       dimension_type pj = not_a_dim;
       for (dimension_type i = first_negative; i < num_rows; ++i) {
-        if (sign[i] != NEGATIVE)
+        if (sign[i] != NEGATIVE) {
           continue;
+        }
         dimension_type j;
         if (!find_lexico_minimal_column(tableau.s, mapping, basis,
                                         tableau.s[i], 0, j)) {
@@ -2696,9 +2860,10 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         PPL_DIRTY_TEMP_COEFFICIENT(s_i_pj);
         s_i_pj = s_i.get(pj);
 
-        if (s_i_pj == 0)
+        if (s_i_pj == 0) {
           continue;
-
+        }
+        
         WEIGHT_BEGIN();
         Row::iterator itr = s_i.end();
         for (Row::const_iterator
@@ -2741,18 +2906,20 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
 
         Row::iterator s_i_pj_itr = s_i.find(pj);
 
-        if (s_i_pj_itr == s_i.end())
+        if (s_i_pj_itr == s_i.end()) {
           continue;
-
+        }
+        
         // FIXME: the following comment does not make sense.
         // NOTE: This is a Coefficient& instead of a
         // Coefficient_traits::const_reference, because scale() may silently
         // modify it.
         const Coefficient& s_i_pj = *s_i_pj_itr;
 
-        if (s_i_pj == 0)
+        if (s_i_pj == 0) {
           continue;
-
+        }
+        
         WEIGHT_BEGIN();
         Row::iterator k = t_i.end();
         for (Row::const_iterator
@@ -2782,18 +2949,22 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
             Row_Sign& sign_i = sign[i];
             switch (sign_i) {
             case ZERO:
-              if (product > 0)
+              if (product > 0) {
                 sign_i = NEGATIVE;
-              else if (product < 0)
+              }
+              else if (product < 0) {
                 sign_i = POSITIVE;
+              }
               break;
             case POSITIVE:
-              if (product > 0)
+              if (product > 0) {
                 sign_i = MIXED;
+              }
               break;
             case NEGATIVE:
-              if (product < 0)
+              if (product < 0) {
                 sign_i = MIXED;
+              }
               break;
             default:
               break;
@@ -2810,8 +2981,9 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         for (dimension_type i = num_rows; i-- > 0; ) {
           Row& s_i = tableau.s[i];
           itr = s_i.find(pj);
-          if (itr == s_i.end())
+          if (itr == s_i.end()) {
             continue;
+          }
           WEIGHT_ADD(43);
           product = *itr * pivot_denom;
           if (product % s_pivot_pj != 0) {
@@ -2913,8 +3085,9 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       // Heuristically choose "best" (mixed) pivoting row.
       dimension_type best_i = not_a_dim;
       for (dimension_type i = first_mixed; i < num_rows; ++i) {
-        if (sign[i] != MIXED)
+        if (sign[i] != MIXED) {
           continue;
+        }
         score = 0;
         {
           WEIGHT_BEGIN();
@@ -3122,17 +3295,19 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
     // Look for any row having non integer parameter coefficients.
     Coefficient_traits::const_reference denom = tableau.denominator();
     for (dimension_type k = 0; k < num_vars; ++k) {
-      if (basis[k])
+      if (basis[k]) {
         // Basic variable = 0, hence integer.
         continue;
+      }
       const dimension_type i = mapping[k];
       const Row& t_i = tableau.t[i];
       WEIGHT_BEGIN();
       for (Row::const_iterator
              j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j) {
         WEIGHT_ADD(27);
-        if (*j % denom != 0)
+        if (*j % denom != 0) {
           goto non_integer;
+        }
       }
     }
     // The goto was not taken, the solution is integer.
@@ -3154,8 +3329,9 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
     if (cutting_strategy == PIP_Problem::CUTTING_STRATEGY_FIRST) {
       // Find the first row with simplest parametric part.
       for (dimension_type k = 0; k < num_vars; ++k) {
-        if (basis[k])
+        if (basis[k]) {
           continue;
+        }
         const dimension_type i = mapping[k];
         // Count the number of non-integer parameter coefficients.
         WEIGHT_BEGIN();
@@ -3165,8 +3341,9 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
                j = t_i.begin(), j_end = t_i.end(); j != j_end; ++j) {
           WEIGHT_ADD(18);
           pos_rem_assign(mod, *j, denom);
-          if (mod != 0)
+          if (mod != 0) {
             ++pcount;
+          }
         }
         if (pcount > 0 && (best_i == not_a_dim || pcount < best_pcount)) {
           best_pcount = pcount;
@@ -3188,8 +3365,9 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       std::vector<dimension_type> all_best_is;
 
       for (dimension_type k = 0; k < num_vars; ++k) {
-        if (basis[k])
+        if (basis[k]) {
           continue;
+        }
         const dimension_type i = mapping[k];
         // Compute score and pcount.
         score = 0;
@@ -3236,17 +3414,20 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
             && (best_i == not_a_dim
                 || pcount < best_pcount
                 || (pcount == best_pcount && score > best_score))) {
-          if (pcount < best_pcount)
+          if (pcount < best_pcount) {
             all_best_is.clear();
+          }
           best_i = i;
           best_pcount = pcount;
           best_score = score;
         }
-        if (pcount > 0)
+        if (pcount > 0) {
           all_best_is.push_back(i);
+        }
       }
-      if (cutting_strategy == PIP_Problem::CUTTING_STRATEGY_DEEPEST)
+      if (cutting_strategy == PIP_Problem::CUTTING_STRATEGY_DEEPEST) {
         generate_cut(best_i, all_params, ctx, space_dim, indent_level);
+      }
       else {
         PPL_ASSERT(cutting_strategy == PIP_Problem::CUTTING_STRATEGY_ALL);
         for (dimension_type k = all_best_is.size(); k-- > 0; ) {
@@ -3295,8 +3476,9 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
     Row::const_iterator j = row_t.begin();
     Row::const_iterator j_end = row_t.end();
     // Skip the element with index 0.
-    if (j != j_end && j.index() == 0)
+    if (j != j_end && j.index() == 0) {
       ++j;
+    }
     WEIGHT_BEGIN();
     for ( ; j != j_end; ++j) {
       WEIGHT_ADD(7);
@@ -3676,11 +3858,13 @@ PIP_Decision_Node::print_tree(std::ostream& s, const int indent,
 
   indent_and_print(s, indent, "else\n");
 
-  if (false_child != 0)
+  if (false_child != 0) {
     false_child->print_tree(s, indent+1, pip_dim_is_param,
                             child_first_art_dim);
-  else
+  }
+  else {
     indent_and_print(s, indent+1, "_|_\n");
+  }
 }
 
 void
@@ -3698,10 +3882,12 @@ PIP_Solution_Node::print_tree(std::ostream& s, const int indent,
   indent_and_print(s, indent + (no_constraints ? 0 : 1), "{");
   const dimension_type pip_space_dim = pip_dim_is_param.size();
   for (dimension_type i = 0, num_var = 0; i < pip_space_dim; ++i) {
-    if (pip_dim_is_param[i])
+    if (pip_dim_is_param[i]) {
       continue;
-    if (num_var > 0)
+    }
+    if (num_var > 0) {
       s << " ; ";
+    }
     using namespace IO_Operators;
     s << solution[num_var];
     ++num_var;
@@ -3734,14 +3920,17 @@ PIP_Solution_Node::parametric_values(const Variable var) const {
   for (Variables_Set::const_iterator p = params.begin(),
          p_end = params.end(); p != p_end; ++p) {
     const dimension_type param_index = *p;
-    if (param_index < var.id())
+    if (param_index < var.id()) {
       --solution_index;
-    else if (param_index == var.id())
+    }
+    else if (param_index == var.id()) {
       throw std::invalid_argument("PPL::PIP_Solution_Node"
                                   "::parametric_values(v):\n"
                                   "v is a problem parameter.");
-    else
+    }
+    else {
       break;
+    }
   }
 
   update_solution();
@@ -3752,9 +3941,9 @@ PIP_Solution_Node::parametric_values(const Variable var) const {
 void
 PIP_Solution_Node::update_solution() const {
   // Avoid doing useless work.
-  if (solution_valid)
+  if (solution_valid) {
     return;
-
+  }
   const PIP_Problem* const pip = get_owner();
   PPL_ASSERT(pip != 0);
   std::vector<bool> pip_dim_is_param(pip->space_dimension());
@@ -3771,9 +3960,10 @@ void
 PIP_Solution_Node
 ::update_solution(const std::vector<bool>& pip_dim_is_param) const {
   // Avoid doing useless work.
-  if (solution_valid)
+  if (solution_valid) {
     return;
-
+  }
+  
   // const_cast required so as to refresh the solution cache.
   PIP_Solution_Node& x = const_cast<PIP_Solution_Node&>(*this);
 
@@ -3783,9 +3973,10 @@ PIP_Solution_Node
   const dimension_type num_all_params = tableau.t.num_columns() - 1;
   const dimension_type num_art_params = num_all_params - num_pip_params;
 
-  if (solution.size() != num_pip_vars)
+  if (solution.size() != num_pip_vars) {
     x.solution.resize(num_pip_vars);
-
+  }
+  
   // Compute external "names" (i.e., indices) for all parameters.
   std::vector<dimension_type> all_param_names(num_all_params);
 
@@ -3807,24 +3998,28 @@ PIP_Solution_Node
   for (dimension_type i = num_pip_vars; i-- > 0; ) {
     Linear_Expression& sol_i = x.solution[i];
     sol_i = Linear_Expression(0);
-    if (basis[i])
+    if (basis[i]) {
       continue;
+    }
     const Row& row = tableau.t[mapping[i]];
 
     // Start from index 1 to skip the inhomogeneous term.
     Row::const_iterator j = row.begin();
     Row::const_iterator j_end = row.end();
     // Skip the element with index 0.
-    if (j != j_end && j.index() == 0)
+    if (j != j_end && j.index() == 0) {
       ++j;
+    }
     for ( ; j != j_end; ++j) {
       Coefficient_traits::const_reference coeff = *j;
-      if (coeff == 0)
+      if (coeff == 0) {
         continue;
+      }
       norm_coeff = coeff / denom;
-      if (norm_coeff != 0)
+      if (norm_coeff != 0) {
         add_mul_assign(sol_i, norm_coeff,
                       Variable(all_param_names[j.index() - 1]));
+      }
     }
     norm_coeff = row.get(0) / denom;
     sol_i += norm_coeff;

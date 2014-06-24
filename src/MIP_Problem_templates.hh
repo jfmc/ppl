@@ -63,11 +63,12 @@ MIP_Problem::MIP_Problem(const dimension_type dim,
   }
 
   // Check for space dimension overflow.
-  if (dim > max_space_dimension())
+  if (dim > max_space_dimension()) {
     throw std::length_error("PPL::MIP_Problem:: MIP_Problem(dim, first, "
                             "last, int_vars, obj, mode):\n"
                             "dim exceeds the maximum allowed"
                             "space dimension.");
+  }
   // Check the objective function.
   if (obj.space_dimension() > dim) {
     std::ostringstream s;
@@ -80,11 +81,12 @@ MIP_Problem::MIP_Problem(const dimension_type dim,
   // Check the constraints.
   try {
     for (In i = first; i != last; ++i) {
-      if (i->is_strict_inequality())
+      if (i->is_strict_inequality()) {
         throw std::invalid_argument("PPL::MIP_Problem::"
                                     "MIP_Problem(dim, first, last, int_vars,"
                                     "obj, mode):\nrange [first, last) contains"
                                     "a strict inequality constraint.");
+      }
       if (i->space_dimension() > dim) {
         std::ostringstream s;
         s << "PPL::MIP_Problem::"
@@ -132,11 +134,12 @@ MIP_Problem::MIP_Problem(dimension_type dim,
     last_generator(point()),
     i_variables() {
   // Check for space dimension overflow.
-  if (dim > max_space_dimension())
+  if (dim > max_space_dimension()) {
     throw std::length_error("PPL::MIP_Problem::"
                             "MIP_Problem(dim, first, last, obj, mode):\n"
                             "dim exceeds the maximum allowed space "
                             "dimension.");
+  }
   // Check the objective function.
   if (obj.space_dimension() > dim) {
     std::ostringstream s;
@@ -149,12 +152,13 @@ MIP_Problem::MIP_Problem(dimension_type dim,
   // Check the constraints.
   try {
     for (In i = first; i != last; ++i) {
-      if (i->is_strict_inequality())
+      if (i->is_strict_inequality()) {
         throw std::invalid_argument("PPL::MIP_Problem::"
                                     "MIP_Problem(dim, first, last, obj, mode):"
                                     "\n"
                                     "range [first, last) contains a strict "
                                     "inequality constraint.");
+      }
       if (i->space_dimension() > dim) {
         std::ostringstream s;
         s << "PPL::MIP_Problem::"

@@ -116,9 +116,10 @@ add_linearize(const Binary_Operator<Target>& bop_expr,
 
   typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
 
-  if (!linearize(*(bop_expr.left_hand_side()), oracle, lf_store, result))
+  if (!linearize(*(bop_expr.left_hand_side()), oracle, lf_store, result)) {
     return false;
-
+  }
+  
   Floating_Point_Format analyzed_format =
     bop_expr.type().floating_point_format();
   FP_Linear_Form rel_error;
@@ -126,9 +127,10 @@ add_linearize(const Binary_Operator<Target>& bop_expr,
   result += rel_error;
   FP_Linear_Form linearized_second_operand;
   if (!linearize(*(bop_expr.right_hand_side()), oracle, lf_store,
-                 linearized_second_operand))
+                 linearized_second_operand)) {
     return false;
-
+  }
+  
   result += linearized_second_operand;
   linearized_second_operand.relative_error(analyzed_format, rel_error);
   result += rel_error;
@@ -227,9 +229,10 @@ sub_linearize(const Binary_Operator<Target>& bop_expr,
 
   typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
 
-  if (!linearize(*(bop_expr.left_hand_side()), oracle, lf_store, result))
+  if (!linearize(*(bop_expr.left_hand_side()), oracle, lf_store, result)) {
     return false;
-
+  }
+  
   Floating_Point_Format analyzed_format =
     bop_expr.type().floating_point_format();
   FP_Linear_Form rel_error;
@@ -237,9 +240,10 @@ sub_linearize(const Binary_Operator<Target>& bop_expr,
   result += rel_error;
   FP_Linear_Form linearized_second_operand;
   if (!linearize(*(bop_expr.right_hand_side()), oracle, lf_store,
-                 linearized_second_operand))
+                 linearized_second_operand)) {
     return false;
-
+  }
+  
   result -= linearized_second_operand;
   linearized_second_operand.relative_error(analyzed_format, rel_error);
   result += rel_error;
@@ -384,20 +388,25 @@ mul_linearize(const Binary_Operator<Target>& bop_expr,
   bool intervalize_first;
   FP_Linear_Form linearized_first_operand;
   if (!linearize(*(bop_expr.left_hand_side()), oracle, lf_store,
-                 linearized_first_operand))
+                 linearized_first_operand)) {
     return false;
+  }
   FP_Interval_Type intervalized_first_operand;
-  if (!linearized_first_operand.intervalize(oracle, intervalized_first_operand))
+  if (!linearized_first_operand.intervalize(oracle,
+                                            intervalized_first_operand)) {
     return false;
+  }
   FP_Linear_Form linearized_second_operand;
   if (!linearize(*(bop_expr.right_hand_side()), oracle, lf_store,
-                 linearized_second_operand))
+                 linearized_second_operand)) {
     return false;
+  }
   FP_Interval_Type intervalized_second_operand;
   if (!linearized_second_operand.intervalize(oracle,
-                                             intervalized_second_operand))
+                                             intervalized_second_operand)) {
     return false;
-
+  }
+  
   // FIXME: we are not sure that what we do here is policy-proof.
   if (intervalized_first_operand.is_bounded()) {
     if (intervalized_second_operand.is_bounded()) {
@@ -407,19 +416,24 @@ mul_linearize(const Binary_Operator<Target>& bop_expr,
       analyzer_format second_interval_size
         = intervalized_second_operand.upper()
         - intervalized_second_operand.lower();
-      if (first_interval_size <= second_interval_size)
+      if (first_interval_size <= second_interval_size) {
         intervalize_first = true;
-      else
+      }
+      else {
         intervalize_first = false;
+      }
     }
-    else
+    else {
       intervalize_first = true;
+    }
   }
   else {
-    if (intervalized_second_operand.is_bounded())
+    if (intervalized_second_operand.is_bounded()) {
       intervalize_first = false;
-    else
+    }
+    else {
       return false;
+    }
   }
 
   // Here we do the actual computation.
@@ -553,23 +567,25 @@ div_linearize(const Binary_Operator<Target>& bop_expr,
 
   FP_Linear_Form linearized_second_operand;
   if (!linearize(*(bop_expr.right_hand_side()), oracle, lf_store,
-                 linearized_second_operand))
+                 linearized_second_operand)) {
     return false;
+  }
   FP_Interval_Type intervalized_second_operand;
   if (!linearized_second_operand.intervalize(oracle,
-                                             intervalized_second_operand))
+                                             intervalized_second_operand)) {
     return false;
-
+  }
   // Check if we may divide by zero.
   if ((intervalized_second_operand.lower_is_boundary_infinity()
        || intervalized_second_operand.lower() <= 0) &&
       (intervalized_second_operand.upper_is_boundary_infinity()
-       || intervalized_second_operand.upper() >= 0))
+       || intervalized_second_operand.upper() >= 0)) {
     return false;
-
-  if (!linearize(*(bop_expr.left_hand_side()), oracle, lf_store, result))
+  }
+  if (!linearize(*(bop_expr.left_hand_side()), oracle, lf_store, result)) {
     return false;
-
+  }
+  
   Floating_Point_Format analyzed_format =
     bop_expr.type().floating_point_format();
   FP_Linear_Form rel_error;
@@ -627,12 +643,13 @@ cast_linearize(const Cast_Operator<Target>& cast_expr,
     cast_expr.type().floating_point_format();
   const Concrete_Expression<Target>* cast_arg = cast_expr.argument();
   if (cast_arg->type().is_floating_point()) {
-    if (!linearize(*cast_arg, oracle, lf_store, result))
+    if (!linearize(*cast_arg, oracle, lf_store, result)) {
       return false;
+    }
     if (!is_less_precise_than(analyzed_format,
                               cast_arg->type().floating_point_format())
         || result == FP_Linear_Form(FP_Interval_Type(0))
-        || result == FP_Linear_Form(FP_Interval_Type(1)))
+        || result == FP_Linear_Form(FP_Interval_Type(1))) {
       /*
         FIXME: find a general way to check if the casted constant
         is exactly representable in the less precise format.
@@ -642,6 +659,7 @@ cast_linearize(const Cast_Operator<Target>& cast_expr,
         a definitely safe value: do not add errors.
       */
       return true;
+    }
   }
   else {
     FP_Interval_Type expr_value;
@@ -650,7 +668,7 @@ cast_linearize(const Cast_Operator<Target>& cast_expr,
     result = FP_Linear_Form(expr_value);
     if (is_less_precise_than(Float<analyzer_format>::Binary::floating_point_format, analyzed_format)
         || result == FP_Linear_Form(FP_Interval_Type(0))
-        || result == FP_Linear_Form(FP_Interval_Type(1)))
+        || result == FP_Linear_Form(FP_Interval_Type(1))) {
       /*
         FIXME: find a general way to check if the casted constant
         is exactly representable in the less precise format.
@@ -660,6 +678,7 @@ cast_linearize(const Cast_Operator<Target>& cast_expr,
         a definitely safe value: do not add errors.
       */
       return true;
+    }
   }
 
   FP_Linear_Form rel_error;
@@ -731,8 +750,9 @@ linearize(const Concrete_Expression<Target>& expr,
     const Floating_Point_Constant<Target>* fpc_expr =
       expr.template as<Floating_Point_Constant>();
     FP_Interval_Type constant_value;
-    if (!oracle.get_fp_constant_value(*fpc_expr, constant_value))
+    if (!oracle.get_fp_constant_value(*fpc_expr, constant_value)) {
       return false;
+    }
     result = FP_Linear_Form(constant_value);
     return true;
   }
@@ -744,9 +764,10 @@ linearize(const Concrete_Expression<Target>& expr,
     case Unary_Operator<Target>::UPLUS:
       return linearize(*(uop_expr->argument()), oracle, lf_store, result);
     case Unary_Operator<Target>::UMINUS:
-      if (!linearize(*(uop_expr->argument()), oracle, lf_store, result))
+      if (!linearize(*(uop_expr->argument()), oracle, lf_store, result)) {
         return false;
-
+      }
+      
       result.negate();
       return true;
     case Unary_Operator<Target>::BNOT:
@@ -791,13 +812,14 @@ linearize(const Concrete_Expression<Target>& expr,
       expr.template as<Approximable_Reference>();
     std::set<dimension_type> associated_dimensions;
     if (!oracle.get_associated_dimensions(*ref_expr, associated_dimensions)
-        || associated_dimensions.empty())
+        || associated_dimensions.empty()) {
       /*
         We were unable to find any associated space dimension:
         linearization fails.
       */
       return false;
-
+    }
+    
     if (associated_dimensions.size() == 1) {
       /* If a linear form associated to the only referenced
          space dimension exists in lf_store, return that form.
@@ -831,9 +853,10 @@ linearize(const Concrete_Expression<Target>& expr,
     for (; i != i_end; ++i) {
       FP_Interval_Type curr_int;
       PPL_ASSERT(*i != not_a_dimension());
-      if (!oracle.get_interval(*i, curr_int))
+      if (!oracle.get_interval(*i, curr_int)) {
         return false;
-
+      }
+      
       lub.join_assign(curr_int);
     }
 

@@ -44,8 +44,9 @@ Linear_System<Row>::num_lines_or_equalities() const {
   const Linear_System& x = *this;
   dimension_type n = 0;
   for (dimension_type i = num_rows(); i-- > 0; ) {
-    if (x[i].is_line_or_equality())
+    if (x[i].is_line_or_equality()) {
       ++n;
+    }
   }
   return n;
 }
@@ -139,19 +140,23 @@ template <typename Row>
 bool
 Linear_System<Row>::ascii_load(std::istream& s) {
   std::string str;
-  if (!(s >> str) || str != "topology")
+  if (!(s >> str) || str != "topology") {
     return false;
-  if (!(s >> str))
+  }
+  if (!(s >> str)) {
     return false;
-
+  }
+  
   clear();
 
   Topology t;
-  if (str == "NECESSARILY_CLOSED")
+  if (str == "NECESSARILY_CLOSED") {
     t = NECESSARILY_CLOSED;
+  }
   else {
-    if (str != "NOT_NECESSARILY_CLOSED")
+    if (str != "NOT_NECESSARILY_CLOSED") {
       return false;
+    }
     t = NOT_NECESSARILY_CLOSED;
   }
 
@@ -159,31 +164,39 @@ Linear_System<Row>::ascii_load(std::istream& s) {
 
   dimension_type nrows;
   dimension_type space_dims;
-  if (!(s >> nrows))
+  if (!(s >> nrows)) {
     return false;
-  if (!(s >> str) || str != "x")
+  }
+  if (!(s >> str) || str != "x") {
     return false;
-  if (!(s >> space_dims))
+  }
+  if (!(s >> space_dims)) {
     return false;
-
+  }
+  
   space_dimension_ = space_dims;
 
-  if (!Parma_Polyhedra_Library::ascii_load(s, representation_))
+  if (!Parma_Polyhedra_Library::ascii_load(s, representation_)) {
     return false;
-
-  if (!(s >> str) || (str != "(sorted)" && str != "(not_sorted)"))
+  }
+  
+  if (!(s >> str) || (str != "(sorted)" && str != "(not_sorted)")) {
     return false;
+  }
   const bool sortedness = (str == "(sorted)");
   dimension_type index;
-  if (!(s >> str) || str != "index_first_pending")
+  if (!(s >> str) || str != "index_first_pending") {
     return false;
-  if (!(s >> index))
+  }
+  if (!(s >> index)) {
     return false;
-
+  }
+  
   Row row;
   for (dimension_type i = 0; i < nrows; ++i) {
-    if (!row.ascii_load(s))
+    if (!row.ascii_load(s)) {
       return false;
+    }
     insert(row, Recycle_Input());
   }
   index_first_pending = index;
@@ -228,9 +241,10 @@ Linear_System<Row>::insert_no_ok(Row& r, Recycle_Input) {
       // If it is not the greatest one then the system is no longer sorted.
       sorted = (compare(rows[nrows-2], rows[nrows-1]) <= 0);
     }
-    else
+    else {
       // A system having only one row is sorted.
       sorted = true;
+    }
   }
 
   unset_pending_rows();
@@ -252,11 +266,13 @@ Linear_System<Row>::insert_pending_no_ok(Row& r, Recycle_Input) {
 
   r.set_representation(representation());
 
-  if (space_dimension() < r.space_dimension())
+  if (space_dimension() < r.space_dimension()) {
     set_space_dimension_no_ok(r.space_dimension());
-  else
+  }
+  else {
     r.set_space_dimension_no_ok(space_dimension());
-
+  }
+  
   rows.resize(rows.size() + 1);
   swap(rows.back(), r);
 }
@@ -313,18 +329,21 @@ Linear_System<Row>::insert(Linear_System& y, Recycle_Input) {
   PPL_ASSERT(num_pending_rows() == 0);
 
   // Adding no rows is a no-op.
-  if (y.has_no_rows())
+  if (y.has_no_rows()) {
     return;
-
+  }
+  
   // Check if sortedness is preserved.
   if (is_sorted()) {
-    if (!y.is_sorted() || y.num_pending_rows() > 0)
+    if (!y.is_sorted() || y.num_pending_rows() > 0) {
       sorted = false;
+    }
     else {
       // `y' is sorted and has no pending rows.
       const dimension_type n_rows = num_rows();
-      if (n_rows > 0)
+      if (n_rows > 0) {
         sorted = (compare(rows[n_rows-1], y[0]) <= 0);
+      }
     }
   }
 
@@ -348,9 +367,10 @@ Linear_System<Row>::remove_space_dimensions(const Variables_Set& vars) {
   // The removal of no dimensions from any system is a no-op.  This
   // case also captures the only legal removal of dimensions from a
   // 0-dim system.
-  if (vars.empty())
+  if (vars.empty()) {
     return;
-
+  }
+  
   // NOTE: num_rows() is *not* constant, because it may be decreased by
   // remove_row_no_ok().
   for (dimension_type i = 0; i < num_rows(); ) {
@@ -362,8 +382,9 @@ Linear_System<Row>::remove_space_dimensions(const Variables_Set& vars) {
       // the old one.
       remove_row_no_ok(i, false);
     }
-    else
+    else {
       ++i;
+    }
   }
 
   space_dimension_ -= vars.size();
@@ -406,9 +427,10 @@ Linear_System<Row>::sort_rows(const dimension_type first_row,
   const dimension_type old_num_pending = num_pending_rows();
 
   const dimension_type num_elems = last_row - first_row;
-  if (num_elems < 2)
+  if (num_elems < 2) {
     return;
-
+  }
+  
   // Build the function objects implementing indirect sort comparison,
   // indirect unique comparison and indirect swap operation.
   using namespace Implementation;
@@ -468,22 +490,26 @@ Linear_System<Row>::sign_normalize() {
 template <typename Row>
 bool
 operator==(const Linear_System<Row>& x, const Linear_System<Row>& y) {
-  if (x.space_dimension() != y.space_dimension())
+  if (x.space_dimension() != y.space_dimension()) {
     return false;
+  }
   const dimension_type x_num_rows = x.num_rows();
   const dimension_type y_num_rows = y.num_rows();
-  if (x_num_rows != y_num_rows)
+  if (x_num_rows != y_num_rows) {
     return false;
-  if (x.first_pending_row() != y.first_pending_row())
+  }
+  if (x.first_pending_row() != y.first_pending_row()) {
     return false;
+  }
   // TODO: Check if the following comment is up to date.
   // Notice that calling operator==(const Swapping_Vector<Row>&,
   //                                const Swapping_Vector<Row>&)
   // would be wrong here, as equality of the type fields would
   // not be checked.
   for (dimension_type i = x_num_rows; i-- > 0; ) {
-    if (x[i] != y[i])
+    if (x[i] != y[i]) {
       return false;
+    }
   }
   return true;
 }
@@ -584,9 +610,10 @@ Linear_System<Row>::gauss(const dimension_type n_lines_or_equalities) {
       break;
     }
   }
-  if (changed)
+  if (changed) {
     sorted = false;
-
+  }
+  
   PPL_ASSERT(OK());
   return rank;
 }
@@ -601,8 +628,9 @@ Linear_System<Row>
   PPL_ASSERT(num_pending_rows() == 0);
   PPL_ASSERT(n_lines_or_equalities <= num_lines_or_equalities());
 #ifndef NDEBUG
-  for (dimension_type i = n_lines_or_equalities; i-- > 0; )
+  for (dimension_type i = n_lines_or_equalities; i-- > 0; ) {
     PPL_ASSERT((*this)[i].is_line_or_equality());
+  }
 #endif
 
   const dimension_type nrows = num_rows();
@@ -611,9 +639,10 @@ Linear_System<Row>
   // This deque of Booleans will be used to flag those rows that,
   // before exiting, need to be re-checked for sortedness.
   std::deque<bool> check_for_sortedness;
-  if (still_sorted)
+  if (still_sorted) {
     check_for_sortedness.insert(check_for_sortedness.end(), nrows, false);
-
+  }
+  
   for (dimension_type k = n_lines_or_equalities; k-- > 0; ) {
     // For each line or equality, starting from the last one,
     // looks for the last non-zero element.
@@ -633,8 +662,9 @@ Linear_System<Row>
         if (still_sorted) {
           // Trying to keep sortedness: remember which rows
           // have to be re-checked for sortedness at the end.
-          if (i > 0)
+          if (i > 0) {
             check_for_sortedness[i-1] = true;
+          }
           check_for_sortedness[i] = true;
         }
       }
@@ -646,9 +676,10 @@ Linear_System<Row>
     // by a negative factor, the coefficient of the pivot must be
     // forced to be positive.
     const bool have_to_negate = (row_k.expr.get(Variable(j - 1)) < 0);
-    if (have_to_negate)
+    if (have_to_negate) {
       neg_assign(row_k.expr);
-
+    }
+    
     // NOTE: Here row_k will *not* be ok if we have negated it.
 
     // Note: we do not mark index `k' in `check_for_sortedness',
@@ -664,24 +695,27 @@ Linear_System<Row>
         if (still_sorted) {
           // Trying to keep sortedness: remember which rows
           // have to be re-checked for sortedness at the end.
-          if (i > n_lines_or_equalities)
+          if (i > n_lines_or_equalities) {
             check_for_sortedness[i-1] = true;
+          }
           check_for_sortedness[i] = true;
         }
       }
     }
-    if (have_to_negate)
+    if (have_to_negate) {
       // Negate `row_k' to restore strong-normalization.
       neg_assign(row_k.expr);
-
+    }
+    
     PPL_ASSERT(row_k.OK());
   }
 
   // Trying to keep sortedness.
   for (dimension_type i = 0; still_sorted && i+1 < nrows; ++i) {
-    if (check_for_sortedness[i])
+    if (check_for_sortedness[i]) {
       // Have to check sortedness of `(*this)[i]' with respect to `(*this)[i+1]'.
       still_sorted = (compare((*this)[i], (*this)[i+1]) <= 0);
+    }
   }
 
   // Set the sortedness flag.
@@ -723,8 +757,9 @@ Linear_System<Row>::simplify() {
       swap(rows[--nrows], rows[rank + i]);
     }
     remove_trailing_rows(old_nrows - nrows);
-    if (n_rays_or_points_or_inequalities > num_swaps)
+    if (n_rays_or_points_or_inequalities > num_swaps) {
       set_sorted(false);
+    }
     unset_pending_rows();
     n_lines_or_equalities = rank;
   }
@@ -774,9 +809,10 @@ Linear_System<Row>
   }
   // If the old system was empty, the last row added is either
   // a positivity constraint or a point.
-  if (was_sorted)
+  if (was_sorted) {
     sorted = (compare(rows[n-1], rows[n]) <= 0);
-
+  }
+  
   // If the system is not necessarily closed, move the epsilon coefficients to
   // the last column.
   if (!is_necessarily_closed()) {
@@ -835,28 +871,32 @@ Linear_System<Row>::sort_pending_and_remove_duplicates() {
       // By initial sortedness, we can increment index `k1'.
       ++k1;
       // Do not increment `k2'; instead, swap there the next pending row.
-      if (k2 < num_rows)
+      if (k2 < num_rows) {
         swap(rows[k2], rows[k2 + num_duplicates]);
+      }
     }
-    else if (cmp < 0)
+    else if (cmp < 0) {
       // By initial sortedness, we can increment `k1'.
       ++k1;
+    }
     else {
       // Here `cmp > 0'.
       // Increment `k2' and, if we already found any duplicate,
       // swap the next pending row in position `k2'.
       ++k2;
-      if (num_duplicates > 0 && k2 < num_rows)
+      if (num_duplicates > 0 && k2 < num_rows) {
         swap(rows[k2], rows[k2 + num_duplicates]);
+      }
     }
   }
   // If needed, swap any duplicates found past the pending rows
   // that has not been considered yet; then erase the duplicates.
   if (num_duplicates > 0) {
-    if (k2 < num_rows)
+    if (k2 < num_rows) {
       for (++k2; k2 < num_rows; ++k2)  {
         swap(rows[k2], rows[k2 + num_duplicates]);
       }
+    }
     rows.resize(num_rows);
   }
   sorted = true;
@@ -867,8 +907,9 @@ template <typename Row>
 bool
 Linear_System<Row>::check_sorted() const {
   for (dimension_type i = first_pending_row(); i-- > 1; ) {
-    if (compare(rows[i], rows[i-1]) < 0)
+    if (compare(rows[i], rows[i-1]) < 0) {
       return false;
+    }
   }
   return true;
 }

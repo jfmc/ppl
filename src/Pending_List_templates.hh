@@ -45,11 +45,12 @@ Pending_List<Traits>::insert(const typename Traits::Threshold& deadline,
    }
   iterator pending_element_p;
   // Only allocate a new element if the free list is empty.
-  if (free_list.empty())
+  if (free_list.empty()) {
     pending_element_p
       = new Pending_Element<typename Traits::Threshold>(deadline,
                                                         handler,
                                                         expired_flag);
+  }
   else {
     pending_element_p = free_list.begin();
     free_list.erase(pending_element_p);
@@ -63,12 +64,13 @@ Pending_List<Traits>::insert(const typename Traits::Threshold& deadline,
 template <typename Traits>
 bool
 Pending_List<Traits>::OK() const {
-  if (!active_list.OK())
+  if (!active_list.OK()) {
     return false;
-
-  if (!free_list.OK())
+  }
+  if (!free_list.OK()) {
     return false;
-
+  }
+  
   const typename Traits::Threshold* old;
   const_iterator i = active_list.begin();
   old = &i->deadline();

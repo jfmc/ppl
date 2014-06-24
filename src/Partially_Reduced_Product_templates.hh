@@ -112,7 +112,7 @@ Partially_Reduced_Product<D1, D2, R>
     d2.refine_with_constraints(cs);
     d1.add_recycled_constraints(cs);
   }
-  else
+  else {
     if (d2.can_recycle_constraint_systems()) {
       d1.refine_with_constraints(cs);
       d2.add_recycled_constraints(cs);
@@ -121,6 +121,7 @@ Partially_Reduced_Product<D1, D2, R>
       d1.add_constraints(cs);
       d2.add_constraints(cs);
     }
+  }
   clear_reduced_flag();
 }
 
@@ -132,7 +133,7 @@ Partially_Reduced_Product<D1, D2, R>
     d2.refine_with_congruences(cgs);
     d1.add_recycled_congruences(cgs);
   }
-  else
+  else {
     if (d2.can_recycle_congruence_systems()) {
       d1.refine_with_congruences(cgs);
       d2.add_recycled_congruences(cgs);
@@ -141,6 +142,7 @@ Partially_Reduced_Product<D1, D2, R>
       d1.add_congruences(cgs);
       d2.add_congruences(cgs);
     }
+  }
   clear_reduced_flag();
 }
 
@@ -150,10 +152,12 @@ Partially_Reduced_Product<D1, D2, R>
 ::relation_with(const Generator& g) const {
   reduce();
   if (Poly_Gen_Relation::nothing() == d1.relation_with(g)
-      || Poly_Gen_Relation::nothing() == d2.relation_with(g))
+      || Poly_Gen_Relation::nothing() == d2.relation_with(g)) {
     return Poly_Gen_Relation::nothing();
-  else
+  }
+  else {
     return Poly_Gen_Relation::subsumes();
+  }
 }
 
 template <typename D1, typename D2, typename R>
@@ -166,19 +170,25 @@ Partially_Reduced_Product<D1, D2, R>
 
   Poly_Con_Relation result = Poly_Con_Relation::nothing();
 
-  if (relation1.implies(Poly_Con_Relation::is_included()))
+  if (relation1.implies(Poly_Con_Relation::is_included())) {
     result = result && Poly_Con_Relation::is_included();
-  else if (relation2.implies(Poly_Con_Relation::is_included()))
+  }
+  else if (relation2.implies(Poly_Con_Relation::is_included())) {
     result = result && Poly_Con_Relation::is_included();
-  if (relation1.implies(Poly_Con_Relation::saturates()))
+  }
+  if (relation1.implies(Poly_Con_Relation::saturates())) {
     result = result && Poly_Con_Relation::saturates();
-  else if (relation2.implies(Poly_Con_Relation::saturates()))
+  }
+  else if (relation2.implies(Poly_Con_Relation::saturates())) {
     result = result && Poly_Con_Relation::saturates();
-  if (relation1.implies(Poly_Con_Relation::is_disjoint()))
+  }
+  if (relation1.implies(Poly_Con_Relation::is_disjoint())) {
     result = result && Poly_Con_Relation::is_disjoint();
-  else if (relation2.implies(Poly_Con_Relation::is_disjoint()))
+  }
+  else if (relation2.implies(Poly_Con_Relation::is_disjoint())) {
     result = result && Poly_Con_Relation::is_disjoint();
-
+  }
+  
   return result;
 }
 
@@ -192,19 +202,25 @@ Partially_Reduced_Product<D1, D2, R>
 
   Poly_Con_Relation result = Poly_Con_Relation::nothing();
 
-  if (relation1.implies(Poly_Con_Relation::is_included()))
+  if (relation1.implies(Poly_Con_Relation::is_included())) {
     result = result && Poly_Con_Relation::is_included();
-  else if (relation2.implies(Poly_Con_Relation::is_included()))
+  }
+  else if (relation2.implies(Poly_Con_Relation::is_included())) {
     result = result && Poly_Con_Relation::is_included();
-  if (relation1.implies(Poly_Con_Relation::saturates()))
+  }
+  if (relation1.implies(Poly_Con_Relation::saturates())) {
     result = result && Poly_Con_Relation::saturates();
-  else if (relation2.implies(Poly_Con_Relation::saturates()))
+  }
+  else if (relation2.implies(Poly_Con_Relation::saturates())) {
     result = result && Poly_Con_Relation::saturates();
-  if (relation1.implies(Poly_Con_Relation::is_disjoint()))
+  }
+  if (relation1.implies(Poly_Con_Relation::is_disjoint())) {
     result = result && Poly_Con_Relation::is_disjoint();
-  else if (relation2.implies(Poly_Con_Relation::is_disjoint()))
+  }
+  else if (relation2.implies(Poly_Con_Relation::is_disjoint())) {
     result = result && Poly_Con_Relation::is_disjoint();
-
+  }
+  
   return result;
 }
 
@@ -217,9 +233,10 @@ Partially_Reduced_Product<D1, D2, R>
            bool& maximum) const {
   reduce();
 
-  if (is_empty())
+  if (is_empty()) {
     return false;
-
+  }
+  
   PPL_DIRTY_TEMP_COEFFICIENT(sup1_n);
   PPL_DIRTY_TEMP_COEFFICIENT(sup1_d);
   PPL_DIRTY_TEMP_COEFFICIENT(sup2_n);
@@ -229,8 +246,9 @@ Partially_Reduced_Product<D1, D2, R>
   bool r1 = d1.maximize(expr, sup1_n, sup1_d, maximum1);
   bool r2 = d2.maximize(expr, sup2_n, sup2_d, maximum2);
   // If neither is bounded from above, return false.
-  if (!r1 && !r2)
+  if (!r1 && !r2) {
     return false;
+  }
   // If only d2 is bounded from above, then use the values for d2.
   if (!r1) {
     sup_n = sup2_n;
@@ -268,8 +286,9 @@ Partially_Reduced_Product<D1, D2, R>
            bool& minimum) const {
   reduce();
 
-  if (is_empty())
+  if (is_empty()) {
     return false;
+  }
   PPL_ASSERT(reduced);
 
   PPL_DIRTY_TEMP_COEFFICIENT(inf1_n);
@@ -281,8 +300,9 @@ Partially_Reduced_Product<D1, D2, R>
   bool r1 = d1.minimize(expr, inf1_n, inf1_d, minimum1);
   bool r2 = d2.minimize(expr, inf2_n, inf2_d, minimum2);
   // If neither is bounded from below, return false.
-  if (!r1 && !r2)
+  if (!r1 && !r2) {
     return false;
+  }
   // If only d2 is bounded from below, then use the values for d2.
   if (!r1) {
     inf_n = inf2_n;
@@ -321,8 +341,9 @@ Partially_Reduced_Product<D1, D2, R>
            Generator& g) const {
   reduce();
 
-  if (is_empty())
+  if (is_empty()) {
     return false;
+  }
   PPL_ASSERT(reduced);
 
   PPL_DIRTY_TEMP_COEFFICIENT(sup1_n);
@@ -336,8 +357,9 @@ Partially_Reduced_Product<D1, D2, R>
   bool r1 = d1.maximize(expr, sup1_n, sup1_d, maximum1, g1);
   bool r2 = d2.maximize(expr, sup2_n, sup2_d, maximum2, g2);
   // If neither is bounded from above, return false.
-  if (!r1 && !r2)
+  if (!r1 && !r2) {
     return false;
+  }
   // If only d2 is bounded from above, then use the values for d2.
   if (!r1) {
     sup_n = sup2_n;
@@ -380,8 +402,9 @@ Partially_Reduced_Product<D1, D2, R>
            Generator& g) const {
   reduce();
 
-  if (is_empty())
+  if (is_empty()) {
     return false;
+  }
   PPL_ASSERT(reduced);
 
   PPL_DIRTY_TEMP_COEFFICIENT(inf1_n);
@@ -395,8 +418,9 @@ Partially_Reduced_Product<D1, D2, R>
   bool r1 = d1.minimize(expr, inf1_n, inf1_d, minimum1, g1);
   bool r2 = d2.minimize(expr, inf2_n, inf2_d, minimum2, g2);
   // If neither is bounded from below, return false.
-  if (!r1 && !r2)
+  if (!r1 && !r2) {
     return false;
+  }
   // If only d2 is bounded from below, then use the values for d2.
   if (!r1) {
     inf_n = inf2_n;
@@ -438,8 +462,9 @@ Partially_Reduced_Product<D1, D2, R>::OK() const {
     /* Force dp1 reduction */
     dp1.clear_reduced_flag();
     dp1.reduce();
-    if (dp1 != dp2)
+    if (dp1 != dp2) {
       return false;
+    }
   }
   return d1.OK() && d2.OK();
 }
@@ -450,23 +475,30 @@ Partially_Reduced_Product<D1, D2, R>::ascii_load(std::istream& s) {
   const char yes = '+';
   const char no = '-';
   std::string str;
-  if (!(s >> str) || str != "Partially_Reduced_Product")
+  if (!(s >> str) || str != "Partially_Reduced_Product") {
     return false;
+  }
   if (!(s >> str)
       || (str[0] != yes && str[0] != no)
-      || str.substr(1) != "reduced")
+      || str.substr(1) != "reduced") {
     return false;
+  }
   reduced = (str[0] == yes);
-  if (!(s >> str) || str != "Domain")
+  if (!(s >> str) || str != "Domain") {
     return false;
-  if (!(s >> str) || str != "1:")
+  }
+  if (!(s >> str) || str != "1:") {
     return false;
-  if (!d1.ascii_load(s))
+  }
+  if (!d1.ascii_load(s)) {
     return false;
-  if (!(s >> str) || str != "Domain")
+  }
+  if (!(s >> str) || str != "Domain") {
     return false;
-  if (!(s >> str) || str != "2:")
+  }
+  if (!(s >> str) || str != "2:") {
     return false;
+  }
   return d2.ascii_load(s);
 }
 
@@ -555,17 +587,21 @@ bool shrink_to_congruence_no_check(D1& d1, D2& d2, const Congruence& cg) {
           PPL_DIRTY_TEMP_COEFFICIENT(min_increased);
           // Find the amount by which the maximum value may be decreased.
           shrink_amount = max_numer % mod;
-          if (!max_included && shrink_amount == 0)
+          if (!max_included && shrink_amount == 0) {
             shrink_amount = mod;
-          if (shrink_amount < 0)
+          }
+          if (shrink_amount < 0) {
             shrink_amount += mod;
+          }
           max_decreased = max_numer - shrink_amount;
           // Find the amount by which the minimum value may be increased.
           shrink_amount = min_numer % mod;
-          if (!min_included && shrink_amount == 0)
+          if (!min_included && shrink_amount == 0) {
             shrink_amount = - mod;
-          if (shrink_amount > 0)
+          }
+          if (shrink_amount > 0) {
             shrink_amount -= mod;
+          }
           min_increased = min_numer - shrink_amount;
           if (max_decreased == min_increased) {
             // The domain element d2 intersects exactly one hyperplane
@@ -607,26 +643,32 @@ Congruences_Reduction<D1, D2>::product_reduce(D1& d1, D2& d2) {
   for (Congruence_System::const_iterator i = cgs1.begin(),
          cgs_end = cgs1.end(); i != cgs_end; ++i) {
     const Congruence& cg1 = *i;
-    if (cg1.is_equality())
+    if (cg1.is_equality()) {
       d2.refine_with_congruence(cg1);
-    else
+    }
+    else {
       if (!Parma_Polyhedra_Library::
-          shrink_to_congruence_no_check(d1, d2, cg1))
+          shrink_to_congruence_no_check(d1, d2, cg1)) {
         // The product is empty.
         return;
+      }
+    }
   }
   // Use the congruences representing d2 to shrink both components.
   const Congruence_System cgs2 = d2.minimized_congruences();
   for (Congruence_System::const_iterator i = cgs2.begin(),
          cgs_end = cgs2.end(); i != cgs_end; ++i) {
     const Congruence& cg2 = *i;
-    if (cg2.is_equality())
+    if (cg2.is_equality()) {
       d1.refine_with_congruence(cg2);
-    else
+    }
+    else {
       if (!Parma_Polyhedra_Library::
-          shrink_to_congruence_no_check(d2, d1, cg2))
+          shrink_to_congruence_no_check(d2, d1, cg2)) {
         // The product is empty.
         return;
+      }
+    }
   }
 }
 
@@ -636,9 +678,10 @@ Shape_Preserving_Reduction<D1, D2>::product_reduce(D1& d1, D2& d2) {
   // First do the congruences reduction.
   Parma_Polyhedra_Library::Congruences_Reduction<D1, D2> cgr;
   cgr.product_reduce(d1, d2);
-  if (d1.is_empty())
+  if (d1.is_empty()) {
     return;
-
+  }
+  
   PPL_DIRTY_TEMP_COEFFICIENT(freq_n);
   PPL_DIRTY_TEMP_COEFFICIENT(freq_d);
   PPL_DIRTY_TEMP_COEFFICIENT(val_n);
@@ -650,17 +693,20 @@ Shape_Preserving_Reduction<D1, D2>::product_reduce(D1& d1, D2& d2) {
   for (Constraint_System::const_iterator i = cs.begin(),
          cs_end = cs.end(); i != cs_end; ++i) {
     const Constraint& c = *i;
-    if (c.is_equality())
+    if (c.is_equality()) {
       continue;
+    }
     // Check the frequency and value of the linear expression for
     // the constraint `c'.
     Linear_Expression le(c.expression());
-    if (!d1.frequency(le, freq_n, freq_d, val_n, val_d))
+    if (!d1.frequency(le, freq_n, freq_d, val_n, val_d)) {
       // Nothing to do.
       continue;
-    if (val_n == 0)
+    }
+    if (val_n == 0) {
       // Nothing to do.
       continue;
+    }
     // Adjust the value of the inhomogeneous term to satisfy
     // the implied congruence.
     if (val_n < 0) {
@@ -679,18 +725,21 @@ Shape_Preserving_Reduction<D1, D2>::product_reduce(D1& d1, D2& d2) {
   for (Constraint_System::const_iterator i = cs.begin(),
          cs_end = cs.end(); i != cs_end; ++i) {
     const Constraint& c = *i;
-    if (c.is_equality())
+    if (c.is_equality()) {
       // Equalities already shared.
       continue;
+    }
     // Check the frequency and value of the linear expression for
     // the constraint `c'.
     Linear_Expression le(c.expression());
-    if (!d2.frequency(le, freq_n, freq_d, val_n, val_d))
+    if (!d2.frequency(le, freq_n, freq_d, val_n, val_d)) {
       // Nothing to do.
       continue;
-    if (val_n == 0)
+    }
+    if (val_n == 0) {
       // Nothing to do.
       continue;
+    }
     // Adjust the value of the inhomogeneous term to satisfy
     // the implied congruence.
     if (val_n < 0) {

@@ -158,15 +158,17 @@ public:
 
   I_Constraint<boundary_type> lower_constraint() const {
     PPL_ASSERT(!is_empty());
-    if (info().get_boundary_property(LOWER, SPECIAL))
+    if (info().get_boundary_property(LOWER, SPECIAL)) {
       return I_Constraint<boundary_type>();
+    }
     return i_constraint(lower_is_open() ? GREATER_THAN : GREATER_OR_EQUAL,
                         lower(), true);
   }
   I_Constraint<boundary_type> upper_constraint() const {
     PPL_ASSERT(!is_empty());
-    if (info().get_boundary_property(UPPER, SPECIAL))
+    if (info().get_boundary_property(UPPER, SPECIAL)) {
       return I_Constraint<boundary_type>();
+    }
     return i_constraint(upper_is_open() ? LESS_THAN : LESS_OR_EQUAL,
                         upper(), true);
   }
@@ -376,78 +378,93 @@ public:
 
   //! Assigns to \p *this its topological closure.
   void topological_closure_assign() {
-    if (!Info::store_open || is_empty())
+    if (!Info::store_open || is_empty()) {
       return;
-    if (lower_is_open() && !lower_is_boundary_infinity())
+    }
+    if (lower_is_open() && !lower_is_boundary_infinity()) {
       info().set_boundary_property(LOWER, OPEN, false);
-    if (upper_is_open() && !upper_is_boundary_infinity())
+    }
+    if (upper_is_open() && !upper_is_boundary_infinity()) {
       info().set_boundary_property(UPPER, OPEN, false);
+    }
   }
 
   void remove_inf() {
     PPL_ASSERT(!is_empty());
-    if (!Info::store_open)
+    if (!Info::store_open) {
       return;
+    }
     info().set_boundary_property(LOWER, OPEN, true);
   }
 
   void remove_sup() {
     PPL_ASSERT(!is_empty());
-    if (!Info::store_open)
+    if (!Info::store_open) {
       return;
+    }
     info().set_boundary_property(UPPER, OPEN, true);
   }
 
   int infinity_sign() const {
     PPL_ASSERT(OK());
-    if (is_reverse_infinity(LOWER, lower(), info()))
+    if (is_reverse_infinity(LOWER, lower(), info())) {
       return 1;
-    else if (is_reverse_infinity(UPPER, upper(), info()))
+    }
+    else if (is_reverse_infinity(UPPER, upper(), info())) {
       return -1;
-    else
+    }
+    else {
       return 0;
+    }
   }
 
   bool contains_integer_point() const {
     PPL_ASSERT(OK());
-    if (is_empty())
+    if (is_empty()) {
       return false;
-    if (!is_bounded())
+    }
+    if (!is_bounded()) {
       return true;
+    }
     Boundary l;
     if (lower_is_open()) {
       add_assign_r(l, lower(), Boundary(1), ROUND_DOWN);
       floor_assign_r(l, l, ROUND_DOWN);
     }
-    else
+    else {
       ceil_assign_r(l, lower(), ROUND_DOWN);
+    }
     Boundary u;
     if (upper_is_open()) {
       sub_assign_r(u, upper(), Boundary(1), ROUND_UP);
       ceil_assign_r(u, u, ROUND_UP);
     }
-    else
+    else {
       floor_assign_r(u, upper(), ROUND_UP);
+    }
     return u >= l;
   }
 
   void drop_some_non_integer_points() {
-    if (is_empty())
+    if (is_empty()) {
       return;
+    }
     if (lower_is_open() && !lower_is_boundary_infinity()) {
       add_assign_r(lower(), lower(), Boundary(1), ROUND_DOWN);
       floor_assign_r(lower(), lower(), ROUND_DOWN);
       info().set_boundary_property(LOWER, OPEN, false);
     }
-    else
+    else {
       ceil_assign_r(lower(), lower(), ROUND_DOWN);
+    }
     if (upper_is_open() && !upper_is_boundary_infinity()) {
       sub_assign_r(upper(), upper(), Boundary(1), ROUND_UP);
       ceil_assign_r(upper(), upper(), ROUND_UP);
       info().set_boundary_property(UPPER, OPEN, false);
     }
-    else
+    else {
       floor_assign_r(upper(), upper(), ROUND_UP);
+    }
   }
 
   template <typename From>
@@ -455,14 +472,17 @@ public:
   wrap_assign(Bounded_Integer_Type_Width w,
               Bounded_Integer_Type_Representation r,
               const From& refinement) {
-    if (is_empty())
+    if (is_empty()) {
       return I_EMPTY;
-    if (lower_is_boundary_infinity() || upper_is_boundary_infinity())
+    }
+    if (lower_is_boundary_infinity() || upper_is_boundary_infinity()) {
       return assign(refinement);
+    }
     PPL_DIRTY_TEMP(Boundary, u);
     Result result = sub_2exp_assign_r(u, upper(), w, ROUND_UP);
-    if (result_overflow(result) == 0 && u > lower())
+    if (result_overflow(result) == 0 && u > lower()) {
       return assign(refinement);
+    }
     info().clear();
     switch (r) {
     case UNSIGNED:
@@ -481,8 +501,9 @@ public:
       PPL_UNREACHABLE;
       break;
     }
-    if (le(LOWER, lower(), info(), UPPER, upper(), info()))
+    if (le(LOWER, lower(), info(), UPPER, upper(), info())) {
       return intersect_assign(refinement);
+    }
     PPL_DIRTY_TEMP(Interval, tmp);
     tmp.info().clear();
     Boundary_NS::assign(LOWER, tmp.lower(), tmp.info(),

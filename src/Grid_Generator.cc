@@ -56,9 +56,10 @@ PPL::Grid_Generator
 PPL::Grid_Generator::parameter(const Linear_Expression& e,
                                Coefficient_traits::const_reference d,
                                Representation r) {
-  if (d == 0)
+  if (d == 0) {
     throw std::invalid_argument("PPL::parameter(e, d):\n"
                                 "d == 0.");
+  }
   // Add 1 to space dimension to allow for parameter divisor column.
   Linear_Expression ec(e, e.space_dimension() + 1, r);
 
@@ -68,8 +69,9 @@ PPL::Grid_Generator::parameter(const Linear_Expression& e,
 
   // If the divisor is negative, negate it and all the coefficients of
   // the parameter, so as to satisfy the invariant.
-  if (d < 0)
+  if (d < 0) {
     neg_assign(ec);
+  }
 
   // Using this constructor saves reallocation when creating the
   // coefficients.
@@ -84,17 +86,19 @@ PPL::Grid_Generator
 PPL::Grid_Generator::grid_point(const Linear_Expression& e,
                                 Coefficient_traits::const_reference d,
                                 Representation r) {
-  if (d == 0)
+  if (d == 0) {
     throw std::invalid_argument("PPL::grid_point(e, d):\n"
                                 "d == 0.");
+  }
   // Add 1 to space dimension to allow for parameter divisor column.
   Linear_Expression ec(e, 1 + e.space_dimension(), r);
   ec.set_inhomogeneous_term(d);
 
   // If the divisor is negative, negate it and all the coefficients of
   // the point, so as to satisfy the invariant.
-  if (d < 0)
+  if (d < 0) {
     neg_assign(ec);
+  }
 
   // Using this constructor saves reallocation when creating the
   // coefficients.
@@ -119,9 +123,10 @@ PPL::Grid_Generator::grid_point(const Linear_Expression& e,
 PPL::Grid_Generator
 PPL::Grid_Generator::grid_line(const Linear_Expression& e, Representation r) {
   // The origin of the space cannot be a line.
-  if (e.all_homogeneous_terms_are_zero())
+  if (e.all_homogeneous_terms_are_zero()) {
     throw std::invalid_argument("PPL::grid_line(e):\n"
                                 "e == 0, but the origin cannot be a line.");
+  }
 
   // Add 1 to space dimension to allow for parameter divisor column.
   Linear_Expression ec(e, 1 + e.space_dimension(), r);
@@ -159,9 +164,10 @@ PPL::Grid_Generator::remove_space_dimensions(const Variables_Set& vars) {
 void
 PPL::Grid_Generator
 ::permute_space_dimensions(const std::vector<Variable>& cycle) {
-  if (cycle.size() < 2)
+  if (cycle.size() < 2) {
     // No-op. No need to call sign_normalize().
     return;
+  }
 
   expr.permute_space_dimensions(cycle);
 
@@ -169,8 +175,9 @@ PPL::Grid_Generator
   // normalization is necessary.
   // Sign-normalizing a parameter changes its meaning, so do nothing for
   // parameters.
-  if (!is_parameter())
+  if (!is_parameter()) {
     sign_normalize();
+  }
   PPL_ASSERT(OK());
 }
 
@@ -197,19 +204,24 @@ PPL_OUTPUT_DEFINITIONS(Grid_Generator)
 bool
 PPL::Grid_Generator::ascii_load(std::istream& s) {
 
-  if (!expr.ascii_load(s))
+  if (!expr.ascii_load(s)) {
     return false;
+  }
 
   std::string str;
 
-  if (!(s >> str))
+  if (!(s >> str)) {
     return false;
-  if (str == "L")
+  }
+  if (str == "L") {
     set_is_line();
-  else if (str == "P" || str == "Q")
+  }
+  else if (str == "P" || str == "Q") {
     set_is_parameter_or_point();
-  else
+  }
+  else {
     return false;
+  }
 
   PPL_ASSERT(OK());
   return true;
@@ -217,8 +229,9 @@ PPL::Grid_Generator::ascii_load(std::istream& s) {
 
 void
 PPL::Grid_Generator::set_is_parameter() {
-  if (is_line())
+  if (is_line()) {
     set_is_parameter_or_point();
+  }
   else if (!is_line_or_parameter()) {
     // The grid generator is a point.
     expr.set(Variable(expr.space_dimension() - 1), expr.inhomogeneous_term());
@@ -238,9 +251,10 @@ int
 PPL::compare(const Grid_Generator& x, const Grid_Generator& y) {
   const bool x_is_line_or_equality = x.is_line_or_equality();
   const bool y_is_line_or_equality = y.is_line_or_equality();
-  if (x_is_line_or_equality != y_is_line_or_equality)
+  if (x_is_line_or_equality != y_is_line_or_equality) {
     // Equalities (lines) precede inequalities (ray/point).
     return y_is_line_or_equality ? 2 : -2;
+  }
 
   return compare(x.expr, y.expr);
 }
@@ -249,12 +263,14 @@ bool
 PPL::Grid_Generator::is_equivalent_to(const Grid_Generator& y) const {
   const Grid_Generator& x = *this;
   const dimension_type x_space_dim = x.space_dimension();
-  if (x_space_dim != y.space_dimension())
+  if (x_space_dim != y.space_dimension()) {
     return false;
+  }
 
   const Type x_type = x.type();
-  if (x_type != y.type())
+  if (x_type != y.type()) {
     return false;
+  }
 
   Grid_Generator tmp_x = *this;
   Grid_Generator tmp_y = y;
@@ -284,22 +300,25 @@ PPL::Grid_Generator::all_homogeneous_terms_are_zero() const {
 void
 PPL::Grid_Generator::scale_to_divisor(Coefficient_traits::const_reference d) {
   PPL_ASSERT(d != 0);
-  if (is_line())
+  if (is_line()) {
     return;
+  }
 
   PPL_DIRTY_TEMP_COEFFICIENT(factor);
   exact_div_assign(factor, d, divisor());
   set_divisor(d);
   PPL_ASSERT(factor > 0);
-  if (factor > 1)
+  if (factor > 1) {
     // Don't scale the first and last coefficients.
     expr.mul_assign(factor, 1, expr.space_dimension());
+  }
 }
 
 void
 PPL::Grid_Generator::sign_normalize() {
-  if (is_line_or_equality())
+  if (is_line_or_equality()) {
     expr.sign_normalize();
+  }
 }
 
 bool
@@ -336,8 +355,9 @@ PPL::Grid_Generator::fancy_print(std::ostream& s) const {
     break;
   case Grid_Generator::PARAMETER:
     s << "q(";
-    if (expr.coefficient(Variable(num_variables)) == 1)
+    if (expr.coefficient(Variable(num_variables)) == 1) {
       break;
+    }
     goto any_point;
   case Grid_Generator::POINT:
     s << "p(";
@@ -359,28 +379,35 @@ PPL::Grid_Generator::fancy_print(std::ostream& s) const {
          i_end = expr.lower_bound(Variable(num_variables)); i != i_end; ++i) {
     c = *i;
     if (!first) {
-      if (c > 0)
+      if (c > 0) {
         s << " + ";
+      }
       else {
         s << " - ";
         neg_assign(c);
       }
     }
-    else
+    else {
       first = false;
-    if (c == -1)
+    }
+    if (c == -1) {
       s << "-";
-    else if (c != 1)
+    }
+    else if (c != 1) {
       s << c << "*";
+    }
     IO_Operators::operator<<(s, i.variable());
   }
-  if (first)
+  if (first) {
     // A grid generator in the origin.
     s << 0;
-  if (extra_parentheses)
+  }
+  if (extra_parentheses) {
     s << ")";
-  if (need_divisor)
+  }
+  if (need_divisor) {
     s << "/" << divisor();
+  }
   s << ")";
 }
 

@@ -48,8 +48,9 @@ Temp_Item<T>::obtain() {
     free_list_head = free_list_head->next;
     return *p;
   }
-  else
+  else {
     return *new Temp_Item();
+  }
 }
 
 template <typename T>

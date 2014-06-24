@@ -190,8 +190,9 @@ Powerset<D>::is_bottom() const {
 template <typename D>
 inline void
 Powerset<D>::collapse() {
-  if (!empty())
+  if (!empty()) {
     collapse(sequence.begin());
+  }
 }
 
 template <typename D>

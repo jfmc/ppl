@@ -42,10 +42,12 @@ PPL::Poly_Gen_Relation::ascii_dump(std::ostream& s) const {
       s << "SUBSUMES";
       f &= ~SUBSUMES;
     }
-    if (f != NOTHING)
+    if (f != NOTHING) {
       s << " & ";
-    else
+    }
+    else {
       break;
+    }
   }
 }
 

@@ -40,15 +40,17 @@ typename Threshold_Watcher<Traits>::TW_Pending_List::iterator
 Threshold_Watcher<Traits>
 ::remove_threshold(typename TW_Pending_List::iterator position) {
   typename TW_Pending_List::iterator i = init.pending.erase(position);
-  if (init.pending.empty())
+  if (init.pending.empty()) {
     Traits::check_function = 0;
+  }
   return i;
 }
 
 template <typename Traits>
 Threshold_Watcher<Traits>::~Threshold_Watcher() {
-  if (!expired)
+  if (!expired) {
     remove_threshold(pending_position);
+  }
   delete &handler;
 }
 
@@ -62,8 +64,9 @@ Threshold_Watcher<Traits>::check() {
     i->handler().act();
     i->expired_flag() = true;
     i = remove_threshold(i);
-    if (i == init.pending.end())
+    if (i == init.pending.end()) {
       break;
+    }
   }
 }
 

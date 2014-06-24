@@ -81,8 +81,9 @@ Linear_Expression_Impl<Row>::set_space_dimension(dimension_type n) {
 template <typename Row>
 inline Coefficient_traits::const_reference
 Linear_Expression_Impl<Row>::coefficient(Variable v) const {
-  if (v.space_dimension() > space_dimension())
+  if (v.space_dimension() > space_dimension()) {
     return Coefficient_zero();
+  }
   return row.get(v.id() + 1);
 }
 
@@ -92,10 +93,12 @@ Linear_Expression_Impl<Row>
 ::set_coefficient(Variable v, Coefficient_traits::const_reference n) {
   PPL_ASSERT(v.space_dimension() <= space_dimension());
   const dimension_type i = v.space_dimension();
-  if (n == 0)
+  if (n == 0) {
     row.reset(i);
-  else
+  }
+  else {
     row.insert(i, n);
+  }
   PPL_ASSERT(OK());
 }
 
@@ -109,10 +112,12 @@ template <typename Row>
 inline void
 Linear_Expression_Impl<Row>
 ::set_inhomogeneous_term(Coefficient_traits::const_reference n) {
-  if (n == 0)
+  if (n == 0) {
     row.reset(0);
-  else
+  }
+  else {
     row.insert(0, n);
+  }
   PPL_ASSERT(OK());
 }
 
@@ -148,8 +153,9 @@ inline Linear_Expression_Impl<Row>&
 Linear_Expression_Impl<Row>::operator+=(Coefficient_traits::const_reference n) {
   typename Row::iterator itr = row.insert(0);
   (*itr) += n;
-  if (*itr == 0)
+  if (*itr == 0) {
     row.reset(itr);
+  }
   PPL_ASSERT(OK());
   return *this;
 }
@@ -159,8 +165,9 @@ inline Linear_Expression_Impl<Row>&
 Linear_Expression_Impl<Row>::operator-=(Coefficient_traits::const_reference n) {
   typename Row::iterator itr = row.insert(0);
   (*itr) -= n;
-  if (*itr == 0)
+  if (*itr == 0) {
     row.reset(itr);
+  }
   PPL_ASSERT(OK());
   return *this;
 }
@@ -203,8 +210,9 @@ Linear_Expression_Impl<Sparse_Row>::num_zeroes(dimension_type start,
 template <>
 inline dimension_type
 Linear_Expression_Impl<Sparse_Row>::last_nonzero() const {
-  if (row.num_stored_elements() == 0)
+  if (row.num_stored_elements() == 0) {
     return 0;
+  }
   Sparse_Row::const_iterator i = row.end();
   --i;
   return i.index();
@@ -218,10 +226,12 @@ Linear_Expression_Impl<Sparse_Row>
   PPL_ASSERT(last <= row.size());
   Sparse_Row::const_iterator i = row.lower_bound(first);
 
-  if (i != row.end() && i.index() < last)
+  if (i != row.end() && i.index() < last) {
     return i.index();
-  else
+  }
+  else {
     return last;
+  }
 }
 
 template <>
@@ -233,9 +243,10 @@ Linear_Expression_Impl<Sparse_Row>
   Sparse_Row::const_iterator itr1 = row.lower_bound(first);
   Sparse_Row::const_iterator itr2 = row.lower_bound(last);
 
-  if (itr1 == itr2)
+  if (itr1 == itr2) {
     return last;
-
+  }
+  
   --itr2;
   return itr2.index();
 }

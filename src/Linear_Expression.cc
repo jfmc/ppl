@@ -56,11 +56,9 @@ PPL::Linear_Expression::Linear_Expression(Representation r) {
   case DENSE:
     impl = new Linear_Expression_Impl<Dense_Row>();
     break;
-
   case SPARSE:
     impl = new Linear_Expression_Impl<Sparse_Row>();
     break;
-
   default:
     PPL_UNREACHABLE;
   }
@@ -72,11 +70,9 @@ PPL::Linear_Expression::Linear_Expression(dimension_type space_dim, bool x,
   case DENSE:
     impl = new Linear_Expression_Impl<Dense_Row>(space_dim, x);
     break;
-
   case SPARSE:
     impl = new Linear_Expression_Impl<Sparse_Row>(space_dim, x);
     break;
-
   default:
     PPL_UNREACHABLE;
   }
@@ -87,11 +83,9 @@ PPL::Linear_Expression::Linear_Expression(const Linear_Expression& e) {
   case DENSE:
     impl = new Linear_Expression_Impl<Dense_Row>(*e.impl);
     break;
-
   case SPARSE:
     impl = new Linear_Expression_Impl<Sparse_Row>(*e.impl);
     break;
-
   default:
     PPL_UNREACHABLE;
   }
@@ -103,11 +97,9 @@ PPL::Linear_Expression::Linear_Expression(const Linear_Expression& e,
   case DENSE:
     impl = new Linear_Expression_Impl<Dense_Row>(*e.impl);
     break;
-
   case SPARSE:
     impl = new Linear_Expression_Impl<Sparse_Row>(*e.impl);
     break;
-
   default:
     PPL_UNREACHABLE;
   }
@@ -119,11 +111,9 @@ PPL::Linear_Expression::Linear_Expression(const Linear_Expression& e,
   case DENSE:
     impl = new Linear_Expression_Impl<Dense_Row>(*e.impl, space_dim);
     break;
-
   case SPARSE:
     impl = new Linear_Expression_Impl<Sparse_Row>(*e.impl, space_dim);
     break;
-
   default:
     PPL_UNREACHABLE;
   }
@@ -136,11 +126,9 @@ PPL::Linear_Expression::Linear_Expression(const Linear_Expression& e,
   case DENSE:
     impl = new Linear_Expression_Impl<Dense_Row>(*e.impl, space_dim);
     break;
-
   case SPARSE:
     impl = new Linear_Expression_Impl<Sparse_Row>(*e.impl, space_dim);
     break;
-
   default:
     PPL_UNREACHABLE;
   }
@@ -152,11 +140,9 @@ PPL::Linear_Expression::Linear_Expression(Coefficient_traits::const_reference n,
   case DENSE:
     impl = new Linear_Expression_Impl<Dense_Row>(n);
     break;
-
   case SPARSE:
     impl = new Linear_Expression_Impl<Sparse_Row>(n);
     break;
-
   default:
     PPL_UNREACHABLE;
   }
@@ -167,11 +153,9 @@ PPL::Linear_Expression::Linear_Expression(const Variable v, Representation r) {
   case DENSE:
     impl = new Linear_Expression_Impl<Dense_Row>(v);
     break;
-
   case SPARSE:
     impl = new Linear_Expression_Impl<Sparse_Row>(v);
     break;
-
   default:
     PPL_UNREACHABLE;
     break;
@@ -180,8 +164,9 @@ PPL::Linear_Expression::Linear_Expression(const Variable v, Representation r) {
 
 void
 PPL::Linear_Expression::set_representation(Representation r) {
-  if (representation() == r)
+  if (representation() == r) {
     return;
+  }
   Linear_Expression tmp(*this, r);
   swap(*this, tmp);
 }

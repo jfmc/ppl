@@ -39,9 +39,10 @@ Watchdog::Watchdog(long csecs,
     handler(*new
             Implementation::Watchdog::Handler_Flag<Flag_Base, Flag>(holder,
                                                                     flag)) {
-  if (csecs == 0)
+  if (csecs == 0) {
     throw std::invalid_argument("Watchdog constructor called with a"
                                 " non-positive number of centiseconds");
+  }
   in_critical_section = true;
   pending_position = new_watchdog_event(csecs, handler, expired);
   in_critical_section = false;
@@ -51,9 +52,10 @@ inline
 Watchdog::Watchdog(long csecs, void (* const function)())
   : expired(false),
     handler(*new Implementation::Watchdog::Handler_Function(function)) {
-  if (csecs == 0)
+  if (csecs == 0) {
     throw std::invalid_argument("Watchdog constructor called with a"
                                 " non-positive number of centiseconds");
+  }
   in_critical_section = true;
   pending_position = new_watchdog_event(csecs, handler, expired);
   in_critical_section = false;

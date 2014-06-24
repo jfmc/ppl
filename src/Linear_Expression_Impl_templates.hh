@@ -126,8 +126,9 @@ Linear_Expression_Impl<Row>
                  Coefficient_traits::const_reference c2) {
   PPL_ASSERT(c1 != 0);
   PPL_ASSERT(c2 != 0);
-  if (space_dimension() < y.space_dimension())
+  if (space_dimension() < y.space_dimension()) {
     set_space_dimension(y.space_dimension());
+  }
   linear_combine(y, c1, c2, 0, y.space_dimension() + 1);
   PPL_ASSERT(OK());
 }
@@ -139,8 +140,9 @@ Linear_Expression_Impl<Row>
 ::linear_combine_lax(const Linear_Expression_Impl<Row2>& y,
                      Coefficient_traits::const_reference c1,
                      Coefficient_traits::const_reference c2) {
-  if (space_dimension() < y.space_dimension())
+  if (space_dimension() < y.space_dimension()) {
     set_space_dimension(y.space_dimension());
+  }
   linear_combine_lax(y, c1, c2, 0, y.space_dimension() + 1);
   PPL_ASSERT(OK());
 }
@@ -160,47 +162,55 @@ Linear_Expression_Impl<Row>
   while (i != i_end && j != j_end) {
     if (i.index() < j.index()) {
       const int s = sgn(*i);
-      if (s != 0)
+      if (s != 0) {
         return 2*s;
+      }
       ++i;
       continue;
     }
     if (i.index() > j.index()) {
       const int s = sgn(*j);
-      if (s != 0)
+      if (s != 0) {
         return -2*s;
+      }
       ++j;
       continue;
     }
     PPL_ASSERT(i.index() == j.index());
     const int s = cmp(*i, *j);
-    if (s < 0)
+    if (s < 0) {
       return -2;
-    if (s > 0)
+    }
+    if (s > 0) {
       return 2;
+    }
     PPL_ASSERT(s == 0);
     ++i;
     ++j;
   }
   for ( ; i != i_end; ++i) {
     const int s = sgn(*i);
-    if (s != 0)
+    if (s != 0) {
       return 2*s;
+    }
   }
   for ( ; j != j_end; ++j) {
     const int s = sgn(*j);
-    if (s != 0)
+    if (s != 0) {
       return -2*s;
+    }
   }
 
   // If all the coefficients in `x' equal all the coefficients in `y'
   // (starting from position 1) we compare coefficients in position 0,
   // i.e., inhomogeneous terms.
   const int comp = cmp(x.row.get(0), y.row.get(0));
-  if (comp > 0)
+  if (comp > 0) {
     return 1;
-  if (comp < 0)
+  }
+  if (comp < 0) {
     return -1;
+  }
   PPL_ASSERT(comp == 0);
 
   // `x' and `y' are equal.
@@ -209,11 +219,12 @@ Linear_Expression_Impl<Row>
 
 template <typename Row>
 Linear_Expression_Impl<Row>::Linear_Expression_Impl(const Variable v) {
-  if (v.space_dimension() > max_space_dimension())
+  if (v.space_dimension() > max_space_dimension()) {
     throw std::length_error("Linear_Expression_Impl::"
                             "Linear_Expression_Impl(v):\n"
                             "v exceeds the maximum allowed "
                             "space dimension.");
+  }
   set_space_dimension(v.space_dimension());
   (*this) += v;
   PPL_ASSERT(OK());
@@ -244,9 +255,10 @@ void
 Linear_Expression_Impl<Row>
 ::permute_space_dimensions(const std::vector<Variable>& cycle) {
   const dimension_type n = cycle.size();
-  if (n < 2)
+  if (n < 2) {
     return;
-
+  }
+  
   if (n == 2) {
     row.swap_coefficients(cycle[0].space_dimension(),
                           cycle[1].space_dimension());
@@ -258,8 +270,9 @@ Linear_Expression_Impl<Row>
       row.swap_coefficients(cycle[i + 1].space_dimension(),
                             cycle[i].space_dimension());
     }
-    if (tmp == 0)
+    if (tmp == 0) {
       row.reset(cycle[0].space_dimension());
+    }
     else {
       using std::swap;
       swap(tmp, row[cycle[0].space_dimension()]);
@@ -281,16 +294,19 @@ template <typename Row>
 Linear_Expression_Impl<Row>&
 Linear_Expression_Impl<Row>::operator+=(const Variable v) {
   const dimension_type v_space_dim = v.space_dimension();
-  if (v_space_dim > Linear_Expression_Impl<Row>::max_space_dimension())
+  if (v_space_dim > Linear_Expression_Impl<Row>::max_space_dimension()) {
     throw std::length_error("Linear_Expression_Impl& "
                             "operator+=(e, v):\n"
                             "v exceeds the maximum allowed space dimension.");
-  if (space_dimension() < v_space_dim)
+  }
+  if (space_dimension() < v_space_dim) {
     set_space_dimension(v_space_dim);
+  }
   typename Row::iterator itr = row.insert(v_space_dim);
   ++(*itr);
-  if (*itr == 0)
+  if (*itr == 0) {
     row.reset(itr);
+  }
   PPL_ASSERT(OK());
   return *this;
 }
@@ -309,16 +325,19 @@ template <typename Row>
 Linear_Expression_Impl<Row>&
 Linear_Expression_Impl<Row>::operator-=(const Variable v) {
   const dimension_type v_space_dim = v.space_dimension();
-  if (v_space_dim > Linear_Expression_Impl<Row>::max_space_dimension())
+  if (v_space_dim > Linear_Expression_Impl<Row>::max_space_dimension()) {
     throw std::length_error("Linear_Expression_Impl& "
                             "operator-=(e, v):\n"
                             "v exceeds the maximum allowed space dimension.");
-  if (space_dimension() < v_space_dim)
+  }
+  if (space_dimension() < v_space_dim) {
     set_space_dimension(v_space_dim);
+  }
   typename Row::iterator itr = row.insert(v_space_dim);
   --(*itr);
-  if (*itr == 0)
+  if (*itr == 0) {
     row.reset(itr);
+  }
   PPL_ASSERT(OK());
   return *this;
 }
@@ -348,10 +367,12 @@ Linear_Expression_Impl<Row>::operator/=(Coefficient_traits::const_reference n) {
   const typename Row::iterator& i_end = row.end();
   while (i != i_end) {
     (*i) /= n;
-    if (*i == 0)
+    if (*i == 0) {
       i = row.reset(i);
-    else
+    }
+    else {
       ++i;
+    }
   }
   PPL_ASSERT(OK());
   return *this;
@@ -374,18 +395,22 @@ Linear_Expression_Impl<Row>&
 Linear_Expression_Impl<Row>::add_mul_assign(Coefficient_traits::const_reference n,
                                             const Variable v) {
   const dimension_type v_space_dim = v.space_dimension();
-  if (v_space_dim > Linear_Expression_Impl<Row>::max_space_dimension())
+  if (v_space_dim > Linear_Expression_Impl<Row>::max_space_dimension()) {
     throw std::length_error("Linear_Expression_Impl& "
                             "add_mul_assign(e, n, v):\n"
                             "v exceeds the maximum allowed space dimension.");
-  if (space_dimension() < v_space_dim)
+  }
+  if (space_dimension() < v_space_dim) {
     set_space_dimension(v_space_dim);
-  if (n == 0)
+  }
+  if (n == 0) {
     return *this;
+  }
   typename Row::iterator itr = row.insert(v_space_dim);
   (*itr) += n;
-  if (*itr == 0)
+  if (*itr == 0) {
     row.reset(itr);
+  }
   PPL_ASSERT(OK());
   return *this;
 }
@@ -397,18 +422,22 @@ Linear_Expression_Impl<Row>
 ::sub_mul_assign(Coefficient_traits::const_reference n,
                  const Variable v) {
   const dimension_type v_space_dim = v.space_dimension();
-  if (v_space_dim > Linear_Expression_Impl<Row>::max_space_dimension())
+  if (v_space_dim > Linear_Expression_Impl<Row>::max_space_dimension()) {
     throw std::length_error("Linear_Expression_Impl& "
                             "sub_mul_assign(e, n, v):\n"
                             "v exceeds the maximum allowed space dimension.");
-  if (space_dimension() < v_space_dim)
+  }
+  if (space_dimension() < v_space_dim) {
     set_space_dimension(v_space_dim);
-  if (n == 0)
+  }
+  if (n == 0) {
     return *this;
+  }
   typename Row::iterator itr = row.insert(v_space_dim);
   (*itr) -= n;
-  if (*itr == 0)
+  if (*itr == 0) {
     row.reset(itr);
+  }
   PPL_ASSERT(OK());
   return *this;
 }
@@ -419,8 +448,9 @@ void
 Linear_Expression_Impl<Row>
 ::add_mul_assign(Coefficient_traits::const_reference factor,
                  const Linear_Expression_Impl<Row2>& y) {
-  if (factor != 0)
+  if (factor != 0) {
     linear_combine(y, Coefficient_one(), factor);
+  }
 }
 
 template <typename Row>
@@ -429,8 +459,9 @@ void
 Linear_Expression_Impl<Row>
 ::sub_mul_assign(Coefficient_traits::const_reference factor,
                  const Linear_Expression_Impl<Row2>& y) {
-  if (factor != 0)
+  if (factor != 0) {
     linear_combine(y, Coefficient_one(), -factor);
+  }
 }
 
 template <typename Row>
@@ -441,22 +472,27 @@ Linear_Expression_Impl<Row>::print(std::ostream& s) const {
   for (typename Row::const_iterator i = row.lower_bound(1), i_end = row.end();
        i != i_end; ++i) {
     ev = *i;
-    if (ev == 0)
+    if (ev == 0) {
       continue;
+    }
     if (!first) {
-      if (ev > 0)
+      if (ev > 0) {
         s << " + ";
+      }
       else {
         s << " - ";
         neg_assign(ev);
       }
     }
-    else
+    else {
       first = false;
-    if (ev == -1)
+    }
+    if (ev == -1) {
       s << "-";
-    else if (ev != 1)
+    }
+    else if (ev != 1) {
       s << ev << "*";
+    }
     IO_Operators::operator<<(s, Variable(i.index() - 1));
   }
   // Inhomogeneous term.
@@ -464,21 +500,24 @@ Linear_Expression_Impl<Row>::print(std::ostream& s) const {
   it = row[0];
   if (it != 0) {
     if (!first) {
-      if (it > 0)
+      if (it > 0) {
         s << " + ";
+      }
       else {
         s << " - ";
         neg_assign(it);
       }
     }
-    else
+    else {
       first = false;
+    }
     s << it;
   }
 
-  if (first)
+  if (first) {
     // The null linear expression.
     s << Coefficient_zero();
+  }
 }
 
 template <typename Row>
@@ -491,10 +530,12 @@ template <typename Row>
 void
 Linear_Expression_Impl<Row>
 ::set(dimension_type i, Coefficient_traits::const_reference n) {
-  if (n == 0)
+  if (n == 0) {
     row.reset(i);
-  else
+  }
+  else {
     row.insert(i, n);
+  }
   PPL_ASSERT(OK());
 }
 
@@ -631,8 +672,9 @@ Linear_Expression_Impl<Row>::sign_normalize() {
   typename Row::iterator i_end = row.end();
 
   for ( ; i != i_end; ++i) {
-    if (*i != 0)
+    if (*i != 0) {
       break;
+    }
   }
 
   if (i != i_end && *i < 0) {
@@ -745,32 +787,37 @@ Linear_Expression_Impl<Row>
   typename Row2::const_iterator j_end = y.row.lower_bound(end);
   while (i != i_end && j != j_end) {
     if (i.index() == j.index()) {
-      if (*i != *j)
+      if (*i != *j) {
         return false;
+      }
       ++i;
       ++j;
     }
     else {
       if (i.index() < j.index()) {
-        if (*i != 0)
+        if (*i != 0) {
           return false;
+        }
         ++i;
       }
       else {
         PPL_ASSERT(i.index() > j.index());
-        if (*j != 0)
+        if (*j != 0) {
           return false;
+        }
         ++j;
       }
     }
   }
   for ( ; i != i_end; ++i) {
-    if (*i != 0)
+    if (*i != 0) {
       return false;
+    }
   }
   for ( ; j != j_end; ++j) {
-    if (*j != 0)
+    if (*j != 0) {
       return false;
+    }
   }
   return true;
 }
@@ -790,14 +837,17 @@ Linear_Expression_Impl<Row>
 
   // Deal with trivial cases.
   if (c1 == 0) {
-    if (c2 == 0)
+    if (c2 == 0) {
       return true;
-    else
+    }
+    else {
       return y.all_zeroes(start, end);
+    }
   }
-  if (c2 == 0)
+  if (c2 == 0) {
     return x.all_zeroes(start, end);
-
+  }
+  
   PPL_ASSERT(c1 != 0);
   PPL_ASSERT(c2 != 0);
   typename Row::const_iterator i = x.row.lower_bound(start);
@@ -806,32 +856,37 @@ Linear_Expression_Impl<Row>
   typename Row2::const_iterator j_end = y.row.lower_bound(end);
   while (i != i_end && j != j_end) {
     if (i.index() == j.index()) {
-      if ((*i) * c1 != (*j) * c2)
+      if ((*i) * c1 != (*j) * c2) {
         return false;
+      }
       ++i;
       ++j;
     }
     else {
       if (i.index() < j.index()) {
-        if (*i != 0)
+        if (*i != 0) {
           return false;
+        }
         ++i;
       }
       else {
         PPL_ASSERT(i.index() > j.index());
-        if (*j != 0)
+        if (*j != 0) {
           return false;
+        }
         ++j;
       }
     }
   }
   for ( ; i != i_end; ++i) {
-    if (*i != 0)
+    if (*i != 0) {
       return false;
+    }
   }
   for ( ; j != j_end; ++j) {
-    if (*j != 0)
+    if (*j != 0) {
       return false;
+    }
   }
   return true;
 }
@@ -1287,8 +1342,9 @@ Linear_Expression_Impl<Row>::ascii_dump(std::ostream& s) const {
   s << "size " << (space_dimension() + 1) << " ";
   for (dimension_type i = 0; i < row.size(); ++i) {
     s << row.get(i);
-    if (i != row.size() - 1)
+    if (i != row.size() - 1) {
       s << ' ';
+    }
   }
 }
 
@@ -1297,25 +1353,30 @@ bool
 Linear_Expression_Impl<Row>::ascii_load(std::istream& s) {
   std::string str;
 
-  if (!(s >> str))
+  if (!(s >> str)) {
     return false;
-  if (str != "size")
+  }
+  if (str != "size") {
     return false;
-
+  }
+  
   dimension_type new_size;
-  if (!(s >> new_size))
+  if (!(s >> new_size)) {
     return false;
-
+  }
+  
   row.resize(0);
   row.resize(new_size);
 
   PPL_DIRTY_TEMP_COEFFICIENT(c);
 
   for (dimension_type j = 0; j < new_size; ++j) {
-    if (!(s >> c))
+    if (!(s >> c)) {
       return false;
-    if (c != 0)
+    }
+    if (c != 0) {
       row.insert(j, c);
+    }
   }
 
   PPL_ASSERT(OK());

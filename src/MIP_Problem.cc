@@ -93,11 +93,12 @@ PPL::MIP_Problem::MIP_Problem(const dimension_type dim)
     last_generator(point()),
     i_variables() {
   // Check for space dimension overflow.
-  if (dim > max_space_dimension())
+  if (dim > max_space_dimension()) {
     throw std::length_error("PPL::MIP_Problem::MIP_Problem(dim, cs, obj, "
                             "mode):\n"
                             "dim exceeds the maximum allowed "
                             "space dimension.");
+  }
   PPL_ASSERT(OK());
 }
 
@@ -122,11 +123,12 @@ PPL::MIP_Problem::MIP_Problem(const dimension_type dim,
     last_generator(point()),
     i_variables() {
   // Check for space dimension overflow.
-  if (dim > max_space_dimension())
+  if (dim > max_space_dimension()) {
     throw std::length_error("PPL::MIP_Problem::MIP_Problem(dim, cs, obj, "
                             "mode):\n"
                             "dim exceeds the maximum allowed"
                             "space dimension.");
+  }
   // Check the objective function.
   if (obj.space_dimension() > dim) {
     std::ostringstream s;
@@ -144,10 +146,11 @@ PPL::MIP_Problem::MIP_Problem(const dimension_type dim,
       << " exceeds dim == " << dim << ".";
     throw std::invalid_argument(s.str());
   }
-  if (cs.has_strict_inequalities())
+  if (cs.has_strict_inequalities()) {
     throw std::invalid_argument("PPL::MIP_Problem::"
                                 "MIP_Problem(d, cs, obj, m):\n"
                                 "cs contains strict inequalities.");
+  }
   // Actually copy the constraints.
   for (Constraint_System::const_iterator
          i = cs.begin(), i_end = cs.end(); i != i_end; ++i) {
@@ -166,12 +169,14 @@ PPL::MIP_Problem::add_constraint(const Constraint& c) {
          "this->space_dimension == " << space_dimension() << ".";
     throw std::invalid_argument(s.str());
   }
-  if (c.is_strict_inequality())
+  if (c.is_strict_inequality()) {
     throw std::invalid_argument("PPL::MIP_Problem::add_constraint(c):\n"
                                 "c is a strict inequality.");
+  }
   add_constraint_helper(c);
-  if (status != UNSATISFIABLE)
+  if (status != UNSATISFIABLE) {
     status = PARTIALLY_SATISFIABLE;
+  }
   PPL_ASSERT(OK());
 }
 
@@ -185,15 +190,17 @@ PPL::MIP_Problem::add_constraints(const Constraint_System& cs) {
       << ".";
     throw std::invalid_argument(s.str());
   }
-  if (cs.has_strict_inequalities())
+  if (cs.has_strict_inequalities()) {
     throw std::invalid_argument("PPL::MIP_Problem::add_constraints(cs):\n"
                                 "cs contains strict inequalities.");
+  }
   for (Constraint_System::const_iterator
          i = cs.begin(), i_end = cs.end(); i != i_end; ++i) {
     add_constraint_helper(*i);
   }
-  if (status != UNSATISFIABLE)
+  if (status != UNSATISFIABLE) {
     status = PARTIALLY_SATISFIABLE;
+  }
   PPL_ASSERT(OK());
 }
 
@@ -208,27 +215,32 @@ PPL::MIP_Problem::set_objective_function(const Linear_Expression& obj) {
     throw std::invalid_argument(s.str());
   }
   input_obj_function = obj;
-  if (status == UNBOUNDED || status == OPTIMIZED)
+  if (status == UNBOUNDED || status == OPTIMIZED) {
     status = SATISFIABLE;
+  }
   PPL_ASSERT(OK());
 }
 
 const PPL::Generator&
 PPL::MIP_Problem::feasible_point() const {
-  if (is_satisfiable())
+  if (is_satisfiable()) {
     return last_generator;
-  else
+  }
+  else {
     throw std::domain_error("PPL::MIP_Problem::feasible_point():\n"
                             "*this is not satisfiable.");
+  }
 }
 
 const PPL::Generator&
 PPL::MIP_Problem::optimizing_point() const {
-  if (solve() == OPTIMIZED_MIP_PROBLEM)
+  if (solve() == OPTIMIZED_MIP_PROBLEM) {
     return last_generator;
-  else
+  }
+  else {
     throw std::domain_error("PPL::MIP_Problem::optimizing_point():\n"
                             "*this does not have an optimizing point.");
+  }
 }
 
 bool
@@ -249,9 +261,9 @@ PPL::MIP_Problem::is_satisfiable() const {
     {
       MIP_Problem& x = const_cast<MIP_Problem&>(*this);
       // LP case.
-      if (x.i_variables.empty())
+      if (x.i_variables.empty()) {
         return x.is_lp_satisfiable();
-
+      }
       // MIP case.
       {
         // Temporarily relax the MIP into an LP problem.
@@ -265,8 +277,9 @@ PPL::MIP_Problem::is_satisfiable() const {
           x.last_generator = p;
           x.status = SATISFIABLE;
         }
-        else
+        else {
           x.status = UNSATISFIABLE;
+        }
       } // `relaxed' destroyed here: relaxation automatically reset.
       return (x.status == SATISFIABLE);
     }
@@ -297,8 +310,9 @@ PPL::MIP_Problem::solve() const{
         // LP case.
         if (x.is_lp_satisfiable()) {
           x.second_phase();
-          if (x.status == UNBOUNDED)
+          if (x.status == UNBOUNDED) {
             return UNBOUNDED_MIP_PROBLEM;
+          }
           else {
             PPL_ASSERT(x.status == OPTIMIZED);
             return OPTIMIZED_MIP_PROBLEM;
@@ -359,11 +373,12 @@ void
 PPL::MIP_Problem::add_space_dimensions_and_embed(const dimension_type m) {
   // The space dimension of the resulting MIP problem should not
   // overflow the maximum allowed space dimension.
-  if (m > max_space_dimension() - space_dimension())
+  if (m > max_space_dimension() - space_dimension()) {
     throw std::length_error("PPL::MIP_Problem::"
                             "add_space_dimensions_and_embed(m):\n"
                             "adding m new space dimensions exceeds "
                             "the maximum allowed space dimension.");
+  }
   external_space_dim += m;
   if (status != UNSATISFIABLE)
     status = PARTIALLY_SATISFIABLE;
@@ -373,11 +388,12 @@ PPL::MIP_Problem::add_space_dimensions_and_embed(const dimension_type m) {
 void
 PPL::MIP_Problem
 ::add_to_integer_space_dimensions(const Variables_Set& i_vars) {
-  if (i_vars.space_dimension() > external_space_dim)
+  if (i_vars.space_dimension() > external_space_dim) {
     throw std::invalid_argument("PPL::MIP_Problem::"
                                 "add_to_integer_space_dimension(i_vars):\n"
                                 "*this and i_vars are dimension"
                                 "incompatible.");
+  }
   const dimension_type original_size = i_variables.size();
   i_variables.insert(i_vars.begin(), i_vars.end());
   // If a new integral variable was inserted, set the internal status to
@@ -390,8 +406,9 @@ bool
 PPL::MIP_Problem::is_in_base(const dimension_type var_index,
                              dimension_type& row_index) const {
   for (row_index = base.size(); row_index-- > 0; ) {
-    if (base[row_index] == var_index)
+    if (base[row_index] == var_index) {
       return true;
+    }
   }
   return false;
 }
@@ -426,15 +443,18 @@ PPL::MIP_Problem::merge_split_variable(dimension_type var_index) {
   // Adjust data structures, `shifting' the proper columns to the left by 1.
   const dimension_type base_size = base.size();
   for (dimension_type i = base_size; i-- > 0; ) {
-    if (base[i] > removing_column)
+    if (base[i] > removing_column) {
       --base[i];
+    }
   }
   const dimension_type mapping_size = mapping.size();
   for (dimension_type i = mapping_size; i-- > 0; ) {
-    if (mapping[i].first > removing_column)
+    if (mapping[i].first > removing_column) {
       --mapping[i].first;
-    if (mapping[i].second > removing_column)
+    }
+    if (mapping[i].second > removing_column) {
       --mapping[i].second;
+    }
   }
 
   return unfeasible_tableau_row;
@@ -517,8 +537,9 @@ PPL::MIP_Problem
     // Note: mapping[0] is associated to the cost function.
     for (dimension_type i = std::min(mapping_size - 1, cs_space_dim);
          i-- > 0; ) {
-      if (mapping[i + 1].second == 0)
+      if (mapping[i + 1].second == 0) {
         is_nonnegative_variable[i] = true;
+      }
     }
   }
 
@@ -542,15 +563,17 @@ PPL::MIP_Problem
     // If more than one coefficient is nonzero,
     // continue with next constraint.
     if (found_many_nonzero_coeffs) {
-      if (cs_i.is_inequality())
+      if (cs_i.is_inequality()) {
         ++additional_slack_variables;
       // CHECKME: Is it true that in the first phase we can apply
       // `is_satisfied()' with the generator `point()'?  If so, the following
       // code works even if we do not have a feasible point.
       // Check for satisfiability of the inequality. This can be done if we
       // have a feasible point of *this.
-      if (cs_i.is_inequality() && is_satisfied(cs_i, last_generator))
+      }
+      if (cs_i.is_inequality() && is_satisfied(cs_i, last_generator)) {
         is_satisfied_inequality[i - first_pending_constraint] = true;
+      }
       continue;
     }
 
@@ -558,15 +581,18 @@ PPL::MIP_Problem
       // All coefficients are 0.
       // The constraint is either trivially true or trivially false.
       if (cs_i.is_inequality()) {
-        if (cs_i.inhomogeneous_term() < 0)
+        if (cs_i.inhomogeneous_term() < 0) {
           // A constraint such as -1 >= 0 is trivially false.
           return false;
+        }
       }
-      else
+      else {
         // The constraint is an equality.
-        if (cs_i.inhomogeneous_term() != 0)
+        if (cs_i.inhomogeneous_term() != 0) {
           // A constraint such as 1 == 0 is trivially false.
           return false;
+        }
+      }
       // Here the constraint is trivially true.
       is_tableau_constraint[i - first_pending_constraint] = false;
       --additional_tableau_rows;
@@ -612,13 +638,15 @@ PPL::MIP_Problem
 
       // Cases 1-3: apply method A.
       if (sgn_a == sgn_b) {
-        if (cs_i.is_inequality())
+        if (cs_i.is_inequality()) {
           ++additional_slack_variables;
+        }
       }
       // Cases 4-5: apply method B.
-      else if (cs_i.is_equality())
+      else if (cs_i.is_equality()) {
         is_nonnegative_variable[nonzero_var_index] = true;
       // Case 6: apply method B.
+      }
       else if (sgn_b < 0) {
         is_nonnegative_variable[nonzero_var_index] = true;
         ++additional_slack_variables;
@@ -670,13 +698,15 @@ PPL::MIP_Problem::process_pending_constraints() {
   // and a negative part and is now known to be nonnegative.
   std::vector<dimension_type> unfeasible_tableau_rows;
   for (dimension_type i = internal_space_dim; i-- > 0; ) {
-    if (!is_remergeable_variable[i])
+    if (!is_remergeable_variable[i]) {
       continue;
+    }
     // TODO: merging all rows in a single shot may be more efficient
     // as it would require a single call to permute_columns().
     const dimension_type unfeasible_row = merge_split_variable(i);
-    if (unfeasible_row != not_a_dimension())
+    if (unfeasible_row != not_a_dimension()) {
       unfeasible_tableau_rows.push_back(unfeasible_row);
+    }
   }
 
   const dimension_type old_tableau_num_rows = tableau.num_rows();
@@ -708,9 +738,10 @@ PPL::MIP_Problem::process_pending_constraints() {
   }
 
   // Resize the tableau: first add additional rows ...
-  if (additional_tableau_rows > 0)
+  if (additional_tableau_rows > 0) {
     tableau.add_zero_rows(additional_tableau_rows);
-
+  }
+  
   // ... then add additional columns.
   // We need columns for additional (split) problem variables, additional
   // slack variables and additional artificials.
@@ -740,9 +771,10 @@ PPL::MIP_Problem::process_pending_constraints() {
     + additional_slack_vars
     + additional_artificial_vars;
 
-  if (additional_tableau_columns > 0)
+  if (additional_tableau_columns > 0) {
     tableau.add_zero_columns(additional_tableau_columns);
-
+  }
+  
   // Dimensions of the tableau after resizing.
   const dimension_type tableau_num_rows = tableau.num_rows();
   const dimension_type tableau_num_cols = tableau.num_columns();
@@ -773,8 +805,9 @@ PPL::MIP_Problem::process_pending_constraints() {
   // Proceed with the insertion of the constraints.
   for (dimension_type k = tableau_num_rows,
        i = input_cs.size() - first_pending_constraint; i-- > 0; ) {
-    if (!is_tableau_constraint[i])
+    if (!is_tableau_constraint[i]) {
       continue;
+    }
     // Copy the original constraint in the tableau.
     Row& tableau_k = tableau[--k];
     Row::iterator itr = tableau_k.end();
@@ -815,8 +848,9 @@ PPL::MIP_Problem::process_pending_constraints() {
       }
     }
     for (dimension_type j = base_size; j-- > 0; ) {
-      if (k != j && base[j] != 0 && tableau_k.get(base[j]) != 0)
+      if (k != j && base[j] != 0 && tableau_k.get(base[j]) != 0) {
         linear_combine(tableau_k, tableau[j], base[j]);
+      }
     }
   }
 
@@ -858,8 +892,9 @@ PPL::MIP_Problem::process_pending_constraints() {
   // that are already satisfied by `last_generator' (this information
   // is encoded in `worked_out_row').
   for (dimension_type i = old_tableau_num_rows; i < tableau_num_rows; ++i) {
-    if (worked_out_row[i])
+    if (worked_out_row[i]) {
       continue;
+    }
     tableau[i].insert(artificial_index, Coefficient_one());
     cost_itr = working_cost.insert(cost_itr, artificial_index);
     *cost_itr = -1;
@@ -1017,8 +1052,9 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
       while (k != k_end && column > k->first) {
         ++k;
       }
-      if (k == k_end)
+      if (k == k_end) {
         break;
+      }
       if (k->first > column) {
         j = tableau_i.lower_bound(j, k->first);
       }
@@ -1167,11 +1203,13 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
       while (k != k_end && j.index() > k->first) {
         ++k;
       }
-      if (k == k_end)
+      if (k == k_end) {
         break;
+      }
       PPL_ASSERT(j.index() <= k->first);
-      if (j.index() < k->first)
+      if (j.index() < k->first) {
         j = tableau_i.lower_bound(j, k->first);
+      }
       else {
         Coefficient_traits::const_reference tableau_ij = *j;
         WEIGHT_BEGIN();
@@ -1303,8 +1341,9 @@ PPL::MIP_Problem::textbook_entering_index() const {
   working_cost_type::const_iterator i_end
     = working_cost.find(cost_sign_index);
   for ( ; i != i_end; ++i) {
-    if (sgn(*i) == cost_sign)
+    if (sgn(*i) == cost_sign) {
       return i.index();
+    }
   }
   // No variable has to enter the base:
   // the cost function was optimized.
@@ -1383,16 +1422,19 @@ PPL::MIP_Problem::is_unbounded_obj_function(
     // different from zero, the final status is unbounded.
     // In the first part the variable is constrained to be greater or equal
     // than zero.
-    if (mapping[i.variable().space_dimension()].second != 0)
+    if (mapping[i.variable().space_dimension()].second != 0) {
       return true;
+    }
     if (optimization_mode == MAXIMIZATION) {
-      if (*i > 0)
+      if (*i > 0) {
         return true;
+      }
     }
     else {
       PPL_ASSERT(optimization_mode == MINIMIZATION);
-      if (*i < 0)
+      if (*i < 0) {
         return true;
+      }
     }
   }
   return false;
@@ -1406,12 +1448,14 @@ PPL::MIP_Problem::pivot(const dimension_type entering_var_index,
   // Linearly combine the constraints.
   for (dimension_type i = tableau.num_rows(); i-- > 0; ) {
     Row& tableau_i = tableau[i];
-    if (i != exiting_base_index && tableau_i.get(entering_var_index) != 0)
+    if (i != exiting_base_index && tableau_i.get(entering_var_index) != 0) {
       linear_combine(tableau_i, tableau_out, entering_var_index);
+    }
   }
   // Linearly combine the cost function.
-  if (working_cost.get(entering_var_index) != 0)
+  if (working_cost.get(entering_var_index) != 0) {
     linear_combine(working_cost, tableau_out, entering_var_index);
+  }
   // Adjust the base.
   base[exiting_base_index] = entering_var_index;
 }
@@ -1505,16 +1549,18 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
       : steepest_edge_float_entering_index();
 
     // If no entering index was computed, the problem is solved.
-    if (entering_var_index == 0)
+    if (entering_var_index == 0) {
       return true;
-
+    }
+    
     // Choose the index of the row exiting the base.
     const dimension_type exiting_base_index
       = get_exiting_base_index(entering_var_index);
     // If no exiting index was computed, the problem is unbounded.
-    if (exiting_base_index == tableau_num_rows)
+    if (exiting_base_index == tableau_num_rows) {
       return false;
-
+    }
+    
     // Check if the client has requested abandoning all expensive
     // computations. If so, the exception specified by the client
     // is thrown now.
@@ -1531,16 +1577,18 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
     cost_sgn_coeff = working_cost.get(working_cost.size() - 1);
 
     challenger = working_cost.get(0);
-    if (cost_sgn_coeff < 0)
+    if (cost_sgn_coeff < 0) {
       neg_assign(challenger);
+    }
     challenger *= current_denom;
     abs_assign(current, cost_sgn_coeff);
     current *= current_numer;
 #if PPL_NOISY_SIMPLEX
     ++num_iterations;
-    if (num_iterations % 200 == 0)
+    if (num_iterations % 200 == 0) {
       std::cout << "Primal simplex: iteration " << num_iterations
                 << "." << std::endl;
+    }
 #endif // PPL_NOISY_SIMPLEX
     // If the following condition fails, probably there's a bug.
     PPL_ASSERT(challenger >= current);
@@ -1550,8 +1598,9 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
       ++non_increased_times;
       // In the following case we will proceed using the `textbook'
       // technique, until the objective function is not improved.
-      if (non_increased_times > allowed_non_increasing_loops)
+      if (non_increased_times > allowed_non_increasing_loops) {
         textbook_pricing = true;
+      }
     }
     // The objective function has an improvement:
     // reset `non_increased_times' and `textbook_pricing'.
@@ -1560,8 +1609,9 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
       textbook_pricing = false;
     }
     current_numer = working_cost.get(0);
-    if (cost_sgn_coeff < 0)
+    if (cost_sgn_coeff < 0) {
       neg_assign(current_numer);
+    }
     abs_assign(current_denom, cost_sgn_coeff);
     WEIGHT_ADD(433);
   }
@@ -1584,16 +1634,18 @@ PPL::MIP_Problem::compute_simplex_using_exact_pricing() {
       ? textbook_entering_index()
       : steepest_edge_exact_entering_index();
     // If no entering index was computed, the problem is solved.
-    if (entering_var_index == 0)
+    if (entering_var_index == 0) {
       return true;
-
+    }
+    
     // Choose the index of the row exiting the base.
     const dimension_type exiting_base_index
       = get_exiting_base_index(entering_var_index);
     // If no exiting index was computed, the problem is unbounded.
-    if (exiting_base_index == tableau_num_rows)
+    if (exiting_base_index == tableau_num_rows) {
       return false;
-
+    }
+    
     // Check if the client has requested abandoning all expensive
     // computations. If so, the exception specified by the client
     // is thrown now.
@@ -1605,9 +1657,10 @@ PPL::MIP_Problem::compute_simplex_using_exact_pricing() {
     pivot(entering_var_index, exiting_base_index);
 #if PPL_NOISY_SIMPLEX
     ++num_iterations;
-    if (num_iterations % 200 == 0)
+    if (num_iterations % 200 == 0) {
       std::cout << "Primal simplex: iteration " << num_iterations
                 << "." << std::endl;
+    }
 #endif // PPL_NOISY_SIMPLEX
   }
 }
@@ -1679,10 +1732,12 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
     // but it avoids storing zeroes.
     Coefficient_traits::const_reference old_cost
       = working_cost.get(old_last_column);
-    if (old_cost == 0)
+    if (old_cost == 0) {
       working_cost.reset(new_last_column);
-    else
+    }
+    else {
       working_cost.insert(new_last_column, old_cost);
+    }
   }
 
   // ... and finally remove redundant columns.
@@ -1761,10 +1816,12 @@ PPL::MIP_Problem::compute_generator() const {
         exact_div_assign(split_denom, lcm, split_denom);
         numer_i *= denom_i;
         sub_mul_assign(numer_i, split_numer, split_denom);
-        if (numer_i == 0)
+        if (numer_i == 0) {
           denom_i = 1;
-        else
+        }
+        else {
           denom_i = lcm;
+        }
       }
       // Note: if the negative component was not in base, then
       // it has value zero and there is nothing left to do.
@@ -1801,9 +1858,9 @@ PPL::MIP_Problem::second_phase() {
              || status == UNBOUNDED
              || status == OPTIMIZED);
   // In the following cases the problem is already solved.
-  if (status == UNBOUNDED || status == OPTIMIZED)
+  if (status == UNBOUNDED || status == OPTIMIZED) {
     return;
-
+  }
   // Build the objective function for the second phase.
   Row new_cost;
   input_obj_function.get_row(new_cost);
@@ -1877,15 +1934,16 @@ PPL::MIP_Problem
                               Coefficient& numer,
                               Coefficient& denom) const {
   const dimension_type ep_space_dim = evaluating_point.space_dimension();
-  if (space_dimension() < ep_space_dim)
+  if (space_dimension() < ep_space_dim) {
     throw std::invalid_argument("PPL::MIP_Problem::"
                                 "evaluate_objective_function(p, n, d):\n"
                                 "*this and p are dimension incompatible.");
-  if (!evaluating_point.is_point())
+  }
+  if (!evaluating_point.is_point()) {
     throw std::invalid_argument("PPL::MIP_Problem::"
                                 "evaluate_objective_function(p, n, d):\n"
                                 "p is not a point.");
-
+  }
   // Compute the smallest space dimension  between `input_obj_function'
   // and `evaluating_point'.
   const dimension_type working_space_dim
@@ -1957,17 +2015,18 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
     mip_status = (mip.status == OPTIMIZED) ? OPTIMIZED_MIP_PROBLEM
       : UNBOUNDED_MIP_PROBLEM;
   }
-  else
+  else {
     return UNFEASIBLE_MIP_PROBLEM;
-
+  }
   PPL_DIRTY_TEMP(mpq_class, tmp_rational);
 
   Generator p = point();
   PPL_DIRTY_TEMP_COEFFICIENT(tmp_coeff1);
   PPL_DIRTY_TEMP_COEFFICIENT(tmp_coeff2);
 
-  if (mip_status == UNBOUNDED_MIP_PROBLEM)
+  if (mip_status == UNBOUNDED_MIP_PROBLEM) {
     p = mip.last_generator;
+  }
   else {
     PPL_ASSERT(mip_status == OPTIMIZED_MIP_PROBLEM);
     // Do not call optimizing_point().
@@ -1980,9 +2039,10 @@ PPL::MIP_Problem::solve_mip(bool& have_incumbent_solution,
         && ((mip.optimization_mode() == MAXIMIZATION
               && tmp_rational <= incumbent_solution_value)
             || (mip.optimization_mode() == MINIMIZATION
-                && tmp_rational >= incumbent_solution_value)))
+                && tmp_rational >= incumbent_solution_value))) {
       // Abandon this path.
       return mip_status;
+    }
   }
 
   bool found_satisfiable_generator = true;
@@ -2085,8 +2145,9 @@ PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& mip,
     gcd_assign(gcd,
                last_generator.coefficient(Variable(*v_it)),
                last_generator_divisor);
-    if (gcd != last_generator_divisor)
+    if (gcd != last_generator_divisor) {
       candidate_variables.insert(*v_it);
+    }
   }
   // If this set is empty, we have finished.
   if (candidate_variables.empty())
@@ -2099,8 +2160,9 @@ PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& mip,
     // An equality is an `active constraint' by definition.
     // If we have an inequality, check if it is an `active constraint'.
     if (input_cs[i]->is_equality()
-        || is_saturated(*(input_cs[i]), last_generator))
+        || is_saturated(*(input_cs[i]), last_generator)) {
       satisfiable_constraints[i] = true;
+    }
   }
 
   dimension_type winning_num_appearances = 0;
@@ -2111,17 +2173,20 @@ PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& mip,
   // For every candidate variable, check how many times this appear in the
   // active constraints.
   for (dimension_type i = input_cs_num_rows; i-- > 0; ) {
-    if (!satisfiable_constraints[i])
+    if (!satisfiable_constraints[i]) {
       continue;
+    }
     // TODO: This can be optimized more, exploiting the (possible)
     // sparseness of input_cs, if the size of candidate_variables is expected
     // to be greater than the number of nonzeroes of most rows.
     for (Variables_Set::const_iterator v_it = candidate_variables.begin(),
             v_end = candidate_variables.end(); v_it != v_end; ++v_it) {
-      if (*v_it >= input_cs[i]->space_dimension())
+      if (*v_it >= input_cs[i]->space_dimension()) {
         break;
-      if (input_cs[i]->coefficient(Variable(*v_it)) != 0)
+      }
+      if (input_cs[i]->coefficient(Variable(*v_it)) != 0) {
         ++num_appearances[*v_it];
+      }
     }
   }
   for (Variables_Set::const_iterator v_it = candidate_variables.begin(),
@@ -2185,9 +2250,10 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& mip,
   }
 #endif
 
-  if (found_satisfiable_generator)
+  if (found_satisfiable_generator) {
     return true;
-
+  }
+  
   PPL_ASSERT(non_int_dim < mip.space_dimension());
 
   assign_r(tmp_rational.get_num(), p.coefficient(Variable(non_int_dim)),
@@ -2264,9 +2330,10 @@ PPL::MIP_Problem::OK() const {
     return false;
   }
 
-  if (!tableau.OK() || !last_generator.OK())
+  if (!tableau.OK() || !last_generator.OK()) {
     return false;
-
+  }
+  
   // Constraint system should contain no strict inequalities.
   for (dimension_type i = input_cs_num_rows; i-- > 0; ) {
     if (input_cs[i]->is_strict_inequality()) {
@@ -2421,8 +2488,9 @@ PPL::MIP_Problem::OK() const {
         Row::const_iterator itr_end = tableau_j.end();
         for ( ; i != i_end && itr != itr_end; ++i) {
           // tableau[i][base[j]], with i different from j, must be zero.
-          if (itr.index() < i->first)
+          if (itr.index() < i->first) {
             itr = tableau_j.lower_bound(itr, itr.index());
+          }
           if (i->second != j && itr.index() == i->first && *itr != 0) {
 #ifndef NDEBUG
             cerr << "tableau[i][base[j]], with i different from j, must be "
@@ -2551,97 +2619,120 @@ PPL_OUTPUT_DEFINITIONS(MIP_Problem)
 bool
 PPL::MIP_Problem::ascii_load(std::istream& s) {
   std::string str;
-  if (!(s >> str) || str != "external_space_dim:")
+  if (!(s >> str) || str != "external_space_dim:") {
     return false;
-
-  if (!(s >> external_space_dim))
+  }
+  
+  if (!(s >> external_space_dim)) {
     return false;
-
-  if (!(s >> str) || str != "internal_space_dim:")
+  }
+  
+  if (!(s >> str) || str != "internal_space_dim:") {
     return false;
-
-  if (!(s >> internal_space_dim))
+  }
+  
+  if (!(s >> internal_space_dim)) {
     return false;
-
-  if (!(s >> str) || str != "input_cs(")
+  }
+  
+  if (!(s >> str) || str != "input_cs(") {
     return false;
-
+  }
+  
   dimension_type input_cs_size;
 
-  if (!(s >> input_cs_size))
+  if (!(s >> input_cs_size)) {
     return false;
-
-  if (!(s >> str) || str != ")")
+  }
+  
+  if (!(s >> str) || str != ")") {
     return false;
-
+  }
+  
   Constraint c(Constraint::zero_dim_positivity());
   input_cs.reserve(input_cs_size);
   for (dimension_type i = 0; i < input_cs_size; ++i) {
-    if (!c.ascii_load(s))
+    if (!c.ascii_load(s)) {
       return false;
+    }
     add_constraint_helper(c);
   }
 
-  if (!(s >> str) || str != "inherited_constraints:")
+  if (!(s >> str) || str != "inherited_constraints:") {
     return false;
-
-  if (!(s >> inherited_constraints))
+  }
+  
+  if (!(s >> inherited_constraints)) {
     return false;
+  }
   // NOTE: we loaded the number of inherited constraints, but we nonetheless
   // reset to zero the corresponding data member, since we do not support
   // constraint inheritance via ascii_load.
   inherited_constraints = 0;
 
-  if (!(s >> str) || str != "first_pending_constraint:")
+  if (!(s >> str) || str != "first_pending_constraint:") {
     return false;
-
-  if (!(s >> first_pending_constraint))
+  }
+  if (!(s >> first_pending_constraint)) {
     return false;
-
-  if (!(s >> str) || str != "input_obj_function")
+  }
+  if (!(s >> str) || str != "input_obj_function") {
     return false;
-
-  if (!input_obj_function.ascii_load(s))
+  }
+  if (!input_obj_function.ascii_load(s)) {
     return false;
-
-  if (!(s >> str) || str != "opt_mode")
+  }
+  if (!(s >> str) || str != "opt_mode") {
     return false;
-
-  if (!(s >> str))
+  }
+  if (!(s >> str)) {
     return false;
-
-  if (str == "MAXIMIZATION")
+  }
+  if (str == "MAXIMIZATION") {
     set_optimization_mode(MAXIMIZATION);
+  }
   else {
-    if (str != "MINIMIZATION")
+    if (str != "MINIMIZATION") {
       return false;
+    }
     set_optimization_mode(MINIMIZATION);
   }
 
-  if (!(s >> str) || str != "initialized:")
+  if (!(s >> str) || str != "initialized:") {
     return false;
-  if (!(s >> str))
+  }
+  if (!(s >> str)) {
     return false;
-  if (str == "YES")
+  }
+  if (str == "YES") {
     initialized = true;
-  else if (str == "NO")
+  }
+  else if (str == "NO") {
     initialized = false;
-  else
+  }
+  else {
     return false;
-
-  if (!(s >> str) || str != "pricing:")
+  }
+  
+  if (!(s >> str) || str != "pricing:") {
     return false;
-  if (!(s >> str))
+  }
+  if (!(s >> str)) {
     return false;
-  if (str == "PRICING_STEEPEST_EDGE_FLOAT")
+  }
+  if (str == "PRICING_STEEPEST_EDGE_FLOAT") {
     pricing = PRICING_STEEPEST_EDGE_FLOAT;
-  else if (str == "PRICING_STEEPEST_EDGE_EXACT")
+  }
+  else if (str == "PRICING_STEEPEST_EDGE_EXACT") {
     pricing = PRICING_STEEPEST_EDGE_EXACT;
-  else if (str == "PRICING_TEXTBOOK")
+  }
+  else if (str == "PRICING_TEXTBOOK") {
     pricing = PRICING_TEXTBOOK;
-  else
+  }
+  else {
     return false;
-
+  }
+  
   if (!(s >> str) || str != "status:")
     return false;
 
@@ -2698,55 +2789,67 @@ PPL::MIP_Problem::ascii_load(std::istream& s) {
     base.push_back(base_value);
   }
 
-  if (!(s >> str) || str != "last_generator")
+  if (!(s >> str) || str != "last_generator") {
     return false;
-
-  if (!last_generator.ascii_load(s))
+  }
+  
+  if (!last_generator.ascii_load(s)) {
     return false;
-
-  if (!(s >> str) || str != "mapping(")
+  }
+  
+  if (!(s >> str) || str != "mapping(") {
     return false;
-
+  }
+  
   dimension_type mapping_size;
-  if (!(s >> mapping_size))
+  if (!(s >> mapping_size)) {
     return false;
-
-  if (!(s >> str) || str != ")")
+  }
+  if (!(s >> str) || str != ")") {
     return false;
-
+  }
+  
   // The first `mapping' index is never used, so we initialize
   // it pushing back a dummy value.
-  if (tableau.num_columns() != 0)
+  if (tableau.num_columns() != 0) {
     mapping.push_back(std::make_pair(0, 0));
-
+  }
+  
   for (dimension_type i = 1; i < mapping_size; ++i) {
     dimension_type index;
-    if (!(s >> index))
+    if (!(s >> index)) {
       return false;
-
-    if (!(s >> str) || str != "->")
+    }
+    
+    if (!(s >> str) || str != "->") {
       return false;
-
+    }
+    
     dimension_type first_value;
-    if (!(s >> first_value))
+    if (!(s >> first_value)) {
       return false;
-
-    if (!(s >> str) || str != "->")
+    }
+    
+    if (!(s >> str) || str != "->") {
       return false;
-
+    }
+    
     dimension_type second_value;
-    if (!(s >> second_value))
+    if (!(s >> second_value)) {
       return false;
-
+    }
+    
     mapping.push_back(std::make_pair(first_value, second_value));
   }
 
-  if (!(s >> str) || str != "integer_variables")
+  if (!(s >> str) || str != "integer_variables") {
     return false;
-
-  if (!i_variables.ascii_load(s))
+  }
+  
+  if (!i_variables.ascii_load(s)) {
     return false;
-
+  }
+  
   PPL_ASSERT(OK());
   return true;
 }

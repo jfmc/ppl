@@ -34,8 +34,9 @@ public:
   Sparse_Row_from_Dense_Row_helper_iterator(const PPL::Dense_Row& row1,
                                             PPL::dimension_type sz)
     : row(row1), sz(sz), i(0) {
-    if (row.size() != 0 && row[0] == 0)
+    if (row.size() != 0 && row[0] == 0) {
       ++(*this);
+    }
   }
 
   Sparse_Row_from_Dense_Row_helper_iterator& operator++() {
@@ -88,8 +89,9 @@ Sparse_Row_from_Dense_Row_helper_function(const PPL::Dense_Row& row,
                                           PPL::dimension_type sz) {
   PPL::dimension_type count = 0;
   for (PPL::dimension_type i = sz; i-- > 0; ) {
-    if (row[i] != 0)
+    if (row[i] != 0) {
       ++count;
+    }
   }
   return count;
 }
@@ -126,17 +128,19 @@ PPL::Sparse_Row::swap_coefficients(dimension_type i, dimension_type j) {
   PPL_ASSERT(i < size_);
   PPL_ASSERT(j < size_);
 
-  if (tree.empty())
+  if (tree.empty()) {
     return;
-
+  }
+  
   using std::swap;
 
   iterator itr_i = tree.bisect(i);
   iterator itr_j = tree.bisect(j);
-  if (itr_i.index() == i)
-    if (itr_j.index() == j)
+  if (itr_i.index() == i) {
+    if (itr_j.index() == j) {
       // Both elements are in the tree.
       swap(*itr_i, *itr_j);
+    }
     else {
       // i is in the tree, j is not.
       PPL_DIRTY_TEMP_COEFFICIENT(tmp);
@@ -146,7 +150,8 @@ PPL::Sparse_Row::swap_coefficients(dimension_type i, dimension_type j) {
       itr_j = tree.insert(j);
       swap(*itr_j, tmp);
     }
-  else
+  }
+  else {
     if (itr_j.index() == j) {
       // j is in the tree, i is not.
       PPL_DIRTY_TEMP_COEFFICIENT(tmp);
@@ -159,12 +164,15 @@ PPL::Sparse_Row::swap_coefficients(dimension_type i, dimension_type j) {
     else {
       // Do nothing, elements are both non-stored zeroes.
     }
+  }
 }
 
 PPL::Sparse_Row::iterator
 PPL::Sparse_Row::reset(iterator first, iterator last) {
-  if (first == last)
+  if (first == last) {
     return first;
+  }
+  
   PPL_ASSERT(last != end());
   --last;
   const dimension_type j = last.index();
@@ -208,8 +216,9 @@ PPL::Sparse_Row::normalize() {
     Coefficient_traits::const_reference x_i = *i;
     if (const int x_i_sign = sgn(x_i)) {
       gcd = x_i;
-      if (x_i_sign < 0)
+      if (x_i_sign < 0) {
         neg_assign(gcd);
+      }
       goto compute_gcd;
     }
   }
@@ -217,8 +226,9 @@ PPL::Sparse_Row::normalize() {
   return;
 
  compute_gcd:
-  if (gcd == 1)
+  if (gcd == 1) {
     return;
+  }
   for (++i; i != i_end; ++i) {
     Coefficient_traits::const_reference x_i = *i;
     if (x_i != 0) {
@@ -234,8 +244,9 @@ PPL::Sparse_Row::normalize() {
       // integers we cannot make any assumption, so here we draw.
       // Overall, we win.
       gcd_assign(gcd, x_i, gcd);
-      if (gcd == 1)
+      if (gcd == 1) {
         return;
+      }
     }
   }
   // Divide the coefficients by the GCD.
@@ -264,10 +275,12 @@ public:
   }
 
   void operator++() {
-    if (from_i)
+    if (from_i) {
       ++i;
-    if (from_j)
+    }
+    if (from_j) {
       ++j;
+    }
     update_current_data();
   }
 
@@ -367,8 +380,9 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
     for (const_iterator j = y.begin(), j_end = y.end(); j != j_end; ++j) {
       i = insert(i, j.index());
       add_mul_assign(*i, *j, coeff2);
-      if (*i == 0)
+      if (*i == 0) {
         i = reset(i);
+      }
     }
     return;
   }
@@ -386,20 +400,23 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
         if (i.index() == j.index()) {
           ++i;
           ++j;
-          if (i == i_end)
+          if (i == i_end) {
             break;
+          }
         }
-        else
+        else {
           if (i.index() < j.index()) {
             i = lower_bound(i, j.index());
-            if (i == i_end)
+            if (i == i_end) {
               break;
+            }
           }
           else {
             PPL_ASSERT(i.index() > j.index());
             ++counter;
             ++j;
           }
+        }
       }
     }
     PPL_ASSERT(i == i_end || j == j_end);
@@ -423,13 +440,15 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
       if (i.index() == j.index()) {
         (*i) *= coeff1;
         add_mul_assign(*i, *j, coeff2);
-        if (*i == 0)
+        if (*i == 0) {
           i = reset(i);
-        else
+        }
+        else {
           ++i;
+        }
         ++j;
       }
-      else
+      else {
         if (i.index() < j.index()) {
           (*i) *= coeff1;
           ++i;
@@ -441,6 +460,7 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
           ++i;
           ++j;
         }
+      }
     }
     PPL_ASSERT(i == i_end || j == j_end);
     for ( ; i != i_end; ++i) {
@@ -495,8 +515,9 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
              j_end = y.lower_bound(end); j != j_end; ++j) {
         i = insert(i, j.index());
         *i += *j;
-        if (*i == 0)
+        if (*i == 0) {
           i = reset(i);
+        }
       }
       return;
     }
@@ -507,8 +528,9 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
              j_end = y.lower_bound(end); j != j_end; ++j) {
         i = insert(i, j.index());
         *i -= *j;
-        if (*i == 0)
+        if (*i == 0) {
           i = reset(i);
+        }
       }
       return;
     }
@@ -518,8 +540,9 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
            j_end = y.lower_bound(end); j != j_end; ++j) {
       i = insert(i, j.index());
       add_mul_assign(*i, *j, coeff2);
-      if (*i == 0)
+      if (*i == 0) {
         i = reset(i);
+      }
     }
     return;
   }
@@ -537,13 +560,15 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
       if (i.index() == j.index()) {
         (*i) *= coeff1;
         *i += *j;
-        if (*i == 0)
+        if (*i == 0) {
           i = reset(i);
-        else
+        }
+        else {
           ++i;
+        }
         ++j;
       }
-      else
+      else {
         if (i.index() < j.index()) {
           (*i) *= coeff1;
           ++i;
@@ -554,6 +579,7 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
           ++i;
           ++j;
         }
+      }
     }
     PPL_ASSERT(i == i_end || j == j_end);
     for ( ; i != i_end && i.index() < end; ++i) {
@@ -578,13 +604,15 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
       if (i.index() == j.index()) {
         (*i) *= coeff1;
         *i -= *j;
-        if (*i == 0)
+        if (*i == 0) {
           i = reset(i);
-        else
+        }
+        else {
           ++i;
+        }
         ++j;
       }
-      else
+      else {
         if (i.index() < j.index()) {
           (*i) *= coeff1;
           ++i;
@@ -596,6 +624,7 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
           ++i;
           ++j;
         }
+      }
     }
     PPL_ASSERT(i == i_end || j == j_end);
     for ( ; i != i_end && i.index() < end; ++i) {
@@ -619,13 +648,15 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
     if (i.index() == j.index()) {
       (*i) *= coeff1;
       add_mul_assign(*i, *j, coeff2);
-      if (*i == 0)
+      if (*i == 0) {
         i = reset(i);
-      else
+      }
+      else {
         ++i;
+      }
       ++j;
     }
-    else
+    else {
       if (i.index() < j.index()) {
         (*i) *= coeff1;
         ++i;
@@ -637,6 +668,7 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
         ++i;
         ++j;
       }
+    }
   }
   PPL_ASSERT(i == i_end || j == j_end);
   for ( ; i != i_end && i.index() < end; ++i) {
@@ -667,30 +699,38 @@ PPL_OUTPUT_DEFINITIONS_ASCII_ONLY(Sparse_Row)
 bool
 PPL::Sparse_Row::ascii_load(std::istream& s) {
   std::string str;
-  if (!(s >> str) || str != "size")
+  if (!(s >> str) || str != "size") {
     return false;
-  if (!(s >> size_))
+  }
+  if (!(s >> size_)) {
     return false;
+  }
   clear();
 
-  if (!(s >> str) || str != "elements")
+  if (!(s >> str) || str != "elements") {
     return false;
-
+  }
+  
   dimension_type n_elements;
-  if (!(s >> n_elements))
+  if (!(s >> n_elements)) {
     return false;
-
+  }
+  
   PPL_DIRTY_TEMP_COEFFICIENT(current_data);
   for (dimension_type i = 0; i < n_elements; ++i) {
     dimension_type current_key;
-    if (!(s >> str) || str != "[")
+    if (!(s >> str) || str != "[") {
       return false;
-    if (!(s >> current_key))
+    }
+    if (!(s >> current_key)) {
       return false;
-    if (!(s >> str) || str != "]=")
+    }
+    if (!(s >> str) || str != "]=") {
       return false;
-    if (!(s >> current_data))
+    }
+    if (!(s >> current_data)) {
       return false;
+    }
     tree.insert(current_key, current_data);
   }
   PPL_ASSERT(OK());
@@ -699,8 +739,9 @@ PPL::Sparse_Row::ascii_load(std::istream& s) {
 
 bool
 PPL::Sparse_Row::OK() const {
-  if (begin() == end())
+  if (begin() == end()) {
     return true;
+  }
   const_iterator last = end();
   --last;
   return (last.index() < size_);
@@ -722,32 +763,37 @@ PPL::operator==(const Sparse_Row& x, const Sparse_Row& y) {
   Sparse_Row::const_iterator j_end = y.end();
   while (i != i_end && j != j_end) {
     if (i.index() == j.index()) {
-      if (*i != *j)
+      if (*i != *j) {
         return false;
+      }
       ++i;
       ++j;
     }
     else {
       if (i.index() < j.index()) {
-        if (*i != 0)
+        if (*i != 0) {
           return false;
+        }
         ++i;
       }
       else {
         PPL_ASSERT(i.index() > j.index());
-        if (*j != 0)
+        if (*j != 0) {
           return false;
+        }
         ++j;
       }
     }
   }
   for ( ; i != i_end; ++i) {
-    if (*i != 0)
+    if (*i != 0) {
       return false;
+    }
   }
   for ( ; j != j_end; ++j) {
-    if (*j != 0)
+    if (*j != 0) {
       return false;
+    }
   }
   return true;
 }
@@ -760,18 +806,21 @@ PPL::operator!=(const Sparse_Row& x, const Sparse_Row& y) {
 
 bool
 PPL::operator==(const Dense_Row& x, const Sparse_Row& y) {
-  if (x.size() != y.size())
+  if (x.size() != y.size()) {
     return false;
+  }
   Sparse_Row::const_iterator itr = y.end();
   for (dimension_type i = 0; i < x.size(); ++i) {
     itr = y.lower_bound(itr, i);
     if (itr != y.end() && itr.index() == i) {
-      if (x[i] != *itr)
+      if (x[i] != *itr) {
         return false;
+      }
     }
     else {
-      if (x[i] != 0)
+      if (x[i] != 0) {
         return false;
+      }
     }
   }
   return true;
@@ -805,8 +854,9 @@ PPL::linear_combine(Sparse_Row& x, const Dense_Row& y,
   for (dimension_type i = 0; i < y.size(); ++i) {
     itr = x.lower_bound(itr, i);
     if (itr == x.end() || itr.index() != i) {
-      if (y[i] == 0)
+      if (y[i] == 0) {
         continue;
+      }
       itr = x.insert(itr, i, y[i]);
       (*itr) *= coeff2;
       PPL_ASSERT((*itr) != 0);
@@ -815,8 +865,9 @@ PPL::linear_combine(Sparse_Row& x, const Dense_Row& y,
       PPL_ASSERT(itr.index() == i);
       (*itr) *= coeff1;
       add_mul_assign(*itr, y[i], coeff2);
-      if (*itr == 0)
+      if (*itr == 0) {
         itr = x.reset(itr);
+      }
     }
   }
 }
@@ -838,20 +889,23 @@ PPL::linear_combine(Sparse_Row& x, const Dense_Row& y,
     if (coeff2 == 1) {
       for (dimension_type i = start; i < end; ++i) {
         PPL_ASSERT(itr == x.end() || itr.index() + 1 >= i);
-        if (itr != x.end() && itr.index() < i)
+        if (itr != x.end() && itr.index() < i) {
           ++itr;
+        }
         PPL_ASSERT(itr == x.end() || itr.index() >= i);
         if (itr == x.end() || itr.index() != i) {
-          if (y[i] == 0)
+          if (y[i] == 0) {
             continue;
+          }
           itr = x.insert(itr, i, y[i]);
           PPL_ASSERT((*itr) != 0);
         }
         else {
           PPL_ASSERT(itr.index() == i);
           (*itr) += y[i];
-          if (*itr == 0)
+          if (*itr == 0) {
             itr = x.reset(itr);
+          }
         }
       }
       return;
@@ -859,12 +913,14 @@ PPL::linear_combine(Sparse_Row& x, const Dense_Row& y,
     if (coeff2 == -1) {
       for (dimension_type i = start; i < end; ++i) {
         PPL_ASSERT(itr == x.end() || itr.index() + 1 >= i);
-        if (itr != x.end() && itr.index() < i)
+        if (itr != x.end() && itr.index() < i) {
           ++itr;
+        }
         PPL_ASSERT(itr == x.end() || itr.index() >= i);
         if (itr == x.end() || itr.index() != i) {
-          if (y[i] == 0)
+          if (y[i] == 0) {
             continue;
+          }
           itr = x.insert(itr, i, y[i]);
           neg_assign(*itr);
           PPL_ASSERT((*itr) != 0);
@@ -872,20 +928,23 @@ PPL::linear_combine(Sparse_Row& x, const Dense_Row& y,
         else {
           PPL_ASSERT(itr.index() == i);
           (*itr) -= y[i];
-          if (*itr == 0)
+          if (*itr == 0) {
             itr = x.reset(itr);
+          }
         }
       }
       return;
     }
     for (dimension_type i = start; i < end; ++i) {
       PPL_ASSERT(itr == x.end() || itr.index() + 1 >= i);
-      if (itr != x.end() && itr.index() < i)
+      if (itr != x.end() && itr.index() < i) {
         ++itr;
+      }
       PPL_ASSERT(itr == x.end() || itr.index() >= i);
       if (itr == x.end() || itr.index() != i) {
-        if (y[i] == 0)
+        if (y[i] == 0) {
           continue;
+        }
         itr = x.insert(itr, i, y[i]);
         (*itr) *= coeff2;
         PPL_ASSERT((*itr) != 0);
@@ -893,8 +952,9 @@ PPL::linear_combine(Sparse_Row& x, const Dense_Row& y,
       else {
         PPL_ASSERT(itr.index() == i);
         add_mul_assign(*itr, y[i], coeff2);
-        if (*itr == 0)
+        if (*itr == 0) {
           itr = x.reset(itr);
+        }
       }
     }
     return;
@@ -903,12 +963,14 @@ PPL::linear_combine(Sparse_Row& x, const Dense_Row& y,
   if (coeff2 == 1) {
     for (dimension_type i = start; i < end; ++i) {
       PPL_ASSERT(itr == x.end() || itr.index() + 1 >= i);
-      if (itr != x.end() && itr.index() < i)
+      if (itr != x.end() && itr.index() < i) {
         ++itr;
+      }
       PPL_ASSERT(itr == x.end() || itr.index() >= i);
       if (itr == x.end() || itr.index() != i) {
-        if (y[i] == 0)
+        if (y[i] == 0) {
           continue;
+        }
         itr = x.insert(itr, i, y[i]);
         PPL_ASSERT((*itr) != 0);
       }
@@ -916,8 +978,9 @@ PPL::linear_combine(Sparse_Row& x, const Dense_Row& y,
         PPL_ASSERT(itr.index() == i);
         (*itr) *= coeff1;
         (*itr) += y[i];
-        if (*itr == 0)
+        if (*itr == 0) {
           itr = x.reset(itr);
+        }
       }
     }
     return;
@@ -929,8 +992,9 @@ PPL::linear_combine(Sparse_Row& x, const Dense_Row& y,
         ++itr;
       PPL_ASSERT(itr == x.end() || itr.index() >= i);
       if (itr == x.end() || itr.index() != i) {
-        if (y[i] == 0)
+        if (y[i] == 0) {
           continue;
+        }
         itr = x.insert(itr, i, y[i]);
         neg_assign(*itr);
         PPL_ASSERT((*itr) != 0);
@@ -939,8 +1003,9 @@ PPL::linear_combine(Sparse_Row& x, const Dense_Row& y,
         PPL_ASSERT(itr.index() == i);
         (*itr) *= coeff1;
         (*itr) -= y[i];
-        if (*itr == 0)
+        if (*itr == 0) {
           itr = x.reset(itr);
+        }
       }
     }
     return;
@@ -952,8 +1017,9 @@ PPL::linear_combine(Sparse_Row& x, const Dense_Row& y,
       ++itr;
     PPL_ASSERT(itr == x.end() || itr.index() >= i);
     if (itr == x.end() || itr.index() != i) {
-      if (y[i] == 0)
+      if (y[i] == 0) {
         continue;
+      }
       itr = x.insert(itr, i, y[i]);
       (*itr) *= coeff2;
       PPL_ASSERT((*itr) != 0);
@@ -962,8 +1028,9 @@ PPL::linear_combine(Sparse_Row& x, const Dense_Row& y,
       PPL_ASSERT(itr.index() == i);
       (*itr) *= coeff1;
       add_mul_assign(*itr, y[i], coeff2);
-      if (*itr == 0)
+      if (*itr == 0) {
         itr = x.reset(itr);
+      }
     }
   }
 }
@@ -988,9 +1055,10 @@ PPL::linear_combine(Dense_Row& x, const Sparse_Row& y,
 
     itr = y.lower_bound(itr, i);
 
-    if (itr == y.end() || itr.index() != i)
+    if (itr == y.end() || itr.index() != i) {
       continue;
-
+    }
+    
     add_mul_assign(x[i], *itr, coeff2);
   }
 }
@@ -1031,13 +1099,15 @@ PPL::linear_combine(Dense_Row& x, const Sparse_Row& y,
       x[i] *= coeff1;
 
       PPL_ASSERT(itr == y.end() || itr.index() + 1 >= i);
-      if (itr != y.end() && itr.index() < i)
+      if (itr != y.end() && itr.index() < i) {
         ++itr;
+      }
       PPL_ASSERT(itr == y.end() || itr.index() >= i);
 
-      if (itr == y.end() || itr.index() != i)
+      if (itr == y.end() || itr.index() != i) {
         continue;
-
+      }
+      
       x[i] += *itr;
     }
     return;
@@ -1047,13 +1117,15 @@ PPL::linear_combine(Dense_Row& x, const Sparse_Row& y,
       x[i] *= coeff1;
 
       PPL_ASSERT(itr == y.end() || itr.index() + 1 >= i);
-      if (itr != y.end() && itr.index() < i)
+      if (itr != y.end() && itr.index() < i) {
         ++itr;
+      }
       PPL_ASSERT(itr == y.end() || itr.index() >= i);
 
-      if (itr == y.end() || itr.index() != i)
+      if (itr == y.end() || itr.index() != i) {
         continue;
-
+      }
+      
       x[i] -= *itr;
     }
     return;
@@ -1063,13 +1135,15 @@ PPL::linear_combine(Dense_Row& x, const Sparse_Row& y,
     x[i] *= coeff1;
 
     PPL_ASSERT(itr == y.end() || itr.index() + 1 >= i);
-    if (itr != y.end() && itr.index() < i)
+    if (itr != y.end() && itr.index() < i) {
       ++itr;
+    }
     PPL_ASSERT(itr == y.end() || itr.index() >= i);
 
-    if (itr == y.end() || itr.index() != i)
+    if (itr == y.end() || itr.index() != i) {
       continue;
-
+    }
+    
     add_mul_assign(x[i], *itr, coeff2);
   }
 }

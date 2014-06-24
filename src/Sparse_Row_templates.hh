@@ -47,29 +47,36 @@ Sparse_Row::combine_needs_first(const Sparse_Row& y,
     while (i != i_end && j != j_end) {
       if (i.index() == j.index()) {
         g(*i, *j);
-        if (*i == 0)
+        if (*i == 0) {
           i = reset(i);
-        else
+        }
+        else {
           ++i;
+        }
         ++j;
       }
       else
         if (i.index() < j.index()) {
           f(*i);
-          if (*i == 0)
+          if (*i == 0) {
             i = reset(i);
-          else
+          }
+          else {
             ++i;
+          }
         }
-        else
+        else {
           j = y.lower_bound(j, i.index());
+        }
     }
     while (i != i_end) {
       f(*i);
-      if (*i == 0)
+      if (*i == 0) {
         i = reset(i);
-      else
+      }
+      else {
         ++i;
+      }
     }
   }
 }
@@ -83,8 +90,9 @@ Sparse_Row::combine_needs_second(const Sparse_Row& y,
   for (const_iterator j = y.begin(), j_end = y.end(); j != j_end; ++j) {
     i = insert(i, j.index());
     g(*i, *j);
-    if (*i == 0)
+    if (*i == 0) {
       i = reset(i);
+    }
   }
 }
 
@@ -108,44 +116,53 @@ Sparse_Row::combine(const Sparse_Row& y, const Func1& f,
     while (i != i_end && j != j_end) {
       if (i.index() == j.index()) {
         g(*i, *j);
-        if (*i == 0)
+        if (*i == 0) {
           i = reset(i);
-        else
+        }
+        else {
           ++i;
+        }
         ++j;
       }
       else
         if (i.index() < j.index()) {
           f(*i);
-          if (*i == 0)
+          if (*i == 0) {
             i = reset(i);
-          else
+          }
+          else {
             ++i;
+          }
         }
         else {
           PPL_ASSERT(i.index() > j.index());
           i = insert(i, j.index());
           h(*i, *j);
-          if (*i == 0)
+          if (*i == 0) {
             i = reset(i);
-          else
+          }
+          else {
             ++i;
+          }
           ++j;
         }
     }
     PPL_ASSERT(i == i_end || j == j_end);
     while (i != i_end) {
       f(*i);
-      if (*i == 0)
+      if (*i == 0) {
         i = reset(i);
-      else
+      }
+      else {
         ++i;
+      }
     }
     while (j != j_end) {
       i = insert(i, j.index());
       h(*i, *j);
-      if (*i == 0)
+      if (*i == 0) {
         i = reset(i);
+      }
       ++j;
     }
   }

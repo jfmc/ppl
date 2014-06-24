@@ -94,8 +94,9 @@ Matrix<Row>::permute_columns(const std::vector<dimension_type>& cycles) {
         for (dimension_type l = (j - 1); l > i; --l) {
           rows_k.swap_coefficients(cycles[l-1], cycles[l]);
         }
-        if (tmp == 0)
+        if (tmp == 0) {
           rows_k.reset(cycles[i]);
+        }
         else {
           using std::swap;
           swap(tmp, rows_k[cycles[i]]);
@@ -151,13 +152,16 @@ Matrix<Row>::ascii_load(std::istream& s) {
   std::string str;
   dimension_type new_num_rows;
   dimension_type new_num_cols;
-  if (!(s >> new_num_rows))
+  if (!(s >> new_num_rows)) {
     return false;
-  if (!(s >> str) || str != "x")
+  }
+  if (!(s >> str) || str != "x") {
     return false;
-  if (!(s >> new_num_cols))
+  }
+  if (!(s >> new_num_cols)) {
     return false;
-
+  }
+  
   for (iterator i = rows.begin(), i_end = rows.end();
        i != i_end; ++i) {
     i->clear();
@@ -166,8 +170,9 @@ Matrix<Row>::ascii_load(std::istream& s) {
   resize(new_num_rows, new_num_cols);
 
   for (dimension_type row = 0; row < new_num_rows; ++row) {
-    if (!rows[row].ascii_load(s))
+    if (!rows[row].ascii_load(s)) {
       return false;
+    }
   }
 
   // Check invariants.
@@ -185,8 +190,9 @@ template <typename Row>
 bool
 Matrix<Row>::OK() const {
   for (const_iterator i = begin(), i_end = end(); i != i_end; ++i) {
-    if (i->size() != num_columns_)
+    if (i->size() != num_columns_) {
       return false;
+    }
   }
   return true;
 }
@@ -195,13 +201,16 @@ Matrix<Row>::OK() const {
 template <typename Row>
 bool
 operator==(const Matrix<Row>& x, const Matrix<Row>& y) {
-  if (x.num_rows() != y.num_rows())
+  if (x.num_rows() != y.num_rows()) {
     return false;
-  if (x.num_columns() != y.num_columns())
+  }
+  if (x.num_columns() != y.num_columns()) {
     return false;
+  }
   for (dimension_type i = x.num_rows(); i-- > 0; ) {
-    if (x[i] != y[i])
+    if (x[i] != y[i]) {
       return false;
+    }
   }
   return true;
 }

@@ -42,8 +42,9 @@ namespace Parma_Polyhedra_Library {
 inline void
 initialize() {
 #ifdef PPL_NO_AUTOMATIC_INITIALIZATION
-  if (Parma_Polyhedra_Library_initializer_p == 0)
-    Parma_Polyhedra_Library_initializer_p = new Init();
+  if (Parma_Polyhedra_Library_initializer_p == 0) {
+      Parma_Polyhedra_Library_initializer_p = new Init();
+  }
 #endif
 }
 

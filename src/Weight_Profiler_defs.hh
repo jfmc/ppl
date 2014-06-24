@@ -84,12 +84,15 @@ public:
       ? DISCARDED
       : VALID;
     ++stat[i].samples;
-    if (stat[i].count == 0)
+    if (stat[i].count == 0) {
       stat[i].min = stat[i].max = elapsed1;
-    else if (stat[i].min > elapsed1)
+    }
+    else if (stat[i].min > elapsed1) {
       stat[i].min = elapsed1;
-    else if (stat[i].max < elapsed1)
+    }
+    else if (stat[i].max < elapsed1) {
       stat[i].max = elapsed1;
+    }
     stat[i].sum += elapsed;
     stat[i].squares_sum += elapsed * elapsed1;
     stat[i].count += factor;

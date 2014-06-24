@@ -72,10 +72,12 @@ Variable_Floating_Point_Expression<FP_Interval_Type, FP_Format>
                            FP_Linear_Form_Abstract_Store& lf_store) const {
   for (typename FP_Linear_Form_Abstract_Store::iterator
          i = lf_store.begin(); i != lf_store.end(); ) {
-    if ((i->second).coefficient(Variable(variable_index)) != 0)
+    if ((i->second).coefficient(Variable(variable_index)) != 0) {
       i = lf_store.erase(i);
-    else
+    }
+    else {
       ++i;
+    }
   }
   lf_store[variable_index] = lf;
   return;

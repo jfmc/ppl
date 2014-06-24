@@ -74,8 +74,9 @@ Sparse_Row::num_stored_elements() const {
 
 inline void
 Sparse_Row::resize(dimension_type n) {
-  if (n < size_)
+  if (n < size_) {
     reset_after(n);
+  }
   size_ = n;
   PPL_ASSERT(OK());
 }
@@ -163,13 +164,16 @@ Sparse_Row::operator[](dimension_type i) const {
 inline Coefficient_traits::const_reference
 Sparse_Row::get(dimension_type i) const {
   PPL_ASSERT(i < size_);
-  if (tree.empty())
+  if (tree.empty()) {
     return Coefficient_zero();
+  }
   const_iterator itr = find(i);
-  if (itr != end())
+  if (itr != end()) {
     return *itr;
-  else
+  }
+  else {
     return Coefficient_zero();
+  }
 }
 
 inline Sparse_Row::iterator
@@ -178,9 +182,9 @@ Sparse_Row::find(dimension_type i) {
 
   iterator itr = tree.bisect(i);
 
-  if (itr != end() && itr.index() == i)
+  if (itr != end() && itr.index() == i) {
     return itr;
-
+  }
   return end();
 }
 
@@ -190,9 +194,9 @@ Sparse_Row::find(iterator hint, dimension_type i) {
 
   iterator itr = tree.bisect_near(hint, i);
 
-  if (itr != end() && itr.index() == i)
+  if (itr != end() && itr.index() == i) {
     return itr;
-
+  }
   return end();
 }
 
@@ -202,9 +206,10 @@ Sparse_Row::find(dimension_type i) const {
 
   const_iterator itr = tree.bisect(i);
 
-  if (itr != end() && itr.index() == i)
+  if (itr != end() && itr.index() == i) {
     return itr;
-
+  }
+  
   return end();
 }
 
@@ -214,9 +219,9 @@ Sparse_Row::find(const_iterator hint, dimension_type i) const {
 
   const_iterator itr = tree.bisect_near(hint, i);
 
-  if (itr != end() && itr.index() == i)
+  if (itr != end() && itr.index() == i) {
     return itr;
-
+  }
   return end();
 }
 
@@ -226,12 +231,14 @@ Sparse_Row::lower_bound(dimension_type i) {
 
   iterator itr = tree.bisect(i);
 
-  if (itr == end())
+  if (itr == end()) {
     return end();
-
-  if (itr.index() < i)
+  }
+  
+  if (itr.index() < i) {
     ++itr;
-
+  }
+  
   PPL_ASSERT(itr == end() || itr.index() >= i);
 
   return itr;
@@ -243,12 +250,14 @@ Sparse_Row::lower_bound(iterator hint, dimension_type i) {
 
   iterator itr = tree.bisect_near(hint, i);
 
-  if (itr == end())
+  if (itr == end()) {
     return end();
-
-  if (itr.index() < i)
+  }
+  
+  if (itr.index() < i) {
     ++itr;
-
+  }
+  
   PPL_ASSERT(itr == end() || itr.index() >= i);
 
   return itr;
@@ -260,12 +269,14 @@ Sparse_Row::lower_bound(dimension_type i) const {
 
   const_iterator itr = tree.bisect(i);
 
-  if (itr == end())
+  if (itr == end()) {
     return end();
-
-  if (itr.index() < i)
+  }
+  
+  if (itr.index() < i) {
     ++itr;
-
+  }
+  
   PPL_ASSERT(itr == end() || itr.index() >= i);
 
   return itr;
@@ -277,12 +288,14 @@ Sparse_Row::lower_bound(const_iterator hint, dimension_type i) const {
 
   const_iterator itr = tree.bisect_near(hint, i);
 
-  if (itr == end())
+  if (itr == end()) {
     return end();
-
-  if (itr.index() < i)
+  }
+  
+  if (itr.index() < i) {
     ++itr;
-
+  }
+  
   PPL_ASSERT(itr == end() || itr.index() >= i);
 
   return itr;

@@ -37,10 +37,12 @@ PPL::IO_Operators::operator<<(std::ostream& s, const PIP_Problem& pip) {
     s << "\n" << *i;
   }
   s << "\nProblem parameters: " << pip.parameter_space_dimensions();
-  if (pip.get_big_parameter_dimension() == not_a_dimension())
+  if (pip.get_big_parameter_dimension() == not_a_dimension()) {
     s << "\nNo big-parameter set.\n";
-  else
+  }
+  else {
     s << "\nBig-parameter: " << Variable(pip.get_big_parameter_dimension());
+  }
   s << "\n";
   return s;
 }
@@ -56,10 +58,11 @@ PPL::PIP_Problem::PIP_Problem(const dimension_type dim)
     initial_context(),
     big_parameter_dimension(not_a_dimension()) {
   // Check for space dimension overflow.
-  if (dim > max_space_dimension())
+  if (dim > max_space_dimension()) {
     throw std::length_error("PPL::PIP_Problem::PIP_Problem(dim):\n"
                             "dim exceeds the maximum allowed "
                             "space dimension.");
+  }
   control_parameters_init();
   PPL_ASSERT(OK());
 }
@@ -115,15 +118,17 @@ PPL::PIP_Problem::solve() const {
     {
       PIP_Problem& x = const_cast<PIP_Problem&>(*this);
       // Allocate PIP solution tree root, if needed.
-      if (current_solution == 0)
+      if (current_solution == 0) {
         x.current_solution = new PIP_Solution_Node(this);
-
+      }
+      
       // Properly resize context matrix.
       const dimension_type new_num_cols = parameters.size() + 1;
       const dimension_type old_num_cols = initial_context.num_columns();
-      if (old_num_cols < new_num_cols)
+      if (old_num_cols < new_num_cols) {
         x.initial_context.add_zero_columns(new_num_cols - old_num_cols);
-
+      }
+      
       // Computed once for all (to be used inside loop).
       const Variables_Set::const_iterator param_begin = parameters.begin();
       const Variables_Set::const_iterator param_end = parameters.end();
@@ -142,9 +147,10 @@ PPL::PIP_Problem::solve() const {
 
         // Constraints having a non-zero variable coefficient
         // should not be inserted in context.
-        if (!c.expression().all_zeroes_except(parameters, 1, c_space_dim + 1))
+        if (!c.expression().all_zeroes_except(parameters, 1, c_space_dim + 1)) {
           continue;
-
+        }
+        
         check_feasible_context = true;
 
         x.initial_context.add_zero_rows(1);
@@ -157,13 +163,15 @@ PPL::PIP_Problem::solve() const {
           if (c.inhomogeneous_term() != 0) {
             itr = row.insert(0, c.inhomogeneous_term());
             // Adjust inhomogeneous term if strict.
-            if (c.is_strict_inequality())
+            if (c.is_strict_inequality()) {
               --(*itr);
+            }
           }
           else {
             // Adjust inhomogeneous term if strict.
-            if (c.is_strict_inequality())
+            if (c.is_strict_inequality()) {
               itr = row.insert(0, -1);
+            }
           }
           dimension_type i = 1;
 
@@ -177,8 +185,9 @@ PPL::PIP_Problem::solve() const {
             if (*pi < c_space_dim) {
               Coefficient_traits::const_reference coeff_pi
                 = c.coefficient(Variable(*pi));
-              if (coeff_pi != 0)
+              if (coeff_pi != 0) {
                 itr = row.insert(itr, i, coeff_pi);
+              }
             }
             else
               break;
@@ -249,15 +258,17 @@ PPL::PIP_Problem::solve() const {
 
 PPL::PIP_Tree
 PPL::PIP_Problem::solution() const {
-  if (status == PARTIALLY_SATISFIABLE)
+  if (status == PARTIALLY_SATISFIABLE) {
     solve();
+  }
   return current_solution;
 }
 
 PPL::PIP_Tree
 PPL::PIP_Problem::optimizing_solution() const {
-  if (status == PARTIALLY_SATISFIABLE)
+  if (status == PARTIALLY_SATISFIABLE) {
     solve();
+  }
   return current_solution;
 }
 
@@ -325,11 +336,13 @@ PPL::PIP_Problem::OK() const {
     return false;
   }
 
-  if (!parameters.OK())
+  if (!parameters.OK()) {
     return false;
-  if (!initial_context.OK())
+  }
+  if (!initial_context.OK()) {
     return false;
-
+  }
+  
   if (current_solution != 0) {
     // Check well formedness of the solution tree.
     if (!current_solution->OK()) {
@@ -417,8 +430,9 @@ PPL::PIP_Problem::ascii_dump(std::ostream& s) const {
   s << "\nbig_parameter_dimension: " << big_parameter_dimension << "\n";
 
   s << "\ncurrent_solution: ";
-  if (current_solution == 0)
+  if (current_solution == 0) {
     s << "BOTTOM\n";
+  }
   else if (const PIP_Decision_Node* const dec
              = current_solution->as_decision()) {
     s << "DECISION\n";
@@ -437,124 +451,160 @@ PPL_OUTPUT_DEFINITIONS(PIP_Problem)
 bool
 PPL::PIP_Problem::ascii_load(std::istream& s) {
   std::string str;
-  if (!(s >> str) || str != "external_space_dim:")
+  if (!(s >> str) || str != "external_space_dim:") {
     return false;
-
-  if (!(s >> external_space_dim))
+  }
+  
+  if (!(s >> external_space_dim)) {
     return false;
-
-  if (!(s >> str) || str != "internal_space_dim:")
+  }
+  
+  if (!(s >> str) || str != "internal_space_dim:") {
     return false;
-
-  if (!(s >> internal_space_dim))
+  }
+  
+  if (!(s >> internal_space_dim)) {
     return false;
-
-  if (!(s >> str) || str != "input_cs(")
+  }
+  
+  if (!(s >> str) || str != "input_cs(") {
     return false;
-
+  }
+  
   dimension_type input_cs_size;
 
-  if (!(s >> input_cs_size))
+  if (!(s >> input_cs_size)) {
     return false;
-
-  if (!(s >> str) || str != ")")
+  }
+  
+  if (!(s >> str) || str != ")") {
     return false;
-
+  }
+  
   Constraint c(Constraint::zero_dim_positivity());
   for (dimension_type i = 0; i < input_cs_size; ++i) {
-    if (!c.ascii_load(s))
+    if (!c.ascii_load(s)) {
       return false;
+    }
     input_cs.push_back(c);
   }
 
-  if (!(s >> str) || str != "first_pending_constraint:")
+  if (!(s >> str) || str != "first_pending_constraint:") {
     return false;
-
-  if (!(s >> first_pending_constraint))
+  }
+  
+  if (!(s >> first_pending_constraint)) {
     return false;
-
-  if (!(s >> str) || str != "status:")
+  }
+  
+  if (!(s >> str) || str != "status:") {
     return false;
-
-  if (!(s >> str))
+  }
+  
+  if (!(s >> str)) {
     return false;
-
-  if (str == "UNSATISFIABLE")
+  }
+  
+  if (str == "UNSATISFIABLE") {
     status = UNSATISFIABLE;
-  else if (str == "OPTIMIZED")
+  }
+  else if (str == "OPTIMIZED") {
     status = OPTIMIZED;
-  else if (str == "PARTIALLY_SATISFIABLE")
+  }
+  else if (str == "PARTIALLY_SATISFIABLE") {
     status = PARTIALLY_SATISFIABLE;
-  else
+  }
+  else {
     return false;
-
-  if (!(s >> str) || str != "parameters")
+  }
+  
+  if (!(s >> str) || str != "parameters") {
     return false;
-
-  if (!parameters.ascii_load(s))
+  }
+  
+  if (!parameters.ascii_load(s)) {
     return false;
-
-  if (!(s >> str) || str != "initial_context")
+  }
+  
+  if (!(s >> str) || str != "initial_context") {
     return false;
-
-  if (!initial_context.ascii_load(s))
+  }
+  
+  if (!initial_context.ascii_load(s)) {
     return false;
-
-  if (!(s >> str) || str != "control_parameters")
+  }
+  
+  if (!(s >> str) || str != "control_parameters") {
     return false;
-
+  }
+  
   for (dimension_type i = 0; i < CONTROL_PARAMETER_NAME_SIZE; ++i) {
-    if (!(s >> str))
+    if (!(s >> str)) {
       return false;
+    }
     Control_Parameter_Value value;
-    if (str == "CUTTING_STRATEGY_FIRST")
+    if (str == "CUTTING_STRATEGY_FIRST") {
       value = CUTTING_STRATEGY_FIRST;
-    else if (str == "CUTTING_STRATEGY_DEEPEST")
+    }
+    else if (str == "CUTTING_STRATEGY_DEEPEST") {
       value = CUTTING_STRATEGY_DEEPEST;
-    else if (str == "CUTTING_STRATEGY_ALL")
+    }
+    else if (str == "CUTTING_STRATEGY_ALL") {
       value = CUTTING_STRATEGY_ALL;
-    else if (str == "PIVOT_ROW_STRATEGY_FIRST")
+    }
+    else if (str == "PIVOT_ROW_STRATEGY_FIRST") {
       value = PIVOT_ROW_STRATEGY_FIRST;
-    else if (str == "PIVOT_ROW_STRATEGY_MAX_COLUMN")
+    }
+    else if (str == "PIVOT_ROW_STRATEGY_MAX_COLUMN") {
       value = PIVOT_ROW_STRATEGY_MAX_COLUMN;
-    else
+    }
+    else {
       return false;
+    }
     control_parameters[i] = value;
   }
 
-  if (!(s >> str) || str != "big_parameter_dimension:")
+  if (!(s >> str) || str != "big_parameter_dimension:") {
     return false;
-  if (!(s >> big_parameter_dimension))
+  }
+  if (!(s >> big_parameter_dimension)) {
     return false;
-
+  }
+  
   // Release current_solution tree (if any).
   delete current_solution;
   current_solution = 0;
   // Load current_solution (if any).
-  if (!(s >> str) || str != "current_solution:")
+  if (!(s >> str) || str != "current_solution:") {
     return false;
-  if (!(s >> str))
+  }
+  if (!(s >> str)) {
     return false;
-  if (str == "BOTTOM")
+  }
+  if (str == "BOTTOM") {
     current_solution = 0;
+  }
   else if (str == "DECISION") {
     PIP_Decision_Node* const dec = new PIP_Decision_Node(0, 0, 0);
     current_solution = dec;
-    if (!dec->ascii_load(s))
+    if (!dec->ascii_load(s)) {
       return false;
+    }
     dec->set_owner(this);
   }
   else if (str == "SOLUTION") {
     PIP_Solution_Node* const sol = new PIP_Solution_Node(0);
     current_solution = sol;
-    if (!sol->ascii_load(s))
+    if (!sol->ascii_load(s)) {
       return false;
+    }
     sol->set_owner(this);
   }
-  else
+  else {
     // Unknown node kind.
     return false;
-
+  }
+  
   PPL_ASSERT(OK());
   return true;
 }
@@ -582,9 +632,10 @@ PPL::PIP_Problem
                                  const dimension_type m_params) {
   // Adding no space dims at all is a no-op:
   // this avoids invalidating problem status (if it was optimized).
-  if (m_vars == 0 && m_params == 0)
+  if (m_vars == 0 && m_params == 0) {
     return;
-
+  }
+  
   // The space dimension of the resulting PIP problem should not
   // overflow the maximum allowed space dimension.
   dimension_type available = max_space_dimension() - space_dimension();
@@ -593,11 +644,12 @@ PPL::PIP_Problem
     available -= m_vars;
     should_throw = (m_params > available);
   }
-  if (should_throw)
+  if (should_throw) {
     throw std::length_error("PPL::PIP_Problem::"
                             "add_space_dimensions_and_embed(m_v, m_p):\n"
                             "adding m_v+m_p new space dimensions exceeds "
                             "the maximum allowed space dimension.");
+  }
   // First add PIP variables ...
   external_space_dim += m_vars;
   // ... then add PIP parameters.
@@ -606,19 +658,21 @@ PPL::PIP_Problem
     ++external_space_dim;
   }
   // Update problem status.
-  if (status != UNSATISFIABLE)
+  if (status != UNSATISFIABLE) {
     status = PARTIALLY_SATISFIABLE;
+  }
   PPL_ASSERT(OK());
 }
 
 void
 PPL::PIP_Problem
 ::add_to_parameter_space_dimensions(const Variables_Set& p_vars) {
-  if (p_vars.space_dimension() > external_space_dim)
+  if (p_vars.space_dimension() > external_space_dim) {
     throw std::invalid_argument("PPL::PIP_Problem::"
                                 "add_to_parameter_space_dimension(p_vars):\n"
                                 "*this and p_vars are dimension "
                                 "incompatible.");
+  }
   const dimension_type original_size = parameters.size();
   parameters.insert(p_vars.begin(), p_vars.end());
   // Do not allow to turn variables into parameters.
@@ -633,8 +687,9 @@ PPL::PIP_Problem
 
   // If a new parameter was inserted, set the internal status to
   // PARTIALLY_SATISFIABLE.
-  if (parameters.size() != original_size && status != UNSATISFIABLE)
+  if (parameters.size() != original_size && status != UNSATISFIABLE) {
     status = PARTIALLY_SATISFIABLE;
+  }
 }
 
 void
@@ -648,8 +703,9 @@ PPL::PIP_Problem::add_constraint(const Constraint& c) {
   }
   input_cs.push_back(c);
   // Update problem status.
-  if (status != UNSATISFIABLE)
+  if (status != UNSATISFIABLE) {
     status = PARTIALLY_SATISFIABLE;
+  }
 }
 
 void
@@ -690,15 +746,17 @@ PPL::PIP_Problem::set_control_parameter(Control_Parameter_Value value) {
 
 void
 PPL::PIP_Problem::set_big_parameter_dimension(dimension_type big_dim) {
-  if (parameters.count(big_dim) == 0)
+  if (parameters.count(big_dim) == 0) {
     throw std::invalid_argument("PPL::PIP_Problem::"
                                 "set_big_parameter_dimension(big_dim):\n"
                                 "dimension 'big_dim' is not a parameter.");
-  if (big_dim < internal_space_dim)
+  }
+  if (big_dim < internal_space_dim) {
     throw std::invalid_argument("PPL::PIP_Problem::"
                                 "set_big_parameter_dimension(big_dim):\n"
                                 "only newly-added parameters can be"
                                 "converted into the big parameter.");
+  }
   big_parameter_dimension = big_dim;
 }
 
@@ -706,8 +764,9 @@ PPL::memory_size_type
 PPL::PIP_Problem::external_memory_in_bytes() const {
   memory_size_type n = initial_context.external_memory_in_bytes();
   // Adding the external memory for `current_solution'.
-  if (current_solution != 0)
+  if (current_solution != 0) {
     n += current_solution->total_memory_in_bytes();
+  }
   // Adding the external memory for `input_cs'.
   n += input_cs.capacity() * sizeof(Constraint);
   for (const_iterator i = input_cs.begin(),

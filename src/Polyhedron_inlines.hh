@@ -98,8 +98,9 @@ Polyhedron::~Polyhedron() {
 
 inline void
 Polyhedron::m_swap(Polyhedron& y) {
-  if (topology() != y.topology())
+  if (topology() != y.topology()) {
     throw_topology_incompatible("swap(y)", "y", y);
+  }
   using std::swap;
   swap(con_sys, y.con_sys);
   swap(gen_sys, y.gen_sys);
@@ -184,13 +185,15 @@ Polyhedron::can_have_something_pending() const {
 
 inline bool
 Polyhedron::is_empty() const {
-  if (marked_empty())
+  if (marked_empty()) {
     return true;
+  }
   // Try a fast-fail test: if generators are up-to-date and
   // there are no pending constraints, then the generator system
   // (since it is well formed) contains a point.
-  if (generators_are_up_to_date() && !has_pending_constraints())
+  if (generators_are_up_to_date() && !has_pending_constraints()) {
     return false;
+  }
   return !minimize();
 }
 
@@ -298,9 +301,10 @@ Polyhedron::process_pending() const {
   PPL_ASSERT(space_dim > 0 && !marked_empty());
   PPL_ASSERT(has_something_pending());
 
-  if (has_pending_constraints())
+  if (has_pending_constraints()) {
     return process_pending_constraints();
-
+  }
+  
   PPL_ASSERT(has_pending_generators());
   process_pending_generators();
   return true;
@@ -350,10 +354,12 @@ inline Constraint_System
 Polyhedron::simplified_constraints() const {
   PPL_ASSERT(constraints_are_up_to_date());
   Constraint_System cs(con_sys);
-  if (cs.num_pending_rows() > 0)
+  if (cs.num_pending_rows() > 0) {
     cs.unset_pending_rows();
-  if (has_pending_constraints() || !constraints_are_minimized())
+  }
+  if (has_pending_constraints() || !constraints_are_minimized()) {
     cs.simplify();
+  }
   return cs;
 }
 

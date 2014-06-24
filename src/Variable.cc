@@ -41,8 +41,9 @@ PPL::Variable::default_output_function(std::ostream& s, const Variable v) {
   static const char var_name_letters[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const dimension_type num_letters = sizeof(var_name_letters) - 1;
   s << var_name_letters[varid % num_letters];
-  if (const dimension_type i = varid / num_letters)
+  if (const dimension_type i = varid / num_letters) {
     s << i;
+  }
 }
 
 /*! \relates Parma_Polyhedra_Library::Variable */

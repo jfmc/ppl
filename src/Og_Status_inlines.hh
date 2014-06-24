@@ -72,9 +72,10 @@ template <typename T>
 inline void
 Octagonal_Shape<T>::Status::reset_zero_dim_univ() {
   // This is a no-op if the current status is not zero-dim.
-  if (flags == ZERO_DIM_UNIV)
+  if (flags == ZERO_DIM_UNIV) {
     // In the zero-dim space, if it is not the universe it is empty.
     flags = EMPTY;
+  }
 }
 
 template <typename T>
@@ -123,15 +124,17 @@ Octagonal_Shape<T>::Status::set_strongly_closed() {
 template <typename T>
 inline bool
 Octagonal_Shape<T>::Status::OK() const {
-  if (test_zero_dim_univ())
+  if (test_zero_dim_univ()) {
     // Zero-dim universe is OK.
     return true;
-
+  }
+  
   if (test_empty()) {
     Status copy = *this;
     copy.reset_empty();
-    if (copy.test_zero_dim_univ())
+    if (copy.test_zero_dim_univ()) {
       return true;
+    }
     else {
 #ifndef NDEBUG
       std::cerr << "The empty flag is incompatible with any other one."
@@ -169,8 +172,9 @@ get_field(std::istream& s, const std::string& keyword, bool& positive) {
   std::string str;
   if (!(s >> str)
       || (str[0] != yes && str[0] != no)
-      || str.substr(1) != keyword)
+      || str.substr(1) != keyword) {
     return false;
+  }
   positive = (str[0] == yes);
   return true;
 }
@@ -198,23 +202,30 @@ Octagonal_Shape<T>::Status::ascii_load(std::istream& s) {
   using namespace Implementation::Octagonal_Shapes;
   PPL_UNINITIALIZED(bool, positive);
 
-  if (!get_field(s, zero_dim_univ, positive))
+  if (!get_field(s, zero_dim_univ, positive)) {
     return false;
-  if (positive)
+  }
+  if (positive) {
     set_zero_dim_univ();
-
-  if (!get_field(s, empty, positive))
+  }
+  
+  if (!get_field(s, empty, positive)) {
     return false;
-  if (positive)
+  }
+  
+  if (positive) {
     set_empty();
-
-  if (!get_field(s, strong_closed, positive))
+  }
+  
+  if (!get_field(s, strong_closed, positive)) {
     return false;
-  if (positive)
+  }
+  if (positive) {
     set_strongly_closed();
-  else
+  }
+  else {
     reset_strongly_closed();
-
+  }
   // Check invariants.
   PPL_ASSERT(OK());
   return true;

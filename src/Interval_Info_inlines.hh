@@ -54,8 +54,9 @@ template <typename Policy>
 inline bool
 Interval_Info_Null_Open<Policy>::ascii_load(std::istream& s) {
   std::string str;
-  if (!(s >> str))
+  if (!(s >> str)) {
     return false;
+  }
   if (str == "open") {
     open = true;
     return true;

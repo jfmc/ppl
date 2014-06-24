@@ -213,8 +213,9 @@ public:
     case V_LE:
       r = assign_r(to, c.value(), (ROUND_UP | ROUND_STRICT_RELATION));
       r = result_relation_class(r);
-      if (r == V_EQ)
+      if (r == V_EQ) {
         return V_LE;
+      }
       goto lt;
     case V_LT:
       r = assign_r(to, c.value(), ROUND_UP);
@@ -236,8 +237,9 @@ public:
     case V_GE:
       r = assign_r(to, c.value(), (ROUND_DOWN | ROUND_STRICT_RELATION));
       r = result_relation_class(r);
-      if (r == V_EQ)
+      if (r == V_EQ) {
         return V_GE;
+      }
       goto gt;
     case V_GT:
       r = assign_r(to, c.value(), ROUND_DOWN);
@@ -260,17 +262,21 @@ public:
       r = assign_r(to, c.value(), ROUND_CHECK);
       r = result_relation_class(r);
       PPL_ASSERT(r != V_LT && r != V_GT);
-      if (r == V_EQ)
+      if (r == V_EQ) {
         return V_EQ;
-      else
+      }
+      else {
         return V_EMPTY;
+      }
     case V_NE:
       r = assign_r(to, c.value(), ROUND_CHECK);
       r = result_relation_class(r);
-      if (r == V_EQ)
+      if (r == V_EQ) {
         return V_NE;
-      else
+      }
+      else {
         return V_LGE;
+      }
     default:
       break;
     }

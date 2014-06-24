@@ -57,8 +57,9 @@ PPL::Polyhedron
   // the ordering of the chosen constraints.
   for (dimension_type i = 0, end = y.con_sys.num_rows(); i < end; ++i) {
     const Constraint& c = y.con_sys[i];
-    if (gen_sys.satisfied_by_all_generators(c))
+    if (gen_sys.satisfied_by_all_generators(c)) {
       cs_selection.insert(c);
+    }
   }
 }
 
@@ -144,15 +145,18 @@ PPL::Polyhedron
              || (!is_necessarily_closed()
                  && ci.is_strict_inequality()
                  && y.gen_sys[j].is_point()));
-      if (sp_sgn > 0)
+      if (sp_sgn > 0) {
         buffer.set(j);
+      }
     }
     // We check whether `buffer' is a row of `tmp_sat_g',
     // exploiting its sortedness in order to have faster comparisons.
-    if (tmp_sat_g.sorted_contains(buffer))
+    if (tmp_sat_g.sorted_contains(buffer)) {
       cs_selected.insert(ci);
-    else
+    }
+    else {
       cs_not_selected.insert(ci);
+    }
   }
 }
 
@@ -161,26 +165,29 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
   Polyhedron& x = *this;
   // Topology compatibility check.
   const Topology topol = x.topology();
-  if (topol != y.topology())
+  if (topol != y.topology()) {
     throw_topology_incompatible("H79_widening_assign(y)", "y", y);
   // Dimension-compatibility check.
-  if (x.space_dim != y.space_dim)
+  }
+  if (x.space_dim != y.space_dim) {
     throw_dimension_incompatible("H79_widening_assign(y)", "y", y);
-
+  }
   // Assume `y' is contained in or equal to `x'.
   PPL_EXPECT_HEAVY(copy_contains(x, y));
 
   // If any argument is zero-dimensional or empty,
   // the H79-widening behaves as the identity function.
-  if (x.space_dim == 0 || x.marked_empty() || y.marked_empty())
+  if (x.space_dim == 0 || x.marked_empty() || y.marked_empty()) {
     return;
-
+  }
+  
   // `y.gen_sys' should be in minimal form and
   // `y.sat_g' should be up-to-date.
   if (y.is_necessarily_closed()) {
-    if (!y.minimize())
+    if (!y.minimize()) {
       // `y' is empty: the result is `x'.
       return;
+    }
   }
   else {
     // Dealing with a NNC polyhedron.
@@ -192,9 +199,10 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
     // this is obtained by intersecting the two eps-representations.
     Polyhedron& yy = const_cast<Polyhedron&>(y);
     yy.intersection_assign(x);
-    if (yy.is_empty())
+    if (yy.is_empty()) {
       // The result is `x'.
       return;
+    }
   }
 
   // If we only have the generators of `x' and the dimensions of
@@ -226,9 +234,10 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
         if (!x.contains(CH78))
           --(*tp);
       }
-      else
+      else {
         // No tokens.
         x.m_swap(CH78);
+      }
       PPL_ASSERT_HEAVY(x.OK(true));
       return;
     }
@@ -243,8 +252,9 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
   // - redundant constraints in `x.con_sys' do not affect the result
   //   of the widening, because if they are selected they will be
   //   redundant even in the result.
-  if (has_pending_generators())
+  if (has_pending_generators()) {
     process_pending_generators();
+  }
   else if (!x.constraints_are_up_to_date())
     x.update_constraints();
 
@@ -254,10 +264,11 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
   Constraint_System x_minus_H79_cs(topol);
   x.select_H79_constraints(y, H79_cs, x_minus_H79_cs);
 
-  if (x_minus_H79_cs.has_no_rows())
+  if (x_minus_H79_cs.has_no_rows()) {
     // We selected all of the constraints of `x',
     // thus the result of the widening is `x'.
     return;
+  }
   else {
     // We selected a strict subset of the constraints of `x'.
     // NOTE: as `x.con_sys' was not necessarily in minimal form,
@@ -271,12 +282,14 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
     if (tp != 0 && *tp > 0) {
       // There are tokens available. If `H79' is not a subset of `x',
       // then it is less precise and we use one of the available tokens.
-      if (!x.contains(H79))
+      if (!x.contains(H79)) {
         --(*tp);
+      }
     }
-    else
+    else {
       // No tokens.
       x.m_swap(H79);
+    }
     PPL_ASSERT_HEAVY(x.OK(true));
   }
 }
@@ -296,53 +309,60 @@ PPL::Polyhedron::limited_H79_extrapolation_assign(const Polyhedron& y,
 
   // Topology compatibility check.
   if (x.is_necessarily_closed()) {
-    if (!y.is_necessarily_closed())
+    if (!y.is_necessarily_closed()) {
       throw_topology_incompatible("limited_H79_extrapolation_assign(y, cs)",
                                   "y", y);
-    if (cs.has_strict_inequalities())
+    }
+    if (cs.has_strict_inequalities()) {
       throw_topology_incompatible("limited_H79_extrapolation_assign(y, cs)",
                                   "cs", cs);
+    }
   }
-  else if (y.is_necessarily_closed())
+  else if (y.is_necessarily_closed()) {
     throw_topology_incompatible("limited_H79_extrapolation_assign(y, cs)",
                                 "y", y);
-
+  }
   // Dimension-compatibility check.
-  if (x.space_dim != y.space_dim)
+  if (x.space_dim != y.space_dim) {
     throw_dimension_incompatible("limited_H79_extrapolation_assign(y, cs)",
                                  "y", y);
+  }
   // `cs' must be dimension-compatible with the two polyhedra.
   const dimension_type cs_space_dim = cs.space_dimension();
-  if (x.space_dim < cs_space_dim)
+  if (x.space_dim < cs_space_dim) {
     throw_dimension_incompatible("limited_H79_extrapolation_assign(y, cs)",
                                  "cs", cs);
-
+  }
   // Assume `y' is contained in or equal to `x'.
   PPL_EXPECT_HEAVY(copy_contains(x, y));
 
-  if (y.marked_empty())
+  if (y.marked_empty()) {
     return;
-  if (x.marked_empty())
+  }
+  if (x.marked_empty()) {
     return;
-
+  }
   // The limited H79-widening between two polyhedra in a
   // zero-dimensional space is a polyhedron in a zero-dimensional
   // space, too.
-  if (x.space_dim == 0)
+  if (x.space_dim == 0) {
     return;
-
-  if (!y.minimize())
+  }
+  
+  if (!y.minimize()) {
     // We have just discovered that `y' is empty.
     return;
-
+  }
+  
   // Update the generators of `x': these are used to select,
   // from the constraints in `cs', those that must be added
   // to the resulting polyhedron.
   if ((x.has_pending_constraints() && !x.process_pending_constraints())
-      || (!x.generators_are_up_to_date() && !x.update_generators()))
+      || (!x.generators_are_up_to_date() && !x.update_generators())) {
     // We have just discovered that `x' is empty.
     return;
-
+  }
+  
   Constraint_System new_cs;
   // The constraints to be added must be satisfied by all the
   // generators of `x'.  We can disregard `y' because `y <= x'.
@@ -351,8 +371,9 @@ PPL::Polyhedron::limited_H79_extrapolation_assign(const Polyhedron& y,
   // Not really an issue: just aesthetics.
   for (dimension_type i = 0; i < cs_num_rows; ++i) {
     const Constraint& c = cs[i];
-    if (x_gen_sys.satisfied_by_all_generators(c))
+    if (x_gen_sys.satisfied_by_all_generators(c)) {
       new_cs.insert(c);
+    }
   }
   x.H79_widening_assign(y, tp);
   x.add_recycled_constraints(new_cs);
@@ -400,9 +421,10 @@ PPL::Polyhedron
   // There is no point in applying this technique when `x_minus_H79_cs'
   // has one constraint at most (no ``new'' constraint can be computed).
   const dimension_type x_minus_H79_cs_num_rows = x_minus_H79_cs.num_rows();
-  if (x_minus_H79_cs_num_rows <= 1)
+  if (x_minus_H79_cs_num_rows <= 1) {
     return false;
-
+  }
+  
   const Topology topol = x.topology();
   Constraint_System combining_cs(topol);
   Constraint_System new_cs(topol);
@@ -425,37 +447,43 @@ PPL::Polyhedron
           break;
         }
       }
-      if (lies_on_the_boundary_of_H79)
+      if (lies_on_the_boundary_of_H79) {
         continue;
-
+      }
+      
       // Consider all the constraints in `x_minus_H79_cs'
       // that are saturated by the point `g'.
       combining_cs.clear();
       for (dimension_type j = x_minus_H79_cs_num_rows; j-- > 0; ) {
         const Constraint& c = x_minus_H79_cs[j];
-        if (Scalar_Products::sign(c, g) == 0)
+        if (Scalar_Products::sign(c, g) == 0) {
           combining_cs.insert(c);
+        }
       }
       // Build a new constraint by combining all the chosen constraints.
       const dimension_type combining_cs_num_rows = combining_cs.num_rows();
       if (combining_cs_num_rows > 0) {
-        if (combining_cs_num_rows == 1)
+        if (combining_cs_num_rows == 1) {
           // No combination is needed.
           new_cs.insert(combining_cs[0]);
+        }
         else {
           Linear_Expression e(0);
           bool strict_inequality = false;
           for (dimension_type h = combining_cs_num_rows; h-- > 0; ) {
-            if (combining_cs[h].is_strict_inequality())
+            if (combining_cs[h].is_strict_inequality()) {
               strict_inequality = true;
+            }
             e += Linear_Expression(combining_cs[h].expression());
           }
 
           if (!e.all_homogeneous_terms_are_zero()) {
-            if (strict_inequality)
+            if (strict_inequality) {
               new_cs.insert(e > 0);
-            else
+            }
+            else {
               new_cs.insert(e >= 0);
+            }
           }
         }
       }
@@ -472,9 +500,10 @@ PPL::Polyhedron
       break;
     }
   }
-  if (!improves_upon_H79)
+  if (!improves_upon_H79) {
     return false;
-
+  }
+  
   // The resulting polyhedron is obtained by adding the constraints
   // in `new_cs' to polyhedron `H79'.
   Polyhedron result = H79;
@@ -490,9 +519,10 @@ PPL::Polyhedron
     PPL_ASSERT_HEAVY(x.OK(true));
     return true;
   }
-  else
+  else {
     // The technique was unsuccessful.
     return false;
+  }
 }
 
 bool
@@ -560,9 +590,10 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
     PPL_ASSERT_HEAVY(x.OK(true));
     return true;
   }
-  else
+  else  {
     // The technique was unsuccessful.
     return false;
+  }
 }
 
 void
@@ -578,16 +609,18 @@ PPL::Polyhedron::modify_according_to_evolution(Linear_Expression& ray,
        x_k != x_end; ++x_k) {
     const Variable k_var = x_k.variable();
     const dimension_type k = k_var.id();
-    if (considered[k])
+    if (considered[k]) {
       continue;
-
+    }
+    
     while (y_k != y_end && y_k.variable().id() < k) {
       ++y_k;
     }
 
-    if (y_k == y_end)
+    if (y_k == y_end) {
       break;
-
+    }
+    
     const Variable y_k_var = y_k.variable();
 
     // Note that y_k_var.id() may be greater than k.
@@ -598,20 +631,23 @@ PPL::Polyhedron::modify_according_to_evolution(Linear_Expression& ray,
     ++x_h;
     for ( ; x_h != x_end; ++x_h) {
       const dimension_type h = x_h.variable().id();
-      if (considered[h])
+      if (considered[h]) {
         continue;
-
+      }
+      
       while (y_h != y_end && y_h.variable().id() < h) {
         ++y_h;
       }
 
       // Note that y_h may be y_end, and y_h.variable().id() may not be k.
 
-      if (y_h != y_end && y_h.variable().id() == h)
+      if (y_h != y_end && y_h.variable().id() == h) {
         tmp = (*x_k) * (*y_h);
-      else
+      }
+      else {
         tmp = 0;
-
+      }
+      
       if (y_k_var.id() == k) {
         // The following line optimizes the computation of
         // <CODE> tmp -= x[h] * y[k]; </CODE>
@@ -678,9 +714,10 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
   }
 
   // If there are no candidate rays, we cannot obtain stabilization.
-  if (candidate_rays.has_no_rows())
+  if (candidate_rays.has_no_rows()) {
     return false;
-
+  }
+  
   // Be non-intrusive.
   Polyhedron result = x;
   result.add_recycled_generators(candidate_rays);
@@ -695,33 +732,38 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
     PPL_ASSERT_HEAVY(x.OK(true));
     return true;
   }
-  else
+  else {
     // The technique was unsuccessful.
     return false;
+  }
 }
 
 void
 PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
   Polyhedron& x = *this;
   // Topology compatibility check.
-  if (x.topology() != y.topology())
+  if (x.topology() != y.topology()) {
     throw_topology_incompatible("BHRZ03_widening_assign(y)", "y", y);
+  }
   // Dimension-compatibility check.
-  if (x.space_dim != y.space_dim)
+  if (x.space_dim != y.space_dim) {
     throw_dimension_incompatible("BHRZ03_widening_assign(y)", "y", y);
-
+  }
+  
   // Assume `y' is contained in or equal to `x'.
   PPL_EXPECT_HEAVY(copy_contains(x, y));
 
   // If any argument is zero-dimensional or empty,
   // the BHRZ03-widening behaves as the identity function.
-  if (x.space_dim == 0 || x.marked_empty() || y.marked_empty())
+  if (x.space_dim == 0 || x.marked_empty() || y.marked_empty()) {
     return;
-
+  }
+  
   // `y.con_sys' and `y.gen_sys' should be in minimal form.
-  if (!y.minimize())
+  if (!y.minimize()) {
     // `y' is empty: the result is `x'.
     return;
+  }
   // `x.con_sys' and `x.gen_sys' should be in minimal form.
   x.minimize();
 
@@ -765,19 +807,22 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
 
   // NOTE: none of the following widening heuristics is intrusive:
   // they will modify `x' only when returning successfully.
-  if (x.BHRZ03_combining_constraints(y, y_cert, H79, x_minus_H79_cs))
+  if (x.BHRZ03_combining_constraints(y, y_cert, H79, x_minus_H79_cs)) {
     return;
-
+  }
+  
   PPL_ASSERT_HEAVY(H79.OK() && x.OK() && y.OK());
 
-  if (x.BHRZ03_evolving_points(y, y_cert, H79))
+  if (x.BHRZ03_evolving_points(y, y_cert, H79)) {
     return;
-
+  }
+  
   PPL_ASSERT_HEAVY(H79.OK() && x.OK() && y.OK());
 
-  if (x.BHRZ03_evolving_rays(y, y_cert, H79))
+  if (x.BHRZ03_evolving_rays(y, y_cert, H79)) {
     return;
-
+  }
+  
   PPL_ASSERT_HEAVY(H79.OK() && x.OK() && y.OK());
 
   // No previous technique was successful: fall back to the H79 widening.
@@ -803,53 +848,62 @@ PPL::Polyhedron
 
   // Topology compatibility check.
   if (x.is_necessarily_closed()) {
-    if (!y.is_necessarily_closed())
+    if (!y.is_necessarily_closed()) {
       throw_topology_incompatible("limited_BHRZ03_extrapolation_assign(y, cs)",
                                   "y", y);
-    if (cs.has_strict_inequalities())
+    }
+    if (cs.has_strict_inequalities()) {
       throw_topology_incompatible("limited_BHRZ03_extrapolation_assign(y, cs)",
                                   "cs", cs);
+    }
   }
-  else if (y.is_necessarily_closed())
+  else if (y.is_necessarily_closed()) {
     throw_topology_incompatible("limited_BHRZ03_extrapolation_assign(y, cs)",
                                 "y", y);
-
+  }
   // Dimension-compatibility check.
-  if (x.space_dim != y.space_dim)
+  if (x.space_dim != y.space_dim) {
     throw_dimension_incompatible("limited_BHRZ03_extrapolation_assign(y, cs)",
                                  "y", y);
+  }
   // `cs' must be dimension-compatible with the two polyhedra.
   const dimension_type cs_space_dim = cs.space_dimension();
-  if (x.space_dim < cs_space_dim)
+  if (x.space_dim < cs_space_dim) {
     throw_dimension_incompatible("limited_BHRZ03_extrapolation_assign(y, cs)",
                                  "cs", cs);
-
+  }
+  
   // Assume `y' is contained in or equal to `x'.
   PPL_EXPECT_HEAVY(copy_contains(x, y));
 
-  if (y.marked_empty())
+  if (y.marked_empty()) {
     return;
-  if (x.marked_empty())
+  }
+  if (x.marked_empty()) {
     return;
-
+  }
+  
   // The limited BHRZ03-widening between two polyhedra in a
   // zero-dimensional space is a polyhedron in a zero-dimensional
   // space, too.
-  if (x.space_dim == 0)
+  if (x.space_dim == 0) {
     return;
-
-  if (!y.minimize())
+  }
+  
+  if (!y.minimize()) {
     // We have just discovered that `y' is empty.
     return;
-
+  }
+  
   // Update the generators of `x': these are used to select,
   // from the constraints in `cs', those that must be added
   // to the resulting polyhedron.
   if ((x.has_pending_constraints() && !x.process_pending_constraints())
-      || (!x.generators_are_up_to_date() && !x.update_generators()))
+      || (!x.generators_are_up_to_date() && !x.update_generators())) {
     // We have just discovered that `x' is empty.
     return;
-
+  }
+  
   Constraint_System new_cs;
   // The constraints to be added must be satisfied by all the
   // generators of `x'. We can disregard `y' because `y <= x'.
@@ -858,8 +912,9 @@ PPL::Polyhedron
   // Not really an issue: just aesthetics.
   for (dimension_type i = 0; i < cs_num_rows; ++i) {
     const Constraint& c = cs[i];
-    if (x_gen_sys.satisfied_by_all_generators(c))
+    if (x_gen_sys.satisfied_by_all_generators(c)) {
       new_cs.insert(c);
+    }
   }
   x.BHRZ03_widening_assign(y, tp);
   x.add_recycled_constraints(new_cs);

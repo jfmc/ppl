@@ -45,8 +45,9 @@ PPL::H79_Certificate::H79_Certificate(const Polyhedron& ph)
   for (Constraint_System::const_iterator i = cs.begin(),
          cs_end = cs.end(); i != cs_end; ++i) {
     ++num_constraints;
-    if (i->is_equality())
+    if (i->is_equality()) {
       --affine_dim;
+    }
   }
 
   // TODO: this is an inefficient workaround.
@@ -56,16 +57,19 @@ PPL::H79_Certificate::H79_Certificate(const Polyhedron& ph)
   // We have to reinforce the (normal) minimization of the generator
   // system. The future, lazy implementation of the strong minimization
   // process will solve this problem.
-  if (!ph.is_necessarily_closed())
+  if (!ph.is_necessarily_closed()) {
     ph.minimize();
+  }
 }
 
 int
 PPL::H79_Certificate::compare(const H79_Certificate& y) const {
-  if (affine_dim != y.affine_dim)
+  if (affine_dim != y.affine_dim) {
     return (affine_dim > y.affine_dim) ? 1 : -1;
-  if (num_constraints != y.num_constraints)
+  }
+  if (num_constraints != y.num_constraints) {
     return (num_constraints > y.num_constraints) ? 1 : -1;
+  }
   // All components are equal.
   return 0;
 }
@@ -87,8 +91,9 @@ PPL::H79_Certificate::compare(const Polyhedron& ph) const {
   for (Constraint_System::const_iterator i = cs.begin(),
          cs_end = cs.end(); i != cs_end; ++i) {
     ++ph_num_constraints;
-    if (i->is_equality())
+    if (i->is_equality()) {
       --ph_affine_dim;
+    }
   }
   // TODO: this is an inefficient workaround.
   // For NNC polyhedra, generators might be no longer up-to-date
@@ -97,21 +102,24 @@ PPL::H79_Certificate::compare(const Polyhedron& ph) const {
   // We have to reinforce the (normal) minimization of the generator
   // system. The future, lazy implementation of the strong minimization
   // process will solve this problem.
-  if (!ph.is_necessarily_closed())
+  if (!ph.is_necessarily_closed()) {
     ph.minimize();
-
+  }
+  
   // If the affine dimension of `ph' is increasing, the chain is stabilizing.
-  if (ph_affine_dim > affine_dim)
+  if (ph_affine_dim > affine_dim) {
     return 1;
-
+  }
+  
   // At this point the two polyhedra must have the same affine dimension.
   PPL_ASSERT(ph_affine_dim == affine_dim);
 
   // If the number of constraints of `ph' is decreasing, then the chain
   // is stabilizing. If it is increasing, the chain is not stabilizing.
-  if (ph_num_constraints != num_constraints)
+  if (ph_num_constraints != num_constraints) {
     return (ph_num_constraints < num_constraints) ? 1 : -1;
-
+  }
+  
   // All components are equal.
   return 0;
 }

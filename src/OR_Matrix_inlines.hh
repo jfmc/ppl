@@ -192,8 +192,9 @@ inline typename OR_Matrix<T>::template any_row_iterator<U>&
 OR_Matrix<T>::any_row_iterator<U>::operator++() {
   ++e;
   dimension_type increment = e;
-  if (e % 2 != 0)
+  if (e % 2 != 0) {
     ++increment;
+  }
 #if PPL_OR_MATRIX_EXTRA_DEBUG
   else {
     value.size_ += 2;
@@ -246,8 +247,9 @@ OR_Matrix<T>::any_row_iterator<U>::operator+=(const difference_type m) {
   difference_type e_dt = static_cast<difference_type>(e);
   difference_type i_dt = static_cast<difference_type>(i);
   difference_type increment = m + (m * m) / 2 + m * e_dt;
-  if (e_dt % 2 == 0 && m % 2 != 0)
+  if (e_dt % 2 == 0 && m % 2 != 0) {
     ++increment;
+  }
   e_dt += m;
   i_dt += increment;
   e = static_cast<dimension_type>(e_dt);
@@ -270,8 +272,9 @@ Enable_If<(static_cast<Unsigned>(-1) > 0),
 OR_Matrix<T>::any_row_iterator<U>::operator+=(Unsigned m) {
   dimension_type n = m;
   dimension_type increment = n + (n*n)/2 + n*e;
-  if (e % 2 == 0 && n % 2 != 0)
+  if (e % 2 == 0 && n % 2 != 0) {
     ++increment;
+  }
   e += n;
   i += increment;
   value.first += increment;
@@ -623,8 +626,9 @@ OR_Matrix<T>::resize_no_copy(const dimension_type new_dim) {
       m_swap(new_matrix);
     }
   }
-  else if (new_dim < space_dim)
+  else if (new_dim < space_dim) {
     shrink(new_dim);
+  }
 }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -639,8 +643,9 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
                     Temp& tmp0,
                     Temp& tmp1,
                     Temp& tmp2) {
-  if (x.num_rows() != y.num_rows())
+  if (x.num_rows() != y.num_rows()) {
     return false;
+  }
   assign_r(tmp0, 0, ROUND_NOT_NEEDED);
   for (typename OR_Matrix<T>::const_element_iterator
          i = x.element_begin(), j = y.element_begin(),
@@ -648,17 +653,18 @@ l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
     const T& x_i = *i;
     const T& y_i = *j;
     if (is_plus_infinity(x_i)) {
-      if (is_plus_infinity(y_i))
+      if (is_plus_infinity(y_i)) {
         continue;
+      }
       else {
       pinf:
         assign_r(r, PLUS_INFINITY, ROUND_NOT_NEEDED);
         return true;
       }
     }
-    else if (is_plus_infinity(y_i))
+    else if (is_plus_infinity(y_i)) {
       goto pinf;
-
+    }
     const Temp* tmp1p;
     const Temp* tmp2p;
     if (x_i > y_i) {

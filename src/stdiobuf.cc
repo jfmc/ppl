@@ -45,10 +45,12 @@ std::streamsize
 stdiobuf::xsgetn(char_type* s, std::streamsize n) {
   PPL_ASSERT(n >= 0);
   const size_t r = fread(s, 1, static_cast<size_t>(n), fp);
-  if (r > 0)
+  if (r > 0) {
     unget_char_buf = traits_type::to_int_type(s[r - 1]);
-  else
+  }
+  else {
     unget_char_buf = traits_type::eof();
+  }
   return static_cast<std::streamsize>(r);
 }
 
@@ -70,10 +72,12 @@ stdiobuf::xsputn(const char_type* s, std::streamsize n) {
 stdiobuf::int_type
 stdiobuf::overflow(int_type c) {
   const int_type eof = traits_type::eof();
-  if (traits_type::eq_int_type(c, eof))
+  if (traits_type::eq_int_type(c, eof)) {
     return (fflush(fp) != 0) ? eof : traits_type::not_eof(c);
-  else
+  }
+  else {
     return putc(c, fp);
+  }
 }
 
 int

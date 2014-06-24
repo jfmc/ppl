@@ -55,8 +55,9 @@ get_field(std::istream& s, const char* keyword, bool& positive) {
   std::string str;
   if (!(s >> str)
       || (str[0] != '+' && str[0] != '-')
-      || str.substr(1) != keyword)
+      || str.substr(1) != keyword) {
     return false;
+  }
   positive = (str[0] == '+');
   return true;
 }

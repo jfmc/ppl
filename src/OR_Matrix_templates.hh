@@ -85,8 +85,9 @@ template <typename T>
 bool
 OR_Matrix<T>::ascii_load(std::istream& s) {
   dimension_type space;
-  if (!(s >> space))
+  if (!(s >> space)) {
     return false;
+  }
   resize_no_copy(space);
   for (row_iterator i = row_begin(),
          this_row_end = row_end(); i != this_row_end; ++i) {
@@ -94,8 +95,9 @@ OR_Matrix<T>::ascii_load(std::istream& s) {
     const dimension_type rs = i.row_size();
     for (dimension_type j = 0; j < rs; ++j) {
       Result r = input(r_i[j], s, ROUND_CHECK);
-      if (result_relation(r) != VR_EQ || is_minus_infinity(r_i[j]))
+      if (result_relation(r) != VR_EQ || is_minus_infinity(r_i[j])) {
         return false;
+      }
     }
   }
   PPL_ASSERT(OK());

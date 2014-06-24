@@ -33,8 +33,9 @@ namespace Parma_Polyhedra_Library {
 
 void Weight_Profiler::output_stats() {
   std::cout << file << ":" << line << ": Weight_Profiler ";
-  if (stat[VALID].samples == 0 && stat[DISCARDED].samples == 0)
+  if (stat[VALID].samples == 0 && stat[DISCARDED].samples == 0) {
     std::cout << "never reached.";
+  }
   else {
     if (stat[VALID].samples > 0) {
       double average
@@ -67,8 +68,9 @@ double Weight_Profiler::tune_adjustment() {
   begin();
   adjustment = 0;
   static Weight_Profiler weight_profiler(__FILE__, __LINE__, 0, 0, 0);
-  for (int i = 0; i < 1000; ++i)
+  for (int i = 0; i < 1000; ++i) {
     weight_profiler.end(1);
+  }
   return weight_profiler.stat[VALID].min;
 }
 

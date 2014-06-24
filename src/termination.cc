@@ -51,9 +51,10 @@ assign_all_inequalities_approximation(const Constraint_System& cs_in,
         const Linear_Expression expr(c.expression());
         cs_out.insert(expr >= 0);
       }
-      else
+      else {
         // Insert as is.
         cs_out.insert(c);
+      }
     }
   }
   else
@@ -82,9 +83,10 @@ assign_all_inequalities_approximation(const C_Polyhedron& ph,
         cs.insert(c);
     }
   }
-  else
+  else {
     // No equality constraints (and no strict inequalities).
     cs = ph_cs;
+  }
 }
 
 /*! \brief
@@ -353,8 +355,9 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
   const dimension_type m = r + s;
 
   // Make sure linear expressions are not reallocated multiple times.
-  if (m > 0)
+  if (m > 0) {
     le_out.set_space_dimension(m + r);
+  }
   std::vector<Linear_Expression> les_eq(2*n, le_out);
 
   dimension_type row_index = 0;
@@ -376,9 +379,10 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
       add_mul_assign(les_eq[v.id() + n], A_ij_B, u2_i);
     }
     Coefficient_traits::const_reference b_B = e_i.inhomogeneous_term();
-    if (b_B != 0)
+    if (b_B != 0) {
       // u2 b_B, in the context of the strict inequality constraint.
       add_mul_assign(le_out, b_B, u2_i);
+    }
   }
 
   row_index = 0;
@@ -405,9 +409,10 @@ fill_constraint_system_PR(const Constraint_System& cs_before,
       add_mul_assign(les_eq[j.variable().id() + n], Ap_ij_C, u3_i);
     }
     Coefficient_traits::const_reference b_C = e_i.inhomogeneous_term();
-    if (b_C != 0)
+    if (b_C != 0) {
       // u3 b_C, in the context of the strict inequality constraint.
       add_mul_assign(le_out, b_C, u3_i);
+    }
   }
 
   // Add the nonnegativity constraints for u_1, u_2 and u_3.
@@ -460,9 +465,10 @@ fill_constraint_system_PR_original(const Constraint_System& cs,
       add_mul_assign(les_eq[v.id()+n], A_ij, lambda2_i);
     }
     Coefficient_traits::const_reference b = e_i.inhomogeneous_term();
-    if (b != 0)
+    if (b != 0) {
       // lambda2 b
       add_mul_assign(le_out, b, lambda2_i);
+    }
   }
 
   // Add the non-negativity constraints for lambda_1 and lambda_2.
@@ -490,9 +496,9 @@ one_affine_ranking_function_MS(const Constraint_System& cs, Generator& mu) {
   fill_constraint_systems_MS(cs, cs_mip, cs_mip);
 
   const MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip);
-  if (!mip.is_satisfiable())
+  if (!mip.is_satisfiable()) {
     return false;
-
+  }
   const Generator fp = mip.feasible_point();
   PPL_ASSERT(fp.is_point());
   const dimension_type n = cs.space_dimension() / 2;
@@ -692,9 +698,10 @@ Termination_Helpers
   cs_mip.insert(le_ineq <= -1);
 
   const MIP_Problem mip(cs_mip.space_dimension(), cs_mip);
-  if (!mip.is_satisfiable())
+  if (!mip.is_satisfiable()) {
     return false;
-
+  }
+  
   const Generator& fp = mip.feasible_point();
   PPL_ASSERT(fp.is_point());
 
@@ -711,8 +718,9 @@ Termination_Helpers
        ++i, ++row_index) {
     Coefficient_traits::const_reference
       fp_i = fp.coefficient(Variable(row_index));
-    if (fp_i != 0)
+    if (fp_i != 0) {
       le.linear_combine(i->expr, 1, -fp_i, 1, n + 1);
+    }
   }
   // Note that we can neglect the divisor of `fp' since it is positive.
   mu = point(le);
@@ -744,9 +752,9 @@ Termination_Helpers
   cs_mip.insert(le_ineq <= -1);
 
   const MIP_Problem mip = MIP_Problem(cs_mip.space_dimension(), cs_mip);
-  if (!mip.is_satisfiable())
+  if (!mip.is_satisfiable()) {
     return false;
-
+  }
   const Generator& fp = mip.feasible_point();
   PPL_ASSERT(fp.is_point());
   // mu_0 is zero: properly set space dimension.
@@ -759,8 +767,9 @@ Termination_Helpers
          cs_end = cs.end(); i != cs_end; ++i, ++row_index) {
     const Variable lambda_2(row_index);
     Coefficient_traits::const_reference fp_i = fp.coefficient(lambda_2);
-    if (fp_i != 0)
+    if (fp_i != 0) {
       le.linear_combine(i->expr, 1, -fp_i, 1, n + 1);
+    }
   }
   // Note that we can neglect the divisor of `fp' since it is positive.
   mu = point(le);
@@ -827,19 +836,22 @@ Termination_Helpers
            ++i, ++row_index) {
         Coefficient_traits::const_reference
           g_i = g.coefficient(Variable(row_index));
-        if (g_i != 0)
+        if (g_i != 0) {
           le.linear_combine(i->expr, 1, -g_i, 1, n + 1);
+        }
       }
 
       // Add to gs_out the transformed generator.
       switch (g.type()) {
       case Generator::LINE:
-        if (!le.all_homogeneous_terms_are_zero())
+        if (!le.all_homogeneous_terms_are_zero()) {
           gs_out.insert(line(le));
+        }
         break;
       case Generator::RAY:
-        if (!le.all_homogeneous_terms_are_zero())
+        if (!le.all_homogeneous_terms_are_zero()) {
           gs_out.insert(ray(le));
+        }
         break;
       case Generator::POINT:
         gs_out.insert(point(le, g.divisor()));
@@ -892,9 +904,10 @@ Termination_Helpers
   const Generator_System& gs_in = ph.generators();
   Generator_System::const_iterator gs_in_it = gs_in.begin();
   Generator_System::const_iterator gs_in_end = gs_in.end();
-  if (gs_in_it == gs_in_end)
+  if (gs_in_it == gs_in_end) {
     // The system is unsatisfiable.
     mu_space = NNC_Polyhedron(n + 1, EMPTY);
+  }
   else {
     Generator_System gs_out;
     for ( ; gs_in_it != gs_in_end; ++gs_in_it) {
@@ -907,19 +920,22 @@ Termination_Helpers
              cs_end = cs.end(); i != cs_end; ++i, ++row_index) {
         const Variable lambda2_i(row_index);
         Coefficient_traits::const_reference g_i = g.coefficient(lambda2_i);
-        if (g_i != 0)
+        if (g_i != 0) {
           le.linear_combine(i->expr, 1, -g_i, 1, n + 1);
+        }
       }
 
       // Add to gs_out the transformed generator.
       switch (g.type()) {
       case Generator::LINE:
-        if (!le.all_homogeneous_terms_are_zero())
+        if (!le.all_homogeneous_terms_are_zero()) {
           gs_out.insert(line(le));
+        }
         break;
       case Generator::RAY:
-        if (!le.all_homogeneous_terms_are_zero())
+        if (!le.all_homogeneous_terms_are_zero()) {
           gs_out.insert(ray(le));
+        }
         break;
       case Generator::POINT:
         gs_out.insert(point(le, g.divisor()));

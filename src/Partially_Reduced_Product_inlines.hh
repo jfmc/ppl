@@ -251,11 +251,13 @@ Partially_Reduced_Product<D1, D2, R>
   y.reduce();
   D1 d1_copy = d1;
   bool ub_exact = d1_copy.upper_bound_assign_if_exact(y.d1);
-  if (!ub_exact)
+  if (!ub_exact) {
     return false;
+  }
   ub_exact = d2.upper_bound_assign_if_exact(y.d2);
-  if (!ub_exact)
+  if (!ub_exact) {
     return false;
+  }
   using std::swap;
   swap(d1, d1_copy);
   return true;
@@ -598,8 +600,9 @@ Partially_Reduced_Product<D1, D2, R>
 ::concatenate_assign(const Partially_Reduced_Product& y) {
   d1.concatenate_assign(y.d1);
   d2.concatenate_assign(y.d2);
-  if (!is_reduced() || !y.is_reduced())
+  if (!is_reduced() || !y.is_reduced()) {
     clear_reduced_flag();
+  }
 }
 
 template <typename D1, typename D2, typename R>
@@ -668,8 +671,9 @@ inline bool
 Partially_Reduced_Product<D1, D2, R>::reduce() const {
   Partially_Reduced_Product& dp
     = const_cast<Partially_Reduced_Product&>(*this);
-  if (dp.is_reduced())
+  if (dp.is_reduced()) {
     return false;
+  }
   R r;
   r.product_reduce(dp.d1, dp.d2);
   set_reduced_flag();

@@ -63,8 +63,9 @@ PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
   const Pointset_Powerset& x = *this;
   for (const_iterator yi = y.begin(), y_end = y.end();
        yi != y_end; ++yi) {
-    if (!check_containment(yi->pointset(), x))
+    if (!check_containment(yi->pointset(), x)) {
       return false;
+    }
   }
   return true;
 }
@@ -83,21 +84,25 @@ PPL::check_containment(const NNC_Polyhedron& ph,
     for (Pointset_Powerset<NNC_Polyhedron>::iterator
            j = tmp.begin(); j != tmp.end(); ) {
       const NNC_Polyhedron& pj = j->pointset();
-      if (pi.contains(pj))
+      if (pi.contains(pj)) {
         j = tmp.drop_disjunct(j);
-      else
+      }
+      else {
         ++j;
+      }
     }
-    if (tmp.empty())
+    if (tmp.empty()) {
       return true;
+    }
     else {
       Pointset_Powerset<NNC_Polyhedron> new_disjuncts(ph.space_dimension(),
                                                       EMPTY);
       for (Pointset_Powerset<NNC_Polyhedron>::iterator
              j = tmp.begin(); j != tmp.end(); ) {
         const NNC_Polyhedron& pj = j->pointset();
-        if (pj.is_disjoint_from(pi))
+        if (pj.is_disjoint_from(pi)) {
           ++j;
+        }
         else {
           const std::pair<NNC_Polyhedron, Pointset_Powerset<NNC_Polyhedron> >
             partition = linear_partition(pi, pj);
@@ -172,8 +177,9 @@ approximate_partition_aux(const PPL::Congruence& c,
     if (i != n) {
       Grid gr_tmp(gr_copy);
       gr_tmp.add_congruence((le+i %= 0) / c_modulus);
-      if (!gr_tmp.is_empty())
+      if (!gr_tmp.is_empty()) {
         r.add_disjunct(gr_tmp);
+      }
     }
   }
   return true;
@@ -209,8 +215,9 @@ PPL::approximate_partition(const Grid& p, const Grid& q,
 bool
 PPL::check_containment(const Grid& ph,
                        const Pointset_Powerset<Grid>& ps) {
-  if (ph.is_empty())
+  if (ph.is_empty()) {
     return true;
+  }
   Pointset_Powerset<Grid> tmp(ph.space_dimension(), EMPTY);
   tmp.add_disjunct(ph);
   for (Pointset_Powerset<Grid>::const_iterator
@@ -219,21 +226,25 @@ PPL::check_containment(const Grid& ph,
     for (Pointset_Powerset<Grid>::iterator
            j = tmp.begin(); j != tmp.end(); ) {
       const Grid& pj = j->pointset();
-      if (pi.contains(pj))
+      if (pi.contains(pj)) {
         j = tmp.drop_disjunct(j);
-      else
+      }
+      else {
         ++j;
+      }
     }
-    if (tmp.empty())
+    if (tmp.empty()) {
       return true;
+    }
     else {
       Pointset_Powerset<Grid> new_disjuncts(ph.space_dimension(),
                                                       EMPTY);
       for (Pointset_Powerset<Grid>::iterator
              j = tmp.begin(); j != tmp.end(); ) {
         const Grid& pj = j->pointset();
-        if (pj.is_disjoint_from(pi))
+        if (pj.is_disjoint_from(pi)) {
           ++j;
+        }
         else {
           bool finite_partition;
           const std::pair<Grid, Pointset_Powerset<Grid> >
@@ -246,8 +257,9 @@ PPL::check_containment(const Grid& ph,
           // ignore checking the remaining temporary disjuncts as they
           // will all have the same lines and equalities and therefore
           // also not have a finite partition with respect to pi.
-          if (!finite_partition)
+          if (!finite_partition) {
             break;
+          }
           new_disjuncts.upper_bound_assign(partition.second);
           j = tmp.drop_disjunct(j);
         }
@@ -294,8 +306,9 @@ PPL::Pointset_Powerset<PPL::Grid>
   const Pointset_Powerset& x = *this;
   for (const_iterator yi = y.begin(), y_end = y.end();
        yi != y_end; ++yi) {
-    if (!check_containment(yi->pointset(), x))
+    if (!check_containment(yi->pointset(), x)) {
       return false;
+    }
   }
   return true;
 }

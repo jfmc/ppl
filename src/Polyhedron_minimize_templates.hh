@@ -85,9 +85,9 @@ Polyhedron::minimize(const bool con_to_gen,
   PPL_ASSERT(!source.has_no_rows());
 
   // Sort the source system, if necessary.
-  if (!source.is_sorted())
+  if (!source.is_sorted()) {
     source.sort_rows();
-
+  }
   // Initialization of the system of generators `dest'.
   // The algorithm works incrementally and we haven't seen any
   // constraint yet: as a consequence, `dest' should describe
@@ -106,13 +106,16 @@ Polyhedron::minimize(const bool con_to_gen,
   for (dimension_type i = 0; i < dest_num_rows; ++i) {
     Linear_Expression expr;
     expr.set_space_dimension(dest_num_rows - 1);
-    if (i == 0)
+    if (i == 0) {
       expr += 1;
-    else
+    }
+    else {
       expr += Variable(i - 1);
+    }
     dest_row_type dest_i(expr, dest_row_type::LINE_OR_EQUALITY, NECESSARILY_CLOSED);
-    if (dest.topology() == NOT_NECESSARILY_CLOSED)
+    if (dest.topology() == NOT_NECESSARILY_CLOSED) {
       dest_i.mark_as_not_necessarily_closed();
+    }
     dest.sys.insert_no_ok(dest_i, Recycle_Input());
   }
   // The identity matrix `dest' is not sorted (see the sorting rules
@@ -164,23 +167,26 @@ Polyhedron::minimize(const bool con_to_gen,
     for (first_point = num_lines_or_equalities;
         first_point < dest_num_rows;
         ++first_point) {
-      if (dest[first_point].expr.inhomogeneous_term() > 0)
+      if (dest[first_point].expr.inhomogeneous_term() > 0) {
         break;
+      }
     }
   }
   else {
     for (first_point = num_lines_or_equalities;
         first_point < dest_num_rows;
         ++first_point) {
-      if (dest[first_point].expr.get(Variable(dest.space_dimension())) > 0)
+      if (dest[first_point].expr.get(Variable(dest.space_dimension())) > 0) {
         break;
+      }
     }
   }
 
   if (first_point == dest_num_rows)
-    if (con_to_gen)
+    if (con_to_gen) {
       // No point has been found: the polyhedron is empty.
       return true;
+    }
     else {
       // Here `con_to_gen' is false: `dest' is a system of constraints.
       // In this case the condition `first_point == dest_num_rows'
@@ -291,9 +297,10 @@ Polyhedron::add_and_minimize(const bool con_to_gen,
       // we can increment index `k1' too.
       ++k1;
     }
-    else if (cmp < 0)
+    else if (cmp < 0) {
       // By sortedness, we can increment `k1'.
       ++k1;
+    }
     else {
       // Here `cmp > 0'.
       // By sortedness, `source2[k2]' cannot be in `source1'.
@@ -304,13 +311,14 @@ Polyhedron::add_and_minimize(const bool con_to_gen,
     }
   }
   // Have we scanned all the rows in `source2'?
-  if (k2 < source2_num_rows)
+  if (k2 < source2_num_rows) {
     // By sortedness, all the rows in `source2' having indexes
     // greater than or equal to `k2' were not in `source1'.
     // We add them as pending rows of 'source1' (sortedness not affected).
     for ( ; k2 < source2_num_rows; ++k2) {
       source1.add_pending_row(source2[k2]);
     }
+  }
 
   if (source1.num_pending_rows() == 0)
     // No row was appended to `source1', because all the constraints
@@ -392,23 +400,26 @@ Polyhedron::add_and_minimize(const bool con_to_gen,
     for (first_point = num_lines_or_equalities;
         first_point < dest_num_rows;
         ++first_point) {
-      if (dest[first_point].expr.inhomogeneous_term() > 0)
+      if (dest[first_point].expr.inhomogeneous_term() > 0) {
         break;
+      }
     }
   }
   else {
     for (first_point = num_lines_or_equalities;
         first_point < dest_num_rows;
         ++first_point) {
-      if (dest[first_point].expr.get(Variable(dest.space_dimension())) > 0)
+      if (dest[first_point].expr.get(Variable(dest.space_dimension())) > 0) {
         break;
+      }
      }
   }
 
-  if (first_point == dest_num_rows)
-    if (con_to_gen)
+  if (first_point == dest_num_rows) {
+    if (con_to_gen) {
       // No point has been found: the polyhedron is empty.
       return true;
+    }
     else {
       // Here `con_to_gen' is false: `dest' is a system of constraints.
       // In this case the condition `first_point == dest_num_rows'
@@ -421,6 +432,7 @@ Polyhedron::add_and_minimize(const bool con_to_gen,
       PPL_UNREACHABLE;
       return false;
     }
+  }
   else {
     // A point has been found: the polyhedron is not empty.
     // Now invoking `simplify()' to remove all the redundant constraints

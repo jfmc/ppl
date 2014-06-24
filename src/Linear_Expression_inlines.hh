@@ -149,11 +149,12 @@ operator-(const Variable v, const Variable w) {
   const dimension_type v_space_dim = v.space_dimension();
   const dimension_type w_space_dim = w.space_dimension();
   const dimension_type space_dim = std::max(v_space_dim, w_space_dim);
-  if (space_dim > Linear_Expression::max_space_dimension())
+  if (space_dim > Linear_Expression::max_space_dimension()) {
     throw std::length_error("Linear_Expression "
                             "PPL::operator+(v, w):\n"
                             "v or w exceed the maximum allowed "
                             "space dimension.");
+  }
   if (v_space_dim >= w_space_dim) {
     Linear_Expression e(v);
     e -= w;
@@ -254,11 +255,12 @@ operator+(const Variable v, const Variable w) {
   const dimension_type v_space_dim = v.space_dimension();
   const dimension_type w_space_dim = w.space_dimension();
   const dimension_type space_dim = std::max(v_space_dim, w_space_dim);
-  if (space_dim > Linear_Expression::max_space_dimension())
+  if (space_dim > Linear_Expression::max_space_dimension()) {
     throw std::length_error("Linear_Expression "
                             "PPL::operator+(v, w):\n"
                             "v or w exceed the maximum allowed "
                             "space dimension.");
+  }
   if (v_space_dim >= w_space_dim) {
     Linear_Expression e(v);
     e += w;
@@ -763,10 +765,12 @@ Linear_Expression::Linear_Expression(const LE_Adapter& e,
   tmp.set_inhomogeneous_term(e.inhomogeneous_term());
   typedef typename LE_Adapter::const_iterator itr_t;
   itr_t i_end;
-  if (space_dim <= e.space_dimension())
+  if (space_dim <= e.space_dimension()) {
     i_end = e.lower_bound(Variable(space_dim));
-  else
+  }
+  else {
     i_end = e.end();
+  }
   for (itr_t i = e.begin(); i != i_end; ++i) {
     add_mul_assign(tmp, *i, i.variable());
   }
@@ -786,10 +790,12 @@ Linear_Expression::Linear_Expression(const LE_Adapter& e,
   tmp.set_inhomogeneous_term(e.inhomogeneous_term());
   typedef typename LE_Adapter::const_iterator itr_t;
   itr_t i_end;
-  if (space_dim <= e.space_dimension())
+  if (space_dim <= e.space_dimension()) {
     i_end = e.lower_bound(Variable(space_dim));
-  else
+  }
+  else {
     i_end = e.end();
+  }
   for (itr_t i = e.begin(); i != i_end; ++i) {
     add_mul_assign(tmp, *i, i.variable());
   }

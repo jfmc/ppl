@@ -84,12 +84,14 @@ Polyhedron::Polyhedron(Topology topol,
         con_sys.insert(l_d * v_k == l_n);
       }
       else {
-        if (l_bounded)
+        if (l_bounded) {
           // Add the constraint `l_d*v_k >= l_n'.
           con_sys.insert(l_d * v_k >= l_n);
-        if (u_bounded)
+        }
+        if (u_bounded) {
           // Add the constraint `u_d*v_k <= u_n'.
           con_sys.insert(u_d * v_k <= u_n);
+        }
       }
     }
   }
@@ -114,21 +116,25 @@ Polyhedron::Polyhedron(Topology topol,
       else {
         // Check if a lower bound constraint is required.
         if (l_bounded) {
-          if (l_closed)
+          if (l_closed) {
             // Add the constraint `l_d*v_k >= l_n'.
             con_sys.insert(l_d * v_k >= l_n);
-          else
+          }
+          else {
             // Add the constraint `l_d*v_k > l_n'.
             con_sys.insert(l_d * v_k > l_n);
+          }
         }
         // Check if an upper bound constraint is required.
         if (u_bounded) {
-          if (u_closed)
+          if (u_closed) {
             // Add the constraint `u_d*v_k <= u_n'.
             con_sys.insert(u_d * v_k <= u_n);
-          else
+          }
+          else {
             // Add the constraint `u_d*v_k < u_n'.
             con_sys.insert(u_d * v_k < u_n);
+          }
         }
       }
     }
@@ -145,9 +151,9 @@ Polyhedron::Polyhedron(Topology topol,
 template <typename Partial_Function>
 void
 Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
-  if (space_dim == 0)
+  if (space_dim == 0) {
     return;
-
+  }
   if (pfunc.has_empty_codomain()) {
     // All dimensions vanish: the polyhedron becomes zero_dimensional.
     if (marked_empty()
@@ -158,10 +164,11 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
       space_dim = 0;
       con_sys.clear();
     }
-    else
+    else {
       // Removing all dimensions from a non-empty polyhedron.
       set_zero_dim_univ();
-
+    }
+    
     PPL_ASSERT_HEAVY(OK());
     return;
   }
@@ -181,20 +188,23 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
     std::deque<bool> visited(space_dim);
 
     for (dimension_type i = space_dim; i-- > 0; ) {
-      if (visited[i])
+      if (visited[i]) {
         continue;
-
+      }
+      
       dimension_type j = i;
       do {
         visited[j] = true;
         // The following initialization is only to make the compiler happy.
         dimension_type k = 0;
-        if (!pfunc.maps(j, k))
+        if (!pfunc.maps(j, k)) {
           throw_invalid_argument("map_space_dimensions(pfunc)",
                                  " pfunc is inconsistent");
-        if (k == j)
+        }
+        if (k == j) {
           break;
-
+        }
+        
         cycle.push_back(Variable(j));
         // Go along the cycle.
         j = k;
@@ -205,12 +215,14 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
       // Permute all that is up-to-date.  Notice that the contents of
       // the saturation matrices is unaffected by the permutation of
       // columns: they remain valid, if they were so.
-      if (constraints_are_up_to_date())
+      if (constraints_are_up_to_date()) {
         con_sys.permute_space_dimensions(cycle);
-
-      if (generators_are_up_to_date())
+      }
+      
+      if (generators_are_up_to_date()) {
         gen_sys.permute_space_dimensions(cycle);
-
+      }
+      
       cycle.clear();
     }
 
@@ -236,8 +248,9 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
   std::vector<dimension_type> pfunc_maps(space_dim, not_a_dimension());
   for (dimension_type j = space_dim; j-- > 0; ) {
     dimension_type pfunc_j;
-    if (pfunc.maps(j, pfunc_j))
+    if (pfunc.maps(j, pfunc_j)) {
       pfunc_maps[j] = pfunc_j;
+    }
   }
 
   Generator_System new_gensys;
@@ -258,12 +271,14 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
     }
     switch (old_g.type()) {
     case Generator::LINE:
-      if (!all_zeroes)
+      if (!all_zeroes) {
         new_gensys.insert(line(expr));
+      }
       break;
     case Generator::RAY:
-      if (!all_zeroes)
+      if (!all_zeroes) {
         new_gensys.insert(ray(expr));
+      }
       break;
     case Generator::POINT:
       // A point in the origin has all zero homogeneous coefficients.
@@ -296,15 +311,17 @@ Polyhedron::refine_with_linear_form_inequality(
   // The dimensions of left and right should not be greater than the
   // dimension of *this.
   const dimension_type left_space_dim = left.space_dimension();
-  if (space_dim < left_space_dim)
+  if (space_dim < left_space_dim) {
     throw_dimension_incompatible(
           "refine_with_linear_form_inequality(l1, l2, s)", "l1", left);
-
+  }
+  
   const dimension_type right_space_dim = right.space_dimension();
-  if (space_dim < right_space_dim)
+  if (space_dim < right_space_dim) {
     throw_dimension_incompatible(
           "refine_with_linear_form_inequality(l1, l2, s)", "l2", right);
-
+  }
+  
   // We assume that the analyzer will not refine an unreachable test.
   PPL_ASSERT(!marked_empty());
 
@@ -312,36 +329,42 @@ Polyhedron::refine_with_linear_form_inequality(
   typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
 
   if (Floating_Point_Expression<FP_Interval_Type, float_ieee754_single>::
-      overflows(left))
+      overflows(left)) {
     return;
-
+  }
+  
   if (Floating_Point_Expression<FP_Interval_Type, float_ieee754_single>::
-      overflows(right))
+      overflows(right)) {
     return;
-
+  }
+  
   // Overapproximate left - right.
   FP_Linear_Form left_minus_right(left);
   left_minus_right -= right;
   if (Floating_Point_Expression<FP_Interval_Type, float_ieee754_single>::
-      overflows(left_minus_right))
+      overflows(left_minus_right)) {
     return;
-
+  }
+  
   dimension_type lf_space_dim = left_minus_right.space_dimension();
   FP_Linear_Form lf_approx;
   overapproximate_linear_form(left_minus_right, lf_space_dim, lf_approx);
   if (Floating_Point_Expression<FP_Interval_Type, float_ieee754_single>::
-      overflows(lf_approx))
+      overflows(lf_approx)) {
     return;
-
+  }
+  
   // Normalize left - right.
   Linear_Expression lf_approx_le;
   convert_to_integer_expression(lf_approx, lf_space_dim, lf_approx_le);
 
   // Finally, do the refinement.
-  if (!is_strict || is_necessarily_closed())
+  if (!is_strict || is_necessarily_closed()) {
     refine_with_constraint(lf_approx_le <= 0);
-  else
+  }
+  else {
     refine_with_constraint(lf_approx_le < 0);
+  }
 }
 
 template <typename FP_Format, typename Interval_Info>
@@ -357,14 +380,16 @@ const Linear_Form<Interval <FP_Format, Interval_Info> >& lf) {
   // Dimension compatibility checks.
   // The dimension of lf should not be greater than the dimension of *this.
   const dimension_type lf_space_dim = lf.space_dimension();
-  if (space_dim < lf_space_dim)
+  if (space_dim < lf_space_dim) {
     throw_dimension_incompatible("affine_form_image(v, l, s)", "l", lf);
-
+  }
+  
   // `var' should be one of the dimensions of the polyhedron.
   const dimension_type var_id = var.id();
-  if (space_dim < var_id + 1)
+  if (space_dim < var_id + 1) {
     throw_dimension_incompatible("affine_form_image(v, l, s)", "v", var);
-
+  }
+  
   // We assume that the analyzer will not perform an unreachable assignment.
   PPL_ASSERT(!marked_empty());
 
@@ -466,14 +491,16 @@ Polyhedron::convert_to_integer_expression(
   // FIXME: are these checks numerator[i] != 0 really necessary?
   numer_denom(b.lower(), numerators[lf_dimension],
                          denominators[lf_dimension]);
-  if (numerators[lf_dimension] != 0)
+  if (numerators[lf_dimension] != 0) {
       lcm_assign(lcm, lcm, denominators[lf_dimension]);
-
+  }
+  
   for (dimension_type i = 0; i < lf_dimension; ++i) {
     const FP_Interval_Type& curr_int = lf.coefficient(Variable(i));
     numer_denom(curr_int.lower(), numerators[i], denominators[i]);
-    if (numerators[i] != 0)
+    if (numerators[i] != 0) {
       lcm_assign(lcm, lcm, denominators[i]);
+    }
   }
 
   for (dimension_type i = 0; i < lf_dimension; ++i) {
@@ -512,19 +539,22 @@ Polyhedron::convert_to_integer_expressions(
   const FP_Interval_Type& b = lf.inhomogeneous_term();
   numer_denom(b.lower(), numerators[lf_dimension], denominators[lf_dimension]);
   // FIXME: are these checks numerator[i] != 0 really necessary?
-  if (numerators[lf_dimension] != 0)
+  if (numerators[lf_dimension] != 0) {
       lcm_assign(lcm, lcm, denominators[lf_dimension]);
-
+  }
+  
   numer_denom(b.upper(), numerators[lf_dimension+1],
                          denominators[lf_dimension+1]);
-  if (numerators[lf_dimension+1] != 0)
+  if (numerators[lf_dimension+1] != 0) {
       lcm_assign(lcm, lcm, denominators[lf_dimension+1]);
-
+  }
+  
   for (dimension_type i = 0; i < lf_dimension; ++i) {
     const FP_Interval_Type& curr_int = lf.coefficient(Variable(i));
     numer_denom(curr_int.lower(), numerators[i], denominators[i]);
-    if (numerators[i] != 0)
+    if (numerators[i] != 0) {
       lcm_assign(lcm, lcm, denominators[i]);
+    }
   }
 
   for (dimension_type i = 0; i < lf_dimension; ++i) {
@@ -541,17 +571,19 @@ Polyhedron::convert_to_integer_expressions(
     numerators[lf_dimension] *= denominators[lf_dimension];
     res_low_coeff = numerators[lf_dimension];
   }
-  else
+  else {
     res_low_coeff = Coefficient(0);
-
+  }
+  
   if (numerators[lf_dimension+1] != 0) {
     exact_div_assign(denominators[lf_dimension+1],
                      lcm, denominators[lf_dimension+1]);
     numerators[lf_dimension+1] *= denominators[lf_dimension+1];
     res_hi_coeff = numerators[lf_dimension+1];
   }
-  else
+  else {
     res_hi_coeff = Coefficient(0);
+  }
 }
 
 template <typename C>

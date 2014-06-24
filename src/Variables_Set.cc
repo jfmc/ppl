@@ -38,8 +38,9 @@ bool
 PPL::Variables_Set::OK() const {
   for (const_iterator i = begin(), set_end = end();
        i != set_end; ++i) {
-    if (!Variable(*i).OK())
+    if (!Variable(*i).OK()) {
       return false;
+    }
   }
   return true;
 }
@@ -52,8 +53,9 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Variables_Set& vs) {
          vs_end = vs.end(); i != vs_end; ) {
     s << ' ' << Variable(*i);
     ++i;
-    if (i != vs_end)
+    if (i != vs_end) {
       s << ',';
+    }
   }
   s << " }";
   return s;
@@ -75,21 +77,25 @@ bool
 PPL::Variables_Set::ascii_load(std::istream& s) {
   clear();
   std::string str;
-  if (!(s >> str) || str != "variables(")
+  if (!(s >> str) || str != "variables(") {
     return false;
-
+  }
+  
   dimension_type size;
 
-  if (!(s >> size))
+  if (!(s >> size)) {
     return false;
-
-  if (!(s >> str) || str != ")")
+  }
+  
+  if (!(s >> str) || str != ")") {
     return false;
-
+  }
+  
   for (dimension_type i = 0; i < size; ++i) {
     dimension_type variable_value;
-    if (!(s >> variable_value))
+    if (!(s >> variable_value)) {
       return false;
+    }
     insert(variable_value);
   }
   return true;

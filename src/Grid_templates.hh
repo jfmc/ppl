@@ -69,7 +69,7 @@ Grid::Grid(const Box<Interval>& box, Complexity_Class)
       bool closed = false;
       // TODO: Consider producing the system(s) in minimized form.
       if (box.has_lower_bound(v_k, l_n, l_d, closed)) {
-        if (box.has_upper_bound(v_k, u_n, u_d, closed))
+        if (box.has_upper_bound(v_k, u_n, u_d, closed)) {
           if (l_n * u_d == u_n * l_d) {
             // A point interval sets dimension k of every point to a
             // single value.
@@ -102,6 +102,7 @@ Grid::Grid(const Box<Interval>& box, Complexity_Class)
 
             continue;
           }
+        }
       }
       // A universe interval allows any value in dimension k.
       gen_sys.insert(grid_line(v_k));

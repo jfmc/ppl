@@ -75,12 +75,15 @@ long double nl[2], pl[2];
 int
 ppl_check_function() {
   int r = 0;
-  if (nf[0] == nf[1] || pf[0] == pf[1] || -nf[0] != pf[1] || -nf[1] != pf[0])
+  if (nf[0] == nf[1] || pf[0] == pf[1] || -nf[0] != pf[1] || -nf[1] != pf[0]) {
     r |= 1;
-  if (nd[0] == nd[1] || pd[0] == pd[1] || -nd[0] != pd[1] || -nd[1] != pd[0])
+  }
+  if (nd[0] == nd[1] || pd[0] == pd[1] || -nd[0] != pd[1] || -nd[1] != pd[0]) {
     r |= 2;
-  if (nl[0] == nl[1] || pl[0] == pl[1] || -nl[0] != pl[1] || -nl[1] != pl[0])
+  }
+  if (nl[0] == nl[1] || pl[0] == pl[1] || -nl[0] != pl[1] || -nl[1] != pl[0]) {
     r |= 4;
+  }
   return r;
 }
 
@@ -106,9 +109,10 @@ namespace {
 
 int
 ppl_test_rounding() {
-  if ((*ppl_setround_function_p)(FE_DOWNWARD) != 0)
+  if ((*ppl_setround_function_p)(FE_DOWNWARD) != 0) {
     return 255;
-
+  }
+  
   nf[0] = nf1 / f2;
   nd[0] = nd1 / d2;
   nl[0] = nl1 / l2;
@@ -116,9 +120,10 @@ ppl_test_rounding() {
   pd[0] = pd1 / d2;
   pl[0] = pl1 / l2;
 
-  if ((*ppl_setround_function_p)(FE_UPWARD) != 0)
+  if ((*ppl_setround_function_p)(FE_UPWARD) != 0) {
     return 255;
-
+  }
+  
   nf[1] = nf1 / f2;
   nd[1] = nd1 / d2;
   nl[1] = nl1 / l2;
@@ -171,10 +176,11 @@ PPL::Init::Init() {
     fpu_set_rounding_direction(round_fpu_dir(ROUND_DIRECT));
 
 #if defined(PPL_ARM_CAN_CONTROL_FPU) && PPL_ARM_CAN_CONTROL_FPU
-    if (ppl_test_rounding() != 0)
+    if (ppl_test_rounding() != 0) {
       throw std::logic_error("PPL configuration error:"
                              " PPL_ARM_CAN_CONTROL_FPU evaluates to true,"
                              " but rounding does not work.");
+    }
 #endif // defined(PPL_ARM_CAN_CONTROL_FPU) && PPL_ARM_CAN_CONTROL_FPU
 
 #endif // PPL_CAN_CONTROL_FPU

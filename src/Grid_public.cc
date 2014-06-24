@@ -945,8 +945,9 @@ PPL::Grid::constrains(const Variable var) const {
 
  syntactic_check:
   for (dimension_type i = con_sys.num_rows(); i-- > 0; ) {
-    if (con_sys[i].coefficient(var) != 0)
+    if (con_sys[i].coefficient(var) != 0) {
       return true;
+    }
   }
   return false;
 }

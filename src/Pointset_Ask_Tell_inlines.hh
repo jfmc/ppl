@@ -54,9 +54,10 @@ inline
 Pointset_Ask_Tell<PSET>::Pointset_Ask_Tell(dimension_type num_dimensions,
                                          Degenerate_Element kind)
   : Base(), space_dim(num_dimensions) {
-  if (kind == EMPTY)
+  if (kind == EMPTY) {
     pair_insert(Determinate<PSET>(PSET(num_dimensions, UNIVERSE)),
                 Determinate<PSET>(PSET(num_dimensions, EMPTY)));
+  }
   PPL_ASSERT_HEAVY(OK());
 }
 

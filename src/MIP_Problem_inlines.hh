@@ -94,9 +94,10 @@ MIP_Problem::add_constraint_helper(const Constraint& c) {
   const dimension_type size = input_cs.size();
   if (size == input_cs.capacity()) {
     const dimension_type max_size = input_cs.max_size();
-    if (size == max_size)
+    if (size == max_size) {
       throw std::length_error("MIP_Problem::add_constraint(): "
                               "too many constraints");
+    }
     // Use an exponential grow policy to avoid too many reallocations.
     input_cs.reserve(compute_capacity(size + 1, max_size));
   }
@@ -122,8 +123,9 @@ inline void
 MIP_Problem::set_optimization_mode(const Optimization_Mode mode) {
   if (opt_mode != mode) {
     opt_mode = mode;
-    if (status == UNBOUNDED || status == OPTIMIZED)
+    if (status == UNBOUNDED || status == OPTIMIZED) {
       status = SATISFIABLE;
+    }
     PPL_ASSERT(OK());
   }
 }

@@ -247,8 +247,9 @@ Linear_System<Row>::mark_as_not_necessarily_closed() {
 template <typename Row>
 inline void
 Linear_System<Row>::set_topology(Topology t) {
-  if (topology() == t)
+  if (topology() == t) {
     return;
+  }
   for (dimension_type i = num_rows(); i-- > 0; ) {
     rows[i].set_topology(t);
   }
@@ -380,12 +381,14 @@ Linear_System<Row>::remove_row_no_ok(const dimension_type i,
     rows.pop_back();
   }
   else {
-    if (!was_pending)
+    if (!was_pending) {
       sorted = false;
+    }
     const bool last_row_is_pending = (num_rows() - 1 >= index_first_pending);
-    if (was_pending == last_row_is_pending)
+    if (was_pending == last_row_is_pending) {
       // Either both rows are pending or both rows are not pending.
       swap(rows[i], rows.back());
+    }
     else {
       // Pending rows are stored after the non-pending ones.
       PPL_ASSERT(!was_pending);
@@ -400,9 +403,10 @@ Linear_System<Row>::remove_row_no_ok(const dimension_type i,
     }
     rows.pop_back();
   }
-  if (!was_pending)
+  if (!was_pending) {
     // A non-pending row has been removed.
     --index_first_pending;
+  }
 }
 
 template <typename Row>
@@ -422,9 +426,10 @@ Linear_System<Row>::remove_rows(dimension_type first,
   PPL_ASSERT(last <= num_rows());
   const dimension_type n = last - first;
 
-  if (n == 0)
+  if (n == 0) {
     return;
-
+  }
+  
   // All the rows that have to be removed must have the same (pending or
   // non-pending) status.
   PPL_ASSERT(first >= index_first_pending || last <= index_first_pending);
@@ -533,18 +538,20 @@ Linear_System<Row>::swap_row_intervals(dimension_type first,
     offset += k;
   }
 
-  if (first == last)
+  if (first == last) {
     // Nothing to do.
     return;
-
+  }
+  
   for (dimension_type i = first; i < last; ++i) {
     swap(rows[i], rows[i + offset]);
   }
 
-  if (first < index_first_pending)
+  if (first < index_first_pending) {
     // The swaps involved not pending rows, so they may not be sorted anymore.
     set_sorted(false);
-
+  }
+  
   PPL_ASSERT(OK());
 }
 
@@ -560,14 +567,16 @@ Linear_System<Row>::remove_rows(const std::vector<dimension_type>& indexes) {
 
     // Check that the last index (if any) is lower than num_rows().
     // This guarantees that all indexes are in [0, num_rows()).
-    if (!indexes.empty())
+    if (!indexes.empty()) {
       PPL_ASSERT(indexes.back() < num_rows());
+    }
   }
 #endif
 
-  if (indexes.empty())
+  if (indexes.empty()) {
     return;
-
+  }
+  
   const dimension_type rows_size = rows.size();
   typedef std::vector<dimension_type>::const_iterator itr_t;
 
@@ -638,8 +647,9 @@ inline void
 Linear_System<Row>::remove_trailing_rows(const dimension_type n) {
   PPL_ASSERT(rows.size() >= n);
   rows.resize(rows.size() - n);
-  if (first_pending_row() > rows.size())
+  if (first_pending_row() > rows.size()) {
     index_first_pending = rows.size();
+  }
   PPL_ASSERT(OK());
 }
 

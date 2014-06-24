@@ -48,15 +48,17 @@ bool Multiplication_Floating_Point_Expression<FP_Interval_Type, FP_Format>
   bool intervalize_first;
   FP_Linear_Form linearized_first_operand;
   if (!first_operand->linearize(int_store, lf_store,
-                               linearized_first_operand))
+                               linearized_first_operand)) {
     return false;
+  }
   FP_Interval_Type intervalized_first_operand;
   this->intervalize(linearized_first_operand, int_store,
                     intervalized_first_operand);
   FP_Linear_Form linearized_second_operand;
   if (!second_operand->linearize(int_store, lf_store,
-                                linearized_second_operand))
+                                linearized_second_operand)) {
     return false;
+  }
   FP_Interval_Type intervalized_second_operand;
   this->intervalize(linearized_second_operand, int_store,
                     intervalized_second_operand);
@@ -70,19 +72,24 @@ bool Multiplication_Floating_Point_Expression<FP_Interval_Type, FP_Format>
       boundary_type second_interval_size
         = intervalized_second_operand.upper()
         - intervalized_second_operand.lower();
-      if (first_interval_size <= second_interval_size)
+      if (first_interval_size <= second_interval_size) {
         intervalize_first = true;
-      else
+      }
+      else {
         intervalize_first = false;
+      }
     }
-    else
+    else {
       intervalize_first = true;
+    }
   }
   else {
-    if (intervalized_second_operand.is_bounded())
+    if (intervalized_second_operand.is_bounded()) {
       intervalize_first = false;
-    else
+    }
+    else {
       return false;
+    }
   }
 
   // Here we do the actual computation.

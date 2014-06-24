@@ -91,22 +91,25 @@ throw_syscall_error(const char* syscall_name) {
 
 void
 my_getitimer(int which, struct itimerval* value) {
-  if (getitimer(which, value) != 0)
+  if (getitimer(which, value) != 0) {
     throw_syscall_error("getitimer");
+  }
 }
 
 void
 my_setitimer(int which,
              const struct itimerval* value, struct itimerval* old_value) {
-  if (setitimer(which, value, old_value) != 0)
+  if (setitimer(which, value, old_value) != 0) {
     throw_syscall_error("setitimer");
+  }
 }
 
 void
 my_sigaction(int signum,
              const struct sigaction* act, struct sigaction* old_action) {
-  if (sigaction(signum, act, old_action) != 0)
+  if (sigaction(signum, act, old_action) != 0) {
     throw_syscall_error("sigaction");
+  }
 }
 
 } // namespace
@@ -121,8 +124,9 @@ PPL::Watchdog::get_timer(Implementation::Watchdog::Time& time) {
 
 void
 PPL::Watchdog::set_timer(const Implementation::Watchdog::Time& time) {
-  if (time.seconds() == 0 && time.microseconds() == 0)
+  if (time.seconds() == 0 && time.microseconds() == 0) {
     throw std::runtime_error("PPL internal error");
+  }
   last_time_requested = time;
   signal_once.it_value.tv_sec = time.seconds();
   signal_once.it_value.tv_usec = time.microseconds();
@@ -138,8 +142,9 @@ PPL::Watchdog::stop_timer() {
 
 void
 PPL::Watchdog::handle_timeout(int) {
-  if (in_critical_section)
+  if (in_critical_section) {
     reschedule();
+  }
   else {
     time_so_far += last_time_requested;
     if (!pending.empty()) {
@@ -149,13 +154,16 @@ PPL::Watchdog::handle_timeout(int) {
         i->expired_flag() = true;
         i = pending.erase(i);
       } while (i != pending.end() && i->deadline() <= time_so_far);
-      if (pending.empty())
+      if (pending.empty()) {
         alarm_clock_running = false;
-      else
+      }
+      else {
         set_timer((*pending.begin()).deadline() - time_so_far);
+      }
     }
-    else
+    else {
       alarm_clock_running = false;
+    }
   }
 }
 

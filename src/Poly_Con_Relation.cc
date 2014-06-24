@@ -54,10 +54,12 @@ PPL::Poly_Con_Relation::ascii_dump(std::ostream& s) const {
       s << "SATURATES";
       f &= ~SATURATES;
     }
-    if (f != NOTHING)
+    if (f != NOTHING) {
       s << " & ";
-    else
+    }
+    else {
       break;
+    }
   }
 }
 

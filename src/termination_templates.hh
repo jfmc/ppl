@@ -69,46 +69,62 @@ output_function_MS(std::ostream& s, const Variable v) {
   dimension_type id = v.id();
   switch (output_function_MS_which) {
   case 0:
-    if (id < output_function_MS_n)
+    if (id < output_function_MS_n) {
       s << "x'" << id + 1;
-    else if (id < 2*output_function_MS_n)
+    }
+    else if (id < 2*output_function_MS_n) {
       s << "x" << id - output_function_MS_n + 1;
-    else
+    }
+    else {
       s << "WHAT?";
+    }
     break;
   case 1:
-    if (id < output_function_MS_n)
+    if (id < output_function_MS_n) {
       s << "mu" << id + 1;
-    else if (id == output_function_MS_n)
+    }
+    else if (id == output_function_MS_n) {
       s << "WHAT?";
-    else if (id <= output_function_MS_n + output_function_MS_m)
+    }
+    else if (id <= output_function_MS_n + output_function_MS_m) {
       s << "y" << id - output_function_MS_n;
-    else
+    }
+    else {
       s << "WHAT?";
+    }
     break;
   case 2:
   case 4:
-    if (id < output_function_MS_n)
+    if (id < output_function_MS_n) {
       s << "mu" << id + 1;
-    else if (id == output_function_MS_n)
+    }
+    else if (id == output_function_MS_n) {
       s << "mu0";
+    }
     else if (output_function_MS_which == 2
-             && id <= output_function_MS_n + output_function_MS_m + 2)
+             && id <= output_function_MS_n + output_function_MS_m + 2) {
       s << "z" << id - output_function_MS_n;
-    else
+    }
+    else {
       s << "WHAT?";
+    }
     break;
   case 3:
-    if (id < output_function_MS_n)
+    if (id < output_function_MS_n) {
       s << "mu" << id + 1;
-    else if (id == output_function_MS_n)
+    }
+    else if (id == output_function_MS_n) {
       s << "mu0";
-    else if (id <= output_function_MS_n + output_function_MS_m)
+    }
+    else if (id <= output_function_MS_n + output_function_MS_m) {
       s << "y" << id - output_function_MS_n;
-    else if (id <= output_function_MS_n + 2*output_function_MS_m + 2)
+    }
+    else if (id <= output_function_MS_n + 2*output_function_MS_m + 2) {
       s << "z" << id - (output_function_MS_n + output_function_MS_m);
-    else
+    }
+    else {
       s << "WHAT?";
+    }
     break;
   default:
     abort();
@@ -126,14 +142,18 @@ static dimension_type output_function_PR_r;
 inline void
 output_function_PR(std::ostream& s, const Variable v) {
   dimension_type id = v.id();
-  if (id < output_function_PR_s)
+  if (id < output_function_PR_s) {
     s << "u3_" << id + 1;
-  else if (id < output_function_PR_s + output_function_PR_r)
+  }
+  else if (id < output_function_PR_s + output_function_PR_r) {
     s << "u2_" << id - output_function_PR_s + 1;
-  else if (id < output_function_PR_s + 2*output_function_PR_r)
+  }
+  else if (id < output_function_PR_s + 2*output_function_PR_r) {
     s << "u1_" << id - (output_function_PR_s + output_function_PR_r) + 1;
-  else
+  }
+  else {
     s << "WHAT?";
+  }
 }
 #endif
 

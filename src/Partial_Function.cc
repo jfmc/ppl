@@ -31,13 +31,16 @@ namespace Parma_Polyhedra_Library {
 void
 Partial_Function::print(std::ostream& s) const {
   using namespace Parma_Polyhedra_Library::IO_Operators;
-  if (has_empty_codomain())
+  if (has_empty_codomain()) {
     s << "empty" << std::endl;
-  else
+  }
+  else {
     for (dimension_type i = 0, i_end = vec.size(); i < i_end; ++i) {
-      if (vec[i] != not_a_dimension())
+      if (vec[i] != not_a_dimension()) {
         s << Variable(i) << " --> " << Variable(vec[i]) << "\n";
+      }
     }
+  }
 }
 
 } // namespace Parma_Polyhedra_Library

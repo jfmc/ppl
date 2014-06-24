@@ -37,11 +37,12 @@ template <typename C>
 Linear_Form<C>::Linear_Form(const Variable v)
   : vec() {
   const dimension_type space_dim = v.space_dimension();
-  if (space_dim > max_space_dimension())
+  if (space_dim > max_space_dimension()) {
     throw std::length_error("Linear_Form<C>::"
                             "Linear_Form(v):\n"
                             "v exceeds the maximum allowed "
                             "space dimension.");
+  }
   vec.reserve(compute_capacity(space_dim+1, vec_type().max_size()));
   vec.resize(space_dim+1, zero);
   vec[v.space_dimension()] = C(typename C::boundary_type(1));
@@ -53,11 +54,12 @@ Linear_Form<C>::Linear_Form(const Variable v, const Variable w)
   const dimension_type v_space_dim = v.space_dimension();
   const dimension_type w_space_dim = w.space_dimension();
   const dimension_type space_dim = std::max(v_space_dim, w_space_dim);
-  if (space_dim > max_space_dimension())
+  if (space_dim > max_space_dimension()) {
     throw std::length_error("Linear_Form<C>::"
                             "Linear_Form(v, w):\n"
                             "v or w exceed the maximum allowed "
                             "space dimension.");
+  }
   vec.reserve(compute_capacity(space_dim+1, vec_type().max_size()));
   vec.resize(space_dim+1, zero);
   if (v_space_dim != w_space_dim) {
@@ -70,11 +72,12 @@ template <typename C>
 Linear_Form<C>::Linear_Form(const Linear_Expression& e)
   : vec() {
   const dimension_type space_dim = e.space_dimension();
-  if (space_dim > max_space_dimension())
+  if (space_dim > max_space_dimension()) {
     throw std::length_error("Linear_Form<C>::"
                             "Linear_Form(e):\n"
                             "e exceeds the maximum allowed "
                             "space dimension.");
+  }
   vec.reserve(compute_capacity(space_dim+1, vec_type().max_size()));
   vec.resize(space_dim+1);
   for (dimension_type i = space_dim; i-- > 0; )
@@ -121,14 +124,16 @@ template <typename C>
 Linear_Form<C>
 operator+(const Variable v, const Linear_Form<C>& f) {
   const dimension_type v_space_dim = v.space_dimension();
-  if (v_space_dim > Linear_Form<C>::max_space_dimension())
+  if (v_space_dim > Linear_Form<C>::max_space_dimension()) {
     throw std::length_error("Linear_Form "
                             "operator+(v, f):\n"
                             "v exceeds the maximum allowed "
                             "space dimension.");
+  }
   Linear_Form<C> r(f);
-  if (v_space_dim > f.space_dimension())
+  if (v_space_dim > f.space_dimension()) {
     r.extend(v_space_dim+1);
+  }
   r[v_space_dim] += C(typename C::boundary_type(1));
   return r;
 }
@@ -147,8 +152,9 @@ template <typename C>
 Linear_Form<C>
 operator-(const Linear_Form<C>& f) {
   Linear_Form<C> r(f);
-  for (dimension_type i = f.size(); i-- > 0; )
+  for (dimension_type i = f.size(); i-- > 0; ) {
     r[i].neg_assign(r[i]);
+  }
   return r;
 }
 
@@ -193,16 +199,19 @@ template <typename C>
 Linear_Form<C>
 operator-(const Variable v, const Linear_Form<C>& f) {
   const dimension_type v_space_dim = v.space_dimension();
-  if (v_space_dim > Linear_Form<C>::max_space_dimension())
+  if (v_space_dim > Linear_Form<C>::max_space_dimension()) {
     throw std::length_error("Linear_Form "
                             "operator-(v, e):\n"
                             "v exceeds the maximum allowed "
                             "space dimension.");
+  }
   Linear_Form<C> r(f);
-  if (v_space_dim > f.space_dimension())
+  if (v_space_dim > f.space_dimension()) {
     r.extend(v_space_dim+1);
-  for (dimension_type i = f.size(); i-- > 0; )
+  }
+  for (dimension_type i = f.size(); i-- > 0; ) {
     r[i].neg_assign(r[i]);
+  }
   r[v_space_dim] += C(typename C::boundary_type(1));
   return r;
 }
@@ -212,14 +221,16 @@ template <typename C>
 Linear_Form<C>
 operator-(const Linear_Form<C>& f, const Variable v) {
   const dimension_type v_space_dim = v.space_dimension();
-  if (v_space_dim > Linear_Form<C>::max_space_dimension())
+  if (v_space_dim > Linear_Form<C>::max_space_dimension()) {
     throw std::length_error("Linear_Form "
                             "operator-(e, v):\n"
                             "v exceeds the maximum allowed "
                             "space dimension.");
+  }
   Linear_Form<C> r(f);
-  if (v_space_dim > f.space_dimension())
+  if (v_space_dim > f.space_dimension()) {
     r.extend(v_space_dim+1);
+  }
   r[v_space_dim] -= C(typename C::boundary_type(1));
   return r;
 }
@@ -229,8 +240,9 @@ template <typename C>
 Linear_Form<C>
 operator-(const C& n, const Linear_Form<C>& f) {
   Linear_Form<C> r(f);
-  for (dimension_type i = f.size(); i-- > 0; )
+  for (dimension_type i = f.size(); i-- > 0; ) {
     r[i].neg_assign(r[i]);
+  }
   r[0] += n;
   return r;
 }
@@ -240,8 +252,9 @@ template <typename C>
 Linear_Form<C>
 operator*(const C& n, const Linear_Form<C>& f) {
   Linear_Form<C> r(f);
-  for (dimension_type i = f.size(); i-- > 0; )
+  for (dimension_type i = f.size(); i-- > 0; ) {
     r[i] *= n;
+  }
   return r;
 }
 
@@ -251,10 +264,12 @@ Linear_Form<C>&
 operator+=(Linear_Form<C>& f1, const Linear_Form<C>& f2) {
   dimension_type f1_size = f1.size();
   dimension_type f2_size = f2.size();
-  if (f1_size < f2_size)
+  if (f1_size < f2_size) {
     f1.extend(f2_size);
-  for (dimension_type i = f2_size; i-- > 0; )
+  }
+  for (dimension_type i = f2_size; i-- > 0; ) {
     f1[i] += f2[i];
+  }
   return f1;
 }
 
@@ -263,12 +278,14 @@ template <typename C>
 Linear_Form<C>&
 operator+=(Linear_Form<C>& f, const Variable v) {
   const dimension_type v_space_dim = v.space_dimension();
-  if (v_space_dim > Linear_Form<C>::max_space_dimension())
+  if (v_space_dim > Linear_Form<C>::max_space_dimension()) {
     throw std::length_error("Linear_Form<C>& "
                             "operator+=(e, v):\n"
                             "v exceeds the maximum allowed space dimension.");
-  if (v_space_dim > f.space_dimension())
+  }
+  if (v_space_dim > f.space_dimension()) {
     f.extend(v_space_dim+1);
+  }
   f[v_space_dim] += C(typename C::boundary_type(1));
   return f;
 }
@@ -279,10 +296,12 @@ Linear_Form<C>&
 operator-=(Linear_Form<C>& f1, const Linear_Form<C>& f2) {
   dimension_type f1_size = f1.size();
   dimension_type f2_size = f2.size();
-  if (f1_size < f2_size)
+  if (f1_size < f2_size) {
     f1.extend(f2_size);
-  for (dimension_type i = f2_size; i-- > 0; )
+  }
+  for (dimension_type i = f2_size; i-- > 0; ) {
     f1[i] -= f2[i];
+  }
   return f1;
 }
 
@@ -291,12 +310,14 @@ template <typename C>
 Linear_Form<C>&
 operator-=(Linear_Form<C>& f, const Variable v) {
   const dimension_type v_space_dim = v.space_dimension();
-  if (v_space_dim > Linear_Form<C>::max_space_dimension())
+  if (v_space_dim > Linear_Form<C>::max_space_dimension()) {
     throw std::length_error("Linear_Form<C>& "
                             "operator-=(e, v):\n"
                             "v exceeds the maximum allowed space dimension.");
-  if (v_space_dim > f.space_dimension())
+  }
+  if (v_space_dim > f.space_dimension()) {
     f.extend(v_space_dim+1);
+  }
   f[v_space_dim] -= C(typename C::boundary_type(1));
   return f;
 }
@@ -306,8 +327,9 @@ template <typename C>
 Linear_Form<C>&
 operator*=(Linear_Form<C>& f, const C& n) {
   dimension_type f_size = f.size();
-  for (dimension_type i = f_size; i-- > 0; )
+  for (dimension_type i = f_size; i-- > 0; ) {
     f[i] *= n;
+  }
   return f;
 }
 
@@ -316,8 +338,9 @@ template <typename C>
 Linear_Form<C>&
 operator/=(Linear_Form<C>& f, const C& n) {
   dimension_type f_size = f.size();
-  for (dimension_type i = f_size; i-- > 0; )
+  for (dimension_type i = f_size; i-- > 0; ) {
     f[i] /= n;
+  }
   return f;
 }
 
@@ -328,23 +351,28 @@ operator==(const Linear_Form<C>& x, const Linear_Form<C>& y) {
   const dimension_type x_size = x.size();
   const dimension_type y_size = y.size();
   if (x_size >= y_size) {
-    for (dimension_type i = y_size; i-- > 0; )
-      if (x[i] != y[i])
+    for (dimension_type i = y_size; i-- > 0; ) {
+      if (x[i] != y[i]) {
         return false;
-
-    for (dimension_type i = x_size; --i >= y_size; )
-      if (x[i] != x.zero)
+      }
+    }
+    for (dimension_type i = x_size; --i >= y_size; ) {
+      if (x[i] != x.zero) {
         return false;
-
+      }
+    }
   }
   else {
-    for (dimension_type i = x_size; i-- > 0; )
-      if (x[i] != y[i])
+    for (dimension_type i = x_size; i-- > 0; ) {
+      if (x[i] != y[i]) {
         return false;
-
-    for (dimension_type i = y_size; --i >= x_size; )
-      if (y[i] != x.zero)
+      }
+    }
+    for (dimension_type i = y_size; --i >= x_size; ) {
+      if (y[i] != x.zero) {
         return false;
+      }
+    }
 
   }
 
@@ -354,8 +382,9 @@ operator==(const Linear_Form<C>& x, const Linear_Form<C>& y) {
 template <typename C>
 void
 Linear_Form<C>::negate() {
-  for (dimension_type i = vec.size(); i-- > 0; )
+  for (dimension_type i = vec.size(); i-- > 0; ) {
     vec[i].neg_assign(vec[i]);
+  }
   return;
 }
 
@@ -363,8 +392,9 @@ template <typename C>
 inline memory_size_type
 Linear_Form<C>::external_memory_in_bytes() const {
   memory_size_type n = 0;
-  for (dimension_type i = size(); i-- > 0; )
+  for (dimension_type i = size(); i-- > 0; ) {
     n += vec[i].external_memory_in_bytes();
+  }
   n += vec.capacity()*sizeof(C);
   return n;
 }
@@ -372,9 +402,11 @@ Linear_Form<C>::external_memory_in_bytes() const {
 template <typename C>
 bool
 Linear_Form<C>::OK() const {
-  for (dimension_type i = size(); i-- > 0; )
-    if (!vec[i].OK())
+  for (dimension_type i = size(); i-- > 0; ) {
+    if (!vec[i].OK()) {
       return false;
+    }
+  }
   return true;
 }
 
@@ -464,8 +496,9 @@ Linear_Form<C>::intervalize(const FP_Oracle<Target,C>& oracle,
   for (dimension_type i = 0; i < dimension; ++i) {
     C current_addend = coefficient(Variable(i));
     C curr_int;
-    if (!oracle.get_interval(i, curr_int))
+    if (!oracle.get_interval(i, curr_int)) {
       return false;
+    }
     current_addend *= curr_int;
     result += current_addend;
   }
@@ -483,19 +516,23 @@ IO_Operators::operator<<(std::ostream& s, const Linear_Form<C>& f) {
     const C& fv = f[v+1];
     if (fv != typename C::boundary_type(0)) {
       if (first) {
-        if (fv == typename C::boundary_type(-1))
+        if (fv == typename C::boundary_type(-1)) {
           s << "-";
-        else if (fv != typename C::boundary_type(1))
+        }
+        else if (fv != typename C::boundary_type(1)) {
           s << fv << "*";
+        }
         first = false;
       }
       else {
-        if (fv == typename C::boundary_type(-1))
+        if (fv == typename C::boundary_type(-1)) {
           s << " - ";
+        }
         else {
           s << " + ";
-          if (fv != typename C::boundary_type(1))
+          if (fv != typename C::boundary_type(1)) {
             s << fv << "*";
+          }
         }
       }
       s << Variable(v);
@@ -504,16 +541,19 @@ IO_Operators::operator<<(std::ostream& s, const Linear_Form<C>& f) {
   // Inhomogeneous term.
   const C& it = f[0];
   if (it != 0) {
-    if (!first)
+    if (!first) {
         s << " + ";
-    else
+    }
+    else {
       first = false;
+    }
     s << it;
   }
 
-  if (first)
+  if (first) {
     // The null linear form.
     s << Linear_Form<C>::zero;
+  }
   return s;
 }
 

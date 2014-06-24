@@ -132,11 +132,12 @@ Polyhedron::simplify(Linear_System1& sys, Bit_Matrix& sat) {
       // `sys' is no longer sorted.
       sys_sorted = false;
     }
-    else
+    else {
       // There exists a generator which does not saturate `sys[i]',
       // so that `sys[i]' is indeed an inequality.
       // We store the number of its saturators.
       num_saturators[i] = num_cols_sat - sat[i].count_ones();
+    }
   }
 
   sys.set_sorted(sys_sorted);
@@ -239,8 +240,9 @@ Polyhedron::simplify(Linear_System1& sys, Bit_Matrix& sat) {
       swap(sat[i], sat[num_rows]);
       swap(num_saturators[i], num_saturators[num_rows]);
     }
-    else
+    else {
       ++i;
+    }
   }
 
   // Now we check the independence rule.
@@ -253,9 +255,10 @@ Polyhedron::simplify(Linear_System1& sys, Bit_Matrix& sat) {
     // than `i' and also doing the test `strict_subset(sat[i],
     // sat[k])'.
     for (dimension_type j = num_lines_or_equalities; j < num_rows; ) {
-      if (i == j)
+      if (i == j) {
         // We want to compare different rows of `sys'.
         ++j;
+      }
       else {
         // Let us recall that each generator lies on a facet of the
         // polyhedron (see the Introduction).
@@ -287,11 +290,12 @@ Polyhedron::simplify(Linear_System1& sys, Bit_Matrix& sat) {
             swap(sat[j], sat[num_rows]);
             swap(num_saturators[j], num_saturators[num_rows]);
           }
-        else
+        else {
           // If we reach this point then we know that `sat[i]' does
           // not contain (and is different from) `sat[j]', so that
           // `sys[i]' is not made redundant by inequality `sys[j]'.
           ++j;
+        }
       }
     }
     if (redundant) {
@@ -302,9 +306,10 @@ Polyhedron::simplify(Linear_System1& sys, Bit_Matrix& sat) {
       swap(sat[i], sat[num_rows]);
       swap(num_saturators[i], num_saturators[num_rows]);
     }
-    else
+    else {
       // The inequality `sys[i]' is not redundant.
       ++i;
+    }
   }
 
   // Here we physically remove the `sat' rows corresponding to the redundant
@@ -317,8 +322,9 @@ Polyhedron::simplify(Linear_System1& sys, Bit_Matrix& sat) {
   // `num_rows' - 1) represent the irredundant inequalities.
 #ifndef NDEBUG
   // Check if the flag is set (that of the equalities is already set).
-  for (dimension_type i = num_lines_or_equalities; i < num_rows; ++i)
+  for (dimension_type i = num_lines_or_equalities; i < num_rows; ++i) {
     PPL_ASSERT(sys[i].is_ray_or_point_or_inequality());
+  }
 #endif
 
   // Finally, since now the sub-system (of `sys') of the irredundant

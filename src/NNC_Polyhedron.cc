@@ -78,8 +78,9 @@ PPL::NNC_Polyhedron::poly_hull_assign_if_exact(const NNC_Polyhedron& y) {
 #define USE_BHZ09 1
 #if USE_BHZ09 // [BagnaraHZ09]
   // Dimension-compatibility check.
-  if (space_dimension() != y.space_dimension())
+  if (space_dimension() != y.space_dimension()) {
     throw_dimension_incompatible("poly_hull_assign_if_exact(y)", "y", y);
+  }
   return BHZ09_poly_hull_assign_if_exact(y);
 #else // Old implementation.
   return PPL::poly_hull_assign_if_exact(*this, y);

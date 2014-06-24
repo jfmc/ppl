@@ -325,8 +325,9 @@ Pointset_Powerset<PSET>::map_space_dimensions(const Partial_Function& pfunc) {
     dimension_type n = 0;
     for (dimension_type i = x.space_dim; i-- > 0; ) {
       dimension_type new_i;
-      if (pfunc.maps(i, new_i))
+      if (pfunc.maps(i, new_i)) {
         ++n;
+      }
     }
     x.space_dim = n;
   }
@@ -522,8 +523,9 @@ Pointset_Powerset<PSET>::affine_dimension() const {
       for (Constraint_System::const_iterator i = cs.begin(),
              cs_end = cs.end(); i != cs_end; ++i) {
         const Constraint& c = *i;
-        if (c.is_equality())
+        if (c.is_equality()) {
           phi.add_constraint(c);
+        }
       }
       x_ph.poly_hull_assign(phi);
     }
@@ -537,9 +539,10 @@ bool
 Pointset_Powerset<PSET>::is_universe() const {
   const Pointset_Powerset& x = *this;
   // Exploit omega-reduction, if already computed.
-  if (x.is_omega_reduced())
+  if (x.is_omega_reduced()) {
     return x.size() == 1 && x.begin()->pointset().is_universe();
-
+  }
+  
   // A powerset is universe iff one of its disjuncts is.
   for (const_iterator x_i = x.begin(), x_end = x.end();
        x_i != x_end; ++x_i) {
@@ -562,8 +565,9 @@ Pointset_Powerset<PSET>::is_empty() const {
   const Pointset_Powerset& x = *this;
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    if (!si->pointset().is_empty())
+    if (!si->pointset().is_empty()) {
       return false;
+    }
   }
   return true;
 }
@@ -574,8 +578,9 @@ Pointset_Powerset<PSET>::is_discrete() const {
   const Pointset_Powerset& x = *this;
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    if (!si->pointset().is_discrete())
+    if (!si->pointset().is_discrete()) {
       return false;
+    }
   }
   return true;
 }
@@ -589,8 +594,9 @@ Pointset_Powerset<PSET>::is_topologically_closed() const {
   x.omega_reduce();
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    if (!si->pointset().is_topologically_closed())
+    if (!si->pointset().is_topologically_closed()) {
       return false;
+    }
   }
   return true;
 }
@@ -601,8 +607,9 @@ Pointset_Powerset<PSET>::is_bounded() const {
   const Pointset_Powerset& x = *this;
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    if (!si->pointset().is_bounded())
+    if (!si->pointset().is_bounded()) {
       return false;
+    }
   }
   return true;
 }
@@ -623,12 +630,14 @@ Pointset_Powerset<PSET>::constrains(Variable var) const {
   // omega_reduction needed, since a redundant disjunct may constrain var.
   x.omega_reduce();
   // An empty powerset constrains all variables.
-  if (x.is_empty())
+  if (x.is_empty()) {
     return true;
+  }
   for (const_iterator x_i = x.begin(), x_end = x.end();
        x_i != x_end; ++x_i) {
-    if (x_i->pointset().constrains(var))
+    if (x_i->pointset().constrains(var)) {
       return true;
+    }
   }
   return false;
 }
@@ -643,8 +652,9 @@ Pointset_Powerset<PSET>::is_disjoint_from(const Pointset_Powerset& y) const {
     for (Sequence_const_iterator sj = y.sequence.begin(),
            y_s_end = y.sequence.end(); sj != y_s_end; ++sj) {
       const PSET& pj = sj->pointset();
-      if (!pi.is_disjoint_from(pj))
+      if (!pi.is_disjoint_from(pj)) {
         return false;
+      }
     }
   }
   return true;
@@ -703,8 +713,9 @@ Pointset_Powerset<PSET>
     PSET context_i(si->pointset());
     context_i.intersection_assign(enlarged);
     PSET enlarged_i(dest);
-    if (enlarged_i.simplify_using_context_assign(context_i))
+    if (enlarged_i.simplify_using_context_assign(context_i)) {
       nonempty_intersection = true;
+    }
     // TODO: merge the sorted constraints of `enlarged' and `enlarged_i'?
     enlarged.intersection_assign(enlarged_i);
   }
@@ -724,8 +735,9 @@ Pointset_Powerset<PSET>
   // if it has been made redundant by any of the elements preceding it
   // (which have been already simplified).
   x.omega_reduce();
-  if (x.is_empty())
+  if (x.is_empty()) {
     return false;
+  }
   y.omega_reduce();
   if (y.is_empty()) {
     x = y;
@@ -738,22 +750,26 @@ Pointset_Powerset<PSET>
     for (Sequence_iterator si = x.sequence.begin(),
            s_end = x.sequence.end(); si != s_end; ) {
       PSET& x_i = si->pointset();
-      if (x_i.simplify_using_context_assign(y_i))
+      if (x_i.simplify_using_context_assign(y_i)) {
         ++si;
-      else
+      }
+      else {
         // Intersection is empty: drop the disjunct.
         si = x.sequence.erase(si);
+      }
     }
   }
   else {
     // The context is not a singleton.
     for (Sequence_iterator si = x.sequence.begin(),
            s_end = x.sequence.end(); si != s_end; ) {
-      if (y.intersection_preserving_enlarge_element(si->pointset()))
+      if (y.intersection_preserving_enlarge_element(si->pointset())) {
         ++si;
-      else
+      }
+      else {
         // Intersection with `*si' is empty: drop the disjunct.
         si = x.sequence.erase(si);
+      }
     }
   }
   x.reduced = false;
@@ -774,11 +790,13 @@ Pointset_Powerset<PSET>::contains(const Pointset_Powerset& y) const {
          (sj != x_s_end && !pi_is_contained);
          ++sj) {
       const PSET& pj = sj->pointset();
-      if (pj.contains(pi))
+      if (pj.contains(pi)) {
         pi_is_contained = true;
+      }
     }
-    if (!pi_is_contained)
+    if (!pi_is_contained) {
       return false;
+    }
   }
   return true;
 }
@@ -799,11 +817,13 @@ Pointset_Powerset<PSET>::strictly_contains(const Pointset_Powerset& y) const {
            x_s_end = x.sequence.end();
          (sj != x_s_end && !pi_is_strictly_contained); ++sj) {
       const PSET& pj = sj->pointset();
-      if (pj.strictly_contains(pi))
+      if (pj.strictly_contains(pi)) {
         pi_is_strictly_contained = true;
+      }
     }
-    if (!pi_is_strictly_contained)
+    if (!pi_is_strictly_contained) {
       return false;
+    }
   }
   return true;
 }
@@ -827,16 +847,21 @@ Pointset_Powerset<PSET>::relation_with(const Congruence& cg) const {
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
     Poly_Con_Relation relation_i = si->pointset().relation_with(cg);
-    if (!relation_i.implies(Poly_Con_Relation::is_included()))
+    if (!relation_i.implies(Poly_Con_Relation::is_included())) {
       is_included = false;
-    if (!relation_i.implies(Poly_Con_Relation::is_disjoint()))
+    }
+    if (!relation_i.implies(Poly_Con_Relation::is_disjoint())) {
       is_disjoint = false;
-    if (relation_i.implies(Poly_Con_Relation::strictly_intersects()))
+    }
+    if (relation_i.implies(Poly_Con_Relation::strictly_intersects())) {
       is_strictly_intersecting = true;
-    if (relation_i.implies(Poly_Con_Relation::saturates()))
+    }
+    if (relation_i.implies(Poly_Con_Relation::saturates())) {
       saturates_once = true;
-    else if (!relation_i.implies(Poly_Con_Relation::is_disjoint()))
+    }
+    else if (!relation_i.implies(Poly_Con_Relation::is_disjoint())) {
       may_saturate = false;
+    }
   }
 
   Poly_Con_Relation result = Poly_Con_Relation::nothing();
@@ -871,28 +896,36 @@ Pointset_Powerset<PSET>::relation_with(const Constraint& c) const {
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
     Poly_Con_Relation relation_i = si->pointset().relation_with(c);
-    if (!relation_i.implies(Poly_Con_Relation::is_included()))
+    if (!relation_i.implies(Poly_Con_Relation::is_included())) {
       is_included = false;
-    if (!relation_i.implies(Poly_Con_Relation::is_disjoint()))
+    }
+    if (!relation_i.implies(Poly_Con_Relation::is_disjoint())) {
       is_disjoint = false;
-    if (relation_i.implies(Poly_Con_Relation::strictly_intersects()))
+    }
+    if (relation_i.implies(Poly_Con_Relation::strictly_intersects())) {
       is_strictly_intersecting = true;
-    if (relation_i.implies(Poly_Con_Relation::saturates()))
+    }
+    if (relation_i.implies(Poly_Con_Relation::saturates())) {
       saturates_once = true;
-    else if (!relation_i.implies(Poly_Con_Relation::is_disjoint()))
+    }
+    else if (!relation_i.implies(Poly_Con_Relation::is_disjoint())) {
       may_saturate = false;
+    }
   }
 
   Poly_Con_Relation result = Poly_Con_Relation::nothing();
-  if (is_included)
+  if (is_included) {
     result = result && Poly_Con_Relation::is_included();
-  if (is_disjoint)
+  }
+  if (is_disjoint) {
     result = result && Poly_Con_Relation::is_disjoint();
-  if (is_strictly_intersecting)
+  }
+  if (is_strictly_intersecting) {
     result = result && Poly_Con_Relation::strictly_intersects();
-  if (saturates_once && may_saturate)
+  }
+  if (saturates_once && may_saturate) {
     result = result && Poly_Con_Relation::saturates();
-
+  }
   return result;
 }
 
@@ -904,8 +937,9 @@ Pointset_Powerset<PSET>::relation_with(const Generator& g) const {
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
     Poly_Gen_Relation relation_i = si->pointset().relation_with(g);
-    if (relation_i.implies(Poly_Gen_Relation::subsumes()))
+    if (relation_i.implies(Poly_Gen_Relation::subsumes())) {
       return Poly_Gen_Relation::subsumes();
+    }
   }
 
   return Poly_Gen_Relation::nothing();
@@ -919,8 +953,9 @@ Pointset_Powerset<PSET>
   x.omega_reduce();
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    if (!si->pointset().bounds_from_above(expr))
+    if (!si->pointset().bounds_from_above(expr)) {
       return false;
+    }
   }
   return true;
 }
@@ -933,8 +968,9 @@ Pointset_Powerset<PSET>
   x.omega_reduce();
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    if (!si->pointset().bounds_from_below(expr))
+    if (!si->pointset().bounds_from_below(expr)) {
       return false;
+    }
   }
   return true;
 }
@@ -947,9 +983,10 @@ Pointset_Powerset<PSET>::maximize(const Linear_Expression& expr,
                                   bool& maximum) const {
   const Pointset_Powerset& x = *this;
   x.omega_reduce();
-  if (x.is_empty())
+  if (x.is_empty()) {
     return false;
-
+  }
+  
   bool first = true;
 
   PPL_DIRTY_TEMP_COEFFICIENT(best_sup_n);
@@ -968,8 +1005,9 @@ Pointset_Powerset<PSET>::maximize(const Linear_Expression& expr,
 
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    if (!si->pointset().maximize(expr, iter_sup_n, iter_sup_d, iter_max))
+    if (!si->pointset().maximize(expr, iter_sup_n, iter_sup_d, iter_max)) {
       return false;
+    }
     else
       if (first) {
         first = false;
@@ -1003,9 +1041,10 @@ Pointset_Powerset<PSET>::maximize(const Linear_Expression& expr,
                                   Generator& g) const {
   const Pointset_Powerset& x = *this;
   x.omega_reduce();
-  if (x.is_empty())
+  if (x.is_empty()) {
     return false;
-
+  }
+  
   bool first = true;
 
   PPL_DIRTY_TEMP_COEFFICIENT(best_sup_n);
@@ -1027,9 +1066,10 @@ Pointset_Powerset<PSET>::maximize(const Linear_Expression& expr,
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
     if (!si->pointset().maximize(expr,
-                                 iter_sup_n, iter_sup_d, iter_max, iter_g))
+                                 iter_sup_n, iter_sup_d, iter_max, iter_g)) {
       return false;
-    else
+    }
+    else {
       if (first) {
         first = false;
         best_sup_n = iter_sup_n;
@@ -1050,6 +1090,7 @@ Pointset_Powerset<PSET>::maximize(const Linear_Expression& expr,
           best_g = iter_g;
         }
       }
+    }
   }
   sup_n = best_sup_n;
   sup_d = best_sup_d;
@@ -1066,9 +1107,10 @@ Pointset_Powerset<PSET>::minimize(const Linear_Expression& expr,
                                   bool& minimum) const {
   const Pointset_Powerset& x = *this;
   x.omega_reduce();
-  if (x.is_empty())
+  if (x.is_empty()) {
     return false;
-
+  }
+  
   bool first = true;
 
   PPL_DIRTY_TEMP_COEFFICIENT(best_inf_n);
@@ -1087,9 +1129,10 @@ Pointset_Powerset<PSET>::minimize(const Linear_Expression& expr,
 
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    if (!si->pointset().minimize(expr, iter_inf_n, iter_inf_d, iter_min))
+    if (!si->pointset().minimize(expr, iter_inf_n, iter_inf_d, iter_min)) {
       return false;
-    else
+    }
+    else {
       if (first) {
         first = false;
         best_inf_n = iter_inf_n;
@@ -1103,9 +1146,11 @@ Pointset_Powerset<PSET>::minimize(const Linear_Expression& expr,
           best_inf_d = iter_inf_d;
           best_min = iter_min;
         }
-        else if (tmp == 0)
+        else if (tmp == 0) {
           best_min = (best_min || iter_min);
+        }
       }
+    }
   }
   inf_n = best_inf_n;
   inf_d = best_inf_d;
@@ -1122,9 +1167,10 @@ Pointset_Powerset<PSET>::minimize(const Linear_Expression& expr,
                                   Generator& g) const {
   const Pointset_Powerset& x = *this;
   x.omega_reduce();
-  if (x.is_empty())
+  if (x.is_empty()) {
     return false;
-
+  }
+  
   bool first = true;
 
   PPL_DIRTY_TEMP_COEFFICIENT(best_inf_n);
@@ -1146,9 +1192,10 @@ Pointset_Powerset<PSET>::minimize(const Linear_Expression& expr,
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
     if (!si->pointset().minimize(expr,
-                                 iter_inf_n, iter_inf_d, iter_min, iter_g))
+                                 iter_inf_n, iter_inf_d, iter_min, iter_g)) {
       return false;
-    else
+    }
+    else {
       if (first) {
         first = false;
         best_inf_n = iter_inf_n;
@@ -1169,6 +1216,7 @@ Pointset_Powerset<PSET>::minimize(const Linear_Expression& expr,
           best_g = iter_g;
         }
       }
+    }
   }
   inf_n = best_inf_n;
   inf_d = best_inf_d;
@@ -1183,8 +1231,9 @@ Pointset_Powerset<PSET>::contains_integer_point() const {
   const Pointset_Powerset& x = *this;
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
-    if (si->pointset().contains_integer_point())
+    if (si->pointset().contains_integer_point()) {
       return true;
+    }
   }
   return false;
 }
@@ -1225,14 +1274,16 @@ Pointset_Powerset<PSET>::pairwise_reduce() {
     Sequence_iterator s_end = x.sequence.end();
     unsigned si_index = 0;
     for (Sequence_iterator si = s_begin; si != s_end; ++si, ++si_index) {
-      if (marked[si_index])
+      if (marked[si_index]) {
         continue;
+      }
       PSET& pi = si->pointset();
       Sequence_const_iterator sj = si;
       unsigned sj_index = si_index;
       for (++sj, ++sj_index; sj != s_end; ++sj, ++sj_index) {
-        if (marked[sj_index])
+        if (marked[sj_index]) {
           continue;
+        }
         const PSET& pj = sj->pointset();
         if (pi.upper_bound_assign_if_exact(pj)) {
           marked[si_index] = true;
@@ -1250,11 +1301,12 @@ Pointset_Powerset<PSET>::pairwise_reduce() {
     unsigned xi_index = 0;
     for (const_iterator xi = x.begin(),
            x_end = x.end(); xi != x_end; ++xi, ++xi_index) {
-      if (!marked[xi_index])
+      if (!marked[xi_index]) {
         new_x_begin
           = new_x.add_non_bottom_disjunct_preserve_reduction(*xi,
                                                              new_x_begin,
                                                              new_x_end);
+      }
     }
     using std::swap;
     swap(x.sequence, new_x.sequence);
@@ -1304,11 +1356,12 @@ BGP99_heuristics_assign(const Pointset_Powerset& y, Widening widen_fun) {
   iterator new_x_end = new_x.end();
   i_index = 0;
   for (const_iterator i = x_begin; i != x_end; ++i, ++i_index) {
-    if (!marked[i_index])
+    if (!marked[i_index]) {
       new_x_begin
         = new_x.add_non_bottom_disjunct_preserve_reduction(*i,
                                                            new_x_begin,
                                                            new_x_end);
+    }
   }
   using std::swap;
   swap(x.sequence, new_x.sequence);
@@ -1336,8 +1389,9 @@ BGP99_extrapolation_assign(const Pointset_Powerset& y,
 #endif
 
   x.pairwise_reduce();
-  if (max_disjuncts != 0)
+  if (max_disjuncts != 0) {
     x.collapse(max_disjuncts);
+  }
   x.BGP99_heuristics_assign(y, widen_fun);
 }
 
@@ -1383,9 +1437,10 @@ is_cert_multiset_stabilizing(const std::map<Cert, size_type,
           ++xi;
           ++yi;
         }
-        else
+        else {
           // Different number of occurrences: can decide ordering.
           return xi_count < yi_count;
+        }
         break;
       }
     case 1:
@@ -1423,9 +1478,10 @@ Pointset_Powerset<PSET>::BHZ03_widening_assign(const Pointset_Powerset& y,
 
   // If `y' is the empty collection, do nothing.
   PPL_ASSERT(x.size() > 0);
-  if (y.size() == 0)
+  if (y.size() == 0) {
     return;
-
+  }
+  
   // Compute the poly-hull of `x'.
   PSET x_hull(x.space_dim, EMPTY);
   for (const_iterator i = x.begin(), x_end = x.end(); i != x_end; ++i) {
@@ -1442,9 +1498,10 @@ Pointset_Powerset<PSET>::BHZ03_widening_assign(const Pointset_Powerset& y,
 
   // If the hull is stabilizing, do nothing.
   int hull_stabilization = y_hull_cert.compare(x_hull);
-  if (hull_stabilization == 1)
+  if (hull_stabilization == 1) {
     return;
-
+  }
+  
   // Multiset ordering is only useful when `y' is not a singleton.
   const bool y_is_not_a_singleton = y.size() > 1;
 
@@ -1459,8 +1516,9 @@ Pointset_Powerset<PSET>::BHZ03_widening_assign(const Pointset_Powerset& y,
     y.collect_certificates(y_cert_ms);
     y_cert_ms_computed = true;
     // If multiset ordering is stabilizing, do nothing.
-    if (x.is_cert_multiset_stabilizing(y_cert_ms))
+    if (x.is_cert_multiset_stabilizing(y_cert_ms)) {
       return;
+    }
   }
 
   // Second widening technique: try the BGP99 powerset heuristics.
@@ -1543,25 +1601,30 @@ Pointset_Powerset<PSET>::ascii_load(std::istream& s) {
   Pointset_Powerset& x = *this;
   std::string str;
 
-  if (!(s >> str) || str != "size")
+  if (!(s >> str) || str != "size") {
     return false;
-
+  }
+  
   size_type sz;
 
-  if (!(s >> sz))
+  if (!(s >> sz)) {
     return false;
-
-  if (!(s >> str) || str != "space_dim")
+  }
+  
+  if (!(s >> str) || str != "space_dim") {
     return false;
-
-  if (!(s >> x.space_dim))
+  }
+  
+  if (!(s >> x.space_dim)) {
     return false;
-
+  }
+  
   Pointset_Powerset new_x(x.space_dim, EMPTY);
   while (sz-- > 0) {
     PSET ph;
-    if (!ph.ascii_load(s))
+    if (!ph.ascii_load(s)) {
       return false;
+    }
     new_x.add_disjunct(ph);
   }
   swap(x, new_x);
@@ -1640,8 +1703,9 @@ linear_partition(const PSET& p, const PSET& q) {
       linear_partition_aux(le <= 0, pset, r);
       linear_partition_aux(le >= 0, pset, r);
     }
-    else
+    else {
       linear_partition_aux(c, pset, r);
+    }
   }
   return std::make_pair(pset, r);
 }

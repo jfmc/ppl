@@ -48,10 +48,12 @@ Powerset<D>::collapse(const Sequence_iterator sink) {
 
   // Ensure omega-reduction.
   for (iterator xi = begin(); xi != x_sink; ) {
-    if (xi->definitely_entails(d))
+    if (xi->definitely_entails(d)) {
       xi = drop_disjunct(xi);
-    else
+    }
+    else {
       ++xi;
+    }
   }
 
   PPL_ASSERT_HEAVY(OK());
@@ -60,40 +62,47 @@ Powerset<D>::collapse(const Sequence_iterator sink) {
 template <typename D>
 void
 Powerset<D>::omega_reduce() const {
-  if (reduced)
+  if (reduced) {
     return;
-
+  }
   Powerset& x = const_cast<Powerset&>(*this);
   // First remove all bottom elements.
   for (iterator xi = x.begin(), x_end = x.end(); xi != x_end; ) {
-    if (xi->is_bottom())
+    if (xi->is_bottom()) {
       xi = x.drop_disjunct(xi);
-    else
+    }
+    else {
       ++xi;
+    }
   }
   // Then remove non-maximal elements.
   for (iterator xi = x.begin(); xi != x.end(); ) {
     const D& xv = *xi;
     bool dropping_xi = false;
     for (iterator yi = x.begin(); yi != x.end(); ) {
-      if (xi == yi)
+      if (xi == yi) {
         ++yi;
+      }
       else {
         const D& yv = *yi;
-        if (yv.definitely_entails(xv))
+        if (yv.definitely_entails(xv)) {
           yi = x.drop_disjunct(yi);
+        }
         else if (xv.definitely_entails(yv)) {
           dropping_xi = true;
           break;
         }
-        else
+        else {
           ++yi;
+        }
       }
     }
-    if (dropping_xi)
+    if (dropping_xi) {
       xi = x.drop_disjunct(xi);
-    else
+    }
+    else {
       ++xi;
+    }
     if (abandon_expensive_computations != 0 && xi != x.end()) {
       // Hurry up!
       x.collapse(xi.base);
@@ -129,14 +138,17 @@ Powerset<D>::check_omega_reduced() const {
   for (const_iterator x_begin = begin(), x_end = end(),
          xi = x_begin; xi != x_end; ++xi) {
     const D& xv = *xi;
-    if (xv.is_bottom())
+    if (xv.is_bottom()) {
       return false;
+    }
     for (const_iterator yi = x_begin; yi != x_end; ++yi) {
-      if (xi == yi)
+      if (xi == yi) {
         continue;
+      }
       const D& yv = *yi;
-      if (xv.definitely_entails(yv) || yv.definitely_entails(xv))
+      if (xv.definitely_entails(yv) || yv.definitely_entails(xv)) {
         return false;
+      }
     }
   }
   return true;
@@ -145,8 +157,9 @@ Powerset<D>::check_omega_reduced() const {
 template <typename D>
 bool
 Powerset<D>::is_omega_reduced() const {
-  if (!reduced && check_omega_reduced())
+  if (!reduced && check_omega_reduced()) {
     reduced = true;
+  }
   return reduced;
 }
 
@@ -158,15 +171,18 @@ Powerset<D>::add_non_bottom_disjunct_preserve_reduction(const D& d,
   PPL_ASSERT_HEAVY(!d.is_bottom());
   for (iterator xi = first; xi != last; ) {
     const D& xv = *xi;
-    if (d.definitely_entails(xv))
+    if (d.definitely_entails(xv)) {
       return first;
+    }
     else if (xv.definitely_entails(d)) {
-      if (xi == first)
+      if (xi == first) {
         ++first;
+      }
       xi = drop_disjunct(xi);
     }
-    else
+    else {
       ++xi;
+    }
   }
   sequence.push_back(d);
   PPL_ASSERT_HEAVY(OK());
@@ -195,8 +211,9 @@ bool
 operator==(const Powerset<D>& x, const Powerset<D>& y) {
   x.omega_reduce();
   y.omega_reduce();
-  if (x.size() != y.size())
+  if (x.size() != y.size()) {
     return false;
+  }
   // Take a copy of `y' and work with it.
   Powerset<D> z = y;
   for (typename Powerset<D>::const_iterator xi = x.begin(),
@@ -204,10 +221,12 @@ operator==(const Powerset<D>& x, const Powerset<D>& y) {
     typename Powerset<D>::iterator zi = z.begin();
     typename Powerset<D>::iterator z_end = z.end();
     zi = std::find(zi, z_end, *xi);
-    if (zi == z_end)
+    if (zi == z_end) {
       return false;
-    else
+    }
+    else {
       z.drop_disjunct(zi);
+    }
   }
   return true;
 }
@@ -226,8 +245,9 @@ Powerset<D>::pairwise_apply_assign(const Powerset& y,
     for (const_iterator yi = y_begin; yi != y_end; ++yi) {
       D zi = *xi;
       op_assign(zi, *yi);
-      if (!zi.is_bottom())
+      if (!zi.is_bottom()) {
         new_sequence.push_back(zi);
+      }
     }
   }
   // Put the new sequence in place.
@@ -259,11 +279,13 @@ namespace IO_Operators {
 template <typename D>
 std::ostream&
 operator<<(std::ostream& s, const Powerset<D>& x) {
-  if (x.is_bottom())
+  if (x.is_bottom()) {
     s << "false";
-  else if (x.is_top())
+  }
+  else if (x.is_top()) {
     s << "true";
-  else
+  }
+  else {
     for (typename Powerset<D>::const_iterator i = x.begin(),
            x_end = x.end(); i != x_end; ) {
       s << "{ " << *i << " }";
@@ -271,6 +293,7 @@ operator<<(std::ostream& s, const Powerset<D>& x) {
       if (i != x_end)
         s << ", ";
     }
+  }
   return s;
 }
 
@@ -294,8 +317,9 @@ template <typename D>
 bool
 Powerset<D>::OK(const bool disallow_bottom) const {
   for (const_iterator xi = begin(), x_end = end(); xi != x_end; ++xi) {
-    if (!xi->OK())
+    if (!xi->OK()) {
       return false;
+    }
     if (disallow_bottom && xi->is_bottom()) {
 #ifndef NDEBUG
       std::cerr << "Bottom element in powerset!"

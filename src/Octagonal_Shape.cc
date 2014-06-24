@@ -63,8 +63,9 @@ PPL::Octagonal_Shape_Helper
       c_second_var = c_first_var;
       ++c_first_var;
     }
-    else
+    else {
       c_second_var = c_first_var + 1;
+    }
     c_coeff = c0;
     return true;
   }
@@ -72,9 +73,10 @@ PPL::Octagonal_Shape_Helper
   ++c_num_vars;
   --c_second_var;
 
-  if (!c.expression().all_zeroes(c_second_var + 2, c_space_dim + 1))
+  if (!c.expression().all_zeroes(c_second_var + 2, c_space_dim + 1)) {
     return false;
-
+  }
+  
   using std::swap;
 
   // FIXME: The calling code expects c_first_var > c_second_var, when
@@ -87,16 +89,18 @@ PPL::Octagonal_Shape_Helper
   c_term = c.inhomogeneous_term();
   const Coefficient& c0 = c.coefficient(Variable(c_first_var));
   const Coefficient& c1 = c.coefficient(Variable(c_second_var));
-  if (c0 != c1 && c0 != -c1)
+  if (c0 != c1 && c0 != -c1) {
     // Constraint `c' is not an octagonal difference.
     return false;
-
+  }
   c_first_var *= 2;
   c_second_var *= 2;
-  if (sgn(c0) < 0)
+  if (sgn(c0) < 0) {
     ++c_first_var;
-  if (sgn(c1) > 0)
+  }
+  if (sgn(c1) > 0) {
     ++c_second_var;
+  }
   c_coeff = c0;
 
   return true;

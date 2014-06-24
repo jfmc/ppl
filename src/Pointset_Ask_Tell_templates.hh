@@ -108,8 +108,9 @@ Pointset_Ask_Tell<PSET>::concatenate_assign(const Pointset_Ask_Tell& y) {
     x.sequence.push_back(Pair(ask, tell));
   }
   space_dim += y.space_dim;
-  if (x.normalized)
+  if (x.normalized) {
     x.normalized = y.normalized;
+  }
   PPL_ASSERT_HEAVY(x.OK());
 }
 
@@ -118,8 +119,9 @@ void
 Pointset_Ask_Tell<PSET>::add_constraint(const Constraint& c) {
   Pointset_Ask_Tell& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
-         s_end = x.sequence.end(); si != s_end; ++si)
+         s_end = x.sequence.end(); si != s_end; ++si) {
     si->pointset().add_constraint(c);
+  }
   x.reduced = false;
   PPL_ASSERT_HEAVY(x.OK());
 }
@@ -129,8 +131,9 @@ void
 Pointset_Ask_Tell<PSET>::add_constraints(const Constraint_System& cs) {
   Pointset_Ask_Tell& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
-         s_end = x.sequence.end(); si != s_end; ++si)
+         s_end = x.sequence.end(); si != s_end; ++si) {
     si->pointset().add_constraints(cs);
+  }
   x.reduced = false;
   PPL_ASSERT_HEAVY(x.OK());
 }
@@ -140,8 +143,9 @@ void
 Pointset_Ask_Tell<PSET>::unconstrain(const Variable var) {
   Pointset_Ask_Tell& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
-         s_end = x.sequence.end(); si != s_end; ++si)
+         s_end = x.sequence.end(); si != s_end; ++si) {
     si->pointset().unconstrain(var);
+  }
   x.reduced = false;
   PPL_ASSERT_HEAVY(x.OK());
 }
@@ -151,8 +155,9 @@ void
 Pointset_Ask_Tell<PSET>::unconstrain(const Variables_Set& vars) {
   Pointset_Ask_Tell& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
-         s_end = x.sequence.end(); si != s_end; ++si)
+         s_end = x.sequence.end(); si != s_end; ++si) {
     si->pointset().unconstrain(vars);
+  }
   x.reduced = false;
   PPL_ASSERT_HEAVY(x.OK());
 }
@@ -162,8 +167,9 @@ void
 Pointset_Ask_Tell<PSET>::add_space_dimensions_and_embed(dimension_type m) {
   Pointset_Ask_Tell& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
-         s_end = x.sequence.end(); si != s_end; ++si)
+         s_end = x.sequence.end(); si != s_end; ++si) {
     si->pointset().add_space_dimensions_and_embed(m);
+  }
   x.space_dim += m;
   PPL_ASSERT_HEAVY(x.OK());
 }
@@ -173,8 +179,9 @@ void
 Pointset_Ask_Tell<PSET>::add_space_dimensions_and_project(dimension_type m) {
   Pointset_Ask_Tell& x = *this;
   for (Sequence_iterator si = x.sequence.begin(),
-         s_end = x.sequence.end(); si != s_end; ++si)
+         s_end = x.sequence.end(); si != s_end; ++si) {
     si->pointset().add_space_dimensions_and_project(m);
+  }
   x.space_dim += m;
   PPL_ASSERT_HEAVY(x.OK());
 }
@@ -232,16 +239,18 @@ Pointset_Ask_Tell<PSET>::map_space_dimensions(const Partial_Function& pfunc) {
     dimension_type n = 0;
     for (dimension_type i = x.space_dim; i-- > 0; ) {
       dimension_type new_i;
-      if (pfunc.maps(i, new_i))
+      if (pfunc.maps(i, new_i)) {
         ++n;
+      }
     }
     x.space_dim = n;
   }
   else {
     Sequence_iterator s_begin = x.sequence.begin();
     for (Sequence_iterator si = s_begin,
-           s_end = x.sequence.end(); si != s_end; ++si)
+           s_end = x.sequence.end(); si != s_end; ++si) {
       si->pointset().map_space_dimensions(pfunc);
+    }
     x.space_dim = s_begin->pointset().space_dimension();
     x.reduced = false;
   }
@@ -255,8 +264,9 @@ Pointset_Ask_Tell<PSET>::ascii_dump(std::ostream& s) const {
   s << "size " << x.size()
     << "\nspace_dim " << x.space_dim
     << "\n";
-  for (const_iterator xi = x.begin(), x_end = x.end(); xi != x_end; ++xi)
+  for (const_iterator xi = x.begin(), x_end = x.end(); xi != x_end; ++xi) {
     xi->pointset().ascii_dump(s);
+  }
 }
 
 PPL_OUTPUT_TEMPLATE_DEFINITIONS(PSET, Pointset_Ask_Tell<PSET>)
@@ -267,25 +277,30 @@ Pointset_Ask_Tell<PSET>::ascii_load(std::istream& s) {
   Pointset_Ask_Tell& x = *this;
   std::string str;
 
-  if (!(s >> str) || str != "size")
+  if (!(s >> str) || str != "size") {
     return false;
-
+  }
+  
   size_type sz;
 
-  if (!(s >> sz))
+  if (!(s >> sz)) {
     return false;
-
-  if (!(s >> str) || str != "space_dim")
+  }
+  
+  if (!(s >> str) || str != "space_dim") {
     return false;
-
-  if (!(s >> x.space_dim))
+  }
+  
+  if (!(s >> x.space_dim)) {
     return false;
-
+  }
+  
   Pointset_Ask_Tell new_x(x.space_dim, EMPTY);
   while (sz-- > 0) {
     PSET ph;
-    if (!ph.ascii_load(s))
+    if (!ph.ascii_load(s)) {
       return false;
+    }
     new_x.add_disjunct(ph);
   }
   swap(x, new_x);
