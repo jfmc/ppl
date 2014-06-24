@@ -131,7 +131,7 @@ PPL::Sparse_Row::swap_coefficients(dimension_type i, dimension_type j) {
   if (tree.empty()) {
     return;
   }
-  
+
   using std::swap;
 
   iterator itr_i = tree.bisect(i);
@@ -172,7 +172,7 @@ PPL::Sparse_Row::reset(iterator first, iterator last) {
   if (first == last) {
     return first;
   }
-  
+
   PPL_ASSERT(last != end());
   --last;
   const dimension_type j = last.index();
@@ -710,12 +710,12 @@ PPL::Sparse_Row::ascii_load(std::istream& s) {
   if (!(s >> str) || str != "elements") {
     return false;
   }
-  
+
   dimension_type n_elements;
   if (!(s >> n_elements)) {
     return false;
   }
-  
+
   PPL_DIRTY_TEMP_COEFFICIENT(current_data);
   for (dimension_type i = 0; i < n_elements; ++i) {
     dimension_type current_key;
@@ -1058,7 +1058,7 @@ PPL::linear_combine(Dense_Row& x, const Sparse_Row& y,
     if (itr == y.end() || itr.index() != i) {
       continue;
     }
-    
+
     add_mul_assign(x[i], *itr, coeff2);
   }
 }
@@ -1107,7 +1107,7 @@ PPL::linear_combine(Dense_Row& x, const Sparse_Row& y,
       if (itr == y.end() || itr.index() != i) {
         continue;
       }
-      
+
       x[i] += *itr;
     }
     return;
@@ -1125,7 +1125,7 @@ PPL::linear_combine(Dense_Row& x, const Sparse_Row& y,
       if (itr == y.end() || itr.index() != i) {
         continue;
       }
-      
+
       x[i] -= *itr;
     }
     return;
@@ -1143,7 +1143,7 @@ PPL::linear_combine(Dense_Row& x, const Sparse_Row& y,
     if (itr == y.end() || itr.index() != i) {
       continue;
     }
-    
+
     add_mul_assign(x[i], *itr, coeff2);
   }
 }

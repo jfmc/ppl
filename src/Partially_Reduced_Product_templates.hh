@@ -188,7 +188,7 @@ Partially_Reduced_Product<D1, D2, R>
   else if (relation2.implies(Poly_Con_Relation::is_disjoint())) {
     result = result && Poly_Con_Relation::is_disjoint();
   }
-  
+
   return result;
 }
 
@@ -220,7 +220,7 @@ Partially_Reduced_Product<D1, D2, R>
   else if (relation2.implies(Poly_Con_Relation::is_disjoint())) {
     result = result && Poly_Con_Relation::is_disjoint();
   }
-  
+
   return result;
 }
 
@@ -236,7 +236,7 @@ Partially_Reduced_Product<D1, D2, R>
   if (is_empty()) {
     return false;
   }
-  
+
   PPL_DIRTY_TEMP_COEFFICIENT(sup1_n);
   PPL_DIRTY_TEMP_COEFFICIENT(sup1_d);
   PPL_DIRTY_TEMP_COEFFICIENT(sup2_n);
@@ -681,7 +681,7 @@ Shape_Preserving_Reduction<D1, D2>::product_reduce(D1& d1, D2& d2) {
   if (d1.is_empty()) {
     return;
   }
-  
+
   PPL_DIRTY_TEMP_COEFFICIENT(freq_n);
   PPL_DIRTY_TEMP_COEFFICIENT(freq_d);
   PPL_DIRTY_TEMP_COEFFICIENT(val_n);

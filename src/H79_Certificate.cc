@@ -105,12 +105,12 @@ PPL::H79_Certificate::compare(const Polyhedron& ph) const {
   if (!ph.is_necessarily_closed()) {
     ph.minimize();
   }
-  
+
   // If the affine dimension of `ph' is increasing, the chain is stabilizing.
   if (ph_affine_dim > affine_dim) {
     return 1;
   }
-  
+
   // At this point the two polyhedra must have the same affine dimension.
   PPL_ASSERT(ph_affine_dim == affine_dim);
 
@@ -119,8 +119,7 @@ PPL::H79_Certificate::compare(const Polyhedron& ph) const {
   if (ph_num_constraints != num_constraints) {
     return (ph_num_constraints < num_constraints) ? 1 : -1;
   }
-  
+
   // All components are equal.
   return 0;
 }
-

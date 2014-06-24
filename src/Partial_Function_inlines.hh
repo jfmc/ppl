@@ -64,7 +64,7 @@ Partial_Function::insert(dimension_type i, dimension_type j) {
   if (i >= sz) {
     vec.insert(vec.end(), i - sz + 1, not_a_dimension());
   }
-  
+
   // We cannot remap the same index to another one.
   PPL_ASSERT(i < vec.size() && vec[i] == not_a_dimension());
   vec[i] = j;

@@ -159,7 +159,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol,
                                 ? "C_Polyhedron(cs, recycle)"
                                 : "NNC_Polyhedron(cs, recycle)", "cs", cs);
   }
-  
+
   // Set the space dimension.
   space_dim = cs_space_dim;
 
@@ -224,7 +224,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const Generator_System& gs)
                                 ? "C_Polyhedron(gs)"
                                 : "NNC_Polyhedron(gs)", "gs", gs_copy);
   }
-  
+
   if (gs_copy_space_dim > 0) {
     // Stealing the rows from `gs_copy'.
     using std::swap;
@@ -282,7 +282,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol,
                              ? "C_Polyhedron(gs, recycle)"
                              : "NNC_Polyhedron(gs, recycle)", "gs");
   }
-  
+
   const dimension_type gs_space_dim = gs.space_dimension();
   // Try to adapt `gs' to the required topology.
   if (!gs.adjust_topology_and_space_dimension(topol, gs_space_dim)) {
@@ -290,7 +290,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol,
                                 ? "C_Polyhedron(gs, recycle)"
                                 : "NNC_Polyhedron(gs, recycle)", "gs", gs);
   }
-  
+
   if (gs_space_dim > 0) {
     // Stealing the rows from `gs'.
     swap(gen_sys, gs);
@@ -572,7 +572,7 @@ PPL::Polyhedron::bounds(const Linear_Expression& expr,
                                   ? "bounds_from_above(e)"
                                   : "bounds_from_below(e)"), "e", expr);
   }
-  
+
   // A zero-dimensional or empty polyhedron bounds everything.
   if (space_dim == 0
       || marked_empty()
@@ -614,7 +614,7 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
                                   ? "maximize(e, ...)"
                                   : "minimize(e, ...)"), "e", expr);
   }
-  
+
   // Deal with zero-dim polyhedra first.
   if (space_dim == 0) {
     if (marked_empty()) {
@@ -635,7 +635,7 @@ PPL::Polyhedron::max_min(const Linear_Expression& expr,
       || (!generators_are_up_to_date() && !update_generators())) {
     return false;
   }
-  
+
   // The polyhedron has updated, possibly pending generators.
   // The following loop will iterate through the generator
   // to find the extremum.
@@ -1077,7 +1077,7 @@ PPL::Polyhedron::obtain_sorted_generators_with_sat_g() const {
   if (!x.sat_c_is_up_to_date() && !x.sat_g_is_up_to_date()) {
     x.update_sat_g();
   }
-  
+
   if (x.gen_sys.is_sorted()) {
     if (x.sat_g_is_up_to_date()) {
       // If generators are already sorted and sat_g is up to
@@ -1113,7 +1113,7 @@ PPL::Polyhedron::minimize() const {
   if (space_dim == 0) {
     return true;
   }
-  
+
   // If the polyhedron has something pending, process it.
   if (has_something_pending()) {
     const bool not_empty = process_pending();
@@ -1126,7 +1126,7 @@ PPL::Polyhedron::minimize() const {
   if (constraints_are_minimized() && generators_are_minimized()) {
     return true;
   }
-  
+
   // If constraints or generators are up-to-date, invoking
   // update_generators() or update_constraints(), respectively,
   // minimizes both constraints and generators.
@@ -1339,7 +1339,7 @@ PPL::Polyhedron::strongly_minimize_generators() const {
   if (x.space_dim == 0) {
     return true;
   }
-  
+
   // We also need `sat_c' up-to-date.
   if (!sat_c_is_up_to_date()) {
     PPL_ASSERT(sat_g_is_up_to_date());
@@ -1416,7 +1416,7 @@ PPL::Polyhedron::strongly_minimize_generators() const {
   if (gs_rows < old_gs_rows) {
     gs.sys.rows.resize(gs_rows);
   }
-  
+
   if (changed) {
     // The generator system is no longer sorted.
     gs_sorted = false;
@@ -1614,7 +1614,7 @@ PPL::Polyhedron::BHZ09_C_poly_hull_assign_if_exact(const Polyhedron& y) {
   if (num_x_gs_red_in_y == 0 || num_y_gs_red_in_x == 0) {
     return false;
   }
-  
+
   // Step 3: see if `x' has a non-redundant constraint `c_x' that is not
   // satisfied by `y' and a non-redundant generator in `y' (see Step 1)
   // saturating `c_x'. If so, the upper bound is not exact.
@@ -1722,7 +1722,7 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
   if (num_y_gs_non_redundant_in_x == 0) {
     return true;
   }
-  
+
   Bit_Row x_non_points_non_redundant_in_y;
   x_non_points_non_redundant_in_y
     .difference_assign(x_gs_non_redundant_in_y,
@@ -2089,7 +2089,7 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
   if (num_x_gs_red_in_y == 0 && num_y_gs_red_in_x == 0) {
     return false;
   }
-  
+
   // Step 2.1: while at it, also perform quick inclusion tests.
   if (num_y_gs_red_in_x == y_gs_num_rows) {
     // `y' is included into `x': union is convex.
@@ -2233,12 +2233,12 @@ PPL::Polyhedron::drop_some_non_integer_points(const Variables_Set* vars_p,
   if (vars_p != 0 && vars_p->empty()) {
     return;
   }
-  
+
   // Any empty polyhedron does not contain integer points.
   if (marked_empty()) {
     return;
   }
-  
+
   // A zero-dimensional, universe polyhedron has, by convention, an
   // integer point.
   if (space_dim == 0) {
@@ -2379,7 +2379,7 @@ PPL::Polyhedron::positive_time_elapse_assign_impl(const Polyhedron& y) {
   if (x.space_dim != y.space_dim) {
     throw_dimension_incompatible("positive_time_elapse_assign(y)", "y", y);
   }
-  
+
   // Dealing with the zero-dimensional case.
   if (x.space_dim == 0) {
     if (y.marked_empty()) {

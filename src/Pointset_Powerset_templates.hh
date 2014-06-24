@@ -542,7 +542,7 @@ Pointset_Powerset<PSET>::is_universe() const {
   if (x.is_omega_reduced()) {
     return x.size() == 1 && x.begin()->pointset().is_universe();
   }
-  
+
   // A powerset is universe iff one of its disjuncts is.
   for (const_iterator x_i = x.begin(), x_end = x.end();
        x_i != x_end; ++x_i) {
@@ -986,7 +986,7 @@ Pointset_Powerset<PSET>::maximize(const Linear_Expression& expr,
   if (x.is_empty()) {
     return false;
   }
-  
+
   bool first = true;
 
   PPL_DIRTY_TEMP_COEFFICIENT(best_sup_n);
@@ -1044,7 +1044,7 @@ Pointset_Powerset<PSET>::maximize(const Linear_Expression& expr,
   if (x.is_empty()) {
     return false;
   }
-  
+
   bool first = true;
 
   PPL_DIRTY_TEMP_COEFFICIENT(best_sup_n);
@@ -1110,7 +1110,7 @@ Pointset_Powerset<PSET>::minimize(const Linear_Expression& expr,
   if (x.is_empty()) {
     return false;
   }
-  
+
   bool first = true;
 
   PPL_DIRTY_TEMP_COEFFICIENT(best_inf_n);
@@ -1170,7 +1170,7 @@ Pointset_Powerset<PSET>::minimize(const Linear_Expression& expr,
   if (x.is_empty()) {
     return false;
   }
-  
+
   bool first = true;
 
   PPL_DIRTY_TEMP_COEFFICIENT(best_inf_n);
@@ -1481,7 +1481,7 @@ Pointset_Powerset<PSET>::BHZ03_widening_assign(const Pointset_Powerset& y,
   if (y.size() == 0) {
     return;
   }
-  
+
   // Compute the poly-hull of `x'.
   PSET x_hull(x.space_dim, EMPTY);
   for (const_iterator i = x.begin(), x_end = x.end(); i != x_end; ++i) {
@@ -1501,7 +1501,7 @@ Pointset_Powerset<PSET>::BHZ03_widening_assign(const Pointset_Powerset& y,
   if (hull_stabilization == 1) {
     return;
   }
-  
+
   // Multiset ordering is only useful when `y' is not a singleton.
   const bool y_is_not_a_singleton = y.size() > 1;
 
@@ -1604,21 +1604,21 @@ Pointset_Powerset<PSET>::ascii_load(std::istream& s) {
   if (!(s >> str) || str != "size") {
     return false;
   }
-  
+
   size_type sz;
 
   if (!(s >> sz)) {
     return false;
   }
-  
+
   if (!(s >> str) || str != "space_dim") {
     return false;
   }
-  
+
   if (!(s >> x.space_dim)) {
     return false;
   }
-  
+
   Pointset_Powerset new_x(x.space_dim, EMPTY);
   while (sz-- > 0) {
     PSET ph;

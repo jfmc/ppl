@@ -45,7 +45,7 @@ PPL::Polyhedron::add_space_dimensions_and_embed(dimension_type m) {
   if (m == 0) {
     return;
   }
-  
+
   // Adding dimensions to an empty polyhedron is obtained by adjusting
   // `space_dim' and clearing `con_sys' (since it can contain the
   // unsatisfiable constraint system of the wrong dimension).
@@ -116,7 +116,7 @@ PPL::Polyhedron::add_space_dimensions_and_project(dimension_type m) {
   if (m == 0) {
     return;
   }
-  
+
   // Adding dimensions to an empty polyhedron is obtained
   // by merely adjusting `space_dim'.
   if (marked_empty()) {
@@ -182,7 +182,7 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
   if (topology() != y.topology()) {
     throw_topology_incompatible("concatenate_assign(y)", "y", y);
   }
-  
+
   // The space dimension of the resulting polyhedron should not
   // overflow the maximum allowed space dimension.
   const dimension_type added_columns = y.space_dim;
@@ -205,7 +205,7 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
   if (added_columns == 0) {
     return;
   }
-  
+
   // If `*this' is a non-empty 0-dim space polyhedron, the result is `y'.
   if (space_dim == 0) {
     *this = y;
@@ -222,7 +222,7 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
   else if (!constraints_are_up_to_date()) {
     update_constraints();
   }
-  
+
   // The matrix for the new system of constraints is obtained
   // by leaving the old system of constraints in the upper left-hand side
   // and placing the constraints of `cs' in the lower right-hand side.
@@ -309,7 +309,7 @@ PPL::Polyhedron::remove_space_dimensions(const Variables_Set& vars) {
   if (space_dim < min_space_dim) {
     throw_dimension_incompatible("remove_space_dimensions(vs)", min_space_dim);
   }
-  
+
   const dimension_type new_space_dim = space_dim - vars.size();
 
   // We need updated generators; note that keeping pending generators
@@ -353,7 +353,7 @@ PPL::Polyhedron::remove_higher_space_dimensions(dimension_type new_dimension) {
     throw_dimension_incompatible("remove_higher_space_dimensions(nd)",
                                  new_dimension);
   }
-  
+
   // The removal of no dimensions from any polyhedron is a no-op.
   // Note that this case also captures the only legal removal of
   // dimensions from a polyhedron in a 0-dim space.
@@ -400,7 +400,7 @@ PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
   if (var.space_dimension() > space_dim) {
     throw_dimension_incompatible("expand_space_dimension(v, m)", "v", var);
   }
-  
+
   // The space dimension of the resulting polyhedron should not
   // overflow the maximum allowed space dimension.
   check_space_dimension_overflow(m, max_space_dimension() - space_dimension(),
@@ -413,7 +413,7 @@ PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
   if (m == 0) {
     return;
   }
-  
+
   // Keep track of the dimension before adding the new ones.
   const dimension_type old_dim = space_dim;
 
@@ -432,7 +432,7 @@ PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
     if (coeff == 0) {
       continue;
     }
-    
+
     Constraint c_template = c;
     c_template.expr.set_coefficient(var, Coefficient_zero());
 
@@ -457,25 +457,25 @@ PPL::Polyhedron::fold_space_dimensions(const Variables_Set& vars,
   if (dest.space_dimension() > space_dim) {
     throw_dimension_incompatible("fold_space_dimensions(vs, v)", "v", dest);
   }
-  
+
   // The folding of no dimensions is a no-op.
   if (vars.empty()) {
     return;
   }
-  
+
   // All variables in `vars' should be dimensions of the polyhedron.
   if (vars.space_dimension() > space_dim) {
     throw_dimension_incompatible("fold_space_dimensions(vs, v)",
                                  "vs.space_dimension()",
                                  vars.space_dimension());
   }
-  
+
   // Moreover, `dest.id()' should not occur in `vars'.
   if (vars.find(dest.id()) != vars.end()) {
     throw_invalid_argument("fold_space_dimensions(vs, v)",
                            "v should not occur in vs");
   }
-  
+
   // All of the affine images we are going to compute are not invertible,
   // hence we will need to compute the generators of the polyhedron.
   // Since we keep taking copies, make sure that a single conversion

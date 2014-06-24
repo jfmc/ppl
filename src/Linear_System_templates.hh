@@ -146,7 +146,7 @@ Linear_System<Row>::ascii_load(std::istream& s) {
   if (!(s >> str)) {
     return false;
   }
-  
+
   clear();
 
   Topology t;
@@ -173,13 +173,13 @@ Linear_System<Row>::ascii_load(std::istream& s) {
   if (!(s >> space_dims)) {
     return false;
   }
-  
+
   space_dimension_ = space_dims;
 
   if (!Parma_Polyhedra_Library::ascii_load(s, representation_)) {
     return false;
   }
-  
+
   if (!(s >> str) || (str != "(sorted)" && str != "(not_sorted)")) {
     return false;
   }
@@ -191,7 +191,7 @@ Linear_System<Row>::ascii_load(std::istream& s) {
   if (!(s >> index)) {
     return false;
   }
-  
+
   Row row;
   for (dimension_type i = 0; i < nrows; ++i) {
     if (!row.ascii_load(s)) {
@@ -272,7 +272,7 @@ Linear_System<Row>::insert_pending_no_ok(Row& r, Recycle_Input) {
   else {
     r.set_space_dimension_no_ok(space_dimension());
   }
-  
+
   rows.resize(rows.size() + 1);
   swap(rows.back(), r);
 }
@@ -332,7 +332,7 @@ Linear_System<Row>::insert(Linear_System& y, Recycle_Input) {
   if (y.has_no_rows()) {
     return;
   }
-  
+
   // Check if sortedness is preserved.
   if (is_sorted()) {
     if (!y.is_sorted() || y.num_pending_rows() > 0) {
@@ -370,7 +370,7 @@ Linear_System<Row>::remove_space_dimensions(const Variables_Set& vars) {
   if (vars.empty()) {
     return;
   }
-  
+
   // NOTE: num_rows() is *not* constant, because it may be decreased by
   // remove_row_no_ok().
   for (dimension_type i = 0; i < num_rows(); ) {
@@ -430,7 +430,7 @@ Linear_System<Row>::sort_rows(const dimension_type first_row,
   if (num_elems < 2) {
     return;
   }
-  
+
   // Build the function objects implementing indirect sort comparison,
   // indirect unique comparison and indirect swap operation.
   using namespace Implementation;
@@ -613,7 +613,7 @@ Linear_System<Row>::gauss(const dimension_type n_lines_or_equalities) {
   if (changed) {
     sorted = false;
   }
-  
+
   PPL_ASSERT(OK());
   return rank;
 }
@@ -642,7 +642,7 @@ Linear_System<Row>
   if (still_sorted) {
     check_for_sortedness.insert(check_for_sortedness.end(), nrows, false);
   }
-  
+
   for (dimension_type k = n_lines_or_equalities; k-- > 0; ) {
     // For each line or equality, starting from the last one,
     // looks for the last non-zero element.
@@ -679,7 +679,7 @@ Linear_System<Row>
     if (have_to_negate) {
       neg_assign(row_k.expr);
     }
-    
+
     // NOTE: Here row_k will *not* be ok if we have negated it.
 
     // Note: we do not mark index `k' in `check_for_sortedness',
@@ -706,7 +706,7 @@ Linear_System<Row>
       // Negate `row_k' to restore strong-normalization.
       neg_assign(row_k.expr);
     }
-    
+
     PPL_ASSERT(row_k.OK());
   }
 
@@ -812,7 +812,7 @@ Linear_System<Row>
   if (was_sorted) {
     sorted = (compare(rows[n-1], rows[n]) <= 0);
   }
-  
+
   // If the system is not necessarily closed, move the epsilon coefficients to
   // the last column.
   if (!is_necessarily_closed()) {

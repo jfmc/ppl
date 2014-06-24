@@ -63,7 +63,7 @@ Linear_Expression_Impl<Dense_Row>
   if (vars.empty()) {
     return;
   }
-  
+
   // For each variable to be removed, replace the corresponding coefficient
   // by shifting left the coefficient to the right that will be kept.
   Variables_Set::const_iterator vsi = vars.begin();
@@ -97,7 +97,7 @@ Linear_Expression_Impl<Sparse_Row>
   if (vars.empty()) {
     return;
   }
-  
+
   // For each variable to be removed, replace the corresponding coefficient
   // by shifting left the coefficient to the right that will be kept.
   Variables_Set::const_iterator vsi = vars.begin();
@@ -199,7 +199,7 @@ Linear_Expression_Impl<Dense_Row>::gcd(dimension_type start,
   if (i == end) {
     return 0;
   }
-  
+
   PPL_ASSERT(row[i] != 0);
 
   Coefficient result = row[i];
@@ -208,7 +208,7 @@ Linear_Expression_Impl<Dense_Row>::gcd(dimension_type start,
   if (result < 0) {
     neg_assign(result);
   }
-  
+
   for ( ; i < end; ++i) {
     if (row[i] == 0) {
       continue;
@@ -232,7 +232,7 @@ Linear_Expression_Impl<Sparse_Row>::gcd(dimension_type start,
   if (i == i_end) {
     return 0;
   }
-  
+
   PPL_ASSERT(*i != 0);
 
   Coefficient result = *i;
@@ -241,7 +241,7 @@ Linear_Expression_Impl<Sparse_Row>::gcd(dimension_type start,
   if (result < 0) {
     neg_assign(result);
   }
-  
+
   for ( ; i != i_end; ++i) {
     gcd_assign(result, *i, result);
     if (result == 1) {
@@ -322,7 +322,7 @@ Linear_Expression_Impl<Sparse_Row>
     if (row.find(0) != row.end()) {
       return false;
     }
-    
+
     start = 1;
   }
 
@@ -518,4 +518,3 @@ Linear_Expression_Impl<Dense_Row>::const_iterator
 }
 
 } // namespace Parma_Polyhedra_Library
-

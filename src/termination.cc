@@ -701,7 +701,7 @@ Termination_Helpers
   if (!mip.is_satisfiable()) {
     return false;
   }
-  
+
   const Generator& fp = mip.feasible_point();
   PPL_ASSERT(fp.is_point());
 

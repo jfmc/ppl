@@ -70,7 +70,7 @@ Pending_List<Traits>::OK() const {
   if (!free_list.OK()) {
     return false;
   }
-  
+
   const typename Traits::Threshold* old;
   const_iterator i = active_list.begin();
   old = &i->deadline();

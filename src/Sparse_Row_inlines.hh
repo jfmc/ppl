@@ -209,7 +209,7 @@ Sparse_Row::find(dimension_type i) const {
   if (itr != end() && itr.index() == i) {
     return itr;
   }
-  
+
   return end();
 }
 
@@ -234,11 +234,11 @@ Sparse_Row::lower_bound(dimension_type i) {
   if (itr == end()) {
     return end();
   }
-  
+
   if (itr.index() < i) {
     ++itr;
   }
-  
+
   PPL_ASSERT(itr == end() || itr.index() >= i);
 
   return itr;
@@ -253,11 +253,11 @@ Sparse_Row::lower_bound(iterator hint, dimension_type i) {
   if (itr == end()) {
     return end();
   }
-  
+
   if (itr.index() < i) {
     ++itr;
   }
-  
+
   PPL_ASSERT(itr == end() || itr.index() >= i);
 
   return itr;
@@ -272,11 +272,11 @@ Sparse_Row::lower_bound(dimension_type i) const {
   if (itr == end()) {
     return end();
   }
-  
+
   if (itr.index() < i) {
     ++itr;
   }
-  
+
   PPL_ASSERT(itr == end() || itr.index() >= i);
 
   return itr;
@@ -291,11 +291,11 @@ Sparse_Row::lower_bound(const_iterator hint, dimension_type i) const {
   if (itr == end()) {
     return end();
   }
-  
+
   if (itr.index() < i) {
     ++itr;
   }
-  
+
   PPL_ASSERT(itr == end() || itr.index() >= i);
 
   return itr;

@@ -161,7 +161,7 @@ Matrix<Row>::ascii_load(std::istream& s) {
   if (!(s >> new_num_cols)) {
     return false;
   }
-  
+
   for (iterator i = rows.begin(), i_end = rows.end();
        i != i_end; ++i) {
     i->clear();

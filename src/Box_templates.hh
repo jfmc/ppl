@@ -115,7 +115,7 @@ Box<ITV>::Box(const Box<Other_ITV>& y, Complexity_Class)
   if (y.marked_empty()) {
     set_empty();
   }
-  
+
   if (!y.marked_empty()) {
     for (dimension_type k = y.space_dimension(); k-- > 0; ) {
       seq[k].assign(y.seq[k]);
@@ -189,7 +189,7 @@ Box<ITV>::Box(const Generator_System& gs)
                                 "the non-empty generator system gs "
                                 "contains no points.");
   }
-  
+
   // Going through all the lines, rays and closure points.
   for (Generator_System::const_iterator gs_i = gs_begin;
        gs_i != gs_end; ++gs_i) {
@@ -283,7 +283,7 @@ Box<ITV>::Box(const BD_Shape<T>& bds, Complexity_Class)
     if (!is_plus_infinity(u)) {
       upper.set(LESS_OR_EQUAL, u, true);
     }
-    
+
     // Set the lower bound.
     const Coeff& negated_l = bds.dbm[i+1][0];
     if (!is_plus_infinity(negated_l)) {
@@ -320,7 +320,7 @@ Box<ITV>::Box(const Octagonal_Shape<T>& oct, Complexity_Class)
   if (space_dim == 0) {
     return;
   }
-  
+
   PPL_DIRTY_TEMP(mpq_class, lower_bound);
   PPL_DIRTY_TEMP(mpq_class, upper_bound);
   for (dimension_type i = space_dim; i-- > 0; ) {
@@ -375,7 +375,7 @@ Box<ITV>::Box(const Polyhedron& ph, Complexity_Class complexity)
   if (space_dim == 0) {
     return;
   }
-  
+
   // c) the polyhedron is already described by a generator system.
   if (ph.generators_are_up_to_date() && !ph.has_pending_constraints()) {
     Box tmp(ph.generators());
@@ -493,7 +493,7 @@ Box<ITV>::Box(const Grid& gr, Complexity_Class)
   if (space_dim == 0) {
     return;
   }
-  
+
   if (!gr.generators_are_up_to_date() && !gr.update_generators()) {
     // Updating found the grid empty.
     set_empty();
@@ -583,15 +583,15 @@ operator==(const Box<ITV>& x, const Box<ITV>& y) {
   if (x_space_dim != y.space_dimension()) {
     return false;
   }
-  
+
   if (x.is_empty()) {
     return y.is_empty();
   }
-  
+
   if (y.is_empty()) {
     return x.is_empty();
   }
-  
+
   for (dimension_type k = x_space_dim; k-- > 0; ) {
     if (x.seq[k] != y.seq[k]) {
       return false;
@@ -650,7 +650,7 @@ interval_relation(const ITV& i,
   if (i.is_universe()) {
     return Poly_Con_Relation::strictly_intersects();
   }
-  
+
   PPL_DIRTY_TEMP(mpq_class, bound);
   assign_r(bound.get_num(), numer, ROUND_NOT_NEEDED);
   assign_r(bound.get_den(), denom, ROUND_NOT_NEEDED);
@@ -864,7 +864,7 @@ Box<ITV>::relation_with(const Congruence& cg) const {
       && Poly_Con_Relation::is_included()
       && Poly_Con_Relation::is_disjoint();
   }
-  
+
   if (space_dim == 0) {
     if (cg.is_inconsistent()) {
       return Poly_Con_Relation::is_disjoint();
@@ -925,13 +925,13 @@ Box<ITV>::relation_with(const Constraint& c) const {
   if (c_space_dim > space_dim) {
     throw_dimension_incompatible("relation_with(c)", c);
   }
-  
+
   if (is_empty()) {
     return Poly_Con_Relation::saturates()
       && Poly_Con_Relation::is_included()
       && Poly_Con_Relation::is_disjoint();
   }
-  
+
   if (space_dim == 0) {
     if ((c.is_equality() && c.inhomogeneous_term() != 0)
         || (c.is_inequality() && c.inhomogeneous_term() < 0)) {
@@ -1021,18 +1021,18 @@ Box<ITV>::relation_with(const Generator& g) const {
   if (space_dim < g_space_dim) {
     throw_dimension_incompatible("relation_with(g)", g);
   }
-  
+
   // The empty box cannot subsume a generator.
   if (is_empty()) {
     return Poly_Gen_Relation::nothing();
   }
-  
+
   // A universe box in a zero-dimensional space subsumes
   // all the generators of a zero-dimensional space.
   if (space_dim == 0) {
     return Poly_Gen_Relation::subsumes();
   }
-  
+
   if (g.is_line_or_ray()) {
     if (g.is_line()) {
       const Generator::expr_type& e = g.expression();
@@ -1132,7 +1132,7 @@ Box<ITV>::max_min(const Linear_Expression& expr,
                                   ? "maximize(e, ...)"
                                   : "minimize(e, ...)"), "e", expr);
   }
-  
+
   // Deal with zero-dim Box first.
   if (space_dim == 0) {
     if (marked_empty()) {
@@ -1150,7 +1150,7 @@ Box<ITV>::max_min(const Linear_Expression& expr,
   if (is_empty()) {
     return false;
   }
-  
+
   PPL_DIRTY_TEMP(mpq_class, result);
   assign_r(result, expr.inhomogeneous_term(), ROUND_NOT_NEEDED);
   bool is_included = true;
@@ -1293,17 +1293,17 @@ Box<ITV>::contains(const Box& y) const {
   if (x.space_dimension() != y.space_dimension()) {
     x.throw_dimension_incompatible("contains(y)", y);
   }
-  
+
   // If `y' is empty, then `x' contains `y'.
   if (y.is_empty()) {
     return true;
   }
-  
+
   // If `x' is empty, then `x' cannot contain `y'.
   if (x.is_empty()) {
     return false;
   }
-  
+
   for (dimension_type k = x.seq.size(); k-- > 0; ) {
     // FIXME: fix this name qualification issue.
     if (!x.seq[k].contains(y.seq[k])) {
@@ -1321,13 +1321,13 @@ Box<ITV>::is_disjoint_from(const Box& y) const {
   if (x.space_dimension() != y.space_dimension()) {
     x.throw_dimension_incompatible("is_disjoint_from(y)", y);
   }
-  
+
   // If any of `x' or `y' is marked empty, then they are disjoint.
   // Note: no need to use `is_empty', as the following loop is anyway correct.
   if (x.marked_empty() || y.marked_empty()) {
     return true;
   }
-  
+
   for (dimension_type k = x.seq.size(); k-- > 0; ) {
     // FIXME: fix this name qualification issue.
     if (x.seq[k].is_disjoint_from(y.seq[k])) {
@@ -1346,7 +1346,7 @@ Box<ITV>::upper_bound_assign_if_exact(const Box& y) {
   if (x.space_dimension() != y.space_dimension()) {
     x.throw_dimension_incompatible("upper_bound_assign_if_exact(y)", y);
   }
-  
+
   // The lub of a box with an empty box is equal to the first box.
   if (y.is_empty()) {
     return true;
@@ -1366,7 +1366,7 @@ Box<ITV>::upper_bound_assign_if_exact(const Box& y) {
     if (!x_seq_i.can_be_exactly_joined_to(y_seq_i)) {
       return false;
     }
-    
+
     // Note: the use of `y_i_does_not_contain_x_i' is needed
     // because we want to temporarily preserve the old value
     // of `y_j_does_not_contain_x_j'.
@@ -1429,12 +1429,12 @@ Box<ITV>::affine_dimension() const {
   if (d == 0) {
     return 0;
   }
-  
+
   // An empty box has affine dimension zero.
   if (is_empty()) {
     return 0;
   }
-  
+
   for (dimension_type k = d; k-- > 0; ) {
     if (seq[k].is_singleton()) {
       --d;
@@ -1479,7 +1479,7 @@ Box<ITV>::is_topologically_closed() const {
   if (ITV::is_always_topologically_closed() || is_empty()) {
     return true;
   }
-  
+
   for (dimension_type k = seq.size(); k-- > 0; ) {
     if (!seq[k].is_topologically_closed()) {
       return false;
@@ -1540,7 +1540,7 @@ Box<ITV>::frequency(const Linear_Expression& expr,
   if (space_dim < expr.space_dimension()) {
     throw_dimension_incompatible("frequency(e, ...)", "e", expr);
   }
-  
+
   // Check if `expr' has a constant value.
   // If it is constant, set the frequency `freq_n' to 0
   // and return true. Otherwise the values for \p expr
@@ -1563,7 +1563,7 @@ Box<ITV>::frequency(const Linear_Expression& expr,
   if (is_empty()) {
     return false;
   }
-  
+
   // The Box has at least 1 dimension and is not empty.
   PPL_DIRTY_TEMP_COEFFICIENT(numer);
   PPL_DIRTY_TEMP_COEFFICIENT(denom);
@@ -1608,7 +1608,7 @@ Box<ITV>::constrains(Variable var) const {
   if (space_dimension() < var_space_dim) {
     throw_dimension_incompatible("constrains(v)", "v", var);
   }
-  
+
   if (marked_empty() || !seq[var_space_dim-1].is_universe()) {
     return true;
   }
@@ -1625,7 +1625,7 @@ Box<ITV>::unconstrain(const Variables_Set& vars) {
   if (vars.empty()) {
     return;
   }
-  
+
   // Dimension-compatibility check.
   const dimension_type min_space_dim = vars.space_dimension();
   if (space_dimension() < min_space_dim) {
@@ -1635,7 +1635,7 @@ Box<ITV>::unconstrain(const Variables_Set& vars) {
   if (marked_empty()) {
     return;
   }
-  
+
   // Here the box might still be empty (but we haven't detected it yet):
   // check emptiness of the interval for each of the variables in
   // `vars' before cylindrification.
@@ -1659,7 +1659,7 @@ Box<ITV>::topological_closure_assign() {
   if (ITV::is_always_topologically_closed() || is_empty()) {
     return;
   }
-  
+
   for (dimension_type k = seq.size(); k-- > 0; ) {
     seq[k].topological_closure_assign();
   }
@@ -1718,7 +1718,7 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
   if (x.is_empty()) {
     return;
   }
-  
+
   // FIXME: temporarily (ab-) using Coefficient.
   // Set `min_value' and `max_value' to the minimum and maximum values
   // a variable of width `w' and signedness `s' can take.
@@ -1854,11 +1854,11 @@ Box<ITV>::drop_some_non_integer_points(Complexity_Class) {
       && !ITV::info_type::store_open) {
     return;
   }
-  
+
   if (marked_empty()) {
     return;
   }
-  
+
   for (dimension_type k = seq.size(); k-- > 0; ) {
     seq[k].drop_some_non_integer_points();
   }
@@ -1880,11 +1880,11 @@ Box<ITV>::drop_some_non_integer_points(const Variables_Set& vars,
       && !ITV::info_type::store_open) {
     return;
   }
-  
+
   if (marked_empty()) {
     return;
   }
-  
+
   for (Variables_Set::const_iterator v_i = vars.begin(),
          v_end = vars.end(); v_i != v_end; ++v_i) {
     seq[*v_i].drop_some_non_integer_points();
@@ -1903,7 +1903,7 @@ Box<ITV>::intersection_assign(const Box& y) {
   if (space_dim != y.space_dimension()) {
     x.throw_dimension_incompatible("intersection_assign(y)", y);
   }
-  
+
   // If one of the two boxes is empty, the intersection is empty.
   if (x.marked_empty()) {
     return;
@@ -1918,7 +1918,7 @@ Box<ITV>::intersection_assign(const Box& y) {
   if (space_dim == 0) {
     return;
   }
-  
+
   // FIXME: here we may conditionally exploit a capability of the
   // underlying interval to eagerly detect empty results.
   reset_empty_up_to_date();
@@ -1939,7 +1939,7 @@ Box<ITV>::upper_bound_assign(const Box& y) {
   if (x.space_dimension() != y.space_dimension()) {
     x.throw_dimension_incompatible("upper_bound_assign(y)", y);
   }
-  
+
   // The lub of a box with an empty box is equal to the first box.
   if (y.is_empty()) {
     return;
@@ -1998,7 +1998,7 @@ Box<ITV>::concatenate_assign(const Box& y) {
   if (!y.status.test_empty_up_to_date()) {
     reset_empty_up_to_date();
   }
-  
+
   PPL_ASSERT(x.OK());
 }
 
@@ -2011,7 +2011,7 @@ Box<ITV>::difference_assign(const Box& y) {
   if (space_dim != y.space_dimension()) {
     throw_dimension_incompatible("difference_assign(y)", y);
   }
-  
+
   Box& x = *this;
   if (x.is_empty() || y.is_empty())
     return;
@@ -2076,7 +2076,7 @@ Box<ITV>::simplify_using_context_assign(const Box& y) {
   if (num_dims != y.space_dimension()) {
     x.throw_dimension_incompatible("simplify_using_context_assign(y)", y);
   }
-  
+
   // Filter away the zero-dimensional case.
   if (num_dims == 0) {
     if (y.marked_empty()) {
@@ -2159,7 +2159,7 @@ Box<ITV>::time_elapse_assign(const Box& y) {
   if (x_space_dim != y.space_dimension()) {
     x.throw_dimension_incompatible("time_elapse_assign(y)", y);
   }
-  
+
   // Dealing with the zero-dimensional case.
   if (x_space_dim == 0) {
     if (y.marked_empty()) {
@@ -2212,7 +2212,7 @@ Box<ITV>::remove_space_dimensions(const Variables_Set& vars) {
     throw_dimension_incompatible("remove_space_dimensions(vs)",
                                  vsi_space_dim);
   }
-  
+
   const dimension_type new_space_dim = old_space_dim - vars.size();
 
   // If the box is empty (this must be detected), then resizing is all
@@ -2280,7 +2280,7 @@ Box<ITV>::map_space_dimensions(const Partial_Function& pfunc) {
   if (space_dim == 0) {
     return;
   }
-  
+
   if (pfunc.has_empty_codomain()) {
     // All dimensions vanish: the box becomes zero_dimensional.
     remove_higher_space_dimensions(0);
@@ -2316,12 +2316,12 @@ Box<ITV>::fold_space_dimensions(const Variables_Set& vars,
   if (dest.space_dimension() > space_dim) {
     throw_dimension_incompatible("fold_space_dimensions(vs, v)", "v", dest);
   }
-  
+
   // The folding of no dimensions is a no-op.
   if (vars.empty()) {
     return;
   }
-  
+
   // All variables in `vars' should be dimensions of the box.
   if (vars.space_dimension() > space_dim) {
     throw_dimension_incompatible("fold_space_dimensions(vs, v)",
@@ -2332,7 +2332,7 @@ Box<ITV>::fold_space_dimensions(const Variables_Set& vars,
     throw_invalid_argument("fold_space_dimensions(vs, v)",
                            "v should not occur in vs");
   }
-  
+
   // Note: the check for emptiness is needed for correctness.
   if (!is_empty()) {
     // Join the interval corresponding to variable `dest' with the intervals
@@ -2358,7 +2358,7 @@ Box<ITV>::add_constraint_no_check(const Constraint& c) {
     throw_invalid_argument("add_constraint(c)",
                            "c is not an interval constraint");
   }
-  
+
   // Throw an exception if c is a nontrivial strict constraint
   // and ITV does not support open boundaries.
   if (c.is_strict_inequality() && c_num_vars != 0
@@ -2366,12 +2366,12 @@ Box<ITV>::add_constraint_no_check(const Constraint& c) {
     throw_invalid_argument("add_constraint(c)",
                            "c is a nontrivial strict constraint");
   }
-  
+
   // Avoid doing useless work if the box is known to be empty.
   if (marked_empty()) {
     return;
   }
-  
+
   const Coefficient& n = c.inhomogeneous_term();
   if (c_num_vars == 0) {
     // Dealing with a trivial constraint.
@@ -2430,12 +2430,12 @@ Box<ITV>::add_congruence_no_check(const Congruence& cg) {
     throw_invalid_argument("add_congruence(cg)",
                            "cg is not an interval congruence");
   }
-  
+
   // Avoid doing useless work if the box is known to be empty.
   if (marked_empty()) {
     return;
   }
-  
+
   const Coefficient& n = cg.inhomogeneous_term();
   if (cg_num_vars == 0) {
     // Dealing with a trivial equality congruence.
@@ -2687,7 +2687,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
       if (propagate_constraint_check_result(r, open)) {
         goto maybe_refine_upper_1;
       }
-      
+
       // Refine the lower bound of `seq[k]' with `t_bound'.
       if (open == T_MAYBE
           && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1)
@@ -2770,7 +2770,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
       if (propagate_constraint_check_result(r, open)) {
         goto next_k;
       }
-      
+
       // Refine the upper bound of seq[k] with t_bound.
       if (open == T_MAYBE
           && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1) {
@@ -2937,7 +2937,7 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
       if (propagate_constraint_check_result(r, open)) {
         goto next_k;
       }
-      
+
       // Refine the lower bound of seq[k] with t_bound.
       if (open == T_MAYBE
           && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1) {
@@ -3064,7 +3064,7 @@ Box<ITV>::affine_image(const Variable var,
   if (denominator == 0) {
     throw_invalid_argument("affine_image(v, e, d)", "d == 0");
   }
-  
+
   // Dimension-compatibility checks.
   const dimension_type space_dim = space_dimension();
   const dimension_type expr_space_dim = expr.space_dimension();
@@ -3075,11 +3075,11 @@ Box<ITV>::affine_image(const Variable var,
   if (space_dim < var_space_dim) {
     throw_dimension_incompatible("affine_image(v, e, d)", "v", var);
   }
-  
+
   if (is_empty()) {
     return;
   }
-  
+
   Tmp_Interval_Type expr_value;
   Tmp_Interval_Type temp0;
   Tmp_Interval_Type temp1;
@@ -3116,17 +3116,17 @@ Box<ITV>::affine_form_image(const Variable var,
   if (space_dim < lf_space_dim) {
     throw_dimension_incompatible("affine_form_image(var, lf)", "lf", lf);
   }
-  
+
   // `var' should be one of the dimensions of the polyhedron.
   const dimension_type var_space_dim = var.space_dimension();
   if (space_dim < var_space_dim) {
     throw_dimension_incompatible("affine_form_image(var, lf)", "var", var);
   }
-  
+
   if (is_empty()) {
     return;
   }
-  
+
   // Intervalization of 'lf'.
   ITV result = lf.inhomogeneous_term();
   for (dimension_type i = 0; i < lf_space_dim; ++i) {
@@ -3150,7 +3150,7 @@ Box<ITV>::affine_preimage(const Variable var,
   if (denominator == 0) {
     throw_invalid_argument("affine_preimage(v, e, d)", "d == 0");
   }
-  
+
   // Dimension-compatibility checks.
   const dimension_type x_space_dim = space_dimension();
   const dimension_type expr_space_dim = expr.space_dimension();
@@ -3162,11 +3162,11 @@ Box<ITV>::affine_preimage(const Variable var,
   if (x_space_dim < var_space_dim) {
     throw_dimension_incompatible("affine_preimage(v, e, d)", "v", var);
   }
-  
+
   if (is_empty()) {
     return;
   }
-  
+
   const Coefficient& expr_v = expr.coefficient(var);
   const bool invertible = (expr_v != 0);
   if (!invertible) {
@@ -3369,7 +3369,7 @@ Box<ITV>
   if (denominator == 0) {
     throw_invalid_argument("bounded_affine_preimage(v, lb, ub, d)", "d == 0");
   }
-  
+
   // Dimension-compatibility checks.
   // `var' should be one of the dimensions of the polyhedron.
   const dimension_type var_space_dim = var.space_dimension();
@@ -3389,12 +3389,12 @@ Box<ITV>
     throw_dimension_incompatible("bounded_affine_preimage(v, lb, ub, d)",
                                  "ub", ub_expr);
   }
-  
+
   // Any preimage of an empty polyhedron is empty.
   if (marked_empty()) {
     return;
   }
-  
+
   const bool negative_denom = (denominator < 0);
   const Coefficient& lb_var_coeff = lb_expr.coefficient(var);
   const Coefficient& ub_var_coeff = ub_expr.coefficient(var);
@@ -3556,7 +3556,7 @@ Box<ITV>
   if (denominator == 0) {
     throw_invalid_argument("generalized_affine_image(v, r, e, d)", "d == 0");
   }
-  
+
   // Dimension-compatibility checks.
   const dimension_type space_dim = space_dimension();
   // The dimension of `expr' should not be greater than the dimension
@@ -3571,13 +3571,13 @@ Box<ITV>
     throw_dimension_incompatible("generalized_affine_image(v, r, e, d)",
                                  "v", var);
   }
-  
+
   // The relation symbol cannot be a disequality.
   if (relsym == NOT_EQUAL) {
     throw_invalid_argument("generalized_affine_image(v, r, e, d)",
                            "r is the disequality relation symbol");
   }
-  
+
   // First compute the affine image.
   affine_image(var, expr, denominator);
 
@@ -3589,7 +3589,7 @@ Box<ITV>
   if (is_empty()) {
     return;
   }
-  
+
   ITV& seq_var = seq[var.id()];
   switch (relsym) {
   case LESS_OR_EQUAL:
@@ -3648,7 +3648,7 @@ Box<ITV>
     throw_invalid_argument("generalized_affine_preimage(v, r, e, d)",
                            "r is the disequality relation symbol");
   }
-  
+
   // Check whether the affine relation is indeed an affine function.
   if (relsym == EQUAL) {
     affine_preimage(var, expr, denominator);
@@ -3786,18 +3786,18 @@ Box<ITV>
     throw_dimension_incompatible("generalized_affine_image(e1, r, e2)",
                                  "e2", rhs);
   }
-  
+
   // The relation symbol cannot be a disequality.
   if (relsym == NOT_EQUAL) {
     throw_invalid_argument("generalized_affine_image(e1, r, e2)",
                            "r is the disequality relation symbol");
   }
-  
+
   // Any image of an empty box is empty.
   if (marked_empty()) {
     return;
   }
-  
+
   // Compute the maximum and minimum value reached by the rhs on the box.
   PPL_DIRTY_TEMP(Coefficient, max_numer);
   PPL_DIRTY_TEMP(Coefficient, max_denom);
@@ -4017,7 +4017,7 @@ Box<ITV>::generalized_affine_preimage(const Linear_Expression& lhs,
     throw_dimension_incompatible("generalized_affine_image(e1, r, e2)",
                                  "e2", rhs);
   }
-  
+
   // The relation symbol cannot be a disequality.
   if (relsym == NOT_EQUAL) {
     throw_invalid_argument("generalized_affine_image(e1, r, e2)",

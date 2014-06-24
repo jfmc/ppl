@@ -76,7 +76,7 @@ PPL::Octagonal_Shape_Helper
   if (!c.expression().all_zeroes(c_second_var + 2, c_space_dim + 1)) {
     return false;
   }
-  
+
   using std::swap;
 
   // FIXME: The calling code expects c_first_var > c_second_var, when

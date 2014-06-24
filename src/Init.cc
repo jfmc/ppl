@@ -112,7 +112,7 @@ ppl_test_rounding() {
   if ((*ppl_setround_function_p)(FE_DOWNWARD) != 0) {
     return 255;
   }
-  
+
   nf[0] = nf1 / f2;
   nd[0] = nd1 / d2;
   nl[0] = nl1 / l2;
@@ -123,7 +123,7 @@ ppl_test_rounding() {
   if ((*ppl_setround_function_p)(FE_UPWARD) != 0) {
     return 255;
   }
-  
+
   nf[1] = nf1 / f2;
   nd[1] = nd1 / d2;
   nl[1] = nl1 / l2;

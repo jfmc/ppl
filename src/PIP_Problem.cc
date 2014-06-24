@@ -121,14 +121,14 @@ PPL::PIP_Problem::solve() const {
       if (current_solution == 0) {
         x.current_solution = new PIP_Solution_Node(this);
       }
-      
+
       // Properly resize context matrix.
       const dimension_type new_num_cols = parameters.size() + 1;
       const dimension_type old_num_cols = initial_context.num_columns();
       if (old_num_cols < new_num_cols) {
         x.initial_context.add_zero_columns(new_num_cols - old_num_cols);
       }
-      
+
       // Computed once for all (to be used inside loop).
       const Variables_Set::const_iterator param_begin = parameters.begin();
       const Variables_Set::const_iterator param_end = parameters.end();
@@ -150,7 +150,7 @@ PPL::PIP_Problem::solve() const {
         if (!c.expression().all_zeroes_except(parameters, 1, c_space_dim + 1)) {
           continue;
         }
-        
+
         check_feasible_context = true;
 
         x.initial_context.add_zero_rows(1);
@@ -342,7 +342,7 @@ PPL::PIP_Problem::OK() const {
   if (!initial_context.OK()) {
     return false;
   }
-  
+
   if (current_solution != 0) {
     // Check well formedness of the solution tree.
     if (!current_solution->OK()) {
@@ -454,33 +454,33 @@ PPL::PIP_Problem::ascii_load(std::istream& s) {
   if (!(s >> str) || str != "external_space_dim:") {
     return false;
   }
-  
+
   if (!(s >> external_space_dim)) {
     return false;
   }
-  
+
   if (!(s >> str) || str != "internal_space_dim:") {
     return false;
   }
-  
+
   if (!(s >> internal_space_dim)) {
     return false;
   }
-  
+
   if (!(s >> str) || str != "input_cs(") {
     return false;
   }
-  
+
   dimension_type input_cs_size;
 
   if (!(s >> input_cs_size)) {
     return false;
   }
-  
+
   if (!(s >> str) || str != ")") {
     return false;
   }
-  
+
   Constraint c(Constraint::zero_dim_positivity());
   for (dimension_type i = 0; i < input_cs_size; ++i) {
     if (!c.ascii_load(s)) {
@@ -492,19 +492,19 @@ PPL::PIP_Problem::ascii_load(std::istream& s) {
   if (!(s >> str) || str != "first_pending_constraint:") {
     return false;
   }
-  
+
   if (!(s >> first_pending_constraint)) {
     return false;
   }
-  
+
   if (!(s >> str) || str != "status:") {
     return false;
   }
-  
+
   if (!(s >> str)) {
     return false;
   }
-  
+
   if (str == "UNSATISFIABLE") {
     status = UNSATISFIABLE;
   }
@@ -517,27 +517,27 @@ PPL::PIP_Problem::ascii_load(std::istream& s) {
   else {
     return false;
   }
-  
+
   if (!(s >> str) || str != "parameters") {
     return false;
   }
-  
+
   if (!parameters.ascii_load(s)) {
     return false;
   }
-  
+
   if (!(s >> str) || str != "initial_context") {
     return false;
   }
-  
+
   if (!initial_context.ascii_load(s)) {
     return false;
   }
-  
+
   if (!(s >> str) || str != "control_parameters") {
     return false;
   }
-  
+
   for (dimension_type i = 0; i < CONTROL_PARAMETER_NAME_SIZE; ++i) {
     if (!(s >> str)) {
       return false;
@@ -570,7 +570,7 @@ PPL::PIP_Problem::ascii_load(std::istream& s) {
   if (!(s >> big_parameter_dimension)) {
     return false;
   }
-  
+
   // Release current_solution tree (if any).
   delete current_solution;
   current_solution = 0;
@@ -604,7 +604,7 @@ PPL::PIP_Problem::ascii_load(std::istream& s) {
     // Unknown node kind.
     return false;
   }
-  
+
   PPL_ASSERT(OK());
   return true;
 }
@@ -635,7 +635,7 @@ PPL::PIP_Problem
   if (m_vars == 0 && m_params == 0) {
     return;
   }
-  
+
   // The space dimension of the resulting PIP problem should not
   // overflow the maximum allowed space dimension.
   dimension_type available = max_space_dimension() - space_dimension();
@@ -803,4 +803,3 @@ PPL::PIP_Problem::print_solution(std::ostream& s, int indent) const {
                            "the PIP problem has not been solved.");
   }
 }
-

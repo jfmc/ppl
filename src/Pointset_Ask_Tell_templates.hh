@@ -280,21 +280,21 @@ Pointset_Ask_Tell<PSET>::ascii_load(std::istream& s) {
   if (!(s >> str) || str != "size") {
     return false;
   }
-  
+
   size_type sz;
 
   if (!(s >> sz)) {
     return false;
   }
-  
+
   if (!(s >> str) || str != "space_dim") {
     return false;
   }
-  
+
   if (!(s >> x.space_dim)) {
     return false;
   }
-  
+
   Pointset_Ask_Tell new_x(x.space_dim, EMPTY);
   while (sz-- > 0) {
     PSET ph;

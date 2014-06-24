@@ -180,7 +180,7 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
   if (x.space_dim == 0 || x.marked_empty() || y.marked_empty()) {
     return;
   }
-  
+
   // `y.gen_sys' should be in minimal form and
   // `y.sat_g' should be up-to-date.
   if (y.is_necessarily_closed()) {
@@ -348,12 +348,12 @@ PPL::Polyhedron::limited_H79_extrapolation_assign(const Polyhedron& y,
   if (x.space_dim == 0) {
     return;
   }
-  
+
   if (!y.minimize()) {
     // We have just discovered that `y' is empty.
     return;
   }
-  
+
   // Update the generators of `x': these are used to select,
   // from the constraints in `cs', those that must be added
   // to the resulting polyhedron.
@@ -362,7 +362,7 @@ PPL::Polyhedron::limited_H79_extrapolation_assign(const Polyhedron& y,
     // We have just discovered that `x' is empty.
     return;
   }
-  
+
   Constraint_System new_cs;
   // The constraints to be added must be satisfied by all the
   // generators of `x'.  We can disregard `y' because `y <= x'.
@@ -424,7 +424,7 @@ PPL::Polyhedron
   if (x_minus_H79_cs_num_rows <= 1) {
     return false;
   }
-  
+
   const Topology topol = x.topology();
   Constraint_System combining_cs(topol);
   Constraint_System new_cs(topol);
@@ -450,7 +450,7 @@ PPL::Polyhedron
       if (lies_on_the_boundary_of_H79) {
         continue;
       }
-      
+
       // Consider all the constraints in `x_minus_H79_cs'
       // that are saturated by the point `g'.
       combining_cs.clear();
@@ -503,7 +503,7 @@ PPL::Polyhedron
   if (!improves_upon_H79) {
     return false;
   }
-  
+
   // The resulting polyhedron is obtained by adding the constraints
   // in `new_cs' to polyhedron `H79'.
   Polyhedron result = H79;
@@ -612,7 +612,7 @@ PPL::Polyhedron::modify_according_to_evolution(Linear_Expression& ray,
     if (considered[k]) {
       continue;
     }
-    
+
     while (y_k != y_end && y_k.variable().id() < k) {
       ++y_k;
     }
@@ -620,7 +620,7 @@ PPL::Polyhedron::modify_according_to_evolution(Linear_Expression& ray,
     if (y_k == y_end) {
       break;
     }
-    
+
     const Variable y_k_var = y_k.variable();
 
     // Note that y_k_var.id() may be greater than k.
@@ -634,7 +634,7 @@ PPL::Polyhedron::modify_according_to_evolution(Linear_Expression& ray,
       if (considered[h]) {
         continue;
       }
-      
+
       while (y_h != y_end && y_h.variable().id() < h) {
         ++y_h;
       }
@@ -647,7 +647,7 @@ PPL::Polyhedron::modify_according_to_evolution(Linear_Expression& ray,
       else {
         tmp = 0;
       }
-      
+
       if (y_k_var.id() == k) {
         // The following line optimizes the computation of
         // <CODE> tmp -= x[h] * y[k]; </CODE>
@@ -717,7 +717,7 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
   if (candidate_rays.has_no_rows()) {
     return false;
   }
-  
+
   // Be non-intrusive.
   Polyhedron result = x;
   result.add_recycled_generators(candidate_rays);
@@ -749,7 +749,7 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
   if (x.space_dim != y.space_dim) {
     throw_dimension_incompatible("BHRZ03_widening_assign(y)", "y", y);
   }
-  
+
   // Assume `y' is contained in or equal to `x'.
   PPL_EXPECT_HEAVY(copy_contains(x, y));
 
@@ -758,7 +758,7 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
   if (x.space_dim == 0 || x.marked_empty() || y.marked_empty()) {
     return;
   }
-  
+
   // `y.con_sys' and `y.gen_sys' should be in minimal form.
   if (!y.minimize()) {
     // `y' is empty: the result is `x'.
@@ -810,19 +810,19 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
   if (x.BHRZ03_combining_constraints(y, y_cert, H79, x_minus_H79_cs)) {
     return;
   }
-  
+
   PPL_ASSERT_HEAVY(H79.OK() && x.OK() && y.OK());
 
   if (x.BHRZ03_evolving_points(y, y_cert, H79)) {
     return;
   }
-  
+
   PPL_ASSERT_HEAVY(H79.OK() && x.OK() && y.OK());
 
   if (x.BHRZ03_evolving_rays(y, y_cert, H79)) {
     return;
   }
-  
+
   PPL_ASSERT_HEAVY(H79.OK() && x.OK() && y.OK());
 
   // No previous technique was successful: fall back to the H79 widening.
@@ -872,7 +872,7 @@ PPL::Polyhedron
     throw_dimension_incompatible("limited_BHRZ03_extrapolation_assign(y, cs)",
                                  "cs", cs);
   }
-  
+
   // Assume `y' is contained in or equal to `x'.
   PPL_EXPECT_HEAVY(copy_contains(x, y));
 
@@ -882,19 +882,19 @@ PPL::Polyhedron
   if (x.marked_empty()) {
     return;
   }
-  
+
   // The limited BHRZ03-widening between two polyhedra in a
   // zero-dimensional space is a polyhedron in a zero-dimensional
   // space, too.
   if (x.space_dim == 0) {
     return;
   }
-  
+
   if (!y.minimize()) {
     // We have just discovered that `y' is empty.
     return;
   }
-  
+
   // Update the generators of `x': these are used to select,
   // from the constraints in `cs', those that must be added
   // to the resulting polyhedron.
@@ -903,7 +903,7 @@ PPL::Polyhedron
     // We have just discovered that `x' is empty.
     return;
   }
-  
+
   Constraint_System new_cs;
   // The constraints to be added must be satisfied by all the
   // generators of `x'. We can disregard `y' because `y <= x'.

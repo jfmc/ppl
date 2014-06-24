@@ -119,7 +119,7 @@ add_linearize(const Binary_Operator<Target>& bop_expr,
   if (!linearize(*(bop_expr.left_hand_side()), oracle, lf_store, result)) {
     return false;
   }
-  
+
   Floating_Point_Format analyzed_format =
     bop_expr.type().floating_point_format();
   FP_Linear_Form rel_error;
@@ -130,7 +130,7 @@ add_linearize(const Binary_Operator<Target>& bop_expr,
                  linearized_second_operand)) {
     return false;
   }
-  
+
   result += linearized_second_operand;
   linearized_second_operand.relative_error(analyzed_format, rel_error);
   result += rel_error;
@@ -232,7 +232,7 @@ sub_linearize(const Binary_Operator<Target>& bop_expr,
   if (!linearize(*(bop_expr.left_hand_side()), oracle, lf_store, result)) {
     return false;
   }
-  
+
   Floating_Point_Format analyzed_format =
     bop_expr.type().floating_point_format();
   FP_Linear_Form rel_error;
@@ -243,7 +243,7 @@ sub_linearize(const Binary_Operator<Target>& bop_expr,
                  linearized_second_operand)) {
     return false;
   }
-  
+
   result -= linearized_second_operand;
   linearized_second_operand.relative_error(analyzed_format, rel_error);
   result += rel_error;
@@ -406,7 +406,7 @@ mul_linearize(const Binary_Operator<Target>& bop_expr,
                                              intervalized_second_operand)) {
     return false;
   }
-  
+
   // FIXME: we are not sure that what we do here is policy-proof.
   if (intervalized_first_operand.is_bounded()) {
     if (intervalized_second_operand.is_bounded()) {
@@ -585,7 +585,7 @@ div_linearize(const Binary_Operator<Target>& bop_expr,
   if (!linearize(*(bop_expr.left_hand_side()), oracle, lf_store, result)) {
     return false;
   }
-  
+
   Floating_Point_Format analyzed_format =
     bop_expr.type().floating_point_format();
   FP_Linear_Form rel_error;
@@ -767,7 +767,7 @@ linearize(const Concrete_Expression<Target>& expr,
       if (!linearize(*(uop_expr->argument()), oracle, lf_store, result)) {
         return false;
       }
-      
+
       result.negate();
       return true;
     case Unary_Operator<Target>::BNOT:
@@ -819,7 +819,7 @@ linearize(const Concrete_Expression<Target>& expr,
       */
       return false;
     }
-    
+
     if (associated_dimensions.size() == 1) {
       /* If a linear form associated to the only referenced
          space dimension exists in lf_store, return that form.
@@ -856,7 +856,7 @@ linearize(const Concrete_Expression<Target>& expr,
       if (!oracle.get_interval(*i, curr_int)) {
         return false;
       }
-      
+
       lub.join_assign(curr_int);
     }
 

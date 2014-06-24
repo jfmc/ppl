@@ -216,7 +216,7 @@ Linear_Form<C>::ascii_load(std::istream& s) {
   if (!(s >> new_dim)) {
     return false;
   }
-  
+
   vec.resize(new_dim + 1, zero);
   for (dimension_type i = 0; i <= new_dim; ++i) {
     if (!(s >> vec[i])) {

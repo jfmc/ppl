@@ -62,7 +62,7 @@ Opposite_Floating_Point_Expression<FP_Interval_Type, FP_Format>
   if (!operand->linearize(int_store, lf_store, result)) {
     return false;
   }
-  
+
   result.negate();
   return true;
 }

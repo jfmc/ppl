@@ -153,7 +153,7 @@ indirect_sort_and_unique(typename Sort_Comparer::size_type num_elems,
   if (num_duplicates == 0) {
     return 0;
   }
-  
+
   // There were duplicates: swap the rows according to `iv'.
   index_type dst = 0;
   while (dst < num_sorted && dst == iv[dst]) {

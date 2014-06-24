@@ -509,7 +509,7 @@ find_lexico_minimal_column(const Matrix<PIP_Tree_Node::Row>& tableau,
     // There are no candidates, so there is no minimum.
     return false;
   }
-  
+
   // This is used as a set, it is always sorted.
   std::vector<dimension_type> candidates;
   for (PIP_Tree_Node::Row::const_iterator i = pivot_row.lower_bound(start_j),
@@ -929,7 +929,7 @@ PIP_Tree_Node::Artificial_Parameter
     throw std::invalid_argument("PIP_Tree_Node::Artificial_Parameter(e, d): "
                                 "denominator d is zero.");
   }
-  
+
   // Normalize if needed.
   // FIXME: Provide a proper normalization helper.
   Linear_Expression& param_expr = *this;
@@ -1328,7 +1328,7 @@ PIP_Decision_Node::OK() const {
   if (!PIP_Tree_Node::OK()) {
     return false;
   }
-  
+
   // Recursively check if child nodes are well-formed.
   if (false_child != 0 && !false_child->OK()) {
     return false;
@@ -1336,7 +1336,7 @@ PIP_Decision_Node::OK() const {
   if (true_child != 0 && !true_child->OK()) {
     return false;
   }
-  
+
   // Decision nodes should always have a true child.
   if (true_child == 0) {
 #ifndef NDEBUG
@@ -1566,7 +1566,7 @@ PIP_Decision_Node::ascii_load(std::istream& s) {
   if (!PIP_Tree_Node::ascii_load(s)) {
     return false;
   }
-  
+
   // Release the "true" subtree (if any).
   delete true_child;
   true_child = 0;
@@ -1827,12 +1827,12 @@ PIP_Tree_Node::ascii_load(std::istream& s) {
   if (!(s >> str) || str != "artificial_parameters(") {
     return false;
   }
-  
+
   dimension_type artificial_parameters_size;
   if (!(s >> artificial_parameters_size)) {
     return false;
   }
-  
+
   if (!(s >> str) || str != ")") {
     return false;
   }
@@ -2058,14 +2058,14 @@ PIP_Solution_Node::ascii_load(std::istream& is) {
   if (!(is >> special_equality_row)) {
     return false;
   }
-  
+
   if (!(is >> str) || str != "big_dimension") {
     return false;
   }
   if (!(is >> big_dimension)) {
     return false;
   }
-  
+
   if (!(is >> str) || str != "sign") {
     return false;
   }
@@ -2073,7 +2073,7 @@ PIP_Solution_Node::ascii_load(std::istream& is) {
   if (!(is >> sign_size)) {
     return false;
   }
-  
+
   sign.clear();
   for (dimension_type i = 0; i < sign_size; ++i) {
     if (!(is >> str)) {
@@ -2132,7 +2132,7 @@ PIP_Solution_Node::ascii_load(std::istream& is) {
   else {
     return false;
   }
-  
+
   PPL_ASSERT(OK());
   return true;
 }
@@ -2237,7 +2237,7 @@ PIP_Tree_Node::compatibility_check(Matrix<Row>& s) {
     if (!found_positive_pivot_candidate) {
       return false;
     }
-    
+
     if (pj == 0) {
       // No negative RHS: fractional optimum found.
       // If it is integer, then the test is successful.
@@ -2331,7 +2331,7 @@ PIP_Tree_Node::compatibility_check(Matrix<Row>& s) {
         if (pivot_j == 0) {
           continue;
         }
-        
+
         WEIGHT_BEGIN();
         for (dimension_type i = num_rows; i-- > 0; ) {
           Row& s_i = s[i];
@@ -2416,11 +2416,11 @@ PIP_Solution_Node
   if (num_added_vars > 0) {
     tableau.s.add_zero_columns(num_added_vars);
   }
-  
+
   if (num_added_params > 0) {
     tableau.t.add_zero_columns(num_added_params, old_num_params + 1);
   }
-  
+
   dimension_type new_var_column = old_num_vars;
   const dimension_type initial_space_dim = old_num_vars + old_num_params;
   for (dimension_type i = initial_space_dim; i < external_space_dim; ++i) {
@@ -2652,7 +2652,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       if (sign_i == UNKNOWN || sign_i == MIXED) {
         sign_i = row_sign(tableau.t[i], big_dimension);
       }
-      
+
       if (sign_i == NEGATIVE && first_negative == not_a_dim) {
         first_negative = i;
       }
@@ -2863,7 +2863,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         if (s_i_pj == 0) {
           continue;
         }
-        
+
         WEIGHT_BEGIN();
         Row::iterator itr = s_i.end();
         for (Row::const_iterator
@@ -2909,7 +2909,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         if (s_i_pj_itr == s_i.end()) {
           continue;
         }
-        
+
         // FIXME: the following comment does not make sense.
         // NOTE: This is a Coefficient& instead of a
         // Coefficient_traits::const_reference, because scale() may silently
@@ -2919,7 +2919,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         if (s_i_pj == 0) {
           continue;
         }
-        
+
         WEIGHT_BEGIN();
         Row::iterator k = t_i.end();
         for (Row::const_iterator
@@ -3963,7 +3963,7 @@ PIP_Solution_Node
   if (solution_valid) {
     return;
   }
-  
+
   // const_cast required so as to refresh the solution cache.
   PIP_Solution_Node& x = const_cast<PIP_Solution_Node&>(*this);
 
@@ -3976,7 +3976,7 @@ PIP_Solution_Node
   if (solution.size() != num_pip_vars) {
     x.solution.resize(num_pip_vars);
   }
-  
+
   // Compute external "names" (i.e., indices) for all parameters.
   std::vector<dimension_type> all_param_names(num_all_params);
 

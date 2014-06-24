@@ -304,7 +304,7 @@ Polyhedron::process_pending() const {
   if (has_pending_constraints()) {
     return process_pending_constraints();
   }
-  
+
   PPL_ASSERT(has_pending_generators());
   process_pending_generators();
   return true;

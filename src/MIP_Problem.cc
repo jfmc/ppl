@@ -741,7 +741,7 @@ PPL::MIP_Problem::process_pending_constraints() {
   if (additional_tableau_rows > 0) {
     tableau.add_zero_rows(additional_tableau_rows);
   }
-  
+
   // ... then add additional columns.
   // We need columns for additional (split) problem variables, additional
   // slack variables and additional artificials.
@@ -774,7 +774,7 @@ PPL::MIP_Problem::process_pending_constraints() {
   if (additional_tableau_columns > 0) {
     tableau.add_zero_columns(additional_tableau_columns);
   }
-  
+
   // Dimensions of the tableau after resizing.
   const dimension_type tableau_num_rows = tableau.num_rows();
   const dimension_type tableau_num_cols = tableau.num_columns();
@@ -1552,7 +1552,7 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
     if (entering_var_index == 0) {
       return true;
     }
-    
+
     // Choose the index of the row exiting the base.
     const dimension_type exiting_base_index
       = get_exiting_base_index(entering_var_index);
@@ -1560,7 +1560,7 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
     if (exiting_base_index == tableau_num_rows) {
       return false;
     }
-    
+
     // Check if the client has requested abandoning all expensive
     // computations. If so, the exception specified by the client
     // is thrown now.
@@ -1637,7 +1637,7 @@ PPL::MIP_Problem::compute_simplex_using_exact_pricing() {
     if (entering_var_index == 0) {
       return true;
     }
-    
+
     // Choose the index of the row exiting the base.
     const dimension_type exiting_base_index
       = get_exiting_base_index(entering_var_index);
@@ -1645,7 +1645,7 @@ PPL::MIP_Problem::compute_simplex_using_exact_pricing() {
     if (exiting_base_index == tableau_num_rows) {
       return false;
     }
-    
+
     // Check if the client has requested abandoning all expensive
     // computations. If so, the exception specified by the client
     // is thrown now.
@@ -2253,7 +2253,7 @@ PPL::MIP_Problem::is_mip_satisfiable(MIP_Problem& mip,
   if (found_satisfiable_generator) {
     return true;
   }
-  
+
   PPL_ASSERT(non_int_dim < mip.space_dimension());
 
   assign_r(tmp_rational.get_num(), p.coefficient(Variable(non_int_dim)),
@@ -2333,7 +2333,7 @@ PPL::MIP_Problem::OK() const {
   if (!tableau.OK() || !last_generator.OK()) {
     return false;
   }
-  
+
   // Constraint system should contain no strict inequalities.
   for (dimension_type i = input_cs_num_rows; i-- > 0; ) {
     if (input_cs[i]->is_strict_inequality()) {
@@ -2622,33 +2622,33 @@ PPL::MIP_Problem::ascii_load(std::istream& s) {
   if (!(s >> str) || str != "external_space_dim:") {
     return false;
   }
-  
+
   if (!(s >> external_space_dim)) {
     return false;
   }
-  
+
   if (!(s >> str) || str != "internal_space_dim:") {
     return false;
   }
-  
+
   if (!(s >> internal_space_dim)) {
     return false;
   }
-  
+
   if (!(s >> str) || str != "input_cs(") {
     return false;
   }
-  
+
   dimension_type input_cs_size;
 
   if (!(s >> input_cs_size)) {
     return false;
   }
-  
+
   if (!(s >> str) || str != ")") {
     return false;
   }
-  
+
   Constraint c(Constraint::zero_dim_positivity());
   input_cs.reserve(input_cs_size);
   for (dimension_type i = 0; i < input_cs_size; ++i) {
@@ -2661,7 +2661,7 @@ PPL::MIP_Problem::ascii_load(std::istream& s) {
   if (!(s >> str) || str != "inherited_constraints:") {
     return false;
   }
-  
+
   if (!(s >> inherited_constraints)) {
     return false;
   }
@@ -2713,7 +2713,7 @@ PPL::MIP_Problem::ascii_load(std::istream& s) {
   else {
     return false;
   }
-  
+
   if (!(s >> str) || str != "pricing:") {
     return false;
   }
@@ -2732,7 +2732,7 @@ PPL::MIP_Problem::ascii_load(std::istream& s) {
   else {
     return false;
   }
-  
+
   if (!(s >> str) || str != "status:")
     return false;
 
@@ -2792,15 +2792,15 @@ PPL::MIP_Problem::ascii_load(std::istream& s) {
   if (!(s >> str) || str != "last_generator") {
     return false;
   }
-  
+
   if (!last_generator.ascii_load(s)) {
     return false;
   }
-  
+
   if (!(s >> str) || str != "mapping(") {
     return false;
   }
-  
+
   dimension_type mapping_size;
   if (!(s >> mapping_size)) {
     return false;
@@ -2808,48 +2808,48 @@ PPL::MIP_Problem::ascii_load(std::istream& s) {
   if (!(s >> str) || str != ")") {
     return false;
   }
-  
+
   // The first `mapping' index is never used, so we initialize
   // it pushing back a dummy value.
   if (tableau.num_columns() != 0) {
     mapping.push_back(std::make_pair(0, 0));
   }
-  
+
   for (dimension_type i = 1; i < mapping_size; ++i) {
     dimension_type index;
     if (!(s >> index)) {
       return false;
     }
-    
+
     if (!(s >> str) || str != "->") {
       return false;
     }
-    
+
     dimension_type first_value;
     if (!(s >> first_value)) {
       return false;
     }
-    
+
     if (!(s >> str) || str != "->") {
       return false;
     }
-    
+
     dimension_type second_value;
     if (!(s >> second_value)) {
       return false;
     }
-    
+
     mapping.push_back(std::make_pair(first_value, second_value));
   }
 
   if (!(s >> str) || str != "integer_variables") {
     return false;
   }
-  
+
   if (!i_variables.ascii_load(s)) {
     return false;
   }
-  
+
   PPL_ASSERT(OK());
   return true;
 }

@@ -278,7 +278,7 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
   else {
     goto unexpected;
   }
-  
+
   // Get the lower bound.
   lower_r = input(lower_bound, is, ROUND_DOWN);
   if (lower_r == V_CVT_STR_UNK || lower_r == V_NAN) {
@@ -295,7 +295,7 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
   if (c != ',') {
     goto unexpected;
   }
-  
+
   // Get the upper bound.
   upper_r = input(upper_bound, is, ROUND_UP);
   if (upper_r == V_CVT_STR_UNK || upper_r == V_NAN) {

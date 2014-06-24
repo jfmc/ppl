@@ -168,7 +168,7 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
       // Removing all dimensions from a non-empty polyhedron.
       set_zero_dim_univ();
     }
-    
+
     PPL_ASSERT_HEAVY(OK());
     return;
   }
@@ -191,7 +191,7 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
       if (visited[i]) {
         continue;
       }
-      
+
       dimension_type j = i;
       do {
         visited[j] = true;
@@ -204,7 +204,7 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
         if (k == j) {
           break;
         }
-        
+
         cycle.push_back(Variable(j));
         // Go along the cycle.
         j = k;
@@ -218,11 +218,11 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
       if (constraints_are_up_to_date()) {
         con_sys.permute_space_dimensions(cycle);
       }
-      
+
       if (generators_are_up_to_date()) {
         gen_sys.permute_space_dimensions(cycle);
       }
-      
+
       cycle.clear();
     }
 
@@ -315,13 +315,13 @@ Polyhedron::refine_with_linear_form_inequality(
     throw_dimension_incompatible(
           "refine_with_linear_form_inequality(l1, l2, s)", "l1", left);
   }
-  
+
   const dimension_type right_space_dim = right.space_dimension();
   if (space_dim < right_space_dim) {
     throw_dimension_incompatible(
           "refine_with_linear_form_inequality(l1, l2, s)", "l2", right);
   }
-  
+
   // We assume that the analyzer will not refine an unreachable test.
   PPL_ASSERT(!marked_empty());
 
@@ -332,12 +332,12 @@ Polyhedron::refine_with_linear_form_inequality(
       overflows(left)) {
     return;
   }
-  
+
   if (Floating_Point_Expression<FP_Interval_Type, float_ieee754_single>::
       overflows(right)) {
     return;
   }
-  
+
   // Overapproximate left - right.
   FP_Linear_Form left_minus_right(left);
   left_minus_right -= right;
@@ -345,7 +345,7 @@ Polyhedron::refine_with_linear_form_inequality(
       overflows(left_minus_right)) {
     return;
   }
-  
+
   dimension_type lf_space_dim = left_minus_right.space_dimension();
   FP_Linear_Form lf_approx;
   overapproximate_linear_form(left_minus_right, lf_space_dim, lf_approx);
@@ -353,7 +353,7 @@ Polyhedron::refine_with_linear_form_inequality(
       overflows(lf_approx)) {
     return;
   }
-  
+
   // Normalize left - right.
   Linear_Expression lf_approx_le;
   convert_to_integer_expression(lf_approx, lf_space_dim, lf_approx_le);
@@ -383,13 +383,13 @@ const Linear_Form<Interval <FP_Format, Interval_Info> >& lf) {
   if (space_dim < lf_space_dim) {
     throw_dimension_incompatible("affine_form_image(v, l, s)", "l", lf);
   }
-  
+
   // `var' should be one of the dimensions of the polyhedron.
   const dimension_type var_id = var.id();
   if (space_dim < var_id + 1) {
     throw_dimension_incompatible("affine_form_image(v, l, s)", "v", var);
   }
-  
+
   // We assume that the analyzer will not perform an unreachable assignment.
   PPL_ASSERT(!marked_empty());
 
@@ -494,7 +494,7 @@ Polyhedron::convert_to_integer_expression(
   if (numerators[lf_dimension] != 0) {
       lcm_assign(lcm, lcm, denominators[lf_dimension]);
   }
-  
+
   for (dimension_type i = 0; i < lf_dimension; ++i) {
     const FP_Interval_Type& curr_int = lf.coefficient(Variable(i));
     numer_denom(curr_int.lower(), numerators[i], denominators[i]);
@@ -542,13 +542,13 @@ Polyhedron::convert_to_integer_expressions(
   if (numerators[lf_dimension] != 0) {
       lcm_assign(lcm, lcm, denominators[lf_dimension]);
   }
-  
+
   numer_denom(b.upper(), numerators[lf_dimension+1],
                          denominators[lf_dimension+1]);
   if (numerators[lf_dimension+1] != 0) {
       lcm_assign(lcm, lcm, denominators[lf_dimension+1]);
   }
-  
+
   for (dimension_type i = 0; i < lf_dimension; ++i) {
     const FP_Interval_Type& curr_int = lf.coefficient(Variable(i));
     numer_denom(curr_int.lower(), numerators[i], denominators[i]);
@@ -574,7 +574,7 @@ Polyhedron::convert_to_integer_expressions(
   else {
     res_low_coeff = Coefficient(0);
   }
-  
+
   if (numerators[lf_dimension+1] != 0) {
     exact_div_assign(denominators[lf_dimension+1],
                      lcm, denominators[lf_dimension+1]);

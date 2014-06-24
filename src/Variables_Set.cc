@@ -80,17 +80,17 @@ PPL::Variables_Set::ascii_load(std::istream& s) {
   if (!(s >> str) || str != "variables(") {
     return false;
   }
-  
+
   dimension_type size;
 
   if (!(s >> size)) {
     return false;
   }
-  
+
   if (!(s >> str) || str != ")") {
     return false;
   }
-  
+
   for (dimension_type i = 0; i < size; ++i) {
     dimension_type variable_value;
     if (!(s >> variable_value)) {

@@ -258,7 +258,7 @@ Linear_Expression_Impl<Row>
   if (n < 2) {
     return;
   }
-  
+
   if (n == 2) {
     row.swap_coefficients(cycle[0].space_dimension(),
                           cycle[1].space_dimension());
@@ -847,7 +847,7 @@ Linear_Expression_Impl<Row>
   if (c2 == 0) {
     return x.all_zeroes(start, end);
   }
-  
+
   PPL_ASSERT(c1 != 0);
   PPL_ASSERT(c2 != 0);
   typename Row::const_iterator i = x.row.lower_bound(start);
@@ -1359,12 +1359,12 @@ Linear_Expression_Impl<Row>::ascii_load(std::istream& s) {
   if (str != "size") {
     return false;
   }
-  
+
   dimension_type new_size;
   if (!(s >> new_size)) {
     return false;
   }
-  
+
   row.resize(0);
   row.resize(new_size);
 

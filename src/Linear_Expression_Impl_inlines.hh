@@ -246,7 +246,7 @@ Linear_Expression_Impl<Sparse_Row>
   if (itr1 == itr2) {
     return last;
   }
-  
+
   --itr2;
   return itr2.index();
 }

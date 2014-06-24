@@ -470,7 +470,7 @@ Octagonal_Shape<T>::refine_with_constraint(const Constraint& c) {
   if (c.space_dimension() > space_dimension()) {
     throw_dimension_incompatible("refine_with_constraint(c)", c);
   }
-  
+
   if (!marked_empty()) {
     refine_no_check(c);
   }
@@ -484,7 +484,7 @@ Octagonal_Shape<T>::refine_with_constraints(const Constraint_System& cs) {
     throw_invalid_argument("refine_with_constraints(cs)",
                            "cs and *this are space-dimension incompatible");
   }
-  
+
   for (Constraint_System::const_iterator i = cs.begin(),
          cs_end = cs.end(); !marked_empty() && i != cs_end; ++i) {
     refine_no_check(*i);
@@ -512,7 +512,7 @@ Octagonal_Shape<T>::refine_with_congruences(const Congruence_System& cgs) {
     throw_invalid_argument("refine_with_congruences(cgs)",
                            "cgs and *this are space-dimension incompatible");
   }
-  
+
   for (Congruence_System::const_iterator i = cgs.begin(),
          cgs_end = cgs.end(); !marked_empty() && i != cgs_end; ++i) {
     refine_no_check(*i);
@@ -770,7 +770,7 @@ euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
   if (x.space_dim != y.space_dim) {
     return false;
   }
-  
+
   // Zero-dim OSs are equal if and only if they are both empty or universe.
   if (x.space_dim == 0) {
     if (x.marked_empty() == y.marked_empty()) {

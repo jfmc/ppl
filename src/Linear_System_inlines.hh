@@ -429,7 +429,7 @@ Linear_System<Row>::remove_rows(dimension_type first,
   if (n == 0) {
     return;
   }
-  
+
   // All the rows that have to be removed must have the same (pending or
   // non-pending) status.
   PPL_ASSERT(first >= index_first_pending || last <= index_first_pending);
@@ -542,7 +542,7 @@ Linear_System<Row>::swap_row_intervals(dimension_type first,
     // Nothing to do.
     return;
   }
-  
+
   for (dimension_type i = first; i < last; ++i) {
     swap(rows[i], rows[i + offset]);
   }
@@ -551,7 +551,7 @@ Linear_System<Row>::swap_row_intervals(dimension_type first,
     // The swaps involved not pending rows, so they may not be sorted anymore.
     set_sorted(false);
   }
-  
+
   PPL_ASSERT(OK());
 }
 
@@ -576,7 +576,7 @@ Linear_System<Row>::remove_rows(const std::vector<dimension_type>& indexes) {
   if (indexes.empty()) {
     return;
   }
-  
+
   const dimension_type rows_size = rows.size();
   typedef std::vector<dimension_type>::const_iterator itr_t;
 
