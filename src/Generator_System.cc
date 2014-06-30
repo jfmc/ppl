@@ -327,12 +327,13 @@ PPL::Generator_System::num_rays() const {
       }
     }
   }
-  else
+  else {
     for (dimension_type i = sys.num_rows(); i-- > 0 ; ) {
       if (gs[i].is_ray()) {
         ++n;
       }
     }
+  }
   return n;
 }
 

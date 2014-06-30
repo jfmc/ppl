@@ -374,9 +374,10 @@ timeout(int) {
   }
 
   try {
-    if (output_file_name)
+    if (output_file_name) {
       output() << "TIMEOUT"
                << std::endl;
+    }
   }
   catch (...) {
   }
@@ -395,8 +396,9 @@ process_options(int argc, char* argv[]) {
     const int c = getopt(argc, argv, OPTION_LETTERS);
 #endif
 
-    if (c == EOF)
+    if (c == EOF) {
       break;
+    }
 
     char* endptr;
     long l;
@@ -613,8 +615,9 @@ read_indexes_set(std::istream& in,
                  const char* what) {
   assert(dest.empty());
   unsigned num_elements;
-  if (!guarded_read(in, num_elements))
+  if (!guarded_read(in, num_elements)) {
     error("missing or invalid number of set elements in `%s'", what);
+  }
   while (num_elements--) {
     unsigned i;
     if (!guarded_read(in, i)) {
@@ -681,12 +684,14 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
   }
 
   unsigned num_columns;
-  if (!guarded_read(in, num_columns))
+  if (!guarded_read(in, num_columns)) {
     error("illegal or missing number of columns");
+  }
   const unsigned space_dim = num_columns - 1;
 
-  if (!guarded_read(in, s))
+  if (!guarded_read(in, s)) {
     error("missing number type");
+  }
   Number_Type number_type = INTEGER;
   if (s == "integer") {
     number_type = INTEGER;

@@ -192,8 +192,9 @@ PPL::Constraint_System::num_inequalities() const {
   }
   else {
     for (dimension_type i = sys.num_rows(); i-- > 0 ; ) {
-      if (cs[i].is_inequality())
+      if (cs[i].is_inequality()) {
         ++n;
+      }
     }
   }
   return n;
@@ -254,7 +255,7 @@ PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
       }
     }
   }
-  else
+  else {
     // `cs' is not necessarily closed.
     switch (g.type()) {
 
@@ -314,6 +315,7 @@ PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
       }
       break;
     }
+  }
 
   // If we reach this point, `g' satisfies all constraints.
   return true;

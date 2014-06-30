@@ -1596,9 +1596,10 @@ PIP_Decision_Node::ascii_load(std::istream& s) {
       return false;
     }
   }
-  else
+  else {
     // Unknown node kind.
     return false;
+  }
 
   // Release the "false" subtree (if any).
   delete false_child;
@@ -2794,9 +2795,10 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           pi = i;
           pj = j;
           if (pip.control_parameters[PIP_Problem::PIVOT_ROW_STRATEGY]
-              == PIP_Problem::PIVOT_ROW_STRATEGY_FIRST)
+              == PIP_Problem::PIVOT_ROW_STRATEGY_FIRST) {
             // Stop at first valid row.
             break;
+          }
         }
       }
 

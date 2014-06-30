@@ -969,7 +969,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
         goto bomb;
       }
     }
-    if (generators_are_up_to_date())
+    if (generators_are_up_to_date()) {
       if (con_sys.space_dimension() != gen_sys.space_dimension()) {
 #ifndef NDEBUG
         cerr << "Incompatible size! (con_sys and gen_sys)"
@@ -977,6 +977,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 #endif
         goto bomb;
       }
+    }
   }
 
   if (generators_are_up_to_date()) {
@@ -987,7 +988,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 #endif
       goto bomb;
     }
-    if (sat_c_is_up_to_date())
+    if (sat_c_is_up_to_date()) {
       if (gen_sys.first_pending_row() != sat_c.num_rows()) {
 #ifndef NDEBUG
         cerr << "Incompatible size! (gen_sys and sat_c)"
@@ -995,6 +996,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 #endif
         goto bomb;
       }
+    }
     if (sat_g_is_up_to_date()) {
       if (gen_sys.first_pending_row() != sat_g.num_columns()) {
 #ifndef NDEBUG

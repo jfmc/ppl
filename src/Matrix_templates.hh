@@ -85,9 +85,10 @@ Matrix<Row>::permute_columns(const std::vector<dimension_type>& cycles) {
       }
       // Cycles of length less than 2 are not allowed.
       PPL_ASSERT(j - i >= 2);
-      if (j - i == 2)
+      if (j - i == 2) {
         // For cycles of length 2 no temporary is needed, just a swap.
         rows_k.swap_coefficients(cycles[i], cycles[i + 1]);
+      }
       else {
         // Longer cycles need a temporary.
         tmp = rows_k.get(cycles[j - 1]);

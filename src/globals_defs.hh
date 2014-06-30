@@ -82,14 +82,16 @@ site: http://bugseng.com/products/ppl/ . */
 
 #define WEIGHT_ADD(delta)                       \
   do {                                          \
-    if (!In_Assert::asserting())                \
+    if (!In_Assert::asserting()) {              \
       Weightwatch_Traits::weight += delta;      \
+    }                                           \
   } while (false)
 
 #define WEIGHT_ADD_MUL(delta, factor)                   \
   do {                                                  \
-    if (!In_Assert::asserting())                        \
+    if (!In_Assert::asserting()) {                      \
       Weightwatch_Traits::weight += delta * factor;     \
+    }                                                   \
   } while (false)
 
 #endif // !defined(NDEBUG)

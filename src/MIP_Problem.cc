@@ -1488,8 +1488,9 @@ PPL::MIP_Problem
     }
   }
   // Check for unboundedness.
-  if (exiting_base_index == tableau_num_rows)
+  if (exiting_base_index == tableau_num_rows) {
     return tableau_num_rows;
+  }
 
   // Reaching this point means that a variable will definitely exit the base.
   PPL_DIRTY_TEMP_COEFFICIENT(lcm);
@@ -1541,8 +1542,9 @@ PPL::MIP_Problem::compute_simplex_using_steepest_edge_float() {
 
   cost_sgn_coeff = working_cost.get(working_cost.size() - 1);
   current_numer = working_cost.get(0);
-  if (cost_sgn_coeff < 0)
+  if (cost_sgn_coeff < 0) {
     neg_assign(current_numer);
+  }
   abs_assign(current_denom, cost_sgn_coeff);
   PPL_ASSERT(tableau.num_columns() == working_cost.size());
   const dimension_type tableau_num_rows = tableau.num_rows();
@@ -1689,8 +1691,9 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
       Row::const_iterator j = tableau_i.begin();
       Row::const_iterator j_end = tableau_i.end();
       // Skip the first element
-      if (j != j_end && j.index() == 0)
+      if (j != j_end && j.index() == 0) {
         ++j;
+      }
       for ( ; (j != j_end) && (j.index() < begin_artificials); ++j) {
         if (*j != 0) {
           pivot(j.index(), i);
@@ -2156,8 +2159,9 @@ PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& mip,
     }
   }
   // If this set is empty, we have finished.
-  if (candidate_variables.empty())
+  if (candidate_variables.empty()) {
     return true;
+  }
 
   // Check how many `active constraints' we have and track them.
   const dimension_type input_cs_num_rows = input_cs.size();
@@ -2428,8 +2432,9 @@ PPL::MIP_Problem::OK() const {
              v_end = i_variables.end(); v_it != v_end; ++v_it) {
         gcd_assign(gcd, last_generator.coefficient(Variable(*v_it)),
                    last_generator.divisor());
-        if (gcd != last_generator.divisor())
+        if (gcd != last_generator.divisor()) {
           return false;
+        }
       }
     }
 
@@ -2739,59 +2744,77 @@ PPL::MIP_Problem::ascii_load(std::istream& s) {
     return false;
   }
 
-  if (!(s >> str) || str != "status:")
+  if (!(s >> str) || str != "status:") {
     return false;
+  }
 
-  if (!(s >> str))
+  if (!(s >> str)) {
     return false;
+  }
 
-  if (str == "UNSATISFIABLE")
+  if (str == "UNSATISFIABLE") {
     status = UNSATISFIABLE;
-  else if (str == "SATISFIABLE")
+  }
+  else if (str == "SATISFIABLE") {
     status = SATISFIABLE;
-  else if (str == "UNBOUNDED")
+  }
+  else if (str == "UNBOUNDED") {
     status = UNBOUNDED;
-  else if (str == "OPTIMIZED")
+  }
+  else if (str == "OPTIMIZED") {
     status = OPTIMIZED;
-  else if (str == "PARTIALLY_SATISFIABLE")
+  }
+  else if (str == "PARTIALLY_SATISFIABLE") {
     status = PARTIALLY_SATISFIABLE;
-  else
+  }
+  else {
     return false;
+  }
 
-  if (!(s >> str) || str != "tableau")
+  if (!(s >> str) || str != "tableau") {
     return false;
+  }
 
-  if (!tableau.ascii_load(s))
+  if (!tableau.ascii_load(s)) {
     return false;
+  }
 
-  if (!(s >> str) || str != "working_cost(")
+  if (!(s >> str) || str != "working_cost(") {
     return false;
+  }
 
   dimension_type working_cost_dim;
 
-  if (!(s >> working_cost_dim))
+  if (!(s >> working_cost_dim)) {
     return false;
+  }
 
-  if (!(s >> str) || str != ")")
+  if (!(s >> str) || str != ")") {
     return false;
+  }
 
-  if (!working_cost.ascii_load(s))
+  if (!working_cost.ascii_load(s)) {
     return false;
+  }
 
-  if (!(s >> str) || str != "base(")
+  if (!(s >> str) || str != "base(") {
     return false;
+  }
 
   dimension_type base_size;
-  if (!(s >> base_size))
+  if (!(s >> base_size)) {
     return false;
+  }
 
-  if (!(s >> str) || str != ")")
+  if (!(s >> str) || str != ")") {
     return false;
+  }
 
   for (dimension_type i = 0; i != base_size; ++i) {
     dimension_type base_value;
-    if (!(s >> base_value))
+    if (!(s >> base_value)) {
       return false;
+    }
     base.push_back(base_value);
   }
 

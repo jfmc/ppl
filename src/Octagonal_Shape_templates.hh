@@ -99,7 +99,7 @@ Octagonal_Shape<T>::Octagonal_Shape(const Polyhedron& ph,
     if (!ph_cs.has_strict_inequalities()) {
       lp.add_constraints(ph_cs);
     }
-    else
+    else {
       // Adding to `lp' a topologically closed version of `ph_cs'.
       for (Constraint_System::const_iterator i = ph_cs.begin(),
              ph_cs_end = ph_cs.end(); i != ph_cs_end; ++i) {
@@ -112,6 +112,7 @@ Octagonal_Shape<T>::Octagonal_Shape(const Polyhedron& ph,
           lp.add_constraint(c);
         }
       }
+    }
 
     // Check for unsatisfiability.
     if (!lp.is_satisfiable()) {
@@ -430,9 +431,10 @@ Octagonal_Shape<T>::add_constraint(const Constraint& c) {
   // Constraints that are not octagonal differences are not allowed.
   if (!Octagonal_Shape_Helper
     ::extract_octagonal_difference(c, c_space_dim, num_vars,
-                                   i, j, coeff, term))
+                                   i, j, coeff, term)) {
     throw_invalid_argument("add_constraint(c)",
                            "c is not an octagonal constraint");
+  }
 
   if (num_vars == 0) {
     // Dealing with a trivial constraint (not a strict inequality).
@@ -843,8 +845,9 @@ Octagonal_Shape<T>::refine_with_linear_form_inequality(
           else {
             assign_r(low_coeff, rsv_coefficient.lower(), ROUND_NOT_NEEDED);
             assign_r(high_coeff, rsv_coefficient.upper(), ROUND_NOT_NEEDED);
-            if (low_coeff != 0 || high_coeff != 0)
+            if (low_coeff != 0 || high_coeff != 0) {
               do_update = true;
+            }
           }
         }
       }
@@ -1125,10 +1128,12 @@ Octagonal_Shape<T>::minimized_congruences() const {
       const Variable x(lead_i/2);
       const Variable y(i/2);
       numer_denom(c_i_li, numer, denom);
-      if (lead_i % 2 == 0)
+      if (lead_i % 2 == 0) {
         cgs.insert(denom*x - denom*y == numer);
-      else
+      }
+      else {
         cgs.insert(denom*x + denom*y + numer == 0);
+      }
     }
     continue;
   }
@@ -1967,8 +1972,9 @@ Octagonal_Shape<T>::relation_with(const Constraint& c) const {
   dimension_type c_space_dim = c.space_dimension();
 
   // Dimension-compatibility check.
-  if (c_space_dim > space_dim)
+  if (c_space_dim > space_dim) {
     throw_dimension_incompatible("relation_with(c)", c);
+  }
 
   // The closure needs to make explicit the implicit constraints.
   strong_closure_assign();
@@ -2033,8 +2039,9 @@ Octagonal_Shape<T>::relation_with(const Constraint& c) const {
     bool bounded_above = maximize(le, max_numer, max_denom, max_included);
     bool bounded_below = minimize(le, min_numer, min_denom, min_included);
     if (!bounded_above) {
-      if (!bounded_below)
+      if (!bounded_below) {
         return Poly_Con_Relation::strictly_intersects();
+      }
       min_numer += c.inhomogeneous_term() * min_denom;
       switch (sgn(min_numer)) {
       case 1:
@@ -2696,7 +2703,7 @@ Octagonal_Shape<T>::strong_coherence_assign() {
     using namespace Implementation::Octagonal_Shapes;
     const N& x_i_ci = x_i[coherent_index(i)];
     // Avoid to do unnecessary sums.
-    if (!is_plus_infinity(x_i_ci))
+    if (!is_plus_infinity(x_i_ci)) {
       for (dimension_type j = 0, rs_i = i_iter.row_size();
            j < rs_i; ++j) {
         if (i != j) {
@@ -2708,6 +2715,7 @@ Octagonal_Shape<T>::strong_coherence_assign() {
           }
         }
       }
+    }
   }
 }
 
@@ -3339,8 +3347,9 @@ Octagonal_Shape<T>::simplify_using_context_assign(const Octagonal_Shape& y) {
     for (i = 2; i < 2*dim; ++i) {
       for (j = 0; j < i; ++j) {
         // Use something like !is_maximal()?
-        if (!is_plus_infinity(y.matrix_at(i, j)))
+        if (!is_plus_infinity(y.matrix_at(i, j))) {
           goto found;
+        }
       }
     }
 
@@ -3496,8 +3505,9 @@ Octagonal_Shape<T>::simplify_using_context_assign(const Octagonal_Shape& y) {
   // both indices i and j should be leaders.
   // FIXME: improve iteration scheme (are we doing twice the work?)
   for (dimension_type i = 0; i < 2*dim; ++i) {
-    if (i != x_leaders[i])
+    if (i != x_leaders[i]) {
       continue;
+    }
     const Bit_Row& x_non_redundant_i = x_non_redundant[i];
     for (dimension_type j = 0; j < 2*dim; ++j) {
       if (j != x_leaders[j]) {
@@ -3895,8 +3905,9 @@ Octagonal_Shape<T>
     // Constraints that are not octagonal differences are ignored.
     if (!Octagonal_Shape_Helper
       ::extract_octagonal_difference(c, cs_space_dim, num_vars, i, j,
-                                     coeff, term))
+                                     coeff, term)) {
       continue;
+    }
 
     typedef typename OR_Matrix<N>::const_row_iterator Row_iterator;
     typedef typename OR_Matrix<N>::const_row_reference_type Row_reference;
@@ -3910,11 +3921,12 @@ Octagonal_Shape<T>
     row_iterator lo_iter = lo_mat.row_begin() + i;
     row_reference lo_m_i = *lo_iter;
     N& lo_m_i_j = lo_m_i[j];
-    if (coeff < 0)
+    if (coeff < 0) {
       neg_assign(coeff);
+    }
     // Compute the bound for `m_i_j', rounding towards plus infinity.
     div_round_up(d, term, coeff);
-    if (m_i[j] <= d)
+    if (m_i[j] <= d) {
       if (c.is_inequality()) {
         if (lo_m_i_j > d) {
           lo_m_i_j = d;
@@ -3944,11 +3956,13 @@ Octagonal_Shape<T>
           }
         }
       }
+    }
   }
   // In general, adding a constraint does not preserve the strongly
   // closure of the octagon.
-  if (is_oct_changed && limiting_octagon.marked_strongly_closed())
+  if (is_oct_changed && limiting_octagon.marked_strongly_closed()) {
     limiting_octagon.reset_strongly_closed();
+  }
 }
 
 template <typename T>
@@ -4115,8 +4129,9 @@ template <typename T>
 void
 Octagonal_Shape<T>::CC76_narrowing_assign(const Octagonal_Shape& y) {
   // Dimension-compatibility check.
-  if (space_dim != y.space_dim)
+  if (space_dim != y.space_dim) {
     throw_dimension_incompatible("CC76_narrowing_assign(y)", y);
+  }
 
   // Assume `*this' is contained in or equal to `y'.
   PPL_EXPECT_HEAVY(copy_contains(y, *this));
@@ -5192,8 +5207,9 @@ Octagonal_Shape<T>::affine_image(const Variable var,
         div_round_up(d, b, denominator);
         PPL_DIRTY_TEMP(N, minus_d);
         div_round_up(minus_d, b, minus_denom);
-        if (sign_symmetry)
+        if (sign_symmetry) {
           swap(d, minus_d);
+        }
         const row_iterator m_begin = matrix.row_begin();
         const row_iterator m_end = matrix.row_end();
         row_iterator m_iter = m_begin + n_var;
@@ -5207,8 +5223,9 @@ Octagonal_Shape<T>::affine_image(const Variable var,
           add_assign_r(m_v_j, m_v_j, minus_d, ROUND_UP);
           N& m_cv_j = m_cv[j];
           add_assign_r(m_cv_j, m_cv_j, d, ROUND_UP);
-          if (sign_symmetry)
+          if (sign_symmetry) {
             swap(m_v_j, m_cv_j);
+          }
         }
         for ( ; m_iter != m_end; ++m_iter) {
           row_reference m_i = *m_iter;
@@ -5642,8 +5659,9 @@ Octagonal_Shape<T>::affine_form_image(const Variable var,
         mul_2exp_assign_r(b_mlb, b_mlb, 1, ROUND_UP);
         N& m_v_cv = m_v[n_var + 1];
         add_assign_r(m_v_cv, m_v_cv, b_mlb, ROUND_UP);
-        if (is_w_coeff_minus_one)
+        if (is_w_coeff_minus_one) {
           swap(m_cv_v, m_v_cv);
+        }
         // Note: strong closure is preserved.
       }
       else {

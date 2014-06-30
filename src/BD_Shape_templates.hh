@@ -1357,10 +1357,11 @@ BD_Shape<T>::max_min(const Linear_Expression& expr,
   // of `*this'.
   const dimension_type space_dim = space_dimension();
   const dimension_type expr_space_dim = expr.space_dimension();
-  if (space_dim < expr_space_dim)
+  if (space_dim < expr_space_dim) {
     throw_dimension_incompatible((maximize
                                   ? "maximize(e, ...)"
                                   : "minimize(e, ...)"), "e", expr);
+  }
   // Deal with zero-dim BDS first.
   if (space_dim == 0) {
     if (marked_empty()) {

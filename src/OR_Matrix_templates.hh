@@ -53,8 +53,9 @@ OR_Matrix<T>::OK() const {
   }
 
   // The underlying DB_Row should be OK.
-  if (!vec.OK(vec.size(), vec_capacity))
+  if (!vec.OK(vec.size(), vec_capacity)) {
     return false;
+  }
 
   // All checks passed.
   return true;

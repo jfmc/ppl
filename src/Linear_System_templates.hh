@@ -92,12 +92,13 @@ Linear_System<Row>::merge_rows_assign(const Linear_System& y) {
     }
   }
   // Insert what is left.
-  if (xi < x_num_rows)
+  if (xi < x_num_rows) {
     while (xi < x_num_rows) {
       tmp.resize(tmp.size() + 1);
       swap(tmp.back(), x.rows[xi++]);
       tmp.back().set_representation(representation());
     }
+  }
   else {
     while (yi < y_num_rows) {
       tmp.resize(tmp.size() + 1);

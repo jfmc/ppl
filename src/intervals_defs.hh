@@ -364,12 +364,14 @@ public:
       PPL_ASSERT(rel == V_EQ);
       return V_GE;
     case V_EQ:
-      if (is_integer(to))
+      if (is_integer(to)) {
         return V_EQ;
+      }
       return V_EMPTY;
     case V_NE:
-      if (is_integer(to))
+      if (is_integer(to)) {
         return V_NE;
+      }
       return V_LGE;
     default:
       return rel;
