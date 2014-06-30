@@ -569,8 +569,9 @@ Linear_System<Row>::gauss(const dimension_type n_lines_or_equalities) {
   PPL_ASSERT(num_pending_rows() == 0);
   PPL_ASSERT(n_lines_or_equalities == num_lines_or_equalities());
 #ifndef NDEBUG
-  for (dimension_type i = n_lines_or_equalities; i-- > 0; )
+  for (dimension_type i = n_lines_or_equalities; i-- > 0; ) {
     PPL_ASSERT((*this)[i].is_line_or_equality());
+  }
 #endif
 
   dimension_type rank = 0;

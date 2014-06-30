@@ -152,8 +152,9 @@ Polyhedron::minimize(const bool con_to_gen,
   dest_num_rows = dest.num_rows();
 
 #ifndef NDEBUG
-  for (dimension_type i = dest.num_rows(); i-- > 0; )
+  for (dimension_type i = dest.num_rows(); i-- > 0; ) {
     PPL_ASSERT(dest[i].OK());
+  }
 #endif
 
   // Checking if the generators in `dest' represent an empty polyhedron:

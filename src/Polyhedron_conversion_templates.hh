@@ -918,8 +918,9 @@ Polyhedron::conversion(Source_Linear_System& source,
 #ifndef NDEBUG
   // The previous code can modify the rows' fields, exploiting the friendness.
   // Check that all rows are OK now.
-  for (dimension_type i = dest.num_rows(); i-- > 0; )
+  for (dimension_type i = dest.num_rows(); i-- > 0; ) {
     PPL_ASSERT(dest.sys.rows[i].OK());
+  }
 #endif
 
   dest.sys.index_first_pending = dest.num_rows();

@@ -104,8 +104,9 @@ Generator_System::set_space_dimension(dimension_type space_dim) {
   }
 
 #ifndef NDEBUG
-  for (dimension_type i = 0; i < sys.num_rows(); ++i)
+  for (dimension_type i = 0; i < sys.num_rows(); ++i) {
     PPL_ASSERT(sys[i].OK());
+  }
 #endif
   PPL_ASSERT(sys.OK());
   PPL_ASSERT(OK());

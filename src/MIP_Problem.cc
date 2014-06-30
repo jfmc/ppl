@@ -1675,7 +1675,7 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
   const dimension_type old_last_column = tableau.num_columns() - 1;
   dimension_type tableau_n_rows = tableau.num_rows();
   // Step 1: try to remove from the base all the remaining slack variables.
-  for (dimension_type i = 0; i < tableau_n_rows; ++i)
+  for (dimension_type i = 0; i < tableau_n_rows; ++i) {
     if (begin_artificials <= base[i] && base[i] < end_artificials) {
       // Search for a non-zero element to enter the base.
       Row& tableau_i = tableau[i];
@@ -1707,7 +1707,7 @@ PPL::MIP_Problem::erase_artificials(const dimension_type begin_artificials,
         base.pop_back();
       }
     }
-
+  }
   // Step 2: Adjust data structures so as to enter phase 2 of the simplex.
 
   // Resize the tableau.
