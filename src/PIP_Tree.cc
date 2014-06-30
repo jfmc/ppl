@@ -1972,8 +1972,9 @@ PIP_Solution_Node::ascii_dump(std::ostream& os) const {
 
 bool
 PIP_Solution_Node::ascii_load(std::istream& is) {
-  if (!PIP_Tree_Node::ascii_load(is))
+  if (!PIP_Tree_Node::ascii_load(is)) {
     return false;
+  }
 
   std::string str;
   if (!(is >> str) || str != "tableau") {
@@ -2399,8 +2400,9 @@ PIP_Solution_Node
                  const Variables_Set& parameters) {
 
   // Make sure a parameter column exists, for the inhomogeneous term.
-  if (tableau.t.num_columns() == 0)
+  if (tableau.t.num_columns() == 0) {
     tableau.t.add_zero_columns(1);
+  }
 
   // NOTE: here 'params' stands for problem (i.e., non artificial) parameters.
   const dimension_type old_num_vars = tableau.s.num_columns();
@@ -3020,8 +3022,9 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       PPL_DIRTY_TEMP_COEFFICIENT(score);
       for (dimension_type i = first_mixed; i < num_rows; ++i) {
         // Mixed parameter sign.
-        if (sign[i] != MIXED)
+        if (sign[i] != MIXED) {
           continue;
+        }
         // No positive variable coefficient.
         bool has_positive = false;
         {
@@ -3034,8 +3037,9 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
             }
           }
         }
-        if (has_positive)
+        if (has_positive) {
           continue;
+        }
         // Minimize parameter coefficient score,
         // eliminating implicated tautologies (if any).
         score = 0;
@@ -3678,10 +3682,10 @@ PIP_Solution_Node::generate_cut(const dimension_type index,
       }
     }
   }
-  if (ap_column != not_a_dimension())
+  if (ap_column != not_a_dimension()) {
     // If we re-use an existing Artificial_Parameter
     cut_t[ap_column] = denom;
-
+  }
 #ifdef NOISY_PIP
   {
     using namespace IO_Operators;
@@ -3741,8 +3745,9 @@ PIP_Decision_Node::external_memory_in_bytes() const {
   memory_size_type n = PIP_Tree_Node::external_memory_in_bytes();
   PPL_ASSERT(true_child != 0);
   n += true_child->total_memory_in_bytes();
-  if (false_child != 0)
+  if (false_child != 0) {
     n += false_child->total_memory_in_bytes();
+  }
   return n;
 }
 

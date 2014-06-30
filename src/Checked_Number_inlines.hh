@@ -63,8 +63,9 @@ Checked_Number_Transparent_Policy<T>::handle_result(Result) {
 
 inline void
 Extended_Number_Policy::handle_result(Result r) {
-  if (result_class(r) == VC_NAN)
+  if (result_class(r) == VC_NAN) {
     throw_result_exception(r);
+  }
 }
 
 template <typename T, typename Policy>
@@ -260,8 +261,9 @@ is_integer(const T& x) {
 template <typename T, typename Policy>
 inline
 Checked_Number<T, Policy>::operator T() const {
-  if (Policy::convertible)
+  if (Policy::convertible) {
     return v;
+  }
 }
 
 template <typename T, typename Policy>
@@ -794,10 +796,12 @@ template <typename T, typename Policy>
 inline std::istream& operator>>(std::istream& is,
                                 Checked_Number<T, Policy>& x) {
   Result r = input(x, is, Policy::ROUND_DEFAULT_INPUT);
-  if (r == V_CVT_STR_UNK)
+  if (r == V_CVT_STR_UNK) {
     is.setstate(std::ios::failbit);
-  else
+  }
+  else {
     Policy::handle_result(r);
+  }
   return is;
 }
 
@@ -830,17 +834,20 @@ swap(Checked_Number<T, Policy>& x, Checked_Number<T, Policy>& y) {
 template <typename T>
 inline void
 maybe_reset_fpu_inexact() {
-  if (FPU_Related<T>::value)
+  if (FPU_Related<T>::value) {
     return fpu_reset_inexact();
+  }
 }
 
 template <typename T>
 inline int
 maybe_check_fpu_inexact() {
-  if (FPU_Related<T>::value)
+  if (FPU_Related<T>::value) {
     return fpu_check_inexact();
-  else
+  }
+  else {
     return 0;
+  }
 }
 
 } // namespace Parma_Polyhedra_Library

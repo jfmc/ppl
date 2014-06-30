@@ -6357,7 +6357,7 @@ Octagonal_Shape<T>
         // Deduce constraints of the form `v +/- u', where `u != v'.
         deduce_v_pm_u_bounds(var_id, w_id, sc_expr, sc_denom, sum);
       }
-      else if (pinf_count == 1)
+      else if (pinf_count == 1) {
         if (pinf_index != var_id) {
           const Coefficient& pi = expr.coefficient(Variable(pinf_index));
           if (pi == denominator ) {
@@ -6381,6 +6381,7 @@ Octagonal_Shape<T>
             }
           }
         }
+      }
       break;
     }
 
@@ -6459,7 +6460,7 @@ Octagonal_Shape<T>
         // Deduce constraints of the form `-v +/- u', where `u != v'.
         deduce_minus_v_pm_u_bounds(var_id, pinf_index, sc_expr, sc_denom, sum);
       }
-      else if (pinf_count == 1)
+      else if (pinf_count == 1) {
         if (pinf_index != var_id) {
           const Coefficient& pi = expr.coefficient(Variable(pinf_index));
           if (pi == denominator) {
@@ -6485,6 +6486,7 @@ Octagonal_Shape<T>
             }
           }
         }
+      }
       break;
     }
 
@@ -7723,8 +7725,9 @@ Octagonal_Shape<T>::upper_bound_assign_if_exact(const Octagonal_Shape& y) {
           // Check 3rd condition in BHZ09 theorem.
           add_assign_r(lhs, x_i_j, y_k_ell, ROUND_UP);
           add_assign_r(rhs, ub_i_ell, ub_k_j, ROUND_UP);
-          if (lhs >= rhs)
+          if (lhs >= rhs) {
             continue;
+          }
           // Check 4th condition in BHZ09 theorem.
           add_assign_r(rhs, ub_i_ck, ub_cj_ell, ROUND_UP);
           if (lhs >= rhs) {
@@ -8448,13 +8451,14 @@ Octagonal_Shape<T>::OK() const {
     }
 
     // A closed octagon must be strong-coherent.
-    if (marked_strongly_closed())
+    if (marked_strongly_closed()) {
       if (!is_strong_coherent()) {
 #ifndef NDEBUG
         std::cerr << "Octagonal_Shape is not strong-coherent!\n";
 #endif
         return false;
       }
+    }
   }
 
   // All checks passed.

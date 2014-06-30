@@ -74,8 +74,9 @@ PPL::Pointset_Powerset<PPL::NNC_Polyhedron>
 bool
 PPL::check_containment(const NNC_Polyhedron& ph,
                        const Pointset_Powerset<NNC_Polyhedron>& ps) {
-  if (ph.is_empty())
+  if (ph.is_empty()) {
     return true;
+  }
   Pointset_Powerset<NNC_Polyhedron> tmp(ph.space_dimension(), EMPTY);
   tmp.add_disjunct(ph);
   for (Pointset_Powerset<NNC_Polyhedron>::const_iterator
@@ -170,8 +171,9 @@ approximate_partition_aux(const PPL::Congruence& c,
   le -= c_inhomogeneous_term;
   PPL_DIRTY_TEMP_COEFFICIENT(n);
   rem_assign(n, c_inhomogeneous_term, c_modulus);
-  if (n < 0)
+  if (n < 0) {
     n += c_modulus;
+  }
   PPL_DIRTY_TEMP_COEFFICIENT(i);
   for (i = c_modulus; i-- > 0; ) {
     if (i != n) {

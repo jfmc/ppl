@@ -148,8 +148,9 @@ template <typename Policy, typename T>
 inline Result
 classify_float(const T v, bool nan, bool inf, bool sign) {
   Float<T> f(v);
-  if ((nan || sign) && CHECK_P(Policy::has_nan, f.u.binary.is_nan()))
+  if ((nan || sign) && CHECK_P(Policy::has_nan, f.u.binary.is_nan())) {
     return V_NAN;
+  }
   if (inf) {
     if (Policy::has_infinity) {
       int sign_inf = f.u.binary.inf_sign();
@@ -293,8 +294,9 @@ template <typename Policy>
 inline void
 prepare_inexact(Rounding_Dir dir) {
   if (Policy::fpu_check_inexact
-      && !round_not_needed(dir) && round_strict_relation(dir))
+      && !round_not_needed(dir) && round_strict_relation(dir)) {
     fpu_reset_inexact();
+  }
 }
 
 template <typename Policy>
@@ -335,8 +337,9 @@ result_relation(Rounding_Dir dir) {
 template <typename To_Policy, typename From_Policy, typename To, typename From>
 inline Result
 assign_float_float_exact(To& to, const From from, Rounding_Dir) {
-  if (To_Policy::fpu_check_nan_result && is_nan<From_Policy>(from))
+  if (To_Policy::fpu_check_nan_result && is_nan<From_Policy>(from)) {
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
+  }
   to = from;
   return V_EQ;
 }
@@ -344,11 +347,13 @@ assign_float_float_exact(To& to, const From from, Rounding_Dir) {
 template <typename To_Policy, typename From_Policy, typename To, typename From>
 inline Result
 assign_float_float_inexact(To& to, const From from, Rounding_Dir dir) {
-  if (To_Policy::fpu_check_nan_result && is_nan<From_Policy>(from))
+  if (To_Policy::fpu_check_nan_result && is_nan<From_Policy>(from)) {
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
+  }
   prepare_inexact<To_Policy>(dir);
-  if (fpu_direct_rounding(dir))
+  if (fpu_direct_rounding(dir)) {
     to = from;
+  }
   else if (fpu_inverse_rounding(dir)) {
     From tmp = -from;
     to = tmp;

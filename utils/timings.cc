@@ -56,8 +56,9 @@ start_clock() {
     cerr << "getrusage failed: " << strerror(errno) << endl;
     exit(1);
   }
-  else
+  else {
     saved_ru_utime = usage.ru_utime;
+  }
 #endif
 }
 
@@ -79,10 +80,12 @@ print_clock(ostream& s) {
     secs = current_secs - saved_secs;
     if (current_usecs < saved_usecs) {
       csecs = (((1000000 + current_usecs) - saved_usecs) + 5000) / 10000;
-      if (csecs < 100)
+      if (csecs < 100) {
         --secs;
-      else
+      }
+      else {
         csecs = 0;
+      }
     }
     else {
       csecs = ((current_usecs - saved_usecs) + 5000) / 10000;

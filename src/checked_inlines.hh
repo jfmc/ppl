@@ -286,10 +286,12 @@ copy_generic(Type& to, const Type& from) {
 template <typename To_Policy, typename From_Policy, typename To, typename From>
 inline Result
 abs_generic(To& to, const From& from, Rounding_Dir dir) {
-  if (from < 0)
+  if (from < 0) {
     return neg<To_Policy, From_Policy>(to, from, dir);
-  else
+  }
+  else {
     return assign<To_Policy, From_Policy>(to, from, dir);
+  }
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,

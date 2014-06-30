@@ -1163,8 +1163,9 @@ Box<ITV>::max_min(const Linear_Expression& expr,
     assign_r(expr_i, *i, ROUND_NOT_NEEDED);
     switch (sgn(expr_i) * maximize_sign) {
     case 1:
-      if (seq_i.upper_is_boundary_infinity())
+      if (seq_i.upper_is_boundary_infinity()) {
         return false;
+      }
       assign_r(bound_i, seq_i.upper(), ROUND_NOT_NEEDED);
       add_mul_assign_r(result, bound_i, expr_i, ROUND_NOT_NEEDED);
       if (seq_i.upper_is_open()) {
@@ -1796,8 +1797,9 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
         // An interval constraint on variable index `c_only_var'.
         PPL_ASSERT(c_only_var < space_dim);
         // We do care about c if c_only_var is going to be wrapped.
-        if (vars.find(c_only_var) != vs_end)
+        if (vars.find(c_only_var) != vs_end) {
           var_cs_map[c_only_var].push_back(&c);
+        }
       }
       else {
         PPL_ASSERT(c_num_vars == 0);
@@ -1835,8 +1837,9 @@ Box<ITV>::wrap_assign(const Variables_Set& vars,
       x_seq_v.wrap_assign(w, r, refinement_itv);
       break;
     case OVERFLOW_UNDEFINED:
-      if (!rational_quadrant_itv.contains(x_seq_v))
+      if (!rational_quadrant_itv.contains(x_seq_v)) {
         x_seq_v.assign(UNIVERSE);
+      }
       break;
     case OVERFLOW_IMPOSSIBLE:
       x_seq_v.intersect_assign(refinement_itv);
@@ -2013,9 +2016,9 @@ Box<ITV>::difference_assign(const Box& y) {
   }
 
   Box& x = *this;
-  if (x.is_empty() || y.is_empty())
+  if (x.is_empty() || y.is_empty()) {
     return;
-
+  }
   switch (space_dim) {
   case 0:
     // If `x' is zero-dimensional, then at this point both `x' and `y'
@@ -2256,9 +2259,10 @@ Box<ITV>::remove_higher_space_dimensions(const dimension_type new_dimension) {
   // Dimension-compatibility check: the variable having
   // maximum index is the one occurring last in the set.
   const dimension_type space_dim = space_dimension();
-  if (new_dimension > space_dim)
+  if (new_dimension > space_dim) {
     throw_dimension_incompatible("remove_higher_space_dimensions(nd)",
                                  new_dimension);
+  }
 
   // The removal of no dimensions from any box is a no-op.
   // Note that this case also captures the only legal removal of
@@ -2555,8 +2559,9 @@ propagate_constraint_check_result(Result r, Ternary& open) {
     return false;
   case V_LE:
   case V_GE:
-    if (open == T_NO)
+    if (open == T_NO) {
       open = T_MAYBE;
+    }
     return false;
   case V_EQ:
     return false;
@@ -2690,8 +2695,9 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
 
       // Refine the lower bound of `seq[k]' with `t_bound'.
       if (open == T_MAYBE
-          && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1)
+          && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1) {
         open = T_YES;
+      }
       {
         const Relation_Symbol rel
           = (open == T_YES) ? GREATER_THAN : GREATER_OR_EQUAL;
@@ -2754,8 +2760,9 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
           if (propagate_constraint_check_result(r, open)) {
             goto next_k;
           }
-          if (x_i.lower_is_open())
+          if (x_i.lower_is_open()) {
             open = T_YES;
+          }
           r = sub_mul_assign_r(t_bound, t_a, t_x, ROUND_UP);
           if (propagate_constraint_check_result(r, open)) {
             goto next_k;
@@ -2856,8 +2863,9 @@ Box<ITV>::propagate_constraint_no_check(const Constraint& c) {
       }
       // Refine the upper bound of seq[k] with t_bound.
       if (open == T_MAYBE
-          && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1)
+          && maybe_check_fpu_inexact<Temp_Boundary_Type>() == 1) {
         open = T_YES;
+      }
       {
         const Relation_Symbol rel
           = (open == T_YES) ? LESS_THAN : LESS_OR_EQUAL;
@@ -3048,8 +3056,9 @@ Box<ITV>
 
     // NOTE: if max_iterations == 0 (i.e., no iteration limit is set)
     // the following test will anyway trigger on wrap around.
-    if (num_iterations == max_iterations)
+    if (num_iterations == max_iterations) {
       break;
+    }
 
     changed = (copy != seq);
   } while (changed);
@@ -3068,8 +3077,9 @@ Box<ITV>::affine_image(const Variable var,
   // Dimension-compatibility checks.
   const dimension_type space_dim = space_dimension();
   const dimension_type expr_space_dim = expr.space_dimension();
-  if (space_dim < expr_space_dim)
+  if (space_dim < expr_space_dim) {
     throw_dimension_incompatible("affine_image(v, e, d)", "e", expr);
+  }
   // `var' should be one of the dimensions of the polyhedron.
   const dimension_type var_space_dim = var.space_dimension();
   if (space_dim < var_space_dim) {
@@ -3215,8 +3225,9 @@ Box<ITV>
                        const Linear_Expression& ub_expr,
                        Coefficient_traits::const_reference denominator) {
   // The denominator cannot be zero.
-  if (denominator == 0)
+  if (denominator == 0) {
     throw_invalid_argument("bounded_affine_image(v, lb, ub, d)", "d == 0");
+  }
 
   // Dimension-compatibility checks.
   const dimension_type space_dim = space_dimension();
@@ -3597,16 +3608,18 @@ Box<ITV>
     break;
   case LESS_THAN:
     seq_var.lower_extend();
-    if (!seq_var.upper_is_boundary_infinity())
+    if (!seq_var.upper_is_boundary_infinity()) {
       seq_var.remove_sup();
+    }
     break;
   case GREATER_OR_EQUAL:
     seq_var.upper_extend();
     break;
   case GREATER_THAN:
     seq_var.upper_extend();
-    if (!seq_var.lower_is_boundary_infinity())
+    if (!seq_var.lower_is_boundary_infinity()) {
       seq_var.remove_inf();
+    }
     break;
   default:
     // The EQUAL and NOT_EQUAL cases have been already dealt with.
@@ -3732,24 +3745,28 @@ Box<ITV>
 
   switch (corrected_relsym) {
   case LESS_THAN:
-    if (bound_below)
+    if (bound_below) {
       refine_with_constraint(min_numer < revised_expr);
+    }
     break;
   case LESS_OR_EQUAL:
-    if (bound_below)
+    if (bound_below) {
       (min_included)
         ? refine_with_constraint(min_numer <= revised_expr)
         : refine_with_constraint(min_numer < revised_expr);
+    }
     break;
   case GREATER_OR_EQUAL:
-    if (bound_above)
+    if (bound_above) {
       (max_included)
         ? refine_with_constraint(max_numer >= revised_expr)
         : refine_with_constraint(max_numer > revised_expr);
+    }
     break;
   case GREATER_THAN:
-    if (bound_above)
+    if (bound_above) {
       refine_with_constraint(max_numer > revised_expr);
+    }
     break;
   default:
     // The EQUAL and NOT_EQUAL cases have been already dealt with.
@@ -3757,8 +3774,9 @@ Box<ITV>
     break;
   }
   // If the shrunk box is empty, its preimage is empty too.
-  if (is_empty())
+  if (is_empty()) {
     return;
+  }
   ITV& seq_v = seq[var.id()];
   seq_v.assign(UNIVERSE);
   PPL_ASSERT(OK());
@@ -3862,7 +3880,7 @@ Box<ITV>
 
     // The choice as to which bounds should be set depends on the sign
     // of the coefficient of the dimension `has_var_id' in the lhs.
-    if (coeff > 0)
+    if (coeff > 0) {
       // The coefficient of the dimension in the lhs is positive.
       switch (relsym) {
       case LESS_OR_EQUAL:
@@ -3870,14 +3888,17 @@ Box<ITV>
           Relation_Symbol rel = max_included ? LESS_OR_EQUAL : LESS_THAN;
           seq_var.build(i_constraint(rel, q_max));
         }
-        else
+        else {
           seq_var.assign(UNIVERSE);
+        }
         break;
       case LESS_THAN:
-        if (max_rhs)
+        if (max_rhs) {
           seq_var.build(i_constraint(LESS_THAN, q_max));
-        else
+        }
+        else {
           seq_var.assign(UNIVERSE);
+        }
         break;
       case EQUAL:
         {
@@ -3897,21 +3918,25 @@ Box<ITV>
           Relation_Symbol rel = min_included ? GREATER_OR_EQUAL : GREATER_THAN;
           seq_var.build(i_constraint(rel, q_min));
         }
-        else
+        else {
           seq_var.assign(UNIVERSE);
+        }
         break;
       case GREATER_THAN:
-        if (min_rhs)
+        if (min_rhs) {
           seq_var.build(i_constraint(GREATER_THAN, q_min));
-        else
+        }
+        else {
           seq_var.assign(UNIVERSE);
+        }
         break;
       default:
         // The NOT_EQUAL case has been already dealt with.
         PPL_UNREACHABLE;
         break;
       }
-    else
+    }
+    else {
       // The coefficient of the dimension in the lhs is negative.
       switch (relsym) {
       case GREATER_OR_EQUAL:
@@ -3919,8 +3944,9 @@ Box<ITV>
           Relation_Symbol rel = min_included ? LESS_OR_EQUAL : LESS_THAN;
           seq_var.build(i_constraint(rel, q_min));
         }
-        else
+        else {
           seq_var.assign(UNIVERSE);
+        }
         break;
       case GREATER_THAN:
         if (min_rhs) {
@@ -3965,6 +3991,7 @@ Box<ITV>
         PPL_UNREACHABLE;
         break;
       }
+    }
   }
 
   else {
@@ -4177,8 +4204,9 @@ Box<ITV>::CC76_narrowing_assign(const T& y) {
   const dimension_type space_dim = space_dimension();
 
   // Dimension-compatibility check.
-  if (space_dim != y.space_dimension())
+  if (space_dim != y.space_dimension()) {
     throw_dimension_incompatible("CC76_narrowing_assign(y)", y);
+  }
 
   // Assume `*this' is contained in or equal to `y'.
   PPL_EXPECT_HEAVY(copy_contains(y, *this));

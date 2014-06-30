@@ -269,7 +269,7 @@ Polyhedron::simplify(Linear_System1& sys, Bit_Matrix& sat) {
         // on the latter but not on the former, then `c_2' is more
         // restrictive than `c_1', i.e., `c_1' is redundant.
         bool strict_subset;
-        if (subset_or_equal(sat[j], sat[i], strict_subset))
+        if (subset_or_equal(sat[j], sat[i], strict_subset)) {
           if (strict_subset) {
             // All the saturators of the inequality `sys[i]' are
             // saturators of the inequality `sys[j]' too,
@@ -290,7 +290,8 @@ Polyhedron::simplify(Linear_System1& sys, Bit_Matrix& sat) {
             swap(sat[j], sat[num_rows]);
             swap(num_saturators[j], num_saturators[num_rows]);
           }
-        else {
+       }
+       else {
           // If we reach this point then we know that `sat[i]' does
           // not contain (and is different from) `sat[j]', so that
           // `sys[i]' is not made redundant by inequality `sys[j]'.

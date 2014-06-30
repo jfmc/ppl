@@ -243,8 +243,9 @@ template <typename T>
 bool
 DB_Matrix<T>::ascii_load(std::istream& s) {
   dimension_type nrows;
-  if (!(s >> nrows))
+  if (!(s >> nrows)) {
     return false;
+  }
   resize_no_copy(nrows);
   DB_Matrix& x = *this;
   for (dimension_type i = 0; i < nrows;  ++i) {

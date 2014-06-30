@@ -157,8 +157,9 @@ parse_number_part(std::istream& is, number_struct& numer) {
     numer.neg_mantissa = true;
     // Fall through.
   case '+':
-    if (!is.get(c))
+    if (!is.get(c)) {
       return V_CVT_STR_UNK;
+    }
     if (c == 'i' || c == 'I') {
       goto inf;
     }

@@ -570,12 +570,13 @@ Polyhedron::conversion(Source_Linear_System& source,
       // the constraint is an inequality, we set to 1 the
       // corresponding element of `sat' ...
       Bit_Row& sat_nle = sat[num_lines_or_equalities];
-      if (source_k.is_ray_or_point_or_inequality())
+      if (source_k.is_ray_or_point_or_inequality()) {
         sat_nle.set(k - redundant_source_rows.size());
-      // ... otherwise, the constraint is an equality which is
-      // violated by the generator `dest_nle': the generator has to be
-      // removed from `dest_rows'.
+      }
       else {
+        // ... otherwise, the constraint is an equality which is
+        // violated by the generator `dest_nle': the generator has to be
+        // removed from `dest_rows'.
         --dest_num_rows;
         swap(dest.sys.rows[num_lines_or_equalities],
              dest.sys.rows[dest_num_rows]);
@@ -839,11 +840,11 @@ Polyhedron::conversion(Source_Linear_System& source,
               sat[l].set(new_k);
             }
           }
-          else
+          else {
             // The constraint is an equality:
             // the violating generators are those in the union of Q+ and Q-.
             j = lines_or_equal_bound;
-
+          }
           // Swapping the newly added rays
           // (index `i' running through `dest_num_rows - 1' down-to `bound')
           // with the generators violating the constraint
@@ -892,8 +893,9 @@ Polyhedron::conversion(Source_Linear_System& source,
   // `start == source_num_rows' (i.e., the second sub-system is empty)
   // or the row ordering holds for the two rows at the boundary between
   // the two sub-systems.
-  if (start > 0 && start < source.num_rows())
+  if (start > 0 && start < source.num_rows()) {
     source.set_sorted(compare(source[start - 1], source[start]) <= 0);
+  }
   // There are no longer pending constraints in `source'.
   source.unset_pending_rows();
 

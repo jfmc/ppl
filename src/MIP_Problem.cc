@@ -327,8 +327,9 @@ PPL::MIP_Problem::solve() const{
       {
         // Temporarily relax the MIP into an LP problem.
         RAII_Temporary_Real_Relaxation relaxed(x);
-        if (relaxed.lp.is_lp_satisfiable())
+        if (relaxed.lp.is_lp_satisfiable()) {
           relaxed.lp.second_phase();
+        }
         else {
           x.status = UNSATISFIABLE;
           // NOTE: `relaxed' destroyed: relaxation automatically reset.
@@ -380,8 +381,9 @@ PPL::MIP_Problem::add_space_dimensions_and_embed(const dimension_type m) {
                             "the maximum allowed space dimension.");
   }
   external_space_dim += m;
-  if (status != UNSATISFIABLE)
+  if (status != UNSATISFIABLE) {
     status = PARTIALLY_SATISFIABLE;
+  }
   PPL_ASSERT(OK());
 }
 
@@ -398,8 +400,9 @@ PPL::MIP_Problem
   i_variables.insert(i_vars.begin(), i_vars.end());
   // If a new integral variable was inserted, set the internal status to
   // PARTIALLY_SATISFIABLE.
-  if (i_variables.size() != original_size && status != UNSATISFIABLE)
+  if (i_variables.size() != original_size && status != UNSATISFIABLE) {
     status = PARTIALLY_SATISFIABLE;
+  }
 }
 
 bool
@@ -971,8 +974,9 @@ PPL::MIP_Problem::process_pending_constraints() {
   }
 
   // Prepare *this for a possible second phase.
-  if (begin_artificials != 0)
+  if (begin_artificials != 0) {
     erase_artificials(begin_artificials, end_artificials);
+  }
   compute_generator();
   status = SATISFIABLE;
 }
@@ -1034,8 +1038,9 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
     working_cost_type::const_iterator i_end
       = working_cost.find(tableau_num_columns_minus_1);
     for ( ; i != i_end; ++i) {
-      if (sgn(*i) == cost_sign)
+      if (sgn(*i) == cost_sign) {
         columns.push_back(std::make_pair(i.index(), 1.0));
+      }
     }
   }
   for (dimension_type i = tableau_num_rows; i-- > 0; ) {
@@ -1186,9 +1191,10 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
     working_cost_type::const_iterator i_end
       = working_cost.find(tableau_num_columns_minus_1);
     for ( ; i != i_end; ++i) {
-      if (sgn(*i) == cost_sign)
+      if (sgn(*i) == cost_sign) {
         columns.push_back(std::pair<dimension_type, Coefficient>
                           (i.index(), squared_lcm_basis));
+      }
     }
   }
   for (dimension_type i = tableau_num_rows; i-- > 0; ) {

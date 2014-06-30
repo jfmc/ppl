@@ -396,8 +396,9 @@ assign_signed_int_unsigned_int(To& to, const From from, Rounding_Dir dir) {
 template <typename To_Policy, typename From_Policy, typename To, typename From>
 inline Result
 assign_unsigned_int_signed_int(To& to, const From from, Rounding_Dir dir) {
-  if (CHECK_P(To_Policy::check_overflow, from < 0))
+  if (CHECK_P(To_Policy::check_overflow, from < 0)) {
     return set_neg_overflow_int<To_Policy>(to, dir);
+  }
   if (sizeof(To) < sizeof(From)) {
     if (CHECK_P(To_Policy::check_overflow,
                 from > static_cast<From>(Extended_Int<To_Policy, To>::max))) {
@@ -1060,8 +1061,9 @@ template <typename To_Policy, typename From1_Policy, typename From2_Policy,
           typename Type>
 inline Result
 sub_signed_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
-  if (To_Policy::check_overflow && Larger<Type>::use_for_sub)
+  if (To_Policy::check_overflow && Larger<Type>::use_for_sub) {
     return sub_int_larger<To_Policy, From1_Policy, From2_Policy>(to, x, y, dir);
+  }
   if (To_Policy::check_overflow) {
     if (y >= 0) {
       if (x < Extended_Int<To_Policy, Type>::min + y) {
@@ -1095,8 +1097,9 @@ template <typename To_Policy, typename From1_Policy, typename From2_Policy,
           typename Type>
 inline Result
 mul_signed_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
-  if (To_Policy::check_overflow && Larger<Type>::use_for_mul)
+  if (To_Policy::check_overflow && Larger<Type>::use_for_mul) {
     return mul_int_larger<To_Policy, From1_Policy, From2_Policy>(to, x, y, dir);
+  }
   if (!To_Policy::check_overflow) {
     to = x * y;
     return V_EQ;
@@ -1469,8 +1472,9 @@ template <typename To_Policy, typename From_Policy, typename Type>
 inline Result
 smod_2exp_unsigned_int(Type& to, const Type x, unsigned int exp,
                        Rounding_Dir dir) {
-  if (exp > sizeof_to_bits(sizeof(Type)))
+  if (exp > sizeof_to_bits(sizeof(Type))) {
     to = x;
+  }
   else {
     Type v = (exp == sizeof_to_bits(sizeof(Type)) ? x : (x & ((Type(1) << exp) - 1)));
     if (v >= (Type(1) << (exp - 1))) {

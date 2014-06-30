@@ -275,8 +275,9 @@ Grid_Generator::operator=(const Grid_Generator& g) {
 
 inline Coefficient_traits::const_reference
 Grid_Generator::coefficient(const Variable v) const {
-  if (v.space_dimension() > space_dimension())
+  if (v.space_dimension() > space_dimension()) {
     throw_dimension_incompatible("coefficient(v)", "v", v);
+  }
   return expr.coefficient(v);
 }
 

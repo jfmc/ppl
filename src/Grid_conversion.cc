@@ -78,8 +78,9 @@ Grid::upper_triangular(const Grid_Generator_System& sys,
   dimension_type row = sys.num_rows();
 
   // Check for easy square fail case.
-  if (row > num_columns)
+  if (row > num_columns) {
     return false;
+  }
 
   // Check triangularity.
   while (num_columns > 0) {

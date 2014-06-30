@@ -91,8 +91,9 @@ PPL::Polyhedron
   }
 
   // Obtain a sorted copy of `y.sat_g'.
-  if (!y.sat_g_is_up_to_date())
+  if (!y.sat_g_is_up_to_date()) {
     y.update_sat_g();
+  }
   Bit_Matrix tmp_sat_g = y.sat_g;
   // Remove from `tmp_sat_g' the rows corresponding to tautologies
   // (i.e., the positivity or epsilon-bounding constraints):
@@ -231,8 +232,9 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
       if (tp != 0 && *tp > 0) {
         // There are tokens available. If `CH78' is not a subset of `x',
         // then it is less precise and we use one of the available tokens.
-        if (!x.contains(CH78))
+        if (!x.contains(CH78)) {
           --(*tp);
+        }
       }
       else {
         // No tokens.
@@ -255,9 +257,9 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
   if (has_pending_generators()) {
     process_pending_generators();
   }
-  else if (!x.constraints_are_up_to_date())
+  else if (!x.constraints_are_up_to_date()) {
     x.update_constraints();
-
+  }
   // Copy into `H79_cs' the constraints of `x' that are common to `y',
   // according to the definition of the H79 widening.
   Constraint_System H79_cs(topol);

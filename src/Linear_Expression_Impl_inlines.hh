@@ -60,8 +60,9 @@ inline
 Linear_Expression_Impl<Row>
 ::Linear_Expression_Impl(Coefficient_traits::const_reference n)
   : row(1) {
-  if (n != 0)
+  if (n != 0) {
     row.insert(0, n);
+  }
   PPL_ASSERT(OK());
 }
 

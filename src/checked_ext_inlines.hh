@@ -509,8 +509,9 @@ sub_mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
         inf_sub_inf:
           return assign_nan<To_Policy>(to, V_INF_SUB_INF);
         }
-        else
+        else {
           goto minf;
+        }
       default:
       inf_mul_zero:
         PPL_ASSERT(To_Policy::check_inf_mul_zero);
@@ -599,8 +600,9 @@ idiv_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   if (!ext_to_handle<From1_Policy>(x) && !ext_to_handle<From2_Policy>(y)) {
     goto native;
   }
-  if (is_nan<From1_Policy>(x) || is_nan<From2_Policy>(y))
+  if (is_nan<From1_Policy>(x) || is_nan<From2_Policy>(y)) {
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
+  }
   if (is_minf<From1_Policy>(x)) {
     if (CHECK_P(To_Policy::check_inf_div_inf, is_minf<From2_Policy>(y)
                 || is_pinf<From2_Policy>(y))) {

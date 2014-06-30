@@ -290,8 +290,9 @@ operator<<(std::ostream& s, const Powerset<D>& x) {
            x_end = x.end(); i != x_end; ) {
       s << "{ " << *i << " }";
       ++i;
-      if (i != x_end)
+      if (i != x_end) {
         s << ", ";
+      }
     }
   }
   return s;

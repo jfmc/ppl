@@ -279,7 +279,7 @@ satisfies_all_congruences(const Grid_Generator& g) const {
 
   const Congruence_System& cgs = *this;
   PPL_DIRTY_TEMP_COEFFICIENT(sp);
-  if (g.is_line())
+  if (g.is_line()) {
     for (dimension_type i = cgs.num_rows(); i-- > 0; ) {
       const Congruence& cg = cgs[i];
       Scalar_Products::assign(sp, g, cg);
@@ -287,6 +287,7 @@ satisfies_all_congruences(const Grid_Generator& g) const {
         return false;
       }
     }
+  }
   else {
     const Coefficient& divisor = g.divisor();
     for (dimension_type i = cgs.num_rows(); i-- > 0; ) {

@@ -84,8 +84,9 @@ adjust_topology_and_space_dimension(const Topology new_topology,
     }
 
     // If `cs' was sorted we sort it again.
-    if (was_sorted)
+    if (was_sorted) {
       sys.sort_rows();
+    }
   }
 
   sys.set_topology(new_topology);
@@ -403,8 +404,9 @@ std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Constraint_System& cs) {
   Constraint_System_const_iterator i = cs.begin();
   const Constraint_System_const_iterator cs_end = cs.end();
-  if (i == cs_end)
+  if (i == cs_end) {
     s << "true";
+  }
   else {
     while (i != cs_end) {
       s << *i;

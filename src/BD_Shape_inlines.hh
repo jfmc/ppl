@@ -237,9 +237,10 @@ template <typename T>
 void
 BD_Shape<T>::refine_with_congruences(const Congruence_System& cgs) {
   // Dimension-compatibility check.
-  if (cgs.space_dimension() > space_dimension())
+  if (cgs.space_dimension() > space_dimension()) {
     throw_invalid_argument("refine_with_congruences(cgs)",
                            "cgs and *this are space-dimension incompatible");
+  }
 
   for (Congruence_System::const_iterator i = cgs.begin(),
          cgs_end = cgs.end(); !marked_empty() && i != cgs_end; ++i) {
@@ -702,8 +703,9 @@ BD_Shape<T>::add_dbm_constraint(const dimension_type i,
   N& dbm_ij = dbm[i][j];
   if (dbm_ij > k) {
     dbm_ij = k;
-    if (marked_shortest_path_closed())
+    if (marked_shortest_path_closed()) {
       reset_shortest_path_closed();
+    }
   }
 }
 
@@ -725,8 +727,9 @@ template <typename T>
 inline void
 BD_Shape<T>::time_elapse_assign(const BD_Shape& y) {
   // Dimension-compatibility check.
-  if (space_dimension() != y.space_dimension())
+  if (space_dimension() != y.space_dimension()) {
     throw_dimension_incompatible("time_elapse_assign(y)", y);
+  }
   // Compute time-elapse on polyhedra.
   // TODO: provide a direct implementation.
   C_Polyhedron ph_x(constraints());

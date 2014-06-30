@@ -79,8 +79,9 @@ wrap_string(const std::string& src_string,
       }
     }
     PPL_ASSERT(split_pos != npos);
-    if (split_pos > 0 && line > 0 && indent_depth > 0)
+    if (split_pos > 0 && line > 0 && indent_depth > 0) {
       dst_string.append(indent_depth, ' ');
+    }
     dst_string.append(src, split_pos);
     src += split_pos;
     if (is_space(*src)) {

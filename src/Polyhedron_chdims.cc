@@ -74,7 +74,7 @@ PPL::Polyhedron::add_space_dimensions_and_embed(dimension_type m) {
   // we add the line having that direction. This is done by invoking
   // the function add_space_dimensions() giving the system of generators
   // as the second argument.
-  if (constraints_are_up_to_date())
+  if (constraints_are_up_to_date()) {
     if (generators_are_up_to_date()) {
       // `sat_c' must be up to date for add_space_dimensions().
       if (!sat_c_is_up_to_date()) {
@@ -89,6 +89,7 @@ PPL::Polyhedron::add_space_dimensions_and_embed(dimension_type m) {
       // Only constraints are up-to-date: no need to modify the generators.
       con_sys.set_space_dimension(con_sys.space_dimension() + m);
     }
+  }
   else {
     // Only generators are up-to-date: no need to modify the constraints.
     PPL_ASSERT(generators_are_up_to_date());
@@ -132,8 +133,9 @@ PPL::Polyhedron::add_space_dimensions_and_project(dimension_type m) {
     // In an NNC polyhedron, all points have to be accompanied
     // by the corresponding closure points
     // (this time, dimensions are automatically adjusted).
-    if (!is_necessarily_closed())
+    if (!is_necessarily_closed()) {
       gen_sys.insert(Generator::zero_dim_closure_point());
+    }
     gen_sys.insert(Generator::zero_dim_point());
     gen_sys.adjust_topology_and_space_dimension(topology(), m);
     set_generators_minimized();
@@ -149,7 +151,7 @@ PPL::Polyhedron::add_space_dimensions_and_project(dimension_type m) {
   // Thus, for each new dimensions `x[k]', we add the constraint
   // x[k] = 0: this is done by invoking the function add_space_dimensions()
   // giving the system of constraints as the second argument.
-  if (constraints_are_up_to_date())
+  if (constraints_are_up_to_date()) {
     if (generators_are_up_to_date()) {
       // `sat_g' must be up to date for add_space_dimensions().
       if (!sat_g_is_up_to_date()) {
@@ -164,6 +166,7 @@ PPL::Polyhedron::add_space_dimensions_and_project(dimension_type m) {
       // Only constraints are up-to-date: no need to modify the generators.
       con_sys.add_universe_rows_and_space_dimensions(m);
     }
+  }
   else {
     // Only generators are up-to-date: no need to modify the constraints.
     PPL_ASSERT(generators_are_up_to_date());

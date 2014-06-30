@@ -79,8 +79,9 @@ wrap_assign_ind(PSET& pointset,
 
       // Refine `p' with all the constraints in `cs' not depending
       // on variables in `vars'.
-      if (vars.empty())
+      if (vars.empty()) {
         p.refine_with_constraints(cs);
+      }
       else {
         for (Constraint_System::const_iterator j = cs.begin(),
                cs_end = cs.end(); j != cs_end; ++j) {

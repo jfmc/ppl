@@ -181,12 +181,12 @@ PPL::Grid::Grid(const Polyhedron& ph,
 
   // Minimize the constraint description if it is needed and
   // the complexity allows it.
-  if (use_constraints && complexity == ANY_COMPLEXITY)
+  if (use_constraints && complexity == ANY_COMPLEXITY) {
     if (!ph.minimize()) {
       set_empty();
       return;
     }
-
+  }
   if (use_constraints) {
     // Only the equality constraints need be used.
     PPL_ASSERT(ph.constraints_are_up_to_date());
@@ -271,8 +271,9 @@ PPL::Grid::operator=(const Grid& y) {
 
 PPL::dimension_type
 PPL::Grid::affine_dimension() const {
-  if (space_dim == 0 || is_empty())
+  if (space_dim == 0 || is_empty()) {
     return 0;
+  }
 
   if (generators_are_up_to_date()) {
     if (generators_are_minimized()) {
@@ -384,8 +385,9 @@ PPL::Grid::minimized_grid_generators() const {
 PPL::Poly_Con_Relation
 PPL::Grid::relation_with(const Congruence& cg) const {
   // Dimension-compatibility check.
-  if (space_dim < cg.space_dimension())
+  if (space_dim < cg.space_dimension()) {
     throw_dimension_incompatible("relation_with(cg)", "cg", cg);
+  }
 
   if (marked_empty()) {
     return Poly_Con_Relation::saturates()
@@ -1021,7 +1023,7 @@ PPL::Grid::OK(bool check_not_empty) const {
     // Let us suppose that all the matrices are up-to-date; this means:
     // `con_sys' : number of congruences x poly_num_columns
     // `gen_sys' : number of generators  x poly_num_columns
-    if (congruences_are_up_to_date())
+    if (congruences_are_up_to_date()) {
       if (con_sys.space_dimension() != space_dim) {
 #ifndef NDEBUG
         cerr << "Incompatible size! (con_sys and space_dim)"
@@ -1029,7 +1031,7 @@ PPL::Grid::OK(bool check_not_empty) const {
 #endif
         goto fail;
       }
-
+    }
     if (generators_are_up_to_date()) {
       if (gen_sys.space_dimension() != space_dim) {
 #ifndef NDEBUG
@@ -1689,8 +1691,9 @@ bool
 PPL::Grid::simplify_using_context_assign(const Grid& y) {
   Grid& x = *this;
   // Dimension-compatibility check.
-  if (x.space_dim != y.space_dim)
+  if (x.space_dim != y.space_dim) {
     throw_dimension_incompatible("simplify_using_context_assign(y)", "y", y);
+  }
 
   // Filter away the zero-dimensional case.
   if (x.space_dim == 0) {
@@ -2811,12 +2814,13 @@ PPL::Grid::ascii_dump(std::ostream& s) const {
   gen_sys.ascii_dump(s);
   s << "dimension_kinds";
   if ((generators_are_up_to_date() && generators_are_minimized())
-      || (congruences_are_up_to_date() && congruences_are_minimized()))
+      || (congruences_are_up_to_date() && congruences_are_minimized())) {
     for (Dimension_Kinds::const_iterator i = dim_kinds.begin();
          i != dim_kinds.end();
          ++i) {
       s << " " << *i;
     }
+  }
   s << endl;
 }
 
@@ -3003,8 +3007,9 @@ PPL::Grid::wrap_assign(const Variables_Set& vars,
           // The value v_n for `x' is wrapped modulo the 'wrap_frequency'.
           v_n %= wrap_frequency;
           // `v_n' is the value closest to 0 and may be negative.
-          if (r == UNSIGNED && v_n < 0)
+          if (r == UNSIGNED && v_n < 0) {
             v_n += wrap_frequency;
+          }
           unconstrain(x);
           add_constraint(x == v_n);
         }

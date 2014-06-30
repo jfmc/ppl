@@ -365,8 +365,9 @@ Generator_System::has_no_rows() const {
 inline Generator_System::const_iterator
 Generator_System::begin() const {
   const_iterator i(sys.begin(), *this);
-  if (!sys.is_necessarily_closed())
+  if (!sys.is_necessarily_closed()) {
     i.skip_forward();
+  }
   return i;
 }
 

@@ -492,8 +492,9 @@ PPL::Sparse_Row::linear_combine(const Sparse_Row& y,
         i = reset(i);
         PPL_ASSERT(find(old_index) == end());
       }
-      else
+      else {
         ++i;
+      }
     }
   }
 }
@@ -755,8 +756,9 @@ PPL::Sparse_Row::OK(dimension_type /* capacity */) const {
 /*! \relates Parma_Polyhedra_Library::Sparse_Row */
 bool
 PPL::operator==(const Sparse_Row& x, const Sparse_Row& y) {
-  if (x.size() != y.size())
+  if (x.size() != y.size()) {
     return false;
+  }
   Sparse_Row::const_iterator i = x.begin();
   Sparse_Row::const_iterator i_end = x.end();
   Sparse_Row::const_iterator j = y.begin();
@@ -988,8 +990,9 @@ PPL::linear_combine(Sparse_Row& x, const Dense_Row& y,
   if (coeff2 == -1) {
     for (dimension_type i = start; i < end; ++i) {
       PPL_ASSERT(itr == x.end() || itr.index() + 1 >= i);
-      if (itr != x.end() && itr.index() < i)
+      if (itr != x.end() && itr.index() < i) {
         ++itr;
+      }
       PPL_ASSERT(itr == x.end() || itr.index() >= i);
       if (itr == x.end() || itr.index() != i) {
         if (y[i] == 0) {
@@ -1013,8 +1016,9 @@ PPL::linear_combine(Sparse_Row& x, const Dense_Row& y,
 
   for (dimension_type i = start; i < end; ++i) {
     PPL_ASSERT(itr == x.end() || itr.index() + 1 >= i);
-    if (itr != x.end() && itr.index() < i)
+    if (itr != x.end() && itr.index() < i) {
       ++itr;
+    }
     PPL_ASSERT(itr == x.end() || itr.index() >= i);
     if (itr == x.end() || itr.index() != i) {
       if (y[i] == 0) {

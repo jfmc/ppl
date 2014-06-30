@@ -189,8 +189,9 @@ PPL::PIP_Problem::solve() const {
                 itr = row.insert(itr, i, coeff_pi);
               }
             }
-            else
+            else {
               break;
+            }
           }
         }
 
@@ -718,8 +719,9 @@ PPL::PIP_Problem::add_constraints(const Constraint_System& cs) {
 
 bool
 PPL::PIP_Problem::is_satisfiable() const {
-  if (status == PARTIALLY_SATISFIABLE)
+  if (status == PARTIALLY_SATISFIABLE) {
     solve();
+  }
   return status == OPTIMIZED;
 }
 

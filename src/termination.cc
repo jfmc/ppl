@@ -57,9 +57,10 @@ assign_all_inequalities_approximation(const Constraint_System& cs_in,
       }
     }
   }
-  else
+  else {
     // No strict inequality and no equality constraints.
     cs_out = cs_in;
+  }
 }
 
 template <>
@@ -78,9 +79,10 @@ assign_all_inequalities_approximation(const C_Polyhedron& ph,
         cs.insert(expr >= 0);
         cs.insert(expr <= 0);
       }
-      else
+      else {
         // Insert as is.
         cs.insert(c);
+      }
     }
   }
   else {
@@ -434,8 +436,9 @@ fill_constraint_system_PR_original(const Constraint_System& cs,
   const dimension_type m = num_constraints(cs);
 
   // Make sure linear expressions are not reallocated multiple times.
-  if (m > 0)
+  if (m > 0) {
     le_out.set_space_dimension(2*m);
+  }
   std::vector<Linear_Expression> les_eq(3*n, le_out);
 
   dimension_type row_index = 0;
@@ -820,9 +823,10 @@ Termination_Helpers
   Generator_System gs_out;
   Generator_System::const_iterator gs_in_it = gs_in.begin();
   Generator_System::const_iterator gs_in_end = gs_in.end();
-  if (gs_in_it == gs_in_end)
+  if (gs_in_it == gs_in_end) {
     // The system is unsatisfiable.
     mu_space = NNC_Polyhedron(n + 1, EMPTY);
+  }
   else {
     for ( ; gs_in_it != gs_in_end; ++gs_in_it) {
       const Generator& g = *gs_in_it;

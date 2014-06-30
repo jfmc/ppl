@@ -865,14 +865,18 @@ Pointset_Powerset<PSET>::relation_with(const Congruence& cg) const {
   }
 
   Poly_Con_Relation result = Poly_Con_Relation::nothing();
-  if (is_included)
+  if (is_included) {
     result = result && Poly_Con_Relation::is_included();
-  if (is_disjoint)
+  }
+  if (is_disjoint) {
     result = result && Poly_Con_Relation::is_disjoint();
-  if (is_strictly_intersecting)
+  }
+  if (is_strictly_intersecting) {
     result = result && Poly_Con_Relation::strictly_intersects();
-  if (saturates_once && may_saturate)
+  }
+  if (saturates_once && may_saturate) {
     result = result && Poly_Con_Relation::saturates();
+  }
 
   return result;
 }
@@ -1022,8 +1026,9 @@ Pointset_Powerset<PSET>::maximize(const Linear_Expression& expr,
           best_sup_d = iter_sup_d;
           best_max = iter_max;
         }
-        else if (tmp == 0)
+        else if (tmp == 0) {
           best_max = (best_max || iter_max);
+        }
       }
   }
   sup_n = best_sup_n;
@@ -1674,8 +1679,9 @@ linear_partition_aux(const Constraint& c,
   const Constraint& neg_c = c.is_strict_inequality() ? (le <= 0) : (le < 0);
   NNC_Polyhedron nnc_ph_pset(pset);
   nnc_ph_pset.add_constraint(neg_c);
-  if (!nnc_ph_pset.is_empty())
+  if (!nnc_ph_pset.is_empty()) {
     r.add_disjunct(nnc_ph_pset);
+  }
   pset.add_constraint(c);
 }
 

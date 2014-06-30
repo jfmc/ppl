@@ -197,8 +197,9 @@ public:
     const PPL::Variables_Set& params = pip.parameter_space_dimensions();
     PPL::Variables_Set vars;
     for (PPL::dimension_type i = 0; i < pip.space_dimension(); ++i) {
-      if (params.count(i) == 0)
+      if (params.count(i) == 0) {
         vars.insert(i);
+      }
     }
     const PPL::PIP_Tree solution = pip.solution();
     pip_display_sol(out, solution, params, vars, pip.space_dimension());
@@ -223,10 +224,12 @@ public:
         add_mul_assign(expr, constraints[k++], PPL::Variable(j));
       }
       expr += constraints[k++];
-      if (constraint_type[i])
+      if (constraint_type[i]) {
         pip.add_constraint(PPL::Constraint(expr >= 0));
-      else
+      }
+      else {
         pip.add_constraint(PPL::Constraint(expr == 0));
+      }
     }
     if (num_params > 0) {
       for (PPL::dimension_type k = 0, i = 0; i < num_ctx_rows; ++i) {
@@ -235,14 +238,17 @@ public:
           add_mul_assign(expr, context[k++], PPL::Variable(num_vars+j));
         }
         expr += context[k++];
-        if (ctx_type[i])
+        if (ctx_type[i]) {
           pip.add_constraint(PPL::Constraint(expr >= 0));
-        else
+        }
+        else {
           pip.add_constraint(PPL::Constraint(expr == 0));
+        }
       }
     }
-    if (bignum_column != PPL::not_a_dimension())
+    if (bignum_column != PPL::not_a_dimension()) {
       pip.set_big_parameter_dimension(bignum_column);
+    }
     return true;
   }
 
@@ -338,12 +344,15 @@ public:
   }
 
   bool read(std::istream& in) {
-    if (!expect(in, '('))
+    if (!expect(in, '(')) {
       return false;
-    if (!expect(in, '('))
+    }
+    if (!expect(in, '(')) {
       return false;
-    if (!read_comment(in))
+    }
+    if (!read_comment(in)) {
       return false;
+    }
 
     PPL::dimension_type num_vars;
     PPL::dimension_type num_params;
@@ -368,8 +377,9 @@ public:
       return false;
     }
 
-    if (!expect(in, '('))
+    if (!expect(in, '(')) {
       return false;
+    }
     const PPL::dimension_type constraint_width = num_vars+num_params+1;
     Coeff_Vector constraints(num_constraints * constraint_width);
     Int_Vector constraint_type(num_constraints);
@@ -377,8 +387,9 @@ public:
       constraint_type[i] = 1;
     }
     for (PPL::dimension_type i = 0; i < num_constraints; ++i) {
-      if (!read_vector(in, i, constraint_width, num_vars, constraints))
+      if (!read_vector(in, i, constraint_width, num_vars, constraints)) {
         return false;
+      }
     }
 
     Coeff_Vector context(num_ctx_rows * (1+num_params));
@@ -387,8 +398,9 @@ public:
       ctx_type[i] = 1;
     }
     for (PPL::dimension_type i = 0; i < num_ctx_rows; ++i) {
-      if (!read_vector(in, i, num_params+1, num_params, context))
+      if (!read_vector(in, i, num_params+1, num_params, context)) {
         return false;
+      }
     }
 
     const bool result = update_pip(num_vars, num_params,
@@ -405,14 +417,18 @@ protected:
     int count = 1;
     do {
       char c;
-      if (!in.get(c))
+      if (!in.get(c)) {
         return false;
-      if (c == '(')
+      }
+      if (c == '(') {
         ++count;
-      else if (c == ')')
+      }
+      else if (c == ')') {
         --count;
-      if (count > 0)
+      }
+      if (count > 0) {
         comment += c;
+      }
     } while (count > 0);
     return true;
   }
@@ -430,29 +446,35 @@ protected:
                           PPL::dimension_type row_size,
                           PPL::dimension_type cst_col,
                           Coeff_Vector& tab) {
-    if (!expect(in, '#'))
+    if (!expect(in, '#')) {
       return false;
-    if (!expect(in, '['))
+    }
+    if (!expect(in, '[')) {
       return false;
+    }
     std::string s;
     getline(in, s, ']');
-    if (in.fail())
+    if (in.fail()) {
       return false;
+    }
     std::istringstream iss(s);
     const PPL::dimension_type start_index = row_index * row_size;
     PPL::dimension_type k = start_index;
     for (PPL::dimension_type i = 0; i < cst_col; ++i, ++k) {
       iss >> tab[k];
-      if (iss.fail())
+      if (iss.fail()) {
         return false;
+      }
     }
     iss >> tab[start_index + row_size - 1];
-    if (iss.fail())
+    if (iss.fail()) {
       return false;
+    }
     for (PPL::dimension_type i = cst_col + 1; i < row_size; ++i, ++k) {
       iss >> tab[k];
-      if (iss.fail())
+      if (iss.fail()) {
         return false;
+      }
     }
     return true;
   }
@@ -546,13 +568,14 @@ std::istream* input_stream_p = 0;
 
 void
 set_input(const char* file_name) {
-  if (input_stream_p && (input_stream_p != &std::cin))
+  if (input_stream_p && (input_stream_p != &std::cin)) {
     delete input_stream_p;
-
+  }
   if (file_name) {
     input_stream_p = new std::ifstream(file_name, std::ios_base::in);
-    if (!*input_stream_p)
+    if (!*input_stream_p) {
       fatal("cannot open input file `%s'", file_name);
+    }
     input_file_name = file_name;
   }
   else {
@@ -566,15 +589,16 @@ std::ostream* output_stream_p = 0;
 
 void
 set_output(const char* file_name) {
-  if (output_stream_p && (output_stream_p != &std::cout))
+  if (output_stream_p && (output_stream_p != &std::cout)) {
     delete output_stream_p;
-
+  }
   if (file_name) {
     output_stream_p = new std::ofstream(file_name,
                                         std::ios_base::out
                                         | std::ios_base::app);
-    if (!*output_stream_p)
+    if (!*output_stream_p) {
       fatal("cannot open output file `%s'", file_name);
+    }
     output_file_name = file_name;
   }
   else {
@@ -614,13 +638,14 @@ void
 limit_virtual_memory(const unsigned long bytes) {
   struct rlimit t;
 
-  if (getrlimit(RLIMIT_AS, &t) != 0)
+  if (getrlimit(RLIMIT_AS, &t) != 0) {
     fatal("getrlimit failed: %s", strerror(errno));
-
+  }
   if (bytes < t.rlim_cur) {
     t.rlim_cur = bytes;
-    if (setrlimit(RLIMIT_AS, &t) != 0)
+    if (setrlimit(RLIMIT_AS, &t) != 0) {
       fatal("setrlimit failed: %s", strerror(errno));
+    }
   }
 }
 
@@ -643,9 +668,9 @@ process_options(int argc, char* argv[]) {
     const int c = getopt(argc, argv, OPTION_LETTERS);
 #endif
 
-    if (c == EOF)
+    if (c == EOF) {
       break;
-
+    }
     char* endptr;
     switch (c) {
     case 0:
@@ -661,12 +686,15 @@ process_options(int argc, char* argv[]) {
       {
         const unsigned long MEGA = 1024U*1024U;
         const long l = strtol(optarg, &endptr, 10);
-        if (*endptr || l < 0)
+        if (*endptr || l < 0) {
           fatal("a non-negative integer must follow `-R'");
-        else if (static_cast<unsigned long>(l) > ULONG_MAX/MEGA)
+        }
+        else if (static_cast<unsigned long>(l) > ULONG_MAX/MEGA) {
           max_bytes_of_virtual_memory = ULONG_MAX;
-        else
+        }
+        else {
           max_bytes_of_virtual_memory = static_cast<unsigned long>(l)*MEGA;
+        }
       }
       break;
 
@@ -692,8 +720,9 @@ process_options(int argc, char* argv[]) {
 
     case 'i':
       loop_iterations = strtol(optarg, &endptr, 10);
-      if (*endptr || loop_iterations < 1)
+      if (*endptr || loop_iterations < 1) {
         fatal("a positive integer must follow `-i'");
+      }
       break;
 
 #if defined(USE_PPL)
@@ -734,22 +763,25 @@ process_options(int argc, char* argv[]) {
     }
   }
 
-  if (argc - optind > 1)
+  if (argc - optind > 1) {
     // We have multiple input files.
     fatal("at most one input file is accepted");
-
+  }
   // We have one input files.
-  if (optind < argc)
+  if (optind < argc) {
     input_file_name = argv[optind];
-  else
+  }
+  else {
     // If no input files have been specified: we will read from standard input.
     assert(input_file_name == 0);
+  }
 }
 
 void
 maybe_start_clock() {
-  if (print_timings)
+  if (print_timings) {
     start_clock();
+  }
 }
 
 void
@@ -766,22 +798,23 @@ main(int argc, char* argv[]) try {
   program_name = argv[0];
 
 #if defined(USE_PPL)
-  if (strcmp(PPL_VERSION, PPL::version()) != 0)
+  if (strcmp(PPL_VERSION, PPL::version()) != 0) {
     fatal("was compiled with PPL version %s, but linked with version %s",
           PPL_VERSION, PPL::version());
-
-  if (verbose)
+  }
+  if (verbose) {
     std::cerr << "Parma Polyhedra Library version:\n" << PPL::version()
               << "\n\nParma Polyhedra Library banner:\n" << PPL::banner()
               << std::endl;
+  }
 #endif
 
   // Process command line options.
   process_options(argc, argv);
 
-  if (max_bytes_of_virtual_memory > 0)
+  if (max_bytes_of_virtual_memory > 0) {
     limit_virtual_memory(max_bytes_of_virtual_memory);
-
+  }
   // Set up the input and output streams.
   set_input(input_file_name);
   set_output(output_file_name);
@@ -789,13 +822,15 @@ main(int argc, char* argv[]) try {
 //  POLYHEDRON_TYPE ph;
 //  Representation rep = read_polyhedron(input(), ph);
   std::auto_ptr<PIP_Parser> parser;
-  if (piplib_format)
+  if (piplib_format) {
     parser.reset(new PIP_PipLib_Parser);
-  else
+  }
+  else{
     parser.reset(new PIP_PolyLib_Parser);
-  if (!parser->read(*input_stream_p))
+  }
+  if (!parser->read(*input_stream_p)) {
     return 1;
-
+  }
   maybe_start_clock();
 
   const PPL::PIP_Problem& pip = parser->problem();

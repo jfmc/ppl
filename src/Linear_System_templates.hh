@@ -79,9 +79,10 @@ Linear_System<Row>::merge_rows_assign(const Linear_System& y) {
       tmp.resize(tmp.size() + 1);
       swap(tmp.back(), x.rows[xi++]);
       tmp.back().set_representation(representation());
-      if (comp == 0)
+      if (comp == 0) {
         // A duplicate element.
         ++yi;
+      }
     }
     else {
       // (comp > 0)
@@ -97,12 +98,13 @@ Linear_System<Row>::merge_rows_assign(const Linear_System& y) {
       swap(tmp.back(), x.rows[xi++]);
       tmp.back().set_representation(representation());
     }
-  else
+  else {
     while (yi < y_num_rows) {
       tmp.resize(tmp.size() + 1);
       Row copy(y[yi++], space_dimension(), representation());
       swap(tmp.back(), copy);
     }
+  }
 
   // We get the result matrix and let the old one be destroyed.
   swap(tmp, rows);
@@ -587,8 +589,9 @@ Linear_System<Row>::gauss(const dimension_type n_lines_or_equalities) {
     for (dimension_type i = rank; i < n_lines_or_equalities; ++i) {
       // Search for the first row having a non-zero coefficient
       // (the pivot) in the j-th column.
-      if ((*this)[i].expr.get(j) == 0)
+      if ((*this)[i].expr.get(j) == 0) {
         continue;
+      }
       // Pivot found: if needed, swap rows so that this one becomes
       // the rank-th row in the linear system.
       if (i > rank) {

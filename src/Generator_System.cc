@@ -129,8 +129,9 @@ PPL::Generator_System::add_corresponding_points() {
 
 bool
 PPL::Generator_System::has_closure_points() const {
-  if (sys.is_necessarily_closed())
+  if (sys.is_necessarily_closed()) {
     return false;
+  }
   // Adopt the point of view of the user.
   for (Generator_System::const_iterator i = begin(),
          this_end = end(); i != this_end; ++i) {
@@ -273,8 +274,9 @@ PPL::Generator_System::insert_pending(Generator& g, Recycle_Input) {
       // If it was a point, set the epsilon coordinate to 1
       // (i.e., set the coefficient equal to the divisor).
       // Note: normalization is preserved.
-      if (!g.is_line_or_ray())
+      if (!g.is_line_or_ray()) {
         g.set_epsilon_coefficient(g.expr.inhomogeneous_term());
+      }
       // Inserting the new generator.
       sys.insert_pending(g, Recycle_Input());
     }
@@ -297,12 +299,13 @@ PPL::Generator_System::num_lines() const {
       ++n;
     }
   }
-  else
+  else {
     for (dimension_type i = sys.num_rows(); i-- > 0 ; ) {
       if (gs[i].is_line()) {
         ++n;
       }
     }
+  }
   return n;
 }
 
@@ -402,8 +405,9 @@ PPL::Generator_System::relation_with(const Constraint& c) const {
             }
             else
               // We already found a point or a non-saturating ray.
-              if (sp_sign != first_point_or_nonsaturating_ray_sign)
+              if (sp_sign != first_point_or_nonsaturating_ray_sign) {
                 return Poly_Con_Relation::strictly_intersects();
+              }
             break;
 
           case Generator::POINT:
@@ -418,8 +422,9 @@ PPL::Generator_System::relation_with(const Constraint& c) const {
             }
             else
               // We already found a point or a non-saturating ray.
-              if (sp_sign != first_point_or_nonsaturating_ray_sign)
+              if (sp_sign != first_point_or_nonsaturating_ray_sign) {
                 return Poly_Con_Relation::strictly_intersects();
+              }
             break;
           }
         }
@@ -484,18 +489,20 @@ PPL::Generator_System::relation_with(const Constraint& c) const {
               if ((sp_sign > 0
                    && result == Poly_Con_Relation::is_disjoint())
                   || (sp_sign < 0
-                      && result.implies(Poly_Con_Relation::is_included())))
+                      && result.implies(Poly_Con_Relation::is_included()))) {
                 // We have a strict intersection if either:
                 // - `g' satisfies `c' but none of the generators seen
                 //    so far are included in `c'; or
                 // - `g' does not satisfy `c' and all the generators
                 //    seen so far are included in `c'.
                 return Poly_Con_Relation::strictly_intersects();
-              if (sp_sign > 0)
+              }
+              if (sp_sign > 0) {
                 // Here all the generators seen so far either saturate
                 // or are included in `c'.
                 // Since `g' does not saturate `c' ...
                 result = Poly_Con_Relation::is_included();
+              }
             }
             break;
 

@@ -134,11 +134,12 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
     }
   }
 
-  if (!point_seen)
+  if (!point_seen) {
     // The generator system is not empty, but contains no points.
     throw_invalid_argument("BD_Shape(gs)",
                            "the non-empty generator system gs "
                            "contains no points.");
+  }
 
   // Going through all the lines and rays.
   for (Generator_System::const_iterator gs_i = gs_begin;
@@ -531,8 +532,9 @@ BD_Shape<T>::refine_no_check(const Constraint& c) {
     // Dealing with a trivial constraint (might be a strict inequality).
     if (inhomo < 0
         || (c.is_equality() && inhomo != 0)
-        || (c.is_strict_inequality() && inhomo == 0))
+        || (c.is_strict_inequality() && inhomo == 0)) {
       set_empty();
+    }
     return;
   }
 
@@ -1900,7 +1902,7 @@ BD_Shape<T>::shortest_path_closure_assign() const {
     for (dimension_type i = num_dimensions + 1; i-- > 0; ) {
       DB_Row<N>& x_dbm_i = x.dbm[i];
       const N& x_dbm_i_k = x_dbm_i[k];
-      if (!is_plus_infinity(x_dbm_i_k))
+      if (!is_plus_infinity(x_dbm_i_k)) {
         for (dimension_type j = num_dimensions + 1; j-- > 0; ) {
           const N& x_dbm_k_j = x_dbm_k[j];
           if (!is_plus_infinity(x_dbm_k_j)) {
@@ -1909,6 +1911,7 @@ BD_Shape<T>::shortest_path_closure_assign() const {
             min_assign(x_dbm_i[j], sum);
           }
         }
+      }
     }
   }
 
@@ -4446,12 +4449,13 @@ BD_Shape<T>
   // Remove all constraints on `var'.
   forget_all_dbm_constraints(var_id);
   // Shortest-path closure is preserved, but not reduction.
-  if (marked_shortest_path_reduced())
+  if (marked_shortest_path_reduced()) {
     reset_shortest_path_reduced();
-    // Add the constraint `var >= lb && var <= ub'.
-    add_dbm_constraint(0, var_id, b_ub);
-    add_dbm_constraint(var_id, 0, b_mlb);
-    return;
+  }
+  // Add the constraint `var >= lb && var <= ub'.
+  add_dbm_constraint(0, var_id, b_ub);
+  add_dbm_constraint(var_id, 0, b_mlb);
+  return;
 }
 
 // case 2: var = (+/-1) * w + [-b_mlb, b_ub], where `w' can be `var'
@@ -4698,9 +4702,10 @@ void
 BD_Shape<T>
 ::export_interval_constraints(U& dest) const {
   const dimension_type space_dim = space_dimension();
-  if (space_dim > dest.space_dimension())
+  if (space_dim > dest.space_dimension()) {
     throw std::invalid_argument(
                "BD_Shape<T>::export_interval_constraints");
+  }
 
   // Expose all the interval constraints.
   shortest_path_closure_assign();
@@ -5219,8 +5224,9 @@ BD_Shape<T>::affine_preimage(const Variable var,
     // Transformation not invertible: all constraints on `var' are lost.
     forget_all_dbm_constraints(v);
     // Shortest-path closure is preserved, but not reduction.
-    if (marked_shortest_path_reduced())
+    if (marked_shortest_path_reduced()) {
       reset_shortest_path_reduced();
+    }
   }
   PPL_ASSERT(OK());
 }
@@ -6567,8 +6573,9 @@ void
 BD_Shape<T>::expand_space_dimension(Variable var, dimension_type m) {
   dimension_type old_dim = space_dimension();
   // `var' should be one of the dimensions of the vector space.
-  if (var.space_dimension() > old_dim)
+  if (var.space_dimension() > old_dim) {
     throw_dimension_incompatible("expand_space_dimension(v, m)", "v", var);
+  }
 
   // The space dimension of the resulting BDS should not
   // overflow the maximum allowed space dimension.

@@ -500,9 +500,10 @@ Generator::ascii_load(std::istream& s) {
     return false;
   }
   if (str2 == "(C)") {
-    if (is_not_necessarily_closed())
+    if (is_not_necessarily_closed()) {
       // TODO: Avoid using the mark_as_*() methods if possible.
       mark_as_necessarily_closed();
+    }
   }
   else {
     if (str2 == "(NNC)") {

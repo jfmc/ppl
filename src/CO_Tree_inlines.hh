@@ -224,8 +224,9 @@ CO_Tree::cend() const {
 
 inline CO_Tree::iterator
 CO_Tree::bisect(dimension_type key) {
-  if (empty())
+  if (empty()) {
     return end();
+  }
   iterator last = end();
   --last;
   return bisect_in(begin(), last, key);

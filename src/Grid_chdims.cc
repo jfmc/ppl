@@ -75,8 +75,9 @@ PPL::Grid::add_space_dimensions(Grid_Generator_System& gs,
 //     R^1                   R^2
 void
 PPL::Grid::add_space_dimensions_and_embed(dimension_type m) {
-  if (m == 0)
+  if (m == 0) {
     return;
+  }
 
   // The space dimension of the resulting grid must be at most the
   // maximum allowed space dimension.
@@ -316,10 +317,10 @@ PPL::Grid::remove_space_dimensions(const Variables_Set& vars) {
 void
 PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
   // Dimension-compatibility check.
-  if (new_dimension > space_dim)
+  if (new_dimension > space_dim) {
     throw_dimension_incompatible("remove_higher_space_dimensions(nd)",
                                  new_dimension);
-
+  }
   // The removal of no dimensions from any grid is a no-op.
   // Note that this case also captures the only legal removal of
   // dimensions from a grid in a 0-dim space.

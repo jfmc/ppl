@@ -212,11 +212,13 @@ PPL::Grid::quick_equivalence_test(const Grid& y) const {
     }
     //  - the same number of lines; ...
     const dimension_type x_num_lines = x.gen_sys.num_lines();
-    if (x_num_lines != y.gen_sys.num_lines())
+    if (x_num_lines != y.gen_sys.num_lines()) {
       return Grid::TVB_FALSE;
+    }
       //  - and if there are no lines, the same generators.
     if (x_num_lines == 0) {
       // Check for syntactic identity.
+
       if (x.gen_sys == y.gen_sys) {
         return Grid::TVB_TRUE;
       }
@@ -374,8 +376,9 @@ PPL::Grid::frequency_no_check(const Linear_Expression& expr,
     }
     // `gen' must be a parameter.
     PPL_ASSERT(gen.is_parameter());
-    if (sgn(sp) != 0)
-    gcd_assign(freq_n, freq_n, sp);
+    if (sgn(sp) != 0) {
+      gcd_assign(freq_n, freq_n, sp);
+    }
   }
   const Grid_Generator& point = gen_sys[0];
   PPL_ASSERT(point.is_point());

@@ -262,8 +262,9 @@ PPL::Generator::is_equal_to(const Generator& y) const {
 
 void
 PPL::Generator::sign_normalize() {
-  if (is_line_or_equality())
+  if (is_line_or_equality()) {
     expr.sign_normalize();
+  }
 }
 
 bool
@@ -488,7 +489,7 @@ PPL::Generator::OK() const {
 #endif
       return false;
     }
-    if (!is_necessarily_closed())
+    if (!is_necessarily_closed()) {
       if (epsilon_coefficient() <= 0) {
 #ifndef NDEBUG
         std::cerr << "In the NNC topology, points must have epsilon > 0"
@@ -496,6 +497,7 @@ PPL::Generator::OK() const {
 #endif
         return false;
       }
+    }
     break;
 
   case CLOSURE_POINT:

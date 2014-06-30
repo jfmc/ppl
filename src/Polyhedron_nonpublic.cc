@@ -367,12 +367,14 @@ PPL::Polyhedron::quick_equivalence_test(const Polyhedron& y) const {
       if (x.constraints_are_minimized() && y.constraints_are_minimized()) {
         // Equivalent minimized constraint systems have:
         //  - the same number of constraints; ...
-        if (x.con_sys.num_rows() != y.con_sys.num_rows())
+        if (x.con_sys.num_rows() != y.con_sys.num_rows()) {
           return Polyhedron::TVB_FALSE;
+        }
         //  - the same number of equalities; ...
         const dimension_type x_num_equalities = x.con_sys.num_equalities();
-        if (x_num_equalities != y.con_sys.num_equalities())
+        if (x_num_equalities != y.con_sys.num_equalities()) {
           return Polyhedron::TVB_FALSE;
+        }
         //  - if there are no equalities, they have the same constraints.
         //    Delay this test: try cheaper tests on generators first.
         css_normalized = (x_num_equalities == 0);
@@ -458,7 +460,7 @@ PPL::Polyhedron::is_included_in(const Polyhedron& y) const {
   const Generator_System& gs = x.gen_sys;
   const Constraint_System& cs = y.con_sys;
 
-  if (x.is_necessarily_closed())
+  if (x.is_necessarily_closed()) {
     // When working with necessarily closed polyhedra,
     // `x' is contained in `y' if and only if all the generators of `x'
     // satisfy all the inequalities and saturate all the equalities of `y'.
@@ -493,6 +495,7 @@ PPL::Polyhedron::is_included_in(const Polyhedron& y) const {
         }
       }
     }
+  }
   else {
     // Here we have an NNC polyhedron: using the reduced scalar product,
     // which ignores the epsilon coefficient.
@@ -1824,8 +1827,9 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
   }
 
   // Make sure the saturation matrix `sat_g' for `y' is up to date.
-  if (!y.sat_g_is_up_to_date())
+  if (!y.sat_g_is_up_to_date()) {
     y.update_sat_g();
+  }
   const Bit_Matrix& y_sat = y.sat_g;
 
   Bit_Row y_cs_condition_3;
@@ -1950,8 +1954,9 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
         PPL_ASSERT(x_cp.is_closure_point());
         const int sp_sign = Scalar_Products::reduced_sign(ub_c, x_cp);
         PPL_ASSERT(sp_sign >= 0);
-        if (sp_sign == 0)
+        if (sp_sign == 0) {
           x_gs_condition_3_not_in_y.clear(j);
+        }
       }
       for (dimension_type j = y_gs_condition_3_not_in_x.first();
            j != C_Integer<unsigned long>::max;
@@ -1960,8 +1965,9 @@ PPL::Polyhedron::BHZ09_NNC_poly_hull_assign_if_exact(const Polyhedron& y) {
         PPL_ASSERT(y_cp.is_closure_point());
         const int sp_sign = Scalar_Products::reduced_sign(ub_c, y_cp);
         PPL_ASSERT(sp_sign >= 0);
-        if (sp_sign == 0)
+        if (sp_sign == 0) {
           y_gs_condition_3_not_in_x.clear(j);
+        }
       }
     }
   }
@@ -2111,12 +2117,13 @@ PPL::Polyhedron::BFT00_poly_hull_assign_if_exact(const Polyhedron& y) {
     if (y.relation_with(x_cs_i).implies(Poly_Con_Relation::is_included())) {
       x_cs_red_in_y[i] = true;
     }
-    else if (x_cs_i.is_equality())
+    else if (x_cs_i.is_equality()) {
       // Step 3.1: `x' has an equality not satisfied by `y':
       // union is not convex (recall that `y' does not contain `x').
       // NOTE: this would be false for NNC polyhedra.
       // Example: x = { A == 0 }, y = { 0 < A <= 1 }.
       return false;
+    }
   }
   const dimension_type y_cs_num_rows = y_cs.num_rows();
   std::vector<bool> y_cs_red_in_x(y_cs_num_rows, false);

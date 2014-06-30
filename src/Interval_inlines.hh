@@ -905,8 +905,9 @@ Interval<To_Boundary, To_Info>::div_assign(const From1& x, const From2& y) {
     if (yls == -yus) {
       return set_infinities();
     }
-    if (yls < 0 || yus < 0)
-    inf_sign = -inf_sign;
+    if (yls < 0 || yus < 0) {
+      inf_sign = -inf_sign;
+    }
     if (inf_sign < 0) {
       return assign(MINUS_INFINITY);
     }

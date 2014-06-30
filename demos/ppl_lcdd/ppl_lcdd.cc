@@ -224,13 +224,15 @@ std::istream* input_stream_p = 0;
 
 void
 set_input(const char* file_name) {
-  if (input_stream_p && (input_stream_p != &std::cin))
+  if (input_stream_p && (input_stream_p != &std::cin)) {
     delete input_stream_p;
+  }
 
   if (file_name) {
     input_stream_p = new std::ifstream(file_name, std::ios_base::in);
-    if (!*input_stream_p)
+    if (!*input_stream_p) {
       fatal("cannot open input file `%s'", file_name);
+    }
     input_file_name = file_name;
   }
   else {
@@ -250,15 +252,17 @@ std::ostream* output_stream_p = 0;
 
 void
 set_output(const char* file_name) {
-  if (output_stream_p && (output_stream_p != &std::cout))
+  if (output_stream_p && (output_stream_p != &std::cout)) {
     delete output_stream_p;
+  }
 
   if (file_name) {
     output_stream_p = new std::ofstream(file_name,
                                         std::ios_base::out
                                         | std::ios_base::app);
-    if (!*output_stream_p)
+    if (!*output_stream_p) {
       fatal("cannot open output file `%s'", file_name);
+    }
     output_file_name = file_name;
   }
   else {
@@ -316,17 +320,19 @@ set_alarm_on_cpu_time(const unsigned long seconds, sig_handler_type handler) {
 # error "Either SA_ONESHOT or SA_RESETHAND must be defined."
 #endif
 
-  if (sigaction(SIGXCPU, &s, 0) != 0)
+  if (sigaction(SIGXCPU, &s, 0) != 0) {
     fatal("sigaction failed: %s", strerror(errno));
+  }
 
   struct rlimit t;
-  if (getrlimit(RLIMIT_CPU, &t) != 0)
+  if (getrlimit(RLIMIT_CPU, &t) != 0) {
     fatal("getrlimit failed: %s", strerror(errno));
-
+  }
   if (seconds < t.rlim_cur) {
     t.rlim_cur = seconds;
-    if (setrlimit(RLIMIT_CPU, &t) != 0)
+    if (setrlimit(RLIMIT_CPU, &t) != 0) {
       fatal("setrlimit failed: %s", strerror(errno));
+    }
   }
 }
 
@@ -338,13 +344,15 @@ void
 limit_virtual_memory(const unsigned long bytes) {
   struct rlimit t;
 
-  if (getrlimit(RLIMIT_AS, &t) != 0)
+  if (getrlimit(RLIMIT_AS, &t) != 0) {
     fatal("getrlimit failed: %s", strerror(errno));
+  }
 
   if (bytes < t.rlim_cur) {
     t.rlim_cur = bytes;
-    if (setrlimit(RLIMIT_AS, &t) != 0)
+    if (setrlimit(RLIMIT_AS, &t) != 0) {
       fatal("setrlimit failed: %s", strerror(errno));
+    }
   }
 }
 
@@ -406,10 +414,12 @@ process_options(int argc, char* argv[]) {
 
     case 'C':
       l = strtol(optarg, &endptr, 10);
-      if (*endptr || l < 0)
+      if (*endptr || l < 0) {
         fatal("a non-negative integer must follow `-C'");
-      else
+      }
+      else {
         max_seconds_of_cpu_time = static_cast<unsigned long>(l);
+      }
       break;
 
 #endif // defined(PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME)
@@ -418,12 +428,15 @@ process_options(int argc, char* argv[]) {
       {
         const unsigned long MEGA = 1024U*1024U;
         l = strtol(optarg, &endptr, 10);
-        if (*endptr || l < 0)
+        if (*endptr || l < 0) {
           fatal("a non-negative integer must follow `-R'");
-        else if (static_cast<unsigned long>(l) > ULONG_MAX/MEGA)
+        }
+        else if (static_cast<unsigned long>(l) > ULONG_MAX/MEGA) {
           max_bytes_of_virtual_memory = ULONG_MAX;
-        else
+        }
+        else {
           max_bytes_of_virtual_memory = static_cast<unsigned long>(l)*MEGA;
+        }
       }
       break;
 
@@ -457,22 +470,25 @@ process_options(int argc, char* argv[]) {
     }
   }
 
-  if (argc - optind > 1)
+  if (argc - optind > 1) {
     // We have multiple input files.
     fatal("at most one input file is accepted");
-
+  }
   // We have one input files.
-  if (optind < argc)
+  if (optind < argc) {
     input_file_name = argv[optind];
-  else
+  }
+  else {
     // If no input files have been specified: we will read from standard input.
     assert(input_file_name == 0);
+  }
 }
 
 void
 maybe_start_clock() {
-  if (print_timings)
+  if (print_timings) {
     start_clock();
+  }
 }
 
 void
@@ -524,8 +540,9 @@ guarded_write(std::ostream& out, const T& x) {
   }
   catch (...) {
   }
-  if (!succeeded)
+  if (!succeeded) {
     fatal("cannot write to output file `%s'", output_file_name);
+  }
 }
 
 #if defined (USE_POLKA)
@@ -579,8 +596,9 @@ read_coefficients(std::istream& in,
       std::vector<mpq_class> rational_coefficients(num_coefficients);
       for (unsigned i = 0; i < num_coefficients; ++i) {
         double d;
-        if (!guarded_read(in, d))
+        if (!guarded_read(in, d)) {
           error("missing or invalid real coefficient");
+        }
         rational_coefficients[i] = mpq_class(d);
       }
       normalize(rational_coefficients, coefficients, denominator);
@@ -599,8 +617,9 @@ read_indexes_set(std::istream& in,
     error("missing or invalid number of set elements in `%s'", what);
   while (num_elements--) {
     unsigned i;
-    if (!guarded_read(in, i))
+    if (!guarded_read(in, i)) {
       error("missing or invalid set element in `%s'", what);
+    }
     dest.insert(i);
   }
 }
@@ -615,13 +634,15 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
   std::string s;
   std::set<unsigned> linearity;
   while (true) {
-    if (!guarded_read(in, s))
+    if (!guarded_read(in, s)) {
       error("premature end of file while seeking for `begin'");
-
-    if (s == "V-representation")
+    }
+    if (s == "V-representation") {
       rep = V;
-    else if (s == "H-representation")
+    }
+    else if (s == "H-representation") {
       rep = H;
+    }
     else if (s == "linearity" || s == "equality" || s == "partial_enum") {
       read_indexes_set(in, linearity, "linearity");
       if (verbose) {
@@ -633,11 +654,13 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
         std::cerr << std::endl;
       }
     }
-    else if (s == "begin")
+    else if (s == "begin") {
       break;
-    else
+    }
+    else {
       // A comment: skip to end of line.
       in.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
   }
 
   // Tools such as `lrs' produce "*****" instead of the number of
@@ -645,13 +668,15 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
   // of rows ourselves.
   bool has_num_rows = false;
   unsigned num_rows;
-  if (!guarded_read(in, s))
+  if (!guarded_read(in, s)) {
     error("missing number of rows");
+  }
   if (s != "*****") {
     std::istringstream iss(s);
-    if (!guarded_read(iss, num_rows))
+    if (!guarded_read(iss, num_rows)) {
       error("illegal number of rows `%s' (\"*****\" would be accepted)",
             s.c_str());
+    }
     has_num_rows = true;
   }
 
@@ -663,21 +688,27 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
   if (!guarded_read(in, s))
     error("missing number type");
   Number_Type number_type = INTEGER;
-  if (s == "integer")
+  if (s == "integer") {
     number_type = INTEGER;
-  else if (s == "rational")
+  }
+  else if (s == "rational") {
     number_type = RATIONAL;
-  else if (s == "real")
+  }
+  else if (s == "real") {
     number_type = REAL;
-  else
+  }
+  else {
     error("illegal number type `%s'", s.c_str());
+  }
 
   if (verbose) {
     std::cerr << "Problem dimension: ";
-    if (has_num_rows)
+    if (has_num_rows) {
       std::cerr << num_rows;
-    else
+    }
+    else {
       std::cerr << '?';
+    }
     std::cerr << " x " << num_columns
               << "; number type: " << s
               << std::endl;
@@ -715,18 +746,22 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
       int vertex_marker;
       if (!has_num_rows) {
         // Must be prepared to read an "end" here.
-        if (!guarded_read(in, s))
+        if (!guarded_read(in, s)) {
           error("missing vertex marker");
-        if (s == "end")
+        }
+        if (s == "end") {
           break;
+        }
         std::istringstream iss(s);
         if (!guarded_read(iss, vertex_marker)
-            || vertex_marker < 0 || vertex_marker > 1)
+            || vertex_marker < 0 || vertex_marker > 1) {
           error("illegal vertex marker `%s'", s.c_str());
+        }
       }
       else if (!guarded_read(in, vertex_marker)
-                 || vertex_marker < 0 || vertex_marker > 1)
+               || vertex_marker < 0 || vertex_marker > 1) {
         error("illegal or missing vertex marker");
+      }
       read_coefficients(in, number_type, coefficients, denominator);
 
 #if defined(USE_PPL)
@@ -737,12 +772,14 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
       }
 #elif defined(USE_POLKA)
       // NewPolka variables have indices 2, 3, ..., space_dim+1.
-      for (unsigned j = space_dim; j-- > 0; )
+      for (unsigned j = space_dim; j-- > 0; ) {
         pkint_set(mat->p[row][j+2], coefficients[j].get_mpz_t());
+      }
 #elif defined(USE_POLYLIB)
       // PolyLib variables have indices 1, 2, ..., space_dim.
-      for (unsigned j = space_dim; j-- > 0; )
+      for (unsigned j = space_dim; j-- > 0; ) {
         value_assign(mat->p[row][j+1], coefficients[j].get_mpz_t());
+      }
 #endif
       if (vertex_marker == 1) {
         assert(linearity.find(row+1) == linearity_end);
@@ -800,25 +837,27 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
       // Add the origin as a point.
       pkint_set_si(mat->p[num_rows][0], 1);
       pkint_set_si(mat->p[num_rows][1], 1);
-      for (unsigned j = space_dim; j-- > 0; )
+      for (unsigned j = space_dim; j-- > 0; ) {
         pkint_set_si(mat->p[num_rows][j+2], 0);
+      }
       ++num_rows;
 #elif defined(USE_POLYLIB)
       // Add the origin as a point.
       value_set_si(mat->p[num_rows][0], 1);
       value_set_si(mat->p[num_rows][space_dim+1], 1);
-      for (unsigned j = space_dim; j-- > 0; )
+      for (unsigned j = space_dim; j-- > 0; ) {
         value_set_si(mat->p[num_rows][j+1], 0);
+      }
       ++num_rows;
 #endif
     }
 
     if (verbose) {
-      if (!has_num_rows)
+      if (!has_num_rows) {
         std::cerr << "Problem dimension: " << row << " x " << num_columns
                   << "; number type: " << s
                   << std::endl;
-
+      }
 #if defined(USE_PPL)
       using namespace PPL::IO_Operators;
       std::cerr << "Generator system:\n" << gs << std::endl;
@@ -842,17 +881,19 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
       if (!has_num_rows) {
         // Must be prepared to read an "end" here.
         std::getline(in, s);
-        if (!in)
+        if (!in) {
           error("premature end of file while seeking "
                 "for coefficients or `end'");
-        if (s.substr(0, 2) == "end")
+        }
+        if (s.substr(0, 2) == "end") {
           break;
+        }
         std::istringstream iss(s);
         read_coefficients(iss, number_type, coefficients, denominator);
       }
-      else
+      else {
         read_coefficients(in, number_type, coefficients, denominator);
-
+      }
 #if defined(USE_PPL)
       // PPL variables have indices 0, 1, ..., space_dim-1.
       PPL::Linear_Expression e;
@@ -862,14 +903,16 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
       e += coefficients[0];
 #elif defined(USE_POLKA)
       // NewPolka variables have indices 2, 3, ..., space_dim+1.
-      for (unsigned j = num_columns; j-- > 1; )
+      for (unsigned j = num_columns; j-- > 1; ) {
         pkint_set(mat->p[row][j+1], coefficients[j].get_mpz_t());
+      }
       // NewPolka stores the inhomogeneous term at index 1.
       pkint_set(mat->p[row][1], coefficients[0].get_mpz_t());
 #elif defined(USE_POLYLIB)
       // PolyLib variables have indices 1, 2, ..., space_dim.
-      for (unsigned j = num_columns; j-- > 1; )
+      for (unsigned j = num_columns; j-- > 1; ) {
         value_assign(mat->p[row][j], coefficients[j].get_mpz_t());
+      }
       // PolyLib stores the inhomogeneous term at index space_dim+1.
       value_assign(mat->p[row][space_dim+1], coefficients[0].get_mpz_t());
 #endif
@@ -899,11 +942,11 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
     }
 
     if (verbose) {
-      if (!has_num_rows)
+      if (!has_num_rows) {
         std::cerr << "Problem dimension: " << row << " x " << num_columns
                   << "; number type: " << s
                   << std::endl;
-
+      }
 #if defined(USE_PPL)
       using namespace PPL::IO_Operators;
       std::cerr << "Constraint system:\n" << cs << std::endl;
@@ -919,11 +962,13 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
   }
 
   if (has_num_rows) {
-    if (!guarded_read(in, s))
+    if (!guarded_read(in, s)) {
       error("premature end of file while seeking for `end'");
+    }
 
-    if (s != "end")
+    if (s != "end") {
       error("`%s' found while seeking for `end'", s.c_str());
+    }
   }
 
   if (rep == H) {
@@ -964,8 +1009,9 @@ void
 write_polyhedron(std::ostream& out,
                  const POLYHEDRON_TYPE& ph,
                  const Representation rep) {
-  if (rep == H)
+  if (rep == H) {
     guarded_write(out, "H-representation\n");
+  }
   else {
     assert(rep == V);
     guarded_write(out, "V-representation\n");
@@ -979,8 +1025,9 @@ write_polyhedron(std::ostream& out,
     for (PPL::Constraint_System::const_iterator i = cs.begin(),
            cs_end = cs.end(); i != cs_end; ++i) {
       ++num_rows;
-      if (i->is_equality())
+      if (i->is_equality()) {
         linearity.insert(linearity.end(), num_rows);
+      }
     }
   }
   else {
@@ -988,8 +1035,9 @@ write_polyhedron(std::ostream& out,
     for (PPL::Generator_System::const_iterator i = gs.begin(),
            gs_end = gs.end(); i != gs_end; ++i) {
       ++num_rows;
-      if (i->is_line())
+      if (i->is_line()) {
         linearity.insert(linearity.end(), num_rows);
+      }
     }
   }
 #elif defined(USE_POLKA)
@@ -999,16 +1047,18 @@ write_polyhedron(std::ostream& out,
     : (poly_is_empty(ph) ? 0 : poly_frames(ph));
   const unsigned num_rows = (rep == V && poly_is_empty(ph)) ? 0 : mat->nbrows;
   for (unsigned i = 0; i < num_rows; ++i)
-    if (pkint_sgn(mat->p[i][0]) == 0)
+    if (pkint_sgn(mat->p[i][0]) == 0) {
       linearity.insert(linearity.end(), i+1);
+    }
 #elif defined(USE_POLYLIB)
   const Matrix* mat = (rep == H)
     ? Polyhedron2Constraints(ph)
     : Polyhedron2Rays(ph);
   const unsigned num_rows = mat->NbRows;
   for (unsigned i = 0; i < num_rows; ++i)
-    if (value_sign(mat->p[i][0]) == 0)
+    if (value_sign(mat->p[i][0]) == 0) {
       linearity.insert(linearity.end(), i+1);
+    }
 #endif
 
   if (!linearity.empty()) {
@@ -1035,11 +1085,12 @@ write_polyhedron(std::ostream& out,
   guarded_write(out, ' ');
   guarded_write(out, space_dim+1);
   guarded_write(out, ' ');
-  if (rep == H)
+  if (rep == H) {
     guarded_write(out, "integer\n");
-  else
+  }
+  else {
     guarded_write(out, "rational\n");
-
+  }
 #if defined(USE_PPL)
   if (rep == H) {
     const PPL::Constraint_System& cs = ph.constraints();
@@ -1065,8 +1116,9 @@ write_polyhedron(std::ostream& out,
         const PPL::Coefficient& divisor = g.divisor();
         for (PPL::dimension_type j = 0; j < space_dim; ++j) {
           guarded_write(out, ' ');
-          if (g.coefficient(PPL::Variable(j)) == 0)
+          if (g.coefficient(PPL::Variable(j)) == 0) {
             guarded_write(out, '0');
+          }
           else {
             mpz_class numer;
             mpz_class denom;
@@ -1113,11 +1165,13 @@ write_polyhedron(std::ostream& out,
         // `g' is a point.
         for (unsigned j = 0; j < space_dim; ++j) {
           guarded_write(out, ' ');
-          if (pkint_sgn(g[j+2]) == 0)
+          if (pkint_sgn(g[j+2]) == 0) {
             guarded_write(out, '0');
-          else
+          }
+          else {
             guarded_write(out, mpq_class(mpz_class(g[j+2].rep),
                                          mpz_class(divisor.rep)));
+          }
         }
       else
         // `g' is a ray or a line.
@@ -1152,11 +1206,13 @@ write_polyhedron(std::ostream& out,
         // `g' is a point.
         for (unsigned j = 0; j < space_dim; ++j) {
           guarded_write(out, ' ');
-          if (value_sign(g[j+1]) == 0)
+          if (value_sign(g[j+1]) == 0) {
             guarded_write(out, '0');
-          else
+          }
+          else {
             guarded_write(out, mpq_class(mpz_class(g[j+1]),
                                          mpz_class(divisor)));
+          }
         }
       else
         // `g' is a ray or a line.
@@ -1178,8 +1234,9 @@ write_polyhedron(std::ostream& out,
   }
   catch (...) {
   }
-  if (!flush_succeeded)
+  if (!flush_succeeded) {
     fatal("cannot write to output file `%s'", output_file_name);
+  }
 }
 
 } // namespace
@@ -1189,14 +1246,15 @@ main(int argc, char* argv[]) try {
   program_name = argv[0];
 
 #if defined(USE_PPL)
-  if (strcmp(PPL_VERSION, PPL::version()) != 0)
+  if (strcmp(PPL_VERSION, PPL::version()) != 0) {
     fatal("was compiled with PPL version %s, but linked with version %s",
           PPL_VERSION, PPL::version());
-
-  if (verbose)
+  }
+  if (verbose) {
     std::cerr << "Parma Polyhedra Library version:\n" << PPL::version()
               << "\n\nParma Polyhedra Library banner:\n" << PPL::banner()
               << std::endl;
+  }
 #endif
 
   // Process command line options.
@@ -1204,14 +1262,14 @@ main(int argc, char* argv[]) try {
 
 #ifdef PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME
 
-  if (max_seconds_of_cpu_time > 0)
+  if (max_seconds_of_cpu_time > 0) {
     set_alarm_on_cpu_time(max_seconds_of_cpu_time, &timeout);
-
+  }
 #endif // defined(PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME)
 
-  if (max_bytes_of_virtual_memory > 0)
+  if (max_bytes_of_virtual_memory > 0) {
     limit_virtual_memory(max_bytes_of_virtual_memory);
-
+  }
   // Set up the input and output streams.
   set_input(input_file_name);
   set_output(output_file_name);
@@ -1225,8 +1283,9 @@ main(int argc, char* argv[]) try {
   // Warn for misplaced linearity commands, and ignore all what follows.
   std::string s;
   while (guarded_read(input(), s)) {
-    if (s == "linearity" || s == "equality" || s == "partial_enum")
+    if (s == "linearity" || s == "equality" || s == "partial_enum") {
       error("the `linearity' command must occur before `begin'");
+    }
     input().ignore(std::numeric_limits<std::streamsize>::max(), '\n');
   }
 
@@ -1258,10 +1317,12 @@ main(int argc, char* argv[]) try {
 #endif
 
   // Write the result of the conversion.
-  if (rep == V)
+  if (rep == V) {
     write_polyhedron(output(), ph, H);
-  else
+  }
+  else{
     write_polyhedron(output(), ph, V);
+  }
 
 #if defined(USE_PPL)
   // Check the result, if requested to do so.
@@ -1274,9 +1335,9 @@ main(int argc, char* argv[]) try {
     switch (command) {
     case H_to_V:
       {
-        if (e_rep == H)
+        if (e_rep == H) {
           warning("checking an H-to-V conversion with an H representation");
-
+        }
         // Count the number of generators of `ph'.
         unsigned ph_num_generators = 0;
         const PPL::Generator_System& ph_gs = ph.generators();
@@ -1293,24 +1354,26 @@ main(int argc, char* argv[]) try {
         }
         // If the polyhedra differ, that is the problem.
         if (ph != e_ph) {
-          if (verbose)
+          if (verbose) {
             std::cerr << "Check failed: polyhedra differ"
                       << std::endl;
+          }
           return 1;
         }
-        else if (ph_num_generators != e_ph_num_generators)
+        else if (ph_num_generators != e_ph_num_generators) {
           // If we have different number of generators, we fail.
           std::cerr << "Check failed: different number of generators:\n"
                     << "expected " << e_ph_num_generators
                     << ", obtained " << ph_num_generators
                     << std::endl;
+        }
         break;
       }
     case V_to_H:
       {
-        if (e_rep == V)
+        if (e_rep == V) {
           warning("checking an V-to-H conversion with a V representation");
-
+        }
         // Count the number of constraints of `ph'.
         unsigned ph_num_constraints = 0;
         const PPL::Constraint_System& ph_cs = ph.constraints();
@@ -1327,17 +1390,19 @@ main(int argc, char* argv[]) try {
         }
         // If the polyhedra differ, that is the problem.
         if (ph != e_ph) {
-          if (verbose)
+          if (verbose) {
             std::cerr << "Check failed: polyhedra differ"
                       << std::endl;
+          }
           return 1;
         }
-        else if (ph_num_constraints != e_ph_num_constraints)
+        else if (ph_num_constraints != e_ph_num_constraints) {
           // If we have different number of constraints, we fail.
           std::cerr << "Check failed: different number of constraints:\n"
                     << "expected " << e_ph_num_constraints
                     << ", obtained " << ph_num_constraints
                     << std::endl;
+        }
         break;
       }
     case None:

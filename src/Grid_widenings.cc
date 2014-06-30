@@ -353,8 +353,9 @@ PPL::Grid::generator_widening_assign(const Grid& y, unsigned* tp) {
     // There are tokens available.  If `result' is not a subset of
     // `x', then it is less precise and we use one of the available
     // tokens.
-    if (!x.contains(result))
+    if (!x.contains(result)) {
       --(*tp);
+    }
   }
   else {
     // No tokens.

@@ -183,7 +183,7 @@ Polyhedron::minimize(const bool con_to_gen,
     }
   }
 
-  if (first_point == dest_num_rows)
+  if (first_point == dest_num_rows) {
     if (con_to_gen) {
       // No point has been found: the polyhedron is empty.
       return true;
@@ -200,6 +200,7 @@ Polyhedron::minimize(const bool con_to_gen,
       PPL_UNREACHABLE;
       return false;
     }
+  }
   else {
     // A point has been found: the polyhedron is not empty.
     // Now invoking simplify() to remove all the redundant constraints
@@ -321,12 +322,12 @@ Polyhedron::add_and_minimize(const bool con_to_gen,
     }
   }
 
-  if (source1.num_pending_rows() == 0)
+  if (source1.num_pending_rows() == 0) {
     // No row was appended to `source1', because all the constraints
     // in `source2' were already in `source1'.
     // There is nothing left to do ...
     return false;
-
+  }
   return add_and_minimize(con_to_gen, source1, dest, sat);
 }
 

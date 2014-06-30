@@ -59,8 +59,9 @@ PPL::Polyhedron::finalize() {
 
 PPL::dimension_type
 PPL::Polyhedron::affine_dimension() const {
-  if (is_empty())
+  if (is_empty()) {
     return 0;
+  }
 
   const Constraint_System& cs = minimized_constraints();
   dimension_type d = space_dim;
@@ -217,7 +218,7 @@ PPL::Polyhedron::relation_with(const Constraint& c) const {
       && Poly_Con_Relation::is_disjoint();
   }
   if (space_dim == 0) {
-    if (c.is_inconsistent())
+    if (c.is_inconsistent()) {
       if (c.is_strict_inequality() && c.inhomogeneous_term() == 0) {
         // The constraint 0 > 0 implicitly defines the hyperplane 0 = 0;
         // thus, the zero-dimensional point also saturates it.
@@ -227,6 +228,7 @@ PPL::Polyhedron::relation_with(const Constraint& c) const {
       else {
         return Poly_Con_Relation::is_disjoint();
       }
+    }
     else if (c.is_equality() || c.inhomogeneous_term() == 0) {
       return Poly_Con_Relation::saturates()
         && Poly_Con_Relation::is_included();
@@ -613,13 +615,13 @@ PPL::Polyhedron::contains_integer_point() const {
   // FIXME: do also exploit info regarding rays and lines, if possible.
   // Is any integer point already available?
   PPL_ASSERT(!has_pending_constraints());
-  if (generators_are_up_to_date())
+  if (generators_are_up_to_date()) {
     for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
       if (gen_sys[i].is_point() && gen_sys[i].divisor() == 1) {
         return true;
       }
     }
-
+  }
   const Constraint_System& cs = constraints();
 #if 0 // TEMPORARILY DISABLED.
   MIP_Problem mip(space_dim,
@@ -653,8 +655,9 @@ PPL::Polyhedron::contains_integer_point() const {
         return false;
       }
       Linear_Expression le(c.expression());
-      if (homogeneous_gcd != 1)
+      if (homogeneous_gcd != 1) {
         le /= homogeneous_gcd;
+      }
       // Further tighten the constraint if the inhomogeneous term
       // was integer, i.e., if `homogeneous_gcd' divides `inhomogeneous'.
       gcd_assign(gcd, homogeneous_gcd, inhomogeneous);
@@ -948,7 +951,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 #endif
       goto bomb;
     }
-    if (sat_c_is_up_to_date())
+    if (sat_c_is_up_to_date()) {
       if (con_sys.first_pending_row() != sat_c.num_columns()) {
 #ifndef NDEBUG
         cerr << "Incompatible size! (con_sys and sat_c)"
@@ -956,7 +959,8 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 #endif
         goto bomb;
       }
-    if (sat_g_is_up_to_date())
+    }
+    if (sat_g_is_up_to_date()) {
       if (con_sys.first_pending_row() != sat_g.num_rows()) {
 #ifndef NDEBUG
         cerr << "Incompatible size! (con_sys and sat_g)"
@@ -964,6 +968,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 #endif
         goto bomb;
       }
+    }
     if (generators_are_up_to_date())
       if (con_sys.space_dimension() != gen_sys.space_dimension()) {
 #ifndef NDEBUG
@@ -990,7 +995,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 #endif
         goto bomb;
       }
-    if (sat_g_is_up_to_date())
+    if (sat_g_is_up_to_date()) {
       if (gen_sys.first_pending_row() != sat_g.num_columns()) {
 #ifndef NDEBUG
         cerr << "Incompatible size! (gen_sys and sat_g)"
@@ -998,7 +1003,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 #endif
         goto bomb;
       }
-
+    }
     if (gen_sys.first_pending_row() == 0) {
 #ifndef NDEBUG
       cerr << "Up-to-date generator system with all rows pending!"
@@ -1225,7 +1230,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
     }
   }
 
-  if (sat_c_is_up_to_date())
+  if (sat_c_is_up_to_date()) {
     for (dimension_type i = sat_c.num_rows(); i-- > 0; ) {
       const Generator tmp_gen = gen_sys[i];
       const Bit_Row tmp_sat = sat_c[i];
@@ -1240,8 +1245,8 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
         }
       }
     }
-
-  if (sat_g_is_up_to_date())
+  }
+  if (sat_g_is_up_to_date()) {
     for (dimension_type i = sat_g.num_rows(); i-- > 0; ) {
       const Constraint tmp_con = con_sys[i];
       const Bit_Row tmp_sat = sat_g[i];
@@ -1256,7 +1261,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
         }
       }
     }
-
+  }
   if (has_pending_constraints()) {
     if (con_sys.num_pending_rows() == 0) {
 #ifndef NDEBUG
@@ -1870,8 +1875,9 @@ PPL::Polyhedron::refine_with_constraints(const Constraint_System& cs) {
 void
 PPL::Polyhedron::refine_with_congruences(const Congruence_System& cgs) {
   // Dimension-compatibility check.
-  if (space_dim < cgs.space_dimension())
+  if (space_dim < cgs.space_dimension()) {
     throw_dimension_incompatible("refine_with_congruences(cgs)", "cgs", cgs);
+  }
 
   Constraint_System cs;
   bool inserted = false;
@@ -1892,8 +1898,9 @@ PPL::Polyhedron::refine_with_congruences(const Congruence_System& cgs) {
   }
   // Only add cgs if congruences were inserted into cgs, as the
   // dimension of cs must be at most that of the polyhedron.
-  if (inserted)
+  if (inserted) {
     add_recycled_constraints(cs);
+  }
 }
 
 void
@@ -1932,9 +1939,9 @@ PPL::Polyhedron::unconstrain(const Variables_Set& vars) {
   // The cylindrification with respect to no dimensions is a no-op.
   // This case also captures the only legal cylindrification
   // of a polyhedron in a 0-dim space.
-  if (vars.empty())
+  if (vars.empty()) {
     return;
-
+  }
   // Dimension-compatibility check.
   const dimension_type min_space_dim = vars.space_dimension();
   if (space_dim < min_space_dim) {
@@ -2309,7 +2316,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
                 }
               }
             }
-            else
+            else {
               // The topology is not necessarily closed.
               switch (g.type()) {
               case Generator::LINE:
@@ -2357,7 +2364,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
                 }
                 break;
               }
-
+            }
             // If we reach this point, `g' satisfies `c'.
             continue;
           ruled_out:
@@ -2652,8 +2659,9 @@ PPL::Polyhedron::poly_difference_assign(const Polyhedron& y) {
     // on C-polyhedra and `c' is a non-strict inequality, c _must_ be
     // skipped for otherwise we would obtain a result that is less
     // precise than the poly-difference.
-    if (x.relation_with(c).implies(Poly_Con_Relation::is_included()))
+    if (x.relation_with(c).implies(Poly_Con_Relation::is_included())) {
       continue;
+    }
     Polyhedron z = x;
     const Linear_Expression e(c.expression());
     switch (c.type()) {
@@ -3377,8 +3385,9 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
 
     // Any image of an empty polyhedron is empty.
     // Note: DO check for emptiness here, as we will add lines.
-    if (is_empty())
+    if (is_empty()) {
       return;
+    }
 
     // Existentially quantify the variables in the left hand side.
     add_recycled_generators(new_lines);
@@ -3538,8 +3547,9 @@ PPL::Polyhedron::generalized_affine_preimage(const Linear_Expression& lhs,
     }
     // Any image of an empty polyhedron is empty.
     // Note: DO check for emptiness here, as we will add lines.
-    if (is_empty())
+    if (is_empty()) {
       return;
+    }
     // Existentially quantify all the variables occurring in `lhs'.
     add_recycled_generators(new_lines);
   }

@@ -72,9 +72,10 @@ PPL::Bit_Row::next(unsigned long position) const {
     = *p & ((~static_cast<mp_limb_t>(0)) << (position % PPL_BITS_PER_GMP_LIMB));
 
   while (true) {
-    if (limb != 0)
+    if (limb != 0) {
       return static_cast<unsigned long>(li) * PPL_BITS_PER_GMP_LIMB
         + Implementation::first_one(limb);
+    }
     ++li;
     if (li == vec_size) {
       break;
@@ -225,8 +226,9 @@ PPL::subset_or_equal(const Bit_Row& x, const Bit_Row& y,
   PPL_ASSERT(x_size >= 0);
   const mp_size_t y_size = y.vec->_mp_size;
   PPL_ASSERT(y_size >= 0);
-  if (x_size > y_size)
+  if (x_size > y_size) {
     return false;
+  }
   mp_srcptr xp = x.vec->_mp_d;
   mp_srcptr yp = y.vec->_mp_d;
   strict_subset = (x_size < y_size);

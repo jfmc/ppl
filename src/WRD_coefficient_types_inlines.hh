@@ -28,14 +28,16 @@ namespace Parma_Polyhedra_Library {
 
 inline void
 WRD_Extended_Number_Policy::handle_result(Result r) {
-  if (result_class(r) == VC_NAN)
+  if (result_class(r) == VC_NAN) {
     throw_result_exception(r);
+  }
 }
 
 inline void
 Debug_WRD_Extended_Number_Policy::handle_result(Result r) {
-  if (result_class(r) == VC_NAN)
+  if (result_class(r) == VC_NAN) {
     throw_result_exception(r);
+  }
 }
 
 } // namespace Parma_Polyhedra_Library

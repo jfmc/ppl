@@ -194,8 +194,9 @@ PPL::CO_Tree::erase_element_and_shift_left(dimension_type key) {
 
 void
 PPL::CO_Tree::increase_keys_from(dimension_type key, dimension_type n) {
-  if (empty())
+  if (empty()) {
     return;
+  }
   dimension_type* p = indexes + reserved_size;
   while (*p == unused_index) {
     --p;
@@ -340,8 +341,9 @@ PPL::CO_Tree::bisect_near(dimension_type hint, dimension_type key) const {
         // to valid elements.
         break;
       }
-      else
+      else {
         new_hint = hint + offset;
+      }
 
       PPL_ASSERT(new_hint > 0);
       PPL_ASSERT(new_hint <= reserved_size);
@@ -357,9 +359,10 @@ PPL::CO_Tree::bisect_near(dimension_type hint, dimension_type key) const {
         return new_hint;
       }
       else {
-        if (indexes[new_hint] > key)
+        if (indexes[new_hint] > key) {
           // The searched element is in (hint,new_hint).
           break;
+        }
       }
       hint = new_hint;
       offset *= 2;
@@ -748,9 +751,9 @@ PPL::CO_Tree::structure_OK() const {
 bool
 PPL::CO_Tree::OK() const {
 
-  if (!structure_OK())
+  if (!structure_OK()) {
     return false;
-
+  }
   {
     dimension_type real_size = 0;
 
@@ -758,20 +761,23 @@ PPL::CO_Tree::OK() const {
       ++real_size;
     }
 
-    if (real_size != size_)
+    if (real_size != size_) {
       // There are \p real_size elements in the tree, but size is \p size.
       return false;
+    }
   }
 
   if (reserved_size > 0) {
     if (is_greater_than_ratio(size_, reserved_size, max_density_percent)
-        && reserved_size != 3)
+        && reserved_size != 3) {
       // Found too high density.
       return false;
+    }
     if (is_less_than_ratio(size_, reserved_size, min_density_percent)
-        && !is_greater_than_ratio(size_, reserved_size/2, max_density_percent))
+        && !is_greater_than_ratio(size_, reserved_size/2, max_density_percent)) {
       // Found too low density
       return false;
+    }
   }
 
   return true;
@@ -967,7 +973,7 @@ PPL::CO_Tree
   // rightmost node with a value in the subtree. first_unused_index and
   // first_unused_data point to the rightmost unused node in the subtree.
 
-  if (add_element)
+  if (add_element) {
     while (subtree_size != 0) {
       --subtree_size;
       if (last_index_in_subtree == indexes || key > *last_index_in_subtree) {
@@ -1002,6 +1008,7 @@ PPL::CO_Tree
         --first_unused_data;
       }
     }
+  }
   while (subtree_size != 0) {
     if (last_index_in_subtree != first_unused_index) {
       PPL_ASSERT(first_unused_index != indexes);
@@ -1413,8 +1420,9 @@ PPL::CO_Tree::tree_iterator::go_down_searching_key(dimension_type key) {
   PPL_ASSERT(key != unused_index);
   PPL_ASSERT(index() != unused_index);
   while (!is_leaf()) {
-    if (key == index())
+    if (key == index()) {
       break;
+    }
     if (key < index()) {
       get_left_child();
       if (index() == unused_index) {

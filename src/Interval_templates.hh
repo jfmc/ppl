@@ -179,8 +179,9 @@ Interval<Boundary, Info>::Interval(const char* s) {
     if (upper_r == V_EQ_PLUS_INFINITY || upper_r == V_LT_PLUS_INFINITY) {
       assign(UNIVERSE);
     }
-    else
+    else {
       assign(EMPTY);
+    }
     break;
   default:
     PPL_UNREACHABLE;
