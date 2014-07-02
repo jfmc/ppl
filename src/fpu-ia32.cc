@@ -72,4 +72,6 @@ detect_sse_unit() {
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // PPL_CAN_CONTROL_FPU && defined(PPL_FPMATH_MAY_USE_SSE) && defined(__i386__) && (defined(__GNUC__) || defined(__INTEL_COMPILER))
+#endif // PPL_CAN_CONTROL_FPU && defined(PPL_FPMATH_MAY_USE_SSE)
+       // && defined(__i386__)
+       // && (defined(__GNUC__) || defined(__INTEL_COMPILER))

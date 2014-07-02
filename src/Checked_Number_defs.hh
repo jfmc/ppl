@@ -242,7 +242,9 @@ public:
 
   //! Direct initialization from special and rounding mode.
   template <typename From>
-  Checked_Number(const From&, Rounding_Dir dir, typename Enable_If<Is_Special<From>::value, bool>::type ignored = false);
+  Checked_Number(const From&, Rounding_Dir dir,
+                 typename Enable_If<Is_Special<From>::value, bool>::type
+                 ignored = false);
 
   //! Direct initialization from a Checked_Number, default rounding mode.
   template <typename From, typename From_Policy>

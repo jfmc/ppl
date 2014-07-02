@@ -314,15 +314,19 @@ public:
   */
   template <typename LE_Adapter>
   explicit
-  Linear_Expression(const LE_Adapter& e,
-                    typename Enable_If<Is_Same_Or_Derived<Expression_Adapter_Base, LE_Adapter>::value, void*>::type = 0);
+  Linear_Expression
+  (const LE_Adapter& e,
+   typename Enable_If<Is_Same_Or_Derived<Expression_Adapter_Base,
+                                         LE_Adapter>::value, void*>::type = 0);
 
   /*! \brief Copy constructor from a linear expression adapter that takes a
     Representation.
   */
   template <typename LE_Adapter>
-  Linear_Expression(const LE_Adapter& e, Representation r,
-                    typename Enable_If<Is_Same_Or_Derived<Expression_Adapter_Base, LE_Adapter>::value, void*>::type = 0);
+  Linear_Expression
+  (const LE_Adapter& e, Representation r,
+   typename Enable_If<Is_Same_Or_Derived<Expression_Adapter_Base,
+                                         LE_Adapter>::value, void*>::type = 0);
 
   /*! \brief
     Copy constructor from a linear expression adapter that takes a
@@ -333,17 +337,21 @@ public:
   */
   template <typename LE_Adapter>
   explicit
-  Linear_Expression(const LE_Adapter& e, dimension_type space_dim,
-                    typename Enable_If<Is_Same_Or_Derived<Expression_Adapter_Base, LE_Adapter>::value, void*>::type = 0);
+  Linear_Expression
+  (const LE_Adapter& e, dimension_type space_dim,
+   typename Enable_If<Is_Same_Or_Derived<Expression_Adapter_Base,
+                                         LE_Adapter>::value, void*>::type = 0);
 
   /*! \brief
     Copy constructor from a linear expression adapter that takes a
     space dimension and a Representation.
   */
   template <typename LE_Adapter>
-  Linear_Expression(const LE_Adapter& e,
-                    dimension_type space_dim, Representation r,
-                    typename Enable_If<Is_Same_Or_Derived<Expression_Adapter_Base, LE_Adapter>::value, void*>::type = 0);
+  Linear_Expression
+  (const LE_Adapter& e,
+   dimension_type space_dim, Representation r,
+   typename Enable_If<Is_Same_Or_Derived<Expression_Adapter_Base,
+                                         LE_Adapter>::value, void*>::type = 0);
 
   //! Assignment operator.
   Linear_Expression& operator=(const Linear_Expression& e);

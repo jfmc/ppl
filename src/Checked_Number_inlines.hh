@@ -723,7 +723,9 @@ exact_div_assign(Checked_Number<T, Policy>& x,
 template <typename From>
 inline typename Enable_If<Is_Native_Or_Checked<From>::value, int>::type
 sgn(const From& x) {
-  Result_Relation r = Checked::sgn_ext<typename Native_Checked_From_Wrapper<From>::Policy>(Native_Checked_From_Wrapper<From>::raw_value(x));
+  Result_Relation r
+    = Checked::sgn_ext<typename Native_Checked_From_Wrapper<From>::Policy>
+        (Native_Checked_From_Wrapper<From>::raw_value(x));
   switch (r) {
   case VR_LT:
     return -1;

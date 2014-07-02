@@ -1952,17 +1952,39 @@ PPL_SPECIALIZE_GCD(gcd_exact, unsigned int, unsigned int, unsigned int)
 PPL_SPECIALIZE_GCD(gcd_exact, unsigned long, unsigned long, unsigned long)
 PPL_SPECIALIZE_GCD(gcd_exact, unsigned long long, unsigned long long, unsigned long long)
 
-PPL_SPECIALIZE_GCDEXT(gcdext_exact, char, char, char, char, char)
-PPL_SPECIALIZE_GCDEXT(gcdext_exact, signed char, signed char, signed char, signed char, signed char)
-PPL_SPECIALIZE_GCDEXT(gcdext_exact, signed short, signed short, signed short, signed short, signed short)
-PPL_SPECIALIZE_GCDEXT(gcdext_exact, signed int, signed int, signed int, signed int, signed int)
-PPL_SPECIALIZE_GCDEXT(gcdext_exact, signed long, signed long, signed long, signed long, signed long)
-PPL_SPECIALIZE_GCDEXT(gcdext_exact, signed long long, signed long long, signed long long, signed long long, signed long long)
-PPL_SPECIALIZE_GCDEXT(gcdext_exact, unsigned char, unsigned char, unsigned char, unsigned char, unsigned char)
-PPL_SPECIALIZE_GCDEXT(gcdext_exact, unsigned short, unsigned short, unsigned short, unsigned short, unsigned short)
-PPL_SPECIALIZE_GCDEXT(gcdext_exact, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)
-PPL_SPECIALIZE_GCDEXT(gcdext_exact, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long)
-PPL_SPECIALIZE_GCDEXT(gcdext_exact, unsigned long long, unsigned long long, unsigned long long, unsigned long long, unsigned long long)
+PPL_SPECIALIZE_GCDEXT(gcdext_exact,
+                      char, char, char, char, char)
+PPL_SPECIALIZE_GCDEXT(gcdext_exact,
+                      signed char, signed char, signed char,
+                      signed char, signed char)
+PPL_SPECIALIZE_GCDEXT(gcdext_exact,
+                      signed short, signed short, signed short,
+                      signed short, signed short)
+PPL_SPECIALIZE_GCDEXT(gcdext_exact,
+                      signed int, signed int, signed int,
+                      signed int, signed int)
+PPL_SPECIALIZE_GCDEXT(gcdext_exact,
+                      signed long, signed long, signed long,
+                      signed long, signed long)
+PPL_SPECIALIZE_GCDEXT(gcdext_exact,
+                      signed long long, signed long long, signed long long,
+                      signed long long, signed long long)
+PPL_SPECIALIZE_GCDEXT(gcdext_exact,
+                      unsigned char, unsigned char, unsigned char,
+                      unsigned char, unsigned char)
+PPL_SPECIALIZE_GCDEXT(gcdext_exact,
+                      unsigned short, unsigned short, unsigned short,
+                      unsigned short, unsigned short)
+PPL_SPECIALIZE_GCDEXT(gcdext_exact,
+                      unsigned int, unsigned int, unsigned int,
+                      unsigned int, unsigned int)
+PPL_SPECIALIZE_GCDEXT(gcdext_exact,
+                      unsigned long, unsigned long, unsigned long,
+                      unsigned long, unsigned long)
+PPL_SPECIALIZE_GCDEXT(gcdext_exact,
+                      unsigned long long, unsigned long long,
+                      unsigned long long, unsigned long long,
+                      unsigned long long)
 
 PPL_SPECIALIZE_LCM(lcm_gcd_exact, char, char, char)
 PPL_SPECIALIZE_LCM(lcm_gcd_exact, signed char, signed char, signed char)
