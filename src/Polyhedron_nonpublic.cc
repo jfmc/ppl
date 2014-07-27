@@ -2453,8 +2453,6 @@ PPL::Polyhedron::positive_time_elapse_assign_impl(const Polyhedron& y) {
   }
 
   PPL_ASSERT(gs->OK());
-  //gs->ascii_dump(std::cout);
-  //IO_Operators::operator<<(std::cout, *gs);
 
   const dimension_type gs_num_rows = gs->num_rows();
 

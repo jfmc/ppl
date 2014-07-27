@@ -47,14 +47,16 @@ unsigned long
 PPL::Bit_Row::next(unsigned long position) const {
   ++position;
 
-  // The alternative implementation using the mpz_scan1() function
-  // of GMP was measured to be slower that ours.  Here it is, in
-  // case mpz_scan1() is improved.
-  //
-  // <CODE>
-  //   unsigned long r = mpz_scan1(vec, position);
-  //   return (r == C_Integer<unsigned long>::max) ? -1 : r;
-  // </CODE>
+  /*
+    The alternative implementation using the mpz_scan1() function
+    of GMP was measured to be slower that ours.  Here it is, in
+    case mpz_scan1() is improved:
+
+    <CODE>
+      unsigned long r = mpz_scan1(vec, position);
+      return (r == C_Integer<unsigned long>::max) ? -1 : r;
+    </CODE>
+  */
 
   const unsigned long uli = position / PPL_BITS_PER_GMP_LIMB;
   mp_size_t li = static_cast<mp_size_t>(uli);

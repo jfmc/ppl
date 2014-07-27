@@ -26,7 +26,6 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "iterator_to_const_types.hh"
 #include "Powerset_types.hh"
-//#include "Ask_Tell_types.hh"
 #include <iterator>
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS

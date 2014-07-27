@@ -28,9 +28,11 @@ site: http://bugseng.com/products/ppl/ . */
 #include <memory>
 #include <map>
 
-// #define NOISY_PIP_TREE_STRUCTURE 1
-// #define NOISY_PIP 1
-// #define VERY_NOISY_PIP 1
+#if 0
+#define NOISY_PIP_TREE_STRUCTURE 1
+#define NOISY_PIP 1
+#define VERY_NOISY_PIP 1
+#endif
 
 namespace Parma_Polyhedra_Library {
 
