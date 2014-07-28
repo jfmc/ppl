@@ -42,7 +42,7 @@ Pending_List<Traits>::insert(const typename Traits::Threshold& deadline,
        position != active_list_end
          && Traits::less_than(position->deadline(), deadline);
        ++position) {
-   }
+  }
   iterator pending_element_p;
   // Only allocate a new element if the free list is empty.
   if (free_list.empty()) {

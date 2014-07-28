@@ -414,7 +414,7 @@ Polyhedron::add_and_minimize(const bool con_to_gen,
       if (dest[first_point].expr.get(Variable(dest.space_dimension())) > 0) {
         break;
       }
-     }
+    }
   }
 
   if (first_point == dest_num_rows) {

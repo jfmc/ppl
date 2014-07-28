@@ -290,8 +290,8 @@ Polyhedron::simplify(Linear_System1& sys, Bit_Matrix& sat) {
             swap(sat[j], sat[num_rows]);
             swap(num_saturators[j], num_saturators[num_rows]);
           }
-       }
-       else {
+        }
+        else {
           // If we reach this point then we know that `sat[i]' does
           // not contain (and is different from) `sat[j]', so that
           // `sys[i]' is not made redundant by inequality `sys[j]'.
