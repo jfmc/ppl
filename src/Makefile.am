@@ -533,6 +533,7 @@ Variable.cc \
 Variables_Set.cc \
 Grid_conversion.cc \
 Grid_simplify.cc \
+set_GMP_memory_alloc_funcs.cc \
 stdiobuf.cc \
 c_streambuf.cc \
 globals.cc \

@@ -51,10 +51,6 @@ extern "C" void
 ppl_set_GMP_memory_allocation_functions(void)
 #if PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK
   __attribute__((weak));
-
-void
-ppl_set_GMP_memory_allocation_functions(void) {
-}
 #else
   ;
 #endif
