@@ -2255,9 +2255,9 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
       z.add_recycled_constraints(tmp_cs);
     }
     if (!z.minimize()) {
-      // The objective function is the default, zero.
-      // We do not care about minimization or maximization, since
-      // we are only interested in satisfiability.
+      // For necessarily closed polyhedra, the objective function is
+      // the default, zero.  Moreover, the default maximization mode is
+      // OK, since we are only interested in satisfiability.
       MIP_Problem lp;
       if (x.is_necessarily_closed()) {
         lp.add_space_dimensions_and_embed(x.space_dim);
@@ -2278,6 +2278,11 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
           const_cast<Constraint_System&>(y_cs).mark_as_not_necessarily_closed();
           throw;
         }
+        // For not necessarily closed polyhedra, we maximize the
+        // epsilon dimension as we want to rule out the possibility
+        // that all solutions have epsilon = 0.  We are in this case
+        // if and only if the maximal value for epsilon is 0.
+        lp.set_objective_function(Variable(x.space_dim));
       }
       // We apply the following heuristics here: constraints of `x' that
       // are not made redundant by `y' are added to `lp' depending on
@@ -2387,15 +2392,50 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
            ++j) {
         const Constraint& c = x_cs[j->constraint_index];
         result_cs.insert(c);
-        lp.add_constraint(c);
-        const MIP_Problem_Status status = lp.solve();
-        if (status == UNFEASIBLE_MIP_PROBLEM) {
-          Polyhedron result_ph(x.topology(), x.space_dim, UNIVERSE);
-          result_ph.add_constraints(result_cs);
-          swap(x, result_ph);
-          PPL_ASSERT_HEAVY(x.OK());
-          return false;
+        if (x.is_necessarily_closed()) {
+          lp.add_constraint(c);
         }
+        else {
+          // KLUDGE: temporarily mark `c' as if it was necessarily
+          // closed, so that we can interpret the epsilon dimension as a
+          // standard dimension.  Be careful to reset the topology of `c'
+          // also on exceptional execution paths.
+          const_cast<Constraint&>(c).mark_as_necessarily_closed();
+          try {
+            lp.add_constraint(c);
+            const_cast<Constraint&>(c).mark_as_not_necessarily_closed();
+          }
+          catch (...) {
+            const_cast<Constraint&>(c).mark_as_not_necessarily_closed();
+            throw;
+          }
+        }
+        const MIP_Problem_Status status = lp.solve();
+        switch (status) {
+        case UNFEASIBLE_MIP_PROBLEM:
+          break;
+        case OPTIMIZED_MIP_PROBLEM:
+          if (x.is_necessarily_closed()) {
+            continue;
+          }
+          else {
+            Coefficient num;
+            Coefficient den;
+            lp.optimal_value(num, den);
+            if (num != 0) {
+              continue;
+            }
+          }
+          break;
+        default:
+          PPL_UNREACHABLE;
+          break;
+        }
+        Polyhedron result_ph(x.topology(), x.space_dim, UNIVERSE);
+        result_ph.add_constraints(result_cs);
+        swap(x, result_ph);
+        PPL_ASSERT_HEAVY(x.OK());
+        return false;
       }
       // Cannot exit from here.
       PPL_UNREACHABLE;

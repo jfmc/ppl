@@ -129,7 +129,7 @@ refinewithconstraint1 \
 refinewithconstraints1 \
 relations1 relations2 relations3 \
 removespacedims1 removespacedims2 \
-simplifyusingcontext1 \
+simplifyusingcontext1 simplifyusingcontext2 \
 smm1 \
 sparserow1 \
 termination1 termination2 \
@@ -340,6 +340,8 @@ hybrid_SOURCES = hybrid.cc
 intersection1_SOURCES = intersection1.cc
 
 simplifyusingcontext1_SOURCES = simplifyusingcontext1.cc
+
+simplifyusingcontext2_SOURCES = simplifyusingcontext2.cc
 
 limitedbhrz03extrapolation1_SOURCES = limitedbhrz03extrapolation1.cc
 
