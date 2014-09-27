@@ -747,7 +747,7 @@ uninstall-txt
 
 if BUILD_DOCUMENTATION
 
-CONTINUE_IF_NO_DOC = true
+CONTINUE_IF_NO_DOC = false
 
 else !BUILD_DOCUMENTATION
 
