@@ -411,8 +411,9 @@ PPL::Polyhedron::quick_equivalence_test(const Polyhedron& y) const {
         y.obtain_sorted_constraints();
         if (x.con_sys == y.con_sys) {
             return Polyhedron::TVB_TRUE;
-        }else {
-            return Polyhedron::TVB_FALSE;
+        }
+        else {
+          return Polyhedron::TVB_FALSE;
         }
       }
     }
@@ -1482,7 +1483,8 @@ PPL::Polyhedron::refine_no_check(const Constraint& c) {
       else {
         con_sys.insert(nc_expr == 0);
       }
-    }else {
+    }
+    else {
       if (adding_pending) {
         con_sys.insert_pending(nc_expr >= 0);
       }

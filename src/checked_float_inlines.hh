@@ -1111,7 +1111,7 @@ template <typename Policy, typename Type>
 inline Result
 output_float(std::ostream& os, const Type from, const Numeric_Format&,
              Rounding_Dir) {
-  if (from == 0){
+  if (from == 0) {
     os << "0";
   }
   else if (is_minf<Policy>(from)) {

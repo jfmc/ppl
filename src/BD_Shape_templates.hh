@@ -1521,7 +1521,7 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
       return Poly_Con_Relation::saturates()
         && Poly_Con_Relation::is_included();
     }
-    else{
+    else {
       // The zero-dimensional point saturates
       // neither the positivity constraint 1 >= 0,
       // nor the strict positivity constraint 1 > 0.

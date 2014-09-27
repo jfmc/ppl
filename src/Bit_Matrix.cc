@@ -33,7 +33,7 @@ site: http://bugseng.com/products/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Bit_Matrix&
-PPL::Bit_Matrix::operator=(const Bit_Matrix& y){
+PPL::Bit_Matrix::operator=(const Bit_Matrix& y) {
   rows = y.rows;
   row_size = y.row_size;
   PPL_ASSERT(OK());

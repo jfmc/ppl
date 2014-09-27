@@ -1335,7 +1335,7 @@ PPL::Polyhedron::add_congruence(const Congruence& cg) {
 
   // Handle the case of proper congruences first.
   if (cg.is_proper_congruence()) {
-    if (cg.is_tautological()){
+    if (cg.is_tautological()) {
       return;
     }
     if (cg.is_inconsistent()) {
@@ -1849,7 +1849,8 @@ PPL::Polyhedron::refine_with_constraints(const Constraint_System& cs) {
         else {
           con_sys.insert(nc_expr == 0);
         }
-      }else {
+      }
+      else {
         if (adding_pending) {
           con_sys.insert_pending(nc_expr >= 0);
         }
@@ -2363,7 +2364,7 @@ PPL::Polyhedron::simplify_using_context_assign(const Polyhedron& y) {
                     goto ruled_out;
                   }
                 }
-                else{
+                else {
                   // Constraint `c' is an equality.
                   if (sp_sign != 0) {
                     goto ruled_out;
@@ -2773,7 +2774,7 @@ affine_image(const Variable var,
       if (denominator > 0) {
         gen_sys.affine_image(var, expr, denominator);
       }
-      else{
+      else {
         gen_sys.affine_image(var, -expr, -denominator);
       }
     }
@@ -3056,7 +3057,7 @@ bounded_affine_preimage(const Variable var,
     if (constraints_are_up_to_date()) {
       con_sys.swap_space_dimensions(var, new_var);
     }
-    if (generators_are_up_to_date()){
+    if (generators_are_up_to_date()) {
       gen_sys.swap_space_dimensions(var, new_var);
     }
 

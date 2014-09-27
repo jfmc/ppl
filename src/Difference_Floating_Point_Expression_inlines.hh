@@ -35,7 +35,7 @@ Difference_Floating_Point_Expression<FP_Interval_Type, FP_Format>
 ::Difference_Floating_Point_Expression(
          Floating_Point_Expression<FP_Interval_Type, FP_Format>* const x,
          Floating_Point_Expression<FP_Interval_Type, FP_Format>* const y)
-  : first_operand(x), second_operand(y){
+  : first_operand(x), second_operand(y) {
   assert(x != 0);
   assert(y != 0);
 }

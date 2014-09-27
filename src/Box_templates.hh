@@ -4393,12 +4393,12 @@ IO_Operators::operator<<(std::ostream& s, const Box<ITV>& box) {
   else if (box.is_universe()) {
     s << "true";
   }
-  else{
+  else {
     for (dimension_type k = 0,
            space_dim = box.space_dimension(); k < space_dim; ) {
       s << Variable(k) << " in " << box[k];
       ++k;
-      if (k < space_dim){
+      if (k < space_dim) {
         s << ", ";
       }
       else {

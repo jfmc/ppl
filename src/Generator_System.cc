@@ -255,7 +255,7 @@ PPL::Generator_System::insert_pending(Generator& g, Recycle_Input) {
   if (sys.topology() == g.topology()) {
     sys.insert_pending(g, Recycle_Input());
   }
-  else{
+  else {
     // `*this' and `g' have different topologies.
     if (sys.is_necessarily_closed()) {
       convert_into_non_necessarily_closed();

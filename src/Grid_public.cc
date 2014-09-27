@@ -2136,7 +2136,7 @@ generalized_affine_image(const Variable var,
 
   // Test if minimization, possibly in affine_image, found an empty
   // grid.
-  if (marked_empty()){
+  if (marked_empty()) {
     return;
   }
 
