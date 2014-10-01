@@ -24,13 +24,8 @@ site: http://bugseng.com/products/ppl/ . */
 #include "ppl-config.h"
 
 extern "C" void
-ppl_set_GMP_memory_allocation_functions(void)
-#if PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK
-  __attribute__((weak));
+ppl_set_GMP_memory_allocation_functions(void);
 
 void
 ppl_set_GMP_memory_allocation_functions(void) {
 }
-#else
-  ;
-#endif

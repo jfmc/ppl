@@ -48,12 +48,7 @@ unsigned int PPL::Init::count = 0;
 PPL::fpu_rounding_direction_type PPL::Init::old_rounding_direction;
 
 extern "C" void
-ppl_set_GMP_memory_allocation_functions(void)
-#if PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK
-  __attribute__((weak));
-#else
-  ;
-#endif
+ppl_set_GMP_memory_allocation_functions(void);
 
 #if PPL_CAN_CONTROL_FPU \
   && defined(PPL_ARM_CAN_CONTROL_FPU) && PPL_ARM_CAN_CONTROL_FPU

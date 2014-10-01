@@ -41,12 +41,6 @@ namespace PPL = Parma_Polyhedra_Library;
 
 typedef PPL::C_Polyhedron POLYHEDRON_TYPE;
 
-#if !PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK
-extern "C" void
-ppl_set_GMP_memory_allocation_functions(void) {
-}
-#endif
-
 #elif defined(USE_PIPLIB)
 
 #error "PipLib not supported yet"
