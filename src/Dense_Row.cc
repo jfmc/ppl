@@ -31,10 +31,11 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::Dense_Row::Dense_Row(const Sparse_Row& y, dimension_type sz, dimension_type capacity) {
+PPL::Dense_Row::Dense_Row(const Sparse_Row& y,
+                          dimension_type sz, dimension_type capacity) {
   resize(sz, capacity);
   for (Sparse_Row::const_iterator i = y.begin(),
-         i_end = y.lower_bound(sz); i != i_end; ++i) {
+         i_end = y.lower_bound(std::min(y.size(), sz)); i != i_end; ++i) {
     (*this)[i.index()] = *i;
   }
   PPL_ASSERT(OK());

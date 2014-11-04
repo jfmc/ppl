@@ -9,6 +9,25 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 ===============================================================
 
 --------------------------------------------------------------------------
+NEWS for version 1.2  (released date to be decided)
+--------------------------------------------------------------------------
+
+New and Changed Features
+========================
+
+o  TO BE WRITTEN
+
+
+
+Bugfixes
+========
+
+o  Fixed a bug in the implementation of dense rows.
+
+o  Portability improved.
+
+
+--------------------------------------------------------------------------
 NEWS for version 1.1  (released on October 28, 2013)
 --------------------------------------------------------------------------
 

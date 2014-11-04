@@ -598,6 +598,13 @@ test09() {
   return true;
 }
 
+bool
+test10() {
+  Sparse_Row sparse(2);
+  Dense_Row dense(sparse, 8, 8);
+  return true;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -610,6 +617,7 @@ BEGIN_MAIN
   DO_TEST(test07);
   DO_TEST(test08);
   DO_TEST(test09);
+  DO_TEST(test10);
 END_MAIN
 
 #else // !PPL_USE_SPARSE_MATRIX
