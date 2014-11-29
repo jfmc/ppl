@@ -32,9 +32,10 @@ m4_include(`ppl_interface_generator_copyright')`'dnl
 */
 
 #include "../ppl_prolog_domains.hh"
+#include "ppl_swiprolog.hh"
 
 #define PL_EXTENSION_ENTRY(name, arity) \
-  { #name, arity, static_cast<pl_function_t>(name), 0 },
+  { #name, arity, reinterpret_cast<pl_function_t>(name), 0 },
 
 namespace {
 
@@ -46,13 +47,13 @@ m4_divert(1)dnl
 } // namespace
 
 extern "C" install_t
-install() {
+install_libppl_swiprolog() {
   ppl_initialize();
   PL_register_extensions(predicates);
 }
 
 extern "C" install_t
-uninstall() {
+uninstall_libppl_swiprolog() {
   ppl_finalize();
 }
 m4_divert(-1)

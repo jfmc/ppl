@@ -74,6 +74,7 @@ pkglib_LTLIBRARIES = libppl_swiprolog.la
 
 libppl_swiprolog_la_SOURCES = \
 ppl_prolog_sysdep.hh \
+ppl_swiprolog.hh \
 swi_efli.hh \
 swi_efli.cc
 

@@ -21,10 +21,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
-#include <SWI-Prolog.h>
-
-extern "C" install_t install();
-extern "C" install_t uninstall();
+#include "ppl_swiprolog.hh"
+#include "swi_cfli.hh"
 
 int
 main(int, char** argv) {
@@ -39,10 +37,10 @@ main(int, char** argv) {
   if (!PL_initialise(1, pl_args))
     PL_halt(1);
 
-  install();
+  install_libppl_swiprolog();
   predicate_t pred = PL_predicate("main", 0, "user");
   term_t h0 = PL_new_term_refs(0);
   int ret_val = PL_call_predicate(0, PL_Q_NORMAL, pred, h0);
-  uninstall();
+  uninstall_libppl_swiprolog();
   PL_halt(ret_val ? 0 : 1);
 }
