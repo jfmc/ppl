@@ -402,32 +402,32 @@ public:
 
     //! The copy constructor.
     /*!
-      \param itr
+      \param i
       The %iterator that will be copied.
 
       This constructor takes \f$O(1)\f$ time.
     */
-    const_iterator(const const_iterator& itr);
+    const_iterator(const const_iterator& i);
 
     ~const_iterator();
 
-    //! Swaps itr with *this.
+    //! Swaps \p i with \p *this.
     /*!
-      \param itr
-      The %iterator that will be swapped with *this.
+      \param i
+      The %iterator that will be swapped with \p *this.
 
       This method takes \f$O(1)\f$ time.
     */
-    void m_swap(const_iterator& itr);
+    void m_swap(const_iterator& i);
 
-    //! Assigns \p itr to *this .
+    //! Assigns \p i to *this .
     /*!
-      \param itr
+      \param i
       The %iterator that will be assigned into *this.
 
       This method takes \f$O(1)\f$ time.
     */
-    const_iterator& operator=(const const_iterator& itr);
+    const_iterator& operator=(const const_iterator& i);
 
     //! Navigates to the next nonzero coefficient.
     /*!
@@ -452,24 +452,24 @@ public:
     */
     Variable variable() const;
 
-    //! Compares \p *this with x .
+    //! Compares \p *this with \p i.
     /*!
-      \param x
+      \param i
       The %iterator that will be compared with *this.
     */
-    bool operator==(const const_iterator& x) const;
+    bool operator==(const const_iterator& i) const;
 
-    //! Compares \p *this with x .
+    //! Compares \p *this with \p i .
     /*!
       \param x
       The %iterator that will be compared with *this.
     */
-    bool operator!=(const const_iterator& x) const;
+    bool operator!=(const const_iterator& i) const;
 
   private:
     //! Constructor from a const_iterator_interface*.
     //! The new object takes ownership of the dynamic object.
-    const_iterator(Linear_Expression_Interface::const_iterator_interface* itr);
+    const_iterator(Linear_Expression_Interface::const_iterator_interface* i);
 
     Linear_Expression_Interface::const_iterator_interface* itr;
 
@@ -784,14 +784,17 @@ private:
                    Coefficient_traits::const_reference c2,
                    dimension_type start, dimension_type end) const;
 
-  //! Sets `row' to a copy of the row that implements *this.
-  void get_row(Dense_Row& row) const;
+  //! Sets \p row to a copy of the row that implements \p *this.
+  void get_row(Dense_Row& r) const;
 
-  //! Sets `row' to a copy of the row that implements *this.
-  void get_row(Sparse_Row& row) const;
+  //! Sets \p r to a copy of the row that implements \p *this.
+  void get_row(Sparse_Row& r) const;
 
-  //! Returns true if there is a variable in [first,last) whose coefficient
-  //! is nonzero in both *this and x.
+  /*! \brief
+    Returns \p true if there is a variable from index \p first (included)
+    to index \p last (excluded) whose coefficient is nonzero in both
+    \p *this and \p x.
+  */
   bool have_a_common_variable(const Linear_Expression& x,
                               Variable first, Variable last) const;
 

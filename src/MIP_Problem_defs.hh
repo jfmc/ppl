@@ -242,6 +242,7 @@ public:
   private:
     typedef Constraint_Sequence::const_iterator Base;
     typedef std::iterator_traits<Base> Base_Traits;
+
   public:
     typedef Base_Traits::iterator_category iterator_category;
     typedef Base_Traits::difference_type difference_type;
@@ -298,7 +299,7 @@ public:
 
   private:
     //! Constructor from a Base iterator.
-    explicit const_iterator(Base base);
+    explicit const_iterator(Base b);
 
     //! The Base iterator on the Constraint_Sequence.
     Base itr;

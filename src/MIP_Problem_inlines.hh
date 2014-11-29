@@ -238,8 +238,8 @@ MIP_Problem::total_memory_in_bytes() const {
 }
 
 inline
-MIP_Problem::const_iterator::const_iterator(Base base)
-  : itr(base) {
+MIP_Problem::const_iterator::const_iterator(Base b)
+  : itr(b) {
 }
 
 inline MIP_Problem::const_iterator::difference_type

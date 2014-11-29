@@ -551,14 +551,14 @@ Linear_Expression
 
 inline void
 Linear_Expression
-::get_row(Dense_Row& row) const {
-  return impl->get_row(row);
+::get_row(Dense_Row& r) const {
+  return impl->get_row(r);
 }
 
 inline void
 Linear_Expression
-::get_row(Sparse_Row& row) const {
-  return impl->get_row(row);
+::get_row(Sparse_Row& r) const {
+  return impl->get_row(r);
 }
 
 inline void
@@ -626,27 +626,27 @@ Linear_Expression::const_iterator
 
 inline
 Linear_Expression::const_iterator
-::const_iterator(const const_iterator& x)
-  : itr(x.itr->clone()) {
+::const_iterator(const const_iterator& i)
+  : itr(i.itr->clone()) {
 }
 
 inline
 Linear_Expression::const_iterator
 ::~const_iterator() {
-  // Note that this does nothing if itr==NULL.
+  // Note that this does nothing if itr == NULL.
   delete itr;
 }
 
 inline void
-Linear_Expression::const_iterator::m_swap(const_iterator& x) {
+Linear_Expression::const_iterator::m_swap(const_iterator& i) {
   using std::swap;
-  swap(itr, x.itr);
+  swap(itr, i.itr);
 }
 
 inline Linear_Expression::const_iterator&
 Linear_Expression::const_iterator
-::operator=(const const_iterator& itr) {
-  const_iterator tmp = itr;
+::operator=(const const_iterator& i) {
+  const_iterator tmp = i;
   using std::swap;
   swap(*this, tmp);
   return *this;
@@ -684,23 +684,23 @@ Linear_Expression::const_iterator
 
 inline bool
 Linear_Expression::const_iterator
-::operator==(const const_iterator& x) const {
+::operator==(const const_iterator& i) const {
   PPL_ASSERT(itr != NULL);
-  PPL_ASSERT(x.itr != NULL);
-  return *itr == *(x.itr);
+  PPL_ASSERT(i.itr != NULL);
+  return *itr == *(i.itr);
 }
 
 inline bool
 Linear_Expression::const_iterator
-::operator!=(const const_iterator& x) const {
-  return !(*this == x);
+::operator!=(const const_iterator& i) const {
+  return !(*this == i);
 }
 
 inline
 Linear_Expression::const_iterator
-::const_iterator(Linear_Expression_Interface::const_iterator_interface* itr)
-  : itr(itr) {
-  PPL_ASSERT(itr != NULL);
+::const_iterator(Linear_Expression_Interface::const_iterator_interface* i)
+  : itr(i) {
+  PPL_ASSERT(i != NULL);
 }
 
 inline Linear_Expression::const_iterator
