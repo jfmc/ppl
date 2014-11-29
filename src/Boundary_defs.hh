@@ -33,7 +33,7 @@ namespace Boundary_NS {
 struct Property {
   enum Type {
     SPECIAL_,
-    OPEN_,
+    OPEN_
   };
   typedef bool Value;
   static const Value default_value = true;
