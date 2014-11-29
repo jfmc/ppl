@@ -46,6 +46,7 @@ ___BEGIN_OF_FILE___ ppl_prolog_`'m4_current_interface.cc << ___END_OF_FILE___
 m4_include(`ppl_interface_generator_copyright')`'dnl
 */
 
+`#'include "ppl_prolog_`'m4_current_interface.hh"
 #include "ppl_prolog_sysdep.hh"
 #include "ppl_prolog_common_defs.hh"
 
