@@ -1607,7 +1607,7 @@ then
     CFLAGS="$CFLAGS -w2 -wd161,177,193,279,383,444,981,1098,1188,1418,1419,1572"
   elif test x"$CLANG" = xyes
   then
-    CFLAGS="$CFLAGS -Weverything -Wno-exit-time-destructors -Wno-global-constructors -Wno-documentation -Wno-missing-noreturn -Wno-covered-switch-default -Wno-unreachable-code -Wno-c++98-compat-pedantic -Wno-switch-enum -Wno-sign-conversion -Wno-c++98-compat -Wno-padded -Wno-disabled-macro-expansion"
+    CFLAGS="$CFLAGS -Weverything -Wno-exit-time-destructors -Wno-global-constructors -Wno-documentation -Wno-missing-noreturn -Wno-covered-switch-default -Wno-unreachable-code -Wno-c++98-compat-pedantic -Wno-switch-enum -Wno-sign-conversion -Wno-c++98-compat -Wno-padded -Wno-disabled-macro-expansion -Wno-c++11-long-long -Wno-zero-length-array"
   else
     CFLAGS="$CFLAGS -W -Wall"
   fi
@@ -1619,7 +1619,7 @@ then
     CXXFLAGS="$CXXFLAGS -w2 -wd161,177,193,279,383,444,981,1098,1188,1418,1419,1572"
   elif test x"$CLANGXX" = xyes
   then
-    CXXFLAGS="$CXXFLAGS -Weverything -Wno-exit-time-destructors -Wno-global-constructors -Wno-documentation -Wno-missing-noreturn -Wno-covered-switch-default -Wno-unreachable-code -Wno-c++98-compat-pedantic -Wno-switch-enum -Wno-sign-conversion -Wno-c++98-compat -Wno-padded -Wno-disabled-macro-expansion"
+    CXXFLAGS="$CXXFLAGS -Weverything -Wno-exit-time-destructors -Wno-global-constructors -Wno-documentation -Wno-missing-noreturn -Wno-covered-switch-default -Wno-unreachable-code -Wno-c++98-compat-pedantic -Wno-switch-enum -Wno-sign-conversion -Wno-c++98-compat -Wno-padded -Wno-disabled-macro-expansion -Wno-c++11-long-long -Wno-zero-length-array"
   else
     CXXFLAGS="$CXXFLAGS -W -Wall"
   fi
