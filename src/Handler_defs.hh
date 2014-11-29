@@ -71,7 +71,7 @@ public:
   virtual void act() const;
 
 private:
-  // declare holder as reference to volatile pointer to const Flag_Base
+  // Declare holder as reference to volatile pointer to const Flag_Base.
   const Flag_Base* volatile& h;
   Flag& f;
 };
