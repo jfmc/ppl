@@ -346,37 +346,37 @@ operator!=(const Dense_Row& x, const Dense_Row& y) {
 
 inline
 Dense_Row::iterator::iterator()
-  : row(NULL), i(0) {
+  : row(NULL), idx(0) {
   PPL_ASSERT(OK());
 }
 
 inline
-Dense_Row::iterator::iterator(Dense_Row& row1,dimension_type i1)
-  : row(&row1), i(i1) {
+Dense_Row::iterator::iterator(Dense_Row& r, dimension_type i)
+  : row(&r), idx(i) {
   PPL_ASSERT(OK());
 }
 
 inline Coefficient&
 Dense_Row::iterator::operator*() {
-  PPL_ASSERT(i < row->size());
-  return (*row)[i];
+  PPL_ASSERT(idx < row->size());
+  return (*row)[idx];
 }
 
 inline Coefficient_traits::const_reference
 Dense_Row::iterator::operator*() const {
-  PPL_ASSERT(i < row->size());
-  return (*row)[i];
+  PPL_ASSERT(idx < row->size());
+  return (*row)[idx];
 }
 
 inline dimension_type
 Dense_Row::iterator::index() const {
-  return i;
+  return idx;
 }
 
 inline Dense_Row::iterator&
 Dense_Row::iterator::operator++() {
-  PPL_ASSERT(i < row->size());
-  ++i;
+  PPL_ASSERT(idx < row->size());
+  ++idx;
   PPL_ASSERT(OK());
   return *this;
 }
@@ -390,8 +390,8 @@ Dense_Row::iterator::operator++(int) {
 
 inline Dense_Row::iterator&
 Dense_Row::iterator::operator--() {
-  PPL_ASSERT(i > 0);
-  --i;
+  PPL_ASSERT(idx > 0);
+  --idx;
   PPL_ASSERT(OK());
   return *this;
 }
@@ -405,7 +405,7 @@ Dense_Row::iterator::operator--(int) {
 
 inline bool
 Dense_Row::iterator::operator==(const iterator& x) const {
-  return (row == x.row) && (i == x.i);
+  return (row == x.row) && (idx == x.idx);
 }
 
 inline bool
@@ -415,7 +415,7 @@ Dense_Row::iterator::operator!=(const iterator& x) const {
 
 inline
 Dense_Row::iterator::operator const_iterator() const {
-  return const_iterator(*row, i);
+  return const_iterator(*row, idx);
 }
 
 inline bool
@@ -424,38 +424,38 @@ Dense_Row::iterator::OK() const {
     return true;
   }
   // i can be equal to row.size() for past-the-end iterators
-  return (i <= row->size());
+  return (idx <= row->size());
 }
 
 
 inline
 Dense_Row::const_iterator::const_iterator()
-  : row(NULL), i(0) {
+  : row(NULL), idx(0) {
   PPL_ASSERT(OK());
 }
 
 inline
-Dense_Row::const_iterator::const_iterator(const Dense_Row& row1,
-                                          dimension_type i1)
-  : row(&row1), i(i1) {
+Dense_Row::const_iterator::const_iterator(const Dense_Row& r,
+                                          dimension_type i)
+  : row(&r), idx(i) {
   PPL_ASSERT(OK());
 }
 
 inline Coefficient_traits::const_reference
 Dense_Row::const_iterator::operator*() const {
-  PPL_ASSERT(i < row->size());
-  return (*row)[i];
+  PPL_ASSERT(idx < row->size());
+  return (*row)[idx];
 }
 
 inline dimension_type
 Dense_Row::const_iterator::index() const {
-  return i;
+  return idx;
 }
 
 inline Dense_Row::const_iterator&
 Dense_Row::const_iterator::operator++() {
-  PPL_ASSERT(i < row->size());
-  ++i;
+  PPL_ASSERT(idx < row->size());
+  ++idx;
   PPL_ASSERT(OK());
   return *this;
 }
@@ -469,8 +469,8 @@ Dense_Row::const_iterator::operator++(int) {
 
 inline Dense_Row::const_iterator&
 Dense_Row::const_iterator::operator--() {
-  PPL_ASSERT(i > 0);
-  --i;
+  PPL_ASSERT(idx > 0);
+  --idx;
   PPL_ASSERT(OK());
   return *this;
 }
@@ -484,7 +484,7 @@ Dense_Row::const_iterator::operator--(int) {
 
 inline bool
 Dense_Row::const_iterator::operator==(const const_iterator& x) const {
-  return (row == x.row) && (i == x.i);
+  return (row == x.row) && (idx == x.idx);
 }
 
 inline bool
@@ -498,7 +498,7 @@ Dense_Row::const_iterator::OK() const {
     return true;
   }
   // i can be equal to row.size() for past-the-end iterators
-  return (i <= row->size());
+  return (idx <= row->size());
 }
 
 inline void

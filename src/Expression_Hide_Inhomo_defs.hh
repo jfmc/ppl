@@ -135,11 +135,11 @@ public:
                    Coefficient_traits::const_reference c2,
                    dimension_type start, dimension_type end) const;
 
-  //! Sets \p row to a copy of the row as adapted by \p *this.
-  void get_row(Dense_Row& row) const;
+  //! Sets \p r to a copy of the row as adapted by \p *this.
+  void get_row(Dense_Row& r) const;
 
-  //! Sets \p row to a copy of the row as adapted by \p *this.
-  void get_row(Sparse_Row& row) const;
+  //! Sets \p r to a copy of the row as adapted by \p *this.
+  void get_row(Sparse_Row& r) const;
 };
 
 #include "Expression_Hide_Inhomo_inlines.hh"

@@ -474,17 +474,17 @@ public:
                            Coefficient_traits::const_reference c2,
                            dimension_type start, dimension_type end) const = 0;
 
-  // NOTE: This method is public, but it's not exposed in Linear_Expression,
-  // so that it can be used internally in the PPL, by friends of
-  // Linear_Expression.
-  //! Sets `row' to a copy of the row that implements *this.
-  virtual void get_row(Dense_Row& row) const = 0;
+  // NOTE: This method is public, but it is not exposed in
+  // Linear_Expression, so that it can be used internally in the PPL,
+  // by friends of Linear_Expression.
+  //! Sets \p r to a copy of the row that implements \p *this.
+  virtual void get_row(Dense_Row& r) const = 0;
 
-  // NOTE: This method is public, but it's not exposed in Linear_Expression,
-  // so that it can be used internally in the PPL, by friends of
-  // Linear_Expression.
-  //! Sets `row' to a copy of the row that implements *this.
-  virtual void get_row(Sparse_Row& row) const = 0;
+  // NOTE: This method is public, but it is not exposed in
+  // Linear_Expression, so that it can be used internally in the PPL,
+  // by friends of Linear_Expression.
+  //! Sets \p r to a copy of the row that implements \p *this.
+  virtual void get_row(Sparse_Row& r) const = 0;
 };
 
 #endif // !defined(PPL_Linear_Expression_Interface_defs_hh)

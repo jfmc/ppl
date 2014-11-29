@@ -240,14 +240,14 @@ Linear_Expression_Impl<Row>
 
 template <typename Row>
 void
-Linear_Expression_Impl<Row>::get_row(Dense_Row& row) const {
-  row = this->row;
+Linear_Expression_Impl<Row>::get_row(Dense_Row& r) const {
+  r = this->row;
 }
 
 template <typename Row>
 void
-Linear_Expression_Impl<Row>::get_row(Sparse_Row& row) const {
-  row = this->row;
+Linear_Expression_Impl<Row>::get_row(Sparse_Row& r) const {
+  r = this->row;
 }
 
 template <typename Row>
@@ -1282,8 +1282,8 @@ Linear_Expression_Impl<Row>::lower_bound(Variable v) const {
 
 template <typename Row>
 Linear_Expression_Impl<Row>::const_iterator
-::const_iterator(const Row& row1, dimension_type i)
-  : row(&row1), itr(row1.lower_bound(i)) {
+::const_iterator(const Row& r, dimension_type i)
+  : row(&r), itr(r.lower_bound(i)) {
   skip_zeroes_forward();
 }
 

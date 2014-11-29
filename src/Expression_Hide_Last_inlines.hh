@@ -209,21 +209,21 @@ Expression_Hide_Last<T>
 
 template <typename T>
 inline void
-Expression_Hide_Last<T>::get_row(Dense_Row& row) const {
-  this->inner().get_row(row);
+Expression_Hide_Last<T>::get_row(Dense_Row& r) const {
+  this->inner().get_row(r);
   if (hide_last_) {
-    PPL_ASSERT(row.size() != 0);
-    row.resize(row.size() - 1);
+    PPL_ASSERT(r.size() != 0);
+    r.resize(r.size() - 1);
   }
 }
 
 template <typename T>
 inline void
-Expression_Hide_Last<T>::get_row(Sparse_Row& row) const {
-  this->inner().get_row(row);
+Expression_Hide_Last<T>::get_row(Sparse_Row& r) const {
+  this->inner().get_row(r);
   if (hide_last_) {
-    PPL_ASSERT(row.size() != 0);
-    row.resize(row.size() - 1);
+    PPL_ASSERT(r.size() != 0);
+    r.resize(r.size() - 1);
   }
 }
 

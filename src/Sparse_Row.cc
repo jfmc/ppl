@@ -31,19 +31,19 @@ namespace {
 
 class Sparse_Row_from_Dense_Row_helper_iterator {
 public:
-  Sparse_Row_from_Dense_Row_helper_iterator(const PPL::Dense_Row& row1,
+  Sparse_Row_from_Dense_Row_helper_iterator(const PPL::Dense_Row& r,
                                             PPL::dimension_type sz)
-    : row(row1), sz(sz), i(0) {
+    : row(r), sz(sz), idx(0) {
     if (row.size() != 0 && row[0] == 0) {
       ++(*this);
     }
   }
 
   Sparse_Row_from_Dense_Row_helper_iterator& operator++() {
-    PPL_ASSERT(i < sz);
-    ++i;
-    while (i < sz && row[i] == 0) {
-      ++i;
+    PPL_ASSERT(idx < sz);
+    ++idx;
+    while (idx < sz && row[idx] == 0) {
+      ++idx;
     }
     return *this;
   }
@@ -56,20 +56,20 @@ public:
 
   PPL::Coefficient_traits::const_reference
   operator*() const {
-    PPL_ASSERT(i < sz);
-    return row[i];
+    PPL_ASSERT(idx < sz);
+    return row[idx];
   }
 
   PPL::dimension_type
   index() const {
-    PPL_ASSERT(i < sz);
-    return i;
+    PPL_ASSERT(idx < sz);
+    return idx;
   }
 
   bool
   operator==(const Sparse_Row_from_Dense_Row_helper_iterator& itr) const {
     PPL_ASSERT(&row == &(itr.row));
-    return i == itr.i;
+    return idx == itr.idx;
   }
 
   bool
@@ -80,7 +80,7 @@ public:
 private:
   const PPL::Dense_Row& row;
   PPL::dimension_type sz;
-  PPL::dimension_type i;
+  PPL::dimension_type idx;
 };
 
 // Returns the number of nonzero elements in row.

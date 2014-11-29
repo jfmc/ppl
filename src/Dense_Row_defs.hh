@@ -439,7 +439,7 @@ public:
   typedef value_type& reference;
 
   iterator();
-  iterator(Dense_Row& row1, dimension_type i1);
+  iterator(Dense_Row& r, dimension_type i);
 
   Coefficient& operator*();
   Coefficient_traits::const_reference operator*() const;
@@ -468,7 +468,7 @@ public:
 
 private:
   Dense_Row* row;
-  dimension_type i;
+  dimension_type idx;
 };
 
 class Parma_Polyhedra_Library::Dense_Row::const_iterator {
@@ -480,7 +480,7 @@ public:
   typedef Coefficient_traits::const_reference reference;
 
   const_iterator();
-  const_iterator(const Dense_Row& row1, dimension_type i1);
+  const_iterator(const Dense_Row& r, dimension_type i);
 
   Coefficient_traits::const_reference operator*() const;
 
@@ -506,7 +506,7 @@ public:
 
 private:
   const Dense_Row* row;
-  dimension_type i;
+  dimension_type idx;
 };
 
 

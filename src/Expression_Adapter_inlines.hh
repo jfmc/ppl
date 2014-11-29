@@ -198,14 +198,14 @@ Expression_Adapter<T>
 
 template <typename T>
 inline void
-Expression_Adapter<T>::get_row(Dense_Row& row) const {
-  inner().get_row(row);
+Expression_Adapter<T>::get_row(Dense_Row& r) const {
+  inner().get_row(r);
 }
 
 template <typename T>
 inline void
-Expression_Adapter<T>::get_row(Sparse_Row& row) const {
-  inner().get_row(row);
+Expression_Adapter<T>::get_row(Sparse_Row& r) const {
+  inner().get_row(r);
 }
 
 template <typename T>

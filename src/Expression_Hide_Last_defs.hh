@@ -143,11 +143,11 @@ public:
                    Coefficient_traits::const_reference c2,
                    dimension_type start, dimension_type end) const;
 
-  //! Sets \p row to a copy of the row as adapted by \p *this.
-  void get_row(Dense_Row& row) const;
+  //! Sets \p r to a copy of the row as adapted by \p *this.
+  void get_row(Dense_Row& r) const;
 
-  //! Sets \p row to a copy of the row as adapted by \p *this.
-  void get_row(Sparse_Row& row) const;
+  //! Sets \p r to a copy of the row as adapted by \p *this.
+  void get_row(Sparse_Row& r) const;
 
   //! Returns \c true if there is a variable in [first,last) whose coefficient
   //! is nonzero in both \p *this and \p y.

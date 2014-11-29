@@ -221,16 +221,16 @@ Expression_Hide_Inhomo<T>
 
 template <typename T>
 inline void
-Expression_Hide_Inhomo<T>::get_row(Dense_Row& row) const {
-  this->inner().get_row(row);
-  row.reset(0);
+Expression_Hide_Inhomo<T>::get_row(Dense_Row& r) const {
+  this->inner().get_row(r);
+  r.reset(0);
 }
 
 template <typename T>
 inline void
-Expression_Hide_Inhomo<T>::get_row(Sparse_Row& row) const {
-  this->inner().get_row(row);
-  row.reset(0);
+Expression_Hide_Inhomo<T>::get_row(Sparse_Row& r) const {
+  this->inner().get_row(r);
+  r.reset(0);
 }
 
 } // namespace Parma_Polyhedra_Library
