@@ -2428,7 +2428,7 @@ PPL::Polyhedron::positive_time_elapse_assign_impl(const Polyhedron& y) {
     Generator &g = new_gs.sys.rows[i];
     if (g.is_point()) {
       x_points_gs.insert(g);
-      num_rows--;
+      --num_rows;
       swap(g, new_gs.sys.rows[num_rows]);
     }
   }
