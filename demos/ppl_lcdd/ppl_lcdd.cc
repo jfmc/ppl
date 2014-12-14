@@ -158,30 +158,35 @@ struct option long_options[] = {
 };
 #endif
 
-static const char* usage_string
-= "Usage: %s [OPTION]... [FILE]\n"
-"Reads an H-representation (resp., a V-representation) of a polyhedron\n"
-"and generates a V-representation (resp., an H-representation) of\n"
-"the same polyhedron.\n\n"
-"Options:\n"
+void
+usage(const char* program) {
+  static const char* usage_string
+    = "Usage: %s [OPTION]... [FILE]\n"
+    "Reads an H-representation (resp., a V-representation) of a polyhedron\n"
+    "and generates a V-representation (resp., an H-representation) of\n"
+    "the same polyhedron.\n\n"
+    "Options:\n"
 #ifdef PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME
-"  -CSECS, --max-cpu=SECS  limits CPU usage to SECS seconds\n"
+    "  -CSECS, --max-cpu=SECS  limits CPU usage to SECS seconds\n"
 #endif // defined(PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME)
-"  -RMB, --max-memory=MB   limits memory usage to MB megabytes\n"
-"  -h, --help              prints this help text to stdout\n"
-"  -oPATH, --output=PATH   appends output to PATH\n"
-"  -t, --timings           prints timings to stderr\n"
-"  -v, --verbose           produces lots of output\n"
+    "  -RMB, --max-memory=MB   limits memory usage to MB megabytes\n"
+    "  -h, --help              prints this help text to stdout\n"
+    "  -oPATH, --output=PATH   appends output to PATH\n"
+    "  -t, --timings           prints timings to stderr\n"
+    "  -v, --verbose           produces lots of output\n"
 #if defined(USE_PPL)
-"  -V, --version           prints version information to stdout\n"
-"  -cPATH, --check=PATH    checks if the result is equal to what is in PATH\n"
+    "  -V, --version           prints version information to stdout\n"
+    "  -cPATH, --check=PATH    checks if result is equal to what is in PATH\n"
 #endif
 #ifndef PPL_HAVE_GETOPT_H
-"\n"
-"NOTE: this version does not support long options.\n"
+    "\n"
+    "NOTE: this version does not support long options.\n"
 #endif
-"\n"
-"Report bugs to <ppl-devel@cs.unipr.it>.\n";
+    "\n"
+    "Report bugs to <ppl-devel@cs.unipr.it>.\n";
+
+  fprintf(stdout, usage_string, program);
+}
 
 #if defined(USE_PPL)
 #define OPTION_LETTERS "C:R:ho:tvVc:"
@@ -402,7 +407,7 @@ process_options(int argc, char* argv[]) {
 
     case '?':
     case 'h':
-      fprintf(stdout, usage_string, argv[0]);
+      usage(argv[0]);
       exit(0);
       break;
 
