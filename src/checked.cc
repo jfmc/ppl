@@ -161,7 +161,7 @@ parse_number_part(std::istream& is, number_struct& numer) {
       return V_CVT_STR_UNK;
     }
     if (c == 'i' || c == 'I') {
-      goto inf;
+      goto infinity;
     }
     if (c != '.') {
       break;
@@ -188,7 +188,7 @@ parse_number_part(std::istream& is, number_struct& numer) {
       goto unexpected_char;
     }
     return V_NAN;
-  inf:
+  infinity:
   case 'i':
   case 'I':
     if (!is.get(c)) {
@@ -287,13 +287,13 @@ parse_number_part(std::istream& is, number_struct& numer) {
         goto unexpected_char;
       }
       if (c == 'e' || c == 'E') {
-        goto exp;
+        goto exponent;
       }
       if (c == 'p' || c == 'P') {
         if (numer.base == 16) {
           numer.base_for_exponent = 2;
           exponent_offset_scale = 4;
-          goto exp;
+          goto exponent;
         }
         else {
           goto unexpected_char;
@@ -306,7 +306,7 @@ parse_number_part(std::istream& is, number_struct& numer) {
         if (c != '^') {
           goto unexpected_char;
         }
-      exp:
+      exponent:
         state = EXPONENT;
         PPL_ASSERT(numer.base >= 2);
         const long l_max = C_Integer<long>::max;
