@@ -216,7 +216,6 @@ fatal(const char* format, ...) {
   exit(1);
 }
 
-namespace {
 
 const char* input_file_name = 0;
 std::istream* input_stream_p = 0;
@@ -275,8 +274,6 @@ output() {
   assert(output_stream_p != 0);
   return *output_stream_p;
 }
-
-} // namespace
 
 void
 error(const char* format, ...) {
