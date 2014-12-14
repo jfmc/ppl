@@ -157,7 +157,7 @@ public:
   Return_Type get() const {
     return value;
   }
-  operator Return_Type () const {
+  operator Return_Type() const {
     return get();
   }
 };
@@ -191,7 +191,7 @@ public:
   Return_Type get() const {
     return *ptr;
   }
-  operator Return_Type () const {
+  operator Return_Type() const {
     return get();
   }
 };

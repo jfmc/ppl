@@ -2891,11 +2891,18 @@ PPL::Grid::ascii_load(std::istream& s) {
       if (!(s >> dim_kind)) {
         return false;
       }
-      switch(dim_kind) {
-      case 0: dim_kinds[dim] = PARAMETER; break;
-      case 1: dim_kinds[dim] = LINE; break;
-      case 2: dim_kinds[dim] = GEN_VIRTUAL; break;
-      default: return false;
+      switch (dim_kind) {
+      case 0:
+        dim_kinds[dim] = PARAMETER;
+        break;
+      case 1:
+        dim_kinds[dim] = LINE;
+        break;
+      case 2:
+        dim_kinds[dim] = GEN_VIRTUAL;
+        break;
+      default:
+        return false;
       }
     }
   }

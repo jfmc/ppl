@@ -697,7 +697,7 @@ Polyhedron::conversion(Source_Linear_System& source,
           // `i' runs through the generators in the set Q+ and
           // `j' runs through the generators in the set Q-.
           for (dimension_type i = lines_or_equal_bound; i < sup_bound; ++i) {
-            for(dimension_type j = sup_bound; j < bound; ++j) {
+            for (dimension_type j = sup_bound; j < bound; ++j) {
               // Checking if generators `dest_rows[i]' and `dest_rows[j]' are
               // adjacent.
               // If there exist another generator that saturates

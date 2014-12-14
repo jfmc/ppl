@@ -138,7 +138,7 @@ discard_occurrences(std::map<dimension_type,
   typedef Linear_Form<FP_Interval_Type> FP_Linear_Form;
   typedef typename std::map<dimension_type, FP_Linear_Form>::iterator Iter;
   for (Iter i = lf_store.begin(); i != lf_store.end(); ) {
-    if((i->second).coefficient(var) != 0) {
+    if ((i->second).coefficient(var) != 0) {
       i = lf_store.erase(i);
     }
     else {

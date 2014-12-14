@@ -115,21 +115,19 @@ Checked_Number<T, Policy>
 template <typename T, typename Policy> \
 inline \
 Checked_Number<T, Policy>::Checked_Number(const type y, Rounding_Dir dir) { \
-  Policy::handle_result                                                 \
-    (check_result(Checked::assign_ext<Policy,                           \
-                                      Checked_Number_Transparent_Policy<PPL_U(type)> > \
-                  (v, y, rounding_dir(dir)),                            \
-                  dir));                                                \
+  Policy::handle_result(check_result(Checked::assign_ext<Policy,        \
+                                     Checked_Number_Transparent_Policy<PPL_U(type)> > \
+                                     (v, y, rounding_dir(dir)),         \
+                                     dir));                             \
 }                                                                       \
 template <typename T, typename Policy>                                  \
 inline                                                                  \
 Checked_Number<T, Policy>::Checked_Number(const type y) {               \
   Rounding_Dir dir = Policy::ROUND_DEFAULT_CONSTRUCTOR;                 \
-  Policy::handle_result                                                 \
-    (check_result(Checked::assign_ext<Policy,                           \
-                                      Checked_Number_Transparent_Policy<PPL_U(type)> > \
-                  (v, y, rounding_dir(dir)),                            \
-                  dir));                                                \
+  Policy::handle_result(check_result(Checked::assign_ext<Policy,        \
+                                     Checked_Number_Transparent_Policy<PPL_U(type)> > \
+                                     (v, y, rounding_dir(dir)),         \
+                                     dir));                             \
 }
 
 PPL_DEFINE_CTOR(char)
@@ -449,19 +447,18 @@ inline typename Enable_If<Is_Native_Or_Checked<To1>::value              \
  PPL_U(name)(To1& to, To2& s, To3& t, const From1& x, const From2& y,   \
      Rounding_Dir dir) {                                                \
   return                                                                \
-    check_result                                                        \
-    (Checked::func<typename Native_Checked_To_Wrapper<To1>::Policy,     \
-                   typename Native_Checked_To_Wrapper<To2>::Policy,     \
-                   typename Native_Checked_To_Wrapper<To3>::Policy,     \
-                   typename Native_Checked_From_Wrapper<From1>::Policy, \
-                   typename Native_Checked_From_Wrapper<From2>::Policy> \
-     (Native_Checked_To_Wrapper<To1>::raw_value(to),                    \
-      Native_Checked_To_Wrapper<To2>::raw_value(s),                     \
-      Native_Checked_To_Wrapper<To3>::raw_value(t),                     \
-      Native_Checked_From_Wrapper<From1>::raw_value(x),                 \
-      Native_Checked_From_Wrapper<From2>::raw_value(y),                 \
-      rounding_dir(dir)),                                               \
-     dir);                                                              \
+    check_result(Checked::func<typename Native_Checked_To_Wrapper<To1>::Policy, \
+                 typename Native_Checked_To_Wrapper<To2>::Policy,       \
+                 typename Native_Checked_To_Wrapper<To3>::Policy,       \
+                 typename Native_Checked_From_Wrapper<From1>::Policy,   \
+                 typename Native_Checked_From_Wrapper<From2>::Policy>   \
+                 (Native_Checked_To_Wrapper<To1>::raw_value(to),        \
+                  Native_Checked_To_Wrapper<To2>::raw_value(s),         \
+                  Native_Checked_To_Wrapper<To3>::raw_value(t),         \
+                  Native_Checked_From_Wrapper<From1>::raw_value(x),     \
+                  Native_Checked_From_Wrapper<From2>::raw_value(y),     \
+                  rounding_dir(dir)),                                   \
+                 dir);                                                  \
 }
 
 PPL_DEFINE_FUNC4(gcdext_assign_r, gcdext_ext)
