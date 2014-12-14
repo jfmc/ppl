@@ -1914,20 +1914,23 @@ public:
   friend bool operator==<T>(const BD_Shape<T>& x, const BD_Shape<T>& y);
 
   template <typename Temp, typename To, typename U>
-  friend bool Parma_Polyhedra_Library::rectilinear_distance_assign
-  (Checked_Number<To, Extended_Number_Policy>& r,
-   const BD_Shape<U>& x, const BD_Shape<U>& y, const Rounding_Dir dir,
-   Temp& tmp0, Temp& tmp1, Temp& tmp2);
+  friend bool Parma_Polyhedra_Library
+  ::rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+                                const BD_Shape<U>& x, const BD_Shape<U>& y,
+                                const Rounding_Dir dir,
+                                Temp& tmp0, Temp& tmp1, Temp& tmp2);
   template <typename Temp, typename To, typename U>
-  friend bool Parma_Polyhedra_Library::euclidean_distance_assign
-  (Checked_Number<To, Extended_Number_Policy>& r,
-   const BD_Shape<U>& x, const BD_Shape<U>& y, const Rounding_Dir dir,
-   Temp& tmp0, Temp& tmp1, Temp& tmp2);
+  friend bool Parma_Polyhedra_Library
+  ::euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+                              const BD_Shape<U>& x, const BD_Shape<U>& y,
+                              const Rounding_Dir dir,
+                              Temp& tmp0, Temp& tmp1, Temp& tmp2);
   template <typename Temp, typename To, typename U>
-  friend bool Parma_Polyhedra_Library::l_infinity_distance_assign
-  (Checked_Number<To, Extended_Number_Policy>& r,
-   const BD_Shape<U>& x, const BD_Shape<U>& y, const Rounding_Dir dir,
-   Temp& tmp0, Temp& tmp1, Temp& tmp2);
+  friend bool Parma_Polyhedra_Library
+  ::l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+                               const BD_Shape<U>& x, const BD_Shape<U>& y,
+                               const Rounding_Dir dir,
+                               Temp& tmp0, Temp& tmp1, Temp& tmp2);
 
 private:
   template <typename U> friend class Parma_Polyhedra_Library::BD_Shape;
@@ -2227,45 +2230,45 @@ private:
     image" that handle the general case: \f$l = ax + c\f$
   */
   template <typename Interval_Info>
-  void one_variable_affine_form_image
-  (const dimension_type& var_id,
-   const Interval<T, Interval_Info>& b,
-   const Interval<T, Interval_Info>& w_coeff,
-   const dimension_type& w_id,
-   const dimension_type& space_dim);
+  void
+  one_variable_affine_form_image(const dimension_type& var_id,
+                                 const Interval<T, Interval_Info>& b,
+                                 const Interval<T, Interval_Info>& w_coeff,
+                                 const dimension_type& w_id,
+                                 const dimension_type& space_dim);
 
   /*! \brief
     Auxiliary function for \ref affine_form_relation "affine form image" that
     handle the general case: \f$l = ax + by + c\f$
   */
   template <typename Interval_Info>
-  void two_variables_affine_form_image
-  (const dimension_type& var_id,
-   const Linear_Form<Interval<T,Interval_Info> >& lf,
-   const dimension_type& space_dim);
+  void
+  two_variables_affine_form_image(const dimension_type& var_id,
+                                  const Linear_Form<Interval<T,Interval_Info> >& lf,
+                                  const dimension_type& space_dim);
 
   /*! \brief
     Auxiliary function for refine with linear form that handle
     the general case: \f$l = ax + c\f$
   */
   template <typename Interval_Info>
-  void left_inhomogeneous_refine
-  (const dimension_type& right_t,
-   const dimension_type& right_w_id,
-   const Linear_Form<Interval<T, Interval_Info> >& left,
-   const Linear_Form<Interval<T, Interval_Info> >& right);
+  void
+  left_inhomogeneous_refine(const dimension_type& right_t,
+                            const dimension_type& right_w_id,
+                            const Linear_Form<Interval<T, Interval_Info> >& left,
+                            const Linear_Form<Interval<T, Interval_Info> >& right);
 
   /*! \brief
     Auxiliary function for refine with linear form that handle
     the general case: \f$ax + b = cy + d\f$
   */
   template <typename Interval_Info>
-  void left_one_var_refine
-  (const dimension_type& left_w_id,
-   const dimension_type& right_t,
-   const dimension_type& right_w_id,
-   const Linear_Form<Interval<T, Interval_Info> >& left,
-   const Linear_Form<Interval<T, Interval_Info> >& right);
+  void
+  left_one_var_refine(const dimension_type& left_w_id,
+                      const dimension_type& right_t,
+                      const dimension_type& right_w_id,
+                      const Linear_Form<Interval<T, Interval_Info> >& left,
+                      const Linear_Form<Interval<T, Interval_Info> >& right);
 
   /*! \brief
     Auxiliary function for refine with linear form that handle

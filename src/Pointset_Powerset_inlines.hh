@@ -220,18 +220,16 @@ template <typename PSET>
 inline void
 Pointset_Powerset<PSET>::intersection_assign(const Pointset_Powerset& y) {
   Pointset_Powerset& x = *this;
-  x.pairwise_apply_assign
-    (y,
-     Det_PSET::lift_op_assign(std::mem_fun_ref(&PSET::intersection_assign)));
+  x.pairwise_apply_assign(y,
+                          Det_PSET::lift_op_assign(std::mem_fun_ref(&PSET::intersection_assign)));
 }
 
 template <typename PSET>
 inline void
 Pointset_Powerset<PSET>::time_elapse_assign(const Pointset_Powerset& y) {
   Pointset_Powerset& x = *this;
-  x.pairwise_apply_assign
-    (y,
-     Det_PSET::lift_op_assign(std::mem_fun_ref(&PSET::time_elapse_assign)));
+  x.pairwise_apply_assign(y,
+                          Det_PSET::lift_op_assign(std::mem_fun_ref(&PSET::time_elapse_assign)));
 }
 
 template <typename PSET>

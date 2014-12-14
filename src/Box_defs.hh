@@ -1746,10 +1746,11 @@ private:
   ::IO_Operators::operator<<<>(std::ostream& s, const Box<ITV>& box);
 
   template <typename Specialization, typename Temp, typename To, typename I>
-  friend bool Parma_Polyhedra_Library::l_m_distance_assign
-  (Checked_Number<To, Extended_Number_Policy>& r,
-   const Box<I>& x, const Box<I>& y, const Rounding_Dir dir,
-   Temp& tmp0, Temp& tmp1, Temp& tmp2);
+  friend bool Parma_Polyhedra_Library
+  ::l_m_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+                        const Box<I>& x, const Box<I>& y,
+                        const Rounding_Dir dir,
+                        Temp& tmp0, Temp& tmp1, Temp& tmp2);
 
   //! The type of sequence used to implement the box.
   typedef std::vector<ITV> Sequence;

@@ -1887,20 +1887,26 @@ public:
   operator==<T>(const Octagonal_Shape<T>& x, const Octagonal_Shape<T>& y);
 
   template <typename Temp, typename To, typename U>
-  friend bool Parma_Polyhedra_Library::rectilinear_distance_assign
-  (Checked_Number<To, Extended_Number_Policy>& r,
-   const Octagonal_Shape<U>& x, const Octagonal_Shape<U>& y,
-   const Rounding_Dir dir, Temp& tmp0, Temp& tmp1, Temp& tmp2);
+  friend bool Parma_Polyhedra_Library
+  ::rectilinear_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+                                const Octagonal_Shape<U>& x,
+                                const Octagonal_Shape<U>& y,
+                                const Rounding_Dir dir,
+                                Temp& tmp0, Temp& tmp1, Temp& tmp2);
   template <typename Temp, typename To, typename U>
-  friend bool Parma_Polyhedra_Library::euclidean_distance_assign
-  (Checked_Number<To, Extended_Number_Policy>& r,
-   const Octagonal_Shape<U>& x, const Octagonal_Shape<U>& y,
-   const Rounding_Dir dir, Temp& tmp0, Temp& tmp1, Temp& tmp2);
+  friend bool Parma_Polyhedra_Library
+  ::euclidean_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+                              const Octagonal_Shape<U>& x,
+                              const Octagonal_Shape<U>& y,
+                              const Rounding_Dir dir,
+                              Temp& tmp0, Temp& tmp1, Temp& tmp2);
   template <typename Temp, typename To, typename U>
-  friend bool Parma_Polyhedra_Library::l_infinity_distance_assign
-  (Checked_Number<To, Extended_Number_Policy>& r,
-   const Octagonal_Shape<U>& x, const Octagonal_Shape<U>& y,
-   const Rounding_Dir dir, Temp& tmp0, Temp& tmp1, Temp& tmp2);
+  friend bool Parma_Polyhedra_Library
+  ::l_infinity_distance_assign(Checked_Number<To, Extended_Number_Policy>& r,
+                               const Octagonal_Shape<U>& x,
+                               const Octagonal_Shape<U>& y,
+                               const Rounding_Dir dir,
+                               Temp& tmp0, Temp& tmp1, Temp& tmp2);
 
 private:
   template <typename U> friend class Parma_Polyhedra_Library::Octagonal_Shape;

@@ -427,10 +427,10 @@ const Linear_Form<Interval <FP_Format, Interval_Info> >& lf) {
 
 template <typename FP_Format, typename Interval_Info>
 void
-Polyhedron::overapproximate_linear_form
-(const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
- const dimension_type lf_dimension,
- Linear_Form<Interval <FP_Format, Interval_Info> >& result) {
+Polyhedron
+::overapproximate_linear_form(const Linear_Form<Interval <FP_Format, Interval_Info> >& lf,
+                              const dimension_type lf_dimension,
+                              Linear_Form<Interval <FP_Format, Interval_Info> >& result) {
 
   // Check that FP_Format is indeed a floating point type.
   PPL_COMPILE_TIME_CHECK(!std::numeric_limits<FP_Format>::is_exact,
