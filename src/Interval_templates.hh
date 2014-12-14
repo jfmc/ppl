@@ -277,7 +277,7 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
     }
   }
   else {
-    goto unexpected;
+    goto unexpected_char;
   }
 
   // Get the lower bound.
@@ -294,7 +294,7 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
     }
   } while (is_space(c));
   if (c != ',') {
-    goto unexpected;
+    goto unexpected_char;
   }
 
   // Get the upper bound.
@@ -314,7 +314,7 @@ operator>>(std::istream& is, Interval<Boundary, Info>& x) {
     upper_open = true;
   }
   else if (c != ']') {
-  unexpected:
+  unexpected_char:
     is.unget();
   fail:
     is.setstate(std::ios::failbit);

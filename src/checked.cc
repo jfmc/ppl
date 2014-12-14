@@ -179,13 +179,13 @@ parse_number_part(std::istream& is, number_struct& numer) {
       return V_CVT_STR_UNK;
     }
     if (c != 'a' && c != 'A') {
-      goto unexpected;
+      goto unexpected_char;
     }
     if (!is.get(c)) {
       return V_CVT_STR_UNK;
     }
     if (c != 'n' && c != 'N') {
-      goto unexpected;
+      goto unexpected_char;
     }
     return V_NAN;
   inf:
@@ -195,19 +195,19 @@ parse_number_part(std::istream& is, number_struct& numer) {
       return V_CVT_STR_UNK;
     }
     if (c != 'n' && c != 'n') {
-      goto unexpected;
+      goto unexpected_char;
     }
     if (!is.get(c)) {
       return V_CVT_STR_UNK;
     }
     if (c != 'f' && c != 'F') {
-      goto unexpected;
+      goto unexpected_char;
     }
     return numer.neg_mantissa ? V_EQ_MINUS_INFINITY : V_EQ_PLUS_INFINITY;
   }
   if (state != FRACTIONAL) {
     if (get_digit(c, 10) < 0) {
-      goto unexpected;
+      goto unexpected_char;
     }
     char d;
     if (c == '0' && !is.get(d).fail()) {
@@ -239,18 +239,18 @@ parse_number_part(std::istream& is, number_struct& numer) {
           return V_CVT_STR_UNK;
         }
         if (c != '^') {
-          goto unexpected;
+          goto unexpected_char;
         }
         numer.base = 0;
         for (std::string::const_iterator
                i = numer.mantissa.begin(); i != numer.mantissa.end(); ++i) {
           numer.base = numer.base * 10 + static_cast<unsigned>(get_digit(*i, 10));
           if (numer.base > 36) {
-            goto unexpected;
+            goto unexpected_char;
           }
         }
         if (numer.base < 2) {
-          goto unexpected;
+          goto unexpected_char;
         }
         numer.base_for_exponent = numer.base;
         numer.mantissa.erase();
@@ -284,7 +284,7 @@ parse_number_part(std::istream& is, number_struct& numer) {
       }
     fractional:
       if (empty_mantissa) {
-        goto unexpected;
+        goto unexpected_char;
       }
       if (c == 'e' || c == 'E') {
         goto exp;
@@ -296,7 +296,7 @@ parse_number_part(std::istream& is, number_struct& numer) {
           goto exp;
         }
         else {
-          goto unexpected;
+          goto unexpected_char;
         }
       }
       if (c == '*') {
@@ -304,7 +304,7 @@ parse_number_part(std::istream& is, number_struct& numer) {
           return V_CVT_STR_UNK;
         }
         if (c != '^') {
-          goto unexpected;
+          goto unexpected_char;
         }
       exp:
         state = EXPONENT;
@@ -338,7 +338,7 @@ parse_number_part(std::istream& is, number_struct& numer) {
         break;
       }
       if (empty_exponent) {
-        goto unexpected;
+        goto unexpected_char;
       }
       is.unget();
       goto ok;
@@ -371,7 +371,7 @@ parse_number_part(std::istream& is, number_struct& numer) {
     return V_EQ;
   }
 
- unexpected:
+ unexpected_char:
   is.unget();
   return V_CVT_STR_UNK;
 }
