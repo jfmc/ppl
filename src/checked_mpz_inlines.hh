@@ -186,7 +186,7 @@ PPL_SPECIALIZE_COPY(copy_mpz, mpz_class)
 template <typename To_Policy, typename From_Policy, typename From>
 inline Result
 construct_mpz_base(mpz_class& to, const From from, Rounding_Dir) {
-    new (&to) mpz_class(from);
+    new(&to) mpz_class(from);
     return V_EQ;
 }
 
@@ -213,11 +213,11 @@ construct_mpz_float(mpz_class& to, const From& from, Rounding_Dir dir) {
     return construct_special<To_Policy>(to, VC_PLUS_INFINITY, dir);
   }
   if (round_not_requested(dir)) {
-    new (&to) mpz_class(from);
+    new(&to) mpz_class(from);
     return V_LGE;
   }
   From n = rint(from);
-  new (&to) mpz_class(n);
+  new(&to) mpz_class(n);
   if (from == n) {
     return V_EQ;
   }

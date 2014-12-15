@@ -295,7 +295,7 @@ CO_Tree::insert_in_empty_tree(dimension_type key,
   rebuild_bigger_tree();
   tree_iterator itr(*this);
   PPL_ASSERT(itr.index() == unused_index);
-  new (&(*itr)) data_type(data1);
+  new(&(*itr)) data_type(data1);
   // Set the index afterwards, so that if the constructor above throws
   // the tree's structure is consistent.
   itr.index() = key;
@@ -347,7 +347,7 @@ CO_Tree::move_data_element(data_type& to, data_type& from) {
     The following code is equivalent (but slower):
 
     <CODE>
-      new (&to) data_type(from);
+      new(&to) data_type(from);
       from.~data_type();
     </CODE>
   */

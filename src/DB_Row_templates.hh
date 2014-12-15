@@ -66,7 +66,7 @@ Impl::expand_within_capacity(const dimension_type new_size) {
 #endif
   // Construct in direct order: will destroy in reverse order.
   for (dimension_type i = size(); i < new_size; ++i) {
-    new (&vec_[i]) T(PLUS_INFINITY, ROUND_NOT_NEEDED);
+    new(&vec_[i]) T(PLUS_INFINITY, ROUND_NOT_NEEDED);
     bump_size();
   }
 }
@@ -98,7 +98,7 @@ DB_Row_Impl_Handler<T>::Impl::copy_construct_coefficients(const Impl& y) {
 #if PPL_CXX_SUPPORTS_ZERO_LENGTH_ARRAYS
   // Construct in direct order: will destroy in reverse order.
   for (dimension_type i = 0; i < y_size; ++i) {
-    new (&vec_[i]) T(y.vec_[i]);
+    new(&vec_[i]) T(y.vec_[i]);
     bump_size();
   }
 #else // PPL_CXX_SUPPORTS_ZERO_LENGTH_ARRAYS
@@ -107,7 +107,7 @@ DB_Row_Impl_Handler<T>::Impl::copy_construct_coefficients(const Impl& y) {
     bump_size();
     // Construct in direct order: will destroy in reverse order.
     for (dimension_type i = 1; i < y_size; ++i) {
-      new (&vec_[i]) T(y.vec_[i]);
+      new(&vec_[i]) T(y.vec_[i]);
       bump_size();
     }
   }

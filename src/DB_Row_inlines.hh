@@ -184,7 +184,7 @@ DB_Row<T>::allocate(
   }
 #endif
   PPL_ASSERT(x.impl == 0);
-  x.impl = new (capacity) typename DB_Row_Impl_Handler<T>::Impl();
+  x.impl = new(capacity) typename DB_Row_Impl_Handler<T>::Impl();
 #if PPL_DB_ROW_EXTRA_DEBUG
   PPL_ASSERT(x.capacity_ == 0);
   x.capacity_ = capacity;

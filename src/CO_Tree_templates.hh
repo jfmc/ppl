@@ -116,7 +116,7 @@ CO_Tree::CO_Tree(Iterator i, dimension_type n) {
       if (top_n == 1) {
         PPL_ASSERT(root.index() == unused_index);
         root.index() = i.index();
-        new (&(*root)) data_type(*i);
+        new(&(*root)) data_type(*i);
         ++i;
         --stack_first_empty;
       }

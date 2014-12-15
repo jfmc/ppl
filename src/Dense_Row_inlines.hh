@@ -97,7 +97,7 @@ Dense_Row::Dense_Row(const Dense_Row& y)
     impl.capacity = y.capacity();
     impl.vec = impl.coeff_allocator.allocate(impl.capacity);
     while (impl.size != y.size()) {
-      new (&impl.vec[impl.size]) Coefficient(y[impl.size]);
+      new(&impl.vec[impl.size]) Coefficient(y[impl.size]);
       ++impl.size;
     }
   }
@@ -119,7 +119,7 @@ Dense_Row::Dense_Row(const Dense_Row& y,
 
   if (y.impl.vec != 0) {
     while (impl.size != y.size()) {
-      new (&impl.vec[impl.size]) Coefficient(y[impl.size]);
+      new(&impl.vec[impl.size]) Coefficient(y[impl.size]);
       ++impl.size;
     }
   }
@@ -144,11 +144,11 @@ Dense_Row::Dense_Row(const Dense_Row& y,
 
   const dimension_type n = std::min(sz, y.size());
   while (impl.size != n) {
-    new (&impl.vec[impl.size]) Coefficient(y[impl.size]);
+    new(&impl.vec[impl.size]) Coefficient(y[impl.size]);
     ++impl.size;
   }
   while (impl.size != sz) {
-    new (&impl.vec[impl.size]) Coefficient();
+    new(&impl.vec[impl.size]) Coefficient();
     ++impl.size;
   }
 

@@ -143,7 +143,7 @@ PPL_SPECIALIZE_COPY(copy_generic, mpq_class)
 template <typename To_Policy, typename From_Policy, typename From>
 inline Result
 construct_mpq_base(mpq_class& to, const From& from, Rounding_Dir) {
-  new (&to) mpq_class(from);
+  new(&to) mpq_class(from);
   return V_EQ;
 }
 
@@ -170,7 +170,7 @@ construct_mpq_float(mpq_class& to, const From& from, Rounding_Dir dir) {
   else if (is_pinf<From_Policy>(from)) {
     return construct_special<To_Policy>(to, VC_PLUS_INFINITY, dir);
   }
-  new (&to) mpq_class(from);
+  new(&to) mpq_class(from);
   return V_EQ;
 }
 

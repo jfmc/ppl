@@ -65,7 +65,7 @@ PPL::Dense_Row::resize(dimension_type new_size) {
     PPL_ASSERT(new_size <= impl.capacity);
     // Construct the additional elements.
     while (impl.size != new_size) {
-      new (&impl.vec[impl.size]) Coefficient();
+      new(&impl.vec[impl.size]) Coefficient();
       ++impl.size;
     }
   }
@@ -152,7 +152,7 @@ PPL::Dense_Row::add_zeroes_and_shift(dimension_type n, dimension_type i) {
       // Construct coefficients with value 0 in
       // new_row.impl.vec[i ... i + n - 1]
       for ( ; j < i + n; ++j) {
-        new (&(new_row.impl.vec[j])) Coefficient(0);
+        new(&(new_row.impl.vec[j])) Coefficient(0);
       }
     } catch (...) {
       // Destroy the zeroes constructed so far.
@@ -188,7 +188,7 @@ PPL::Dense_Row::add_zeroes_and_shift(dimension_type n, dimension_type i) {
     try {
       // Construct n zeroes where the moved elements resided.
       while (impl.size != target_size) {
-        new (&impl.vec[impl.size]) Coefficient(0);
+        new(&impl.vec[impl.size]) Coefficient(0);
         ++impl.size;
       }
       impl.size = new_size;
@@ -214,7 +214,7 @@ PPL::Dense_Row::expand_within_capacity(const dimension_type new_size) {
   PPL_ASSERT(new_size <= impl.capacity);
   PPL_ASSERT(size() <= new_size && new_size <= max_size());
   while (impl.size != new_size) {
-    new (&impl.vec[impl.size]) Coefficient();
+    new(&impl.vec[impl.size]) Coefficient();
     ++impl.size;
   }
   PPL_ASSERT(size() == new_size);
@@ -255,11 +255,11 @@ PPL::Dense_Row::init(const Sparse_Row& row) {
   while (impl.size != impl.capacity) {
     // Constructs (*this)[impl.size] with row[impl.size].
     if (itr != itr_end && itr.index() == impl.size) {
-      new (&impl.vec[impl.size]) Coefficient(*itr);
+      new(&impl.vec[impl.size]) Coefficient(*itr);
       ++itr;
     }
     else {
-      new (&impl.vec[impl.size]) Coefficient();
+      new(&impl.vec[impl.size]) Coefficient();
     }
     ++impl.size;
   }
@@ -294,22 +294,22 @@ PPL::Dense_Row::operator=(const Sparse_Row& row) {
       for (dimension_type i = 0; i < impl.size; ++i) {
         // The following code is equivalent to (*this)[i] = row[i].
         if (itr != itr_end && itr.index() == impl.size) {
-          new (&impl.vec[impl.size]) Coefficient(*itr);
+          new(&impl.vec[impl.size]) Coefficient(*itr);
           ++itr;
         }
         else {
-          new (&impl.vec[impl.size]) Coefficient();
+          new(&impl.vec[impl.size]) Coefficient();
         }
       }
       // Construct the additional elements.
       for ( ; impl.size != row.size(); ++impl.size) {
         // Constructs (*this)[impl.size] with row[impl.size].
         if (itr != itr_end && itr.index() == impl.size) {
-          new (&impl.vec[impl.size]) Coefficient(*itr);
+          new(&impl.vec[impl.size]) Coefficient(*itr);
           ++itr;
         }
         else {
-          new (&impl.vec[impl.size]) Coefficient();
+          new(&impl.vec[impl.size]) Coefficient();
         }
       }
     }

@@ -784,7 +784,7 @@ PPL::MIP_Problem::process_pending_constraints() {
 
   // The following vector will be useful know if a constraint is feasible
   // and does not require an additional artificial variable.
-  std::deque<bool> worked_out_row (tableau_num_rows, false);
+  std::deque<bool> worked_out_row(tableau_num_rows, false);
 
   // Sync the `base' vector size to the new tableau: fill with zeros
   // to encode that these rows are not OK and must be adjusted.
@@ -2165,7 +2165,7 @@ PPL::MIP_Problem::choose_branching_variable(const MIP_Problem& mip,
 
   // Check how many `active constraints' we have and track them.
   const dimension_type input_cs_num_rows = input_cs.size();
-  std::deque<bool> satisfiable_constraints (input_cs_num_rows, false);
+  std::deque<bool> satisfiable_constraints(input_cs_num_rows, false);
   for (dimension_type i = input_cs_num_rows; i-- > 0; ) {
     // An equality is an `active constraint' by definition.
     // If we have an inequality, check if it is an `active constraint'.
