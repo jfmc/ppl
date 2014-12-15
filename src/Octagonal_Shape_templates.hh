@@ -7151,7 +7151,7 @@ Octagonal_Shape<T>
     if (!lhs.all_zeroes(1, j_lhs)) {
       ++t_lhs;
     }
-    j_lhs--;
+    --j_lhs;
   }
 
   const Coefficient& b_lhs = lhs.inhomogeneous_term();
