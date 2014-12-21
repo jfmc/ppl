@@ -28,6 +28,9 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+Throwable::~Throwable() {
+}
+
 const Throwable* volatile abandon_expensive_computations = 0;
 
 // Initialize Weightwatch_Traits static data members.

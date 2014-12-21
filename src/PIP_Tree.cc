@@ -923,6 +923,9 @@ PIP_Tree_Node::PIP_Tree_Node(const PIP_Tree_Node& y)
     artificial_parameters(y.artificial_parameters) {
 }
 
+PIP_Tree_Node::~PIP_Tree_Node() {
+}
+
 PIP_Tree_Node::Artificial_Parameter
 ::Artificial_Parameter(const Linear_Expression& expr,
                        Coefficient_traits::const_reference d)

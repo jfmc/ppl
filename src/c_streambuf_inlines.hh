@@ -31,10 +31,6 @@ c_streambuf::c_streambuf()
   : unget_char_buf(traits_type::eof()), next_char_buf(traits_type::eof()) {
 }
 
-inline
-c_streambuf::~c_streambuf() {
-}
-
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_c_streambuf_inlines_hh)

@@ -28,6 +28,9 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+c_streambuf::~c_streambuf() {
+}
+
 c_streambuf::int_type
 c_streambuf::uflow() {
   const int_type c = underflow();

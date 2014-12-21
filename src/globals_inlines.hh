@@ -71,10 +71,6 @@ Weightwatch_Traits::from_delta(Threshold& threshold, const Delta& delta) {
   threshold = weight + delta;
 }
 
-inline
-Throwable::~Throwable() {
-}
-
 inline void
 maybe_abandon() {
 #ifndef NDEBUG

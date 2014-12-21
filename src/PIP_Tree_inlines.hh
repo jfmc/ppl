@@ -52,10 +52,6 @@ PIP_Solution_Node::Tableau::denominator() const {
   return denom;
 }
 
-inline
-PIP_Tree_Node::~PIP_Tree_Node() {
-}
-
 inline void
 PIP_Tree_Node::set_parent(const PIP_Decision_Node* p) {
   parent_ = p;
