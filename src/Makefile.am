@@ -484,6 +484,9 @@ checked.cc \
 Checked_Number.cc \
 Float.cc \
 fpu-ia32.cc \
+BDS_Status.cc \
+Box_Status.cc \
+Og_Status.cc \
 Concrete_Expression.cc \
 Constraint.cc \
 Constraint_System.cc \

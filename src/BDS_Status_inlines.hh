@@ -189,10 +189,10 @@ namespace Implementation {
 namespace BD_Shapes {
 
 // These are the keywords that indicate the individual assertions.
-const std::string zero_dim_univ = "ZE";
-const std::string empty = "EM";
-const std::string sp_closed = "SPC";
-const std::string sp_reduced = "SPR";
+extern const char* zero_dim_univ;
+extern const char* empty;
+extern const char* sp_closed;
+extern const char* sp_reduced;
 const char yes = '+';
 const char no = '-';
 const char separator = ' ';
@@ -205,7 +205,7 @@ const char separator = ' ';
   is on; it is set to <CODE>false</CODE> otherwise.
 */
 inline bool
-get_field(std::istream& s, const std::string& keyword, bool& positive) {
+get_field(std::istream& s, const char* keyword, bool& positive) {
   std::string str;
   if (!(s >> str)
       || (str[0] != yes && str[0] != no)
