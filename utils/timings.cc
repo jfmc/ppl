@@ -41,8 +41,6 @@ site: http://bugseng.com/products/ppl/ . */
 # include <sys/resource.h>
 #endif
 
-using namespace std;
-
 #ifdef PPL_HAVE_TIMEVAL
 // To save the time when start_clock is called.
 static struct timeval saved_ru_utime;
@@ -53,7 +51,7 @@ start_clock() {
 #if PPL_HAVE_DECL_GETRUSAGE && defined(PPL_HAVE_TIMEVAL)
   struct rusage usage;
   if (getrusage(RUSAGE_SELF, &usage) != 0) {
-    cerr << "getrusage failed: " << strerror(errno) << endl;
+    std::cerr << "getrusage failed: " << strerror(errno) << std::endl;
     exit(1);
   }
   else {
@@ -63,11 +61,11 @@ start_clock() {
 }
 
 void
-print_clock(ostream& s) {
+print_clock(std::ostream& s) {
 #if PPL_HAVE_DECL_GETRUSAGE && defined(PPL_HAVE_TIMEVAL)
   struct rusage usage;
   if (getrusage(RUSAGE_SELF, &usage) != 0) {
-    cerr << "getrusage failed: " << strerror(errno) << endl;
+    std::cerr << "getrusage failed: " << strerror(errno) << std::endl;
     exit(1);
   }
   else {
@@ -96,7 +94,7 @@ print_clock(ostream& s) {
     }
     assert(csecs >= 0 && csecs < 100 && secs >= 0);
     const char fill_char = s.fill();
-    s << secs << "." << setfill('0') << setw(2) << csecs;
+    s << secs << "." << std::setfill('0') << std::setw(2) << csecs;
     s.fill(fill_char);
   }
 #else

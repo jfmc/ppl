@@ -118,55 +118,55 @@ pip_display_sol(std::ostream& out,
                 const Parma_Polyhedra_Library::Variables_Set& vars,
                 Parma_Polyhedra_Library::dimension_type space_dimension,
                 int indent = 0) {
-  using namespace std;
   using namespace Parma_Polyhedra_Library::IO_Operators;
+
   if (!pip) {
-    out << setw(indent*2) << "" << "_|_" << endl;
+    out << std::setw(indent*2) << "" << "_|_" << std::endl;
   }
   else {
-    for (PIP_Tree_Node::Artificial_Parameter_Sequence::const_iterator
+    for (PPL::PIP_Tree_Node::Artificial_Parameter_Sequence::const_iterator
            i = pip->art_parameter_begin(),
            i_end = pip->art_parameter_end();
          i != i_end;
          ++i) {
-      out << setw(indent*2) << "" << "Parameter "
-          << Linear_Expression(Variable(space_dimension++))
-          << " = " << *i << endl;
+      out << std::setw(indent*2) << "" << "Parameter "
+          << PPL::Linear_Expression(PPL::Variable(space_dimension++))
+          << " = " << *i << std::endl;
     }
-    const Constraint_System &constraints = pip->constraints();
+    const PPL::Constraint_System& constraints = pip->constraints();
     const bool constraints_empty = constraints.empty();
     if (!constraints_empty) {
-      out << setw(indent*2) << "" << "if ";
-      for (Constraint_System::const_iterator
+      out << std::setw(indent*2) << "" << "if ";
+      for (PPL::Constraint_System::const_iterator
              cs_begin = constraints.begin(),
              cs_end = constraints.end(),
              i = cs_begin; i != cs_end; ++i) {
         out << ((i == cs_begin) ? "" : " and ") << *i;
       }
-      out << " then" << endl;
+      out << " then" << std::endl;
     }
-    const PIP_Decision_Node* const decision_node_p = pip->as_decision();
+    const PPL::PIP_Decision_Node* const decision_node_p = pip->as_decision();
     if (decision_node_p) {
       pip_display_sol(out, decision_node_p->child_node(true),
                       parameters, vars, space_dimension, indent+1);
-      out << setw(indent*2) << "" << "else" << endl;
+      out << std::setw(indent*2) << "" << "else" << std::endl;
       pip_display_sol(out, decision_node_p->child_node(false),
                       parameters, vars, space_dimension, indent+1);
     }
     else {
-      const PIP_Solution_Node* const solution_node_p = pip->as_solution();
-      out << setw(indent*2 + (constraints_empty ? 0 : 2)) << "" << "{";
-      for (Variables_Set::const_iterator
+      const PPL::PIP_Solution_Node* const solution_node_p = pip->as_solution();
+      out << std::setw(indent*2 + (constraints_empty ? 0 : 2)) << "" << "{";
+      for (PPL::Variables_Set::const_iterator
              v_begin = vars.begin(),
              v_end = vars.end(),
              i = v_begin; i != v_end; ++i) {
         out << ((i == v_begin) ? "" : " ; ")
-            << solution_node_p->parametric_values(Variable(*i));
+            << solution_node_p->parametric_values(PPL::Variable(*i));
       }
-      out << "}" << endl;
+      out << "}" << std::endl;
       if (!constraints_empty) {
-        out << setw(indent*2) << "" << "else" << endl;
-        out << setw(indent*2 + 2) << "" << "_|_" << endl;
+        out << std::setw(indent*2) << "" << "else" << std::endl;
+        out << std::setw(indent*2 + 2) << "" << "_|_" << std::endl;
       }
     }
   }
