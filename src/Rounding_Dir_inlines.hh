@@ -24,7 +24,7 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_Rounding_Dir_inlines_hh
 #define PPL_Rounding_Dir_inlines_hh 1
 
-#include "assert.hh"
+#include "assertions.hh"
 
 namespace Parma_Polyhedra_Library {
 

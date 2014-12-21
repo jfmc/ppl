@@ -32,7 +32,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Poly_Con_Relation_defs.hh"
 #include "Poly_Gen_Relation_defs.hh"
 #include "wrap_assign.hh"
-#include "assert.hh"
+#include "assertions.hh"
 #include <algorithm>
 
 namespace Parma_Polyhedra_Library {

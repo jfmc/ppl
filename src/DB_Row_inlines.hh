@@ -25,7 +25,7 @@ site: http://bugseng.com/products/ppl/ . */
 #define PPL_DB_Row_inlines_hh 1
 
 #include "checked_defs.hh"
-#include "assert.hh"
+#include "assertions.hh"
 #include <cstddef>
 #include <limits>
 #include <algorithm>

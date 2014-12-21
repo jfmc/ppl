@@ -25,7 +25,7 @@ site: http://bugseng.com/products/ppl/ . */
 #define PPL_Ask_Tell_inlines_hh 1
 
 #include <algorithm>
-#include "assert.hh"
+#include "assertions.hh"
 
 // Temporary!!!
 #include <iostream>

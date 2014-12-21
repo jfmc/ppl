@@ -25,7 +25,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "ppl-config.h"
 #include "Grid_defs.hh"
 #include "Variables_Set_defs.hh"
-#include "assert.hh"
+#include "assertions.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 

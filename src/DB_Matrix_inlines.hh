@@ -27,7 +27,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "globals_defs.hh"
 #include "Checked_Number_defs.hh"
 #include "distances_defs.hh"
-#include "assert.hh"
+#include "assertions.hh"
 #include <iostream>
 
 namespace Parma_Polyhedra_Library {

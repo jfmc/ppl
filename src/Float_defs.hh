@@ -27,7 +27,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "globals_types.hh"
 #include "meta_programming.hh"
 #include "compiler.hh"
-#include "assert.hh"
+#include "assertions.hh"
 #include "Concrete_Expression_types.hh"
 #include "Variable_types.hh"
 #include "Linear_Form_types.hh"

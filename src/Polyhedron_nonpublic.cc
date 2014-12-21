@@ -28,7 +28,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Scalar_Products_inlines.hh"
 #include "Linear_Form_defs.hh"
 #include "C_Integer.hh"
-#include "assert.hh"
+#include "assertions.hh"
 #include <string>
 #include <iostream>
 #include <sstream>

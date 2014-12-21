@@ -24,7 +24,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "ppl-config.h"
 #include "BHRZ03_Certificate_defs.hh"
 #include "Polyhedron_defs.hh"
-#include "assert.hh"
+#include "assertions.hh"
 #include <iostream>
 
 namespace PPL = Parma_Polyhedra_Library;

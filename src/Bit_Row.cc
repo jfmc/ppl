@@ -23,7 +23,7 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
 #include "Bit_Row_defs.hh"
-#include "assert.hh"
+#include "assertions.hh"
 #include "C_Integer.hh"
 
 namespace PPL = Parma_Polyhedra_Library;

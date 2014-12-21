@@ -27,7 +27,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Scalar_Products_defs.hh"
 #include "Scalar_Products_inlines.hh"
 #include "Polyhedron_defs.hh"
-#include "assert.hh"
+#include "assertions.hh"
 #include <iostream>
 
 namespace PPL = Parma_Polyhedra_Library;

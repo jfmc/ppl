@@ -28,7 +28,7 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "Grid_types.hh"
 #include "globals_defs.hh"
-#include "assert.hh"
+#include "assertions.hh"
 #include <vector>
 
 //! The convergence certificate for the Grid widening operator.

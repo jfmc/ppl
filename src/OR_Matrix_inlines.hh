@@ -28,7 +28,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Checked_Number_defs.hh"
 #include "C_Polyhedron_defs.hh"
 #include "distances_defs.hh"
-#include "assert.hh"
+#include "assertions.hh"
 #include "checked_defs.hh"
 #include <algorithm>
 

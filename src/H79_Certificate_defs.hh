@@ -27,7 +27,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "H79_Certificate_types.hh"
 #include "Polyhedron_types.hh"
 #include "globals_types.hh"
-#include "assert.hh"
+#include "assertions.hh"
 #include <vector>
 
 //! A convergence certificate for the H79 widening operator.

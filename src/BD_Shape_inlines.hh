@@ -34,7 +34,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Temp_defs.hh"
 #include "meta_programming.hh"
 #include "wrap_assign.hh"
-#include "assert.hh"
+#include "assertions.hh"
 #include <vector>
 #include <iostream>
 #include <algorithm>

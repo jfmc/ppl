@@ -26,7 +26,7 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "compiler.hh"
 #include "globals_defs.hh"
-#include "assert.hh"
+#include "assertions.hh"
 
 // For the declaration of ffs(3).
 #if defined(PPL_HAVE_STRINGS_H)

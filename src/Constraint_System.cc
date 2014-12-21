@@ -29,7 +29,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Scalar_Products_inlines.hh"
 #include "Congruence_System_defs.hh"
 #include "Congruence_System_inlines.hh"
-#include "assert.hh"
+#include "assertions.hh"
 #include <string>
 #include <vector>
 #include <iostream>

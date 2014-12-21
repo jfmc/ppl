@@ -29,7 +29,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Scalar_Products_inlines.hh"
 #include "MIP_Problem_defs.hh"
 #include "wrap_assign.hh"
-#include "assert.hh"
+#include "assertions.hh"
 #include <cstdlib>
 #include <iostream>
 

@@ -24,7 +24,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "ppl-config.h"
 #include "c_streambuf_defs.hh"
 #include "globals_defs.hh"
-#include "assert.hh"
+#include "assertions.hh"
 
 namespace Parma_Polyhedra_Library {
 

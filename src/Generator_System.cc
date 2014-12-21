@@ -27,7 +27,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Constraint_defs.hh"
 #include "Scalar_Products_defs.hh"
 #include "Scalar_Products_inlines.hh"
-#include "assert.hh"
+#include "assertions.hh"
 #include <string>
 #include <vector>
 #include <iostream>

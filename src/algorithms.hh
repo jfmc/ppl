@@ -27,7 +27,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "NNC_Polyhedron_defs.hh"
 #include "Pointset_Powerset_defs.hh"
 #include <utility>
-#include "assert.hh"
+#include "assertions.hh"
 
 namespace Parma_Polyhedra_Library {
 

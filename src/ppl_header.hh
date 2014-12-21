@@ -112,7 +112,7 @@ site: http://bugseng.com/products/ppl/ . */
 // Must include <cassert> again in order to make the latest changes to
 // NDEBUG effective.
 #include <cassert>
-#include "assert.hh"
+#include "assertions.hh"
 
 #ifdef PPL_NO_AUTOMATIC_INITIALIZATION
  #undef PPL_NO_AUTOMATIC_INITIALIZATION

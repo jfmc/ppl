@@ -24,7 +24,7 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_Checked_Number_templates_hh
 #define PPL_Checked_Number_templates_hh 1
 
-#include "assert.hh"
+#include "assertions.hh"
 #include <iomanip>
 #include <limits>
 

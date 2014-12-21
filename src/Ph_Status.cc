@@ -23,7 +23,7 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
 #include "Polyhedron_defs.hh"
-#include "assert.hh"
+#include "assertions.hh"
 #include <iostream>
 #include <string>
 

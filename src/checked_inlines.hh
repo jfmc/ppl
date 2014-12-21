@@ -27,7 +27,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "globals_types.hh"
 #include "meta_programming.hh"
 #include "C_Integer.hh"
-#include "assert.hh"
+#include "assertions.hh"
 
 /*! \brief
   Performs the test <CODE>a < b</CODE> avoiding the warning about the

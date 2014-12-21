@@ -25,7 +25,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Linear_Expression_Impl_defs.hh"
 #include "Dense_Row_defs.hh"
 #include "Sparse_Row_defs.hh"
-#include "assert.hh"
+#include "assertions.hh"
 #include <iostream>
 
 namespace Parma_Polyhedra_Library {

@@ -25,7 +25,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Congruence_defs.hh"
 #include "Variable_defs.hh"
 #include "Constraint_defs.hh"
-#include "assert.hh"
+#include "assertions.hh"
 #include <iostream>
 #include <sstream>
 #include <stdexcept>

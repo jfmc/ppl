@@ -122,7 +122,7 @@ endif USE_GMP_INTEGERS
 INCLUDE_FILES = \
 namespaces.hh \
 compiler.hh \
-assert.hh \
+assertions.hh \
 meta_programming.hh \
 Slow_Copy.hh \
 Has_Assign_Or_Swap.hh \
@@ -478,7 +478,7 @@ BDS_Status_idefs.hh \
 Og_Status_idefs.hh
 
 libppl_la_SOURCES = \
-assert.cc \
+assertions.cc \
 Box.cc \
 checked.cc \
 Checked_Number.cc \

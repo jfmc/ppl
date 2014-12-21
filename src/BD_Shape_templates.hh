@@ -36,7 +36,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Variables_Set_defs.hh"
 #include "Bit_Row_defs.hh"
 #include "Temp_defs.hh"
-#include "assert.hh"
+#include "assertions.hh"
 #include <vector>
 #include <deque>
 #include <iostream>

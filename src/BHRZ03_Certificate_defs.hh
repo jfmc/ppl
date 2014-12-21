@@ -27,7 +27,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "BHRZ03_Certificate_types.hh"
 #include "Polyhedron_types.hh"
 #include "globals_defs.hh"
-#include "assert.hh"
+#include "assertions.hh"
 #include <vector>
 
 //! The convergence certificate for the BHRZ03 widening operator.
