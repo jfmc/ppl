@@ -26,6 +26,5 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-inline
 PPL::Implementation::Watchdog::Handler::~Handler() {
 }
