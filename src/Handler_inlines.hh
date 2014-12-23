@@ -49,11 +49,6 @@ Handler_Function::Handler_Function(void (* const function)())
   : f(function) {
 }
 
-inline void
-Handler_Function::act() const {
-  (*f)();
-}
-
 } // namespace Watchdog
 
 } // namespace Implementation

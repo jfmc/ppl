@@ -28,3 +28,9 @@ namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Implementation::Watchdog::Handler::~Handler() {
 }
+
+void
+PPL::Implementation::Watchdog::Handler_Function::act() const {
+  (*f)();
+}
+
