@@ -28,12 +28,11 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Linear_Expression_defs.hh"
 #include "Scalar_Products_defs.hh"
 #include "Scalar_Products_inlines.hh"
+#include "swapping_sort_templates.hh"
 #include <algorithm>
 #include <iostream>
 #include <string>
 #include <deque>
-
-#include "swapping_sort_templates.hh"
 
 namespace Parma_Polyhedra_Library {
 

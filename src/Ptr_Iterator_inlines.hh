@@ -24,9 +24,6 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_Ptr_Iterator_inlines_hh
 #define PPL_Ptr_Iterator_inlines_hh 1
 
-#include <algorithm>
-#include "assertions.hh"
-
 namespace Parma_Polyhedra_Library {
 
 namespace Implementation {

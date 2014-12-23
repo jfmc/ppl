@@ -24,14 +24,14 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_checked_defs_hh
 #define PPL_checked_defs_hh 1
 
-#include <cassert>
-#include <iostream>
-#include <gmpxx.h>
 #include "mp_std_bits_defs.hh"
 #include "Temp_defs.hh"
 #include "Rounding_Dir_defs.hh"
 #include "Numeric_Format_defs.hh"
 #include "Float_defs.hh"
+#include <cassert>
+#include <iostream>
+#include <gmpxx.h>
 
 namespace Parma_Polyhedra_Library {
 

@@ -24,6 +24,8 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_Swapping_Vector_inlines_hh
 #define PPL_Swapping_Vector_inlines_hh 1
 
+#include "assertions.hh"
+
 namespace Parma_Polyhedra_Library {
 
 template <typename T>

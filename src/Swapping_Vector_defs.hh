@@ -26,9 +26,7 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "Swapping_Vector_types.hh"
 #include "globals_defs.hh"
-
 #include <vector>
-#include "assertions.hh"
 
 namespace Parma_Polyhedra_Library {
 

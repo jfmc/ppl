@@ -28,6 +28,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "PIP_Tree_types.hh"
 #include "globals_types.hh"
 #include "Linear_Expression_defs.hh"
+#include "Matrix_defs.hh"
 #include "Constraint_defs.hh"
 #include "Constraint_System_types.hh"
 #include "Generator_defs.hh"
@@ -35,8 +36,6 @@ site: http://bugseng.com/products/ppl/ . */
 #include <vector>
 #include <deque>
 #include <iosfwd>
-
-#include "Matrix_defs.hh"
 
 namespace Parma_Polyhedra_Library {
 

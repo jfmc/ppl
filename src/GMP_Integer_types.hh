@@ -14,8 +14,8 @@ PURPOSE. */
 #define PPL_GMP_Integer_types_hh 1
 
 #include "Coefficient_traits_template.hh"
-#include <gmpxx.h>
 #include "mp_std_bits_defs.hh"
+#include <gmpxx.h>
 
 namespace Parma_Polyhedra_Library {
 

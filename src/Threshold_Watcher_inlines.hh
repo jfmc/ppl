@@ -24,9 +24,8 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_Threshold_Watcher_inlines_hh
 #define PPL_Threshold_Watcher_inlines_hh 1
 
-#include <stdexcept>
-
 #include "Handler_defs.hh"
+#include <stdexcept>
 
 namespace Parma_Polyhedra_Library {
 
@@ -51,7 +50,8 @@ Threshold_Watcher<Traits>
 
 template <typename Traits>
 inline
-Threshold_Watcher<Traits>::Threshold_Watcher(const typename Traits::Delta& delta, void (*function)())
+Threshold_Watcher<Traits>
+::Threshold_Watcher(const typename Traits::Delta& delta, void (*function)())
   : expired(false),
     handler(*new Implementation::Watchdog::Handler_Function(function)) {
   typename Traits::Threshold threshold;

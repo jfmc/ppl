@@ -32,9 +32,6 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Interval_Info_defs.hh"
 #include <iosfwd>
 
-// Temporary!
-#include <iostream>
-
 namespace Parma_Polyhedra_Library {
 
 enum Ternary { T_YES, T_NO, T_MAYBE };

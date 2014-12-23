@@ -24,9 +24,10 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_Float_inlines_hh
 #define PPL_Float_inlines_hh 1
 
-#include <climits>
 #include "Variable_defs.hh"
 #include "Linear_Form_defs.hh"
+#include "assertions.hh"
+#include <climits>
 
 namespace Parma_Polyhedra_Library {
 

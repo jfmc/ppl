@@ -25,7 +25,6 @@ site: http://bugseng.com/products/ppl/ . */
 #define PPL_Coefficient_defs_hh 1
 
 #include "Coefficient_types.hh"
-#include <iosfwd>
 
 #if defined(PPL_CHECKED_INTEGERS) || defined(PPL_NATIVE_INTEGERS)
 #include "Checked_Number_defs.hh"
@@ -35,6 +34,8 @@ site: http://bugseng.com/products/ppl/ . */
 #ifdef PPL_GMP_INTEGERS
 #include "GMP_Integer_defs.hh"
 #endif
+
+#include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
 

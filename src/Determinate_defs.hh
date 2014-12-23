@@ -30,7 +30,6 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Variable_defs.hh"
 #include "globals_types.hh"
 #include <iosfwd>
-#include "assertions.hh"
 
 namespace Parma_Polyhedra_Library {
 

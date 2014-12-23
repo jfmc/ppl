@@ -24,10 +24,9 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_intervals_defs_hh
 #define PPL_intervals_defs_hh 1
 
+#include "Checked_Number_defs.hh"
 #include "assertions.hh"
 #include <cstdlib>
-
-#include "Checked_Number_defs.hh"
 
 namespace Parma_Polyhedra_Library {
 

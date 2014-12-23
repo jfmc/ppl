@@ -24,8 +24,8 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_Bit_Matrix_inlines_hh
 #define PPL_Bit_Matrix_inlines_hh 1
 
-#include <algorithm>
 #include "assertions.hh"
+#include <algorithm>
 
 namespace Parma_Polyhedra_Library {
 
@@ -79,9 +79,8 @@ Bit_Matrix::remove_trailing_columns(const dimension_type n) {
 
 inline void
 Bit_Matrix::m_swap(Bit_Matrix& y) {
-  using std::swap;
-  swap(row_size, y.row_size);
-  swap(rows, y.rows);
+  std::swap(row_size, y.row_size);
+  std::swap(rows, y.rows);
 }
 
 inline Bit_Row&
@@ -110,8 +109,7 @@ inline void
 Bit_Matrix::clear() {
   // Clear `rows' and minimize its capacity.
   std::vector<Bit_Row> tmp;
-  using std::swap;
-  swap(tmp, rows);
+  std::swap(tmp, rows);
   row_size = 0;
 }
 

@@ -25,7 +25,6 @@ site: http://bugseng.com/products/ppl/ . */
 #define PPL_Interval_Info_defs_hh 1
 
 #include "Boundary_defs.hh"
-
 #include <iostream>
 
 namespace Parma_Polyhedra_Library {

@@ -24,6 +24,8 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_BHRZ03_Certificate_inlines_hh
 #define PPL_BHRZ03_Certificate_inlines_hh 1
 
+#include "assertions.hh"
+
 namespace Parma_Polyhedra_Library {
 
 inline

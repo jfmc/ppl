@@ -24,8 +24,8 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_Powerset_inlines_hh
 #define PPL_Powerset_inlines_hh 1
 
-#include <algorithm>
 #include "assertions.hh"
+#include <algorithm>
 
 namespace Parma_Polyhedra_Library {
 
@@ -124,9 +124,8 @@ Powerset<D>::operator=(const Powerset& y) {
 template <typename D>
 inline void
 Powerset<D>::m_swap(Powerset& y) {
-  using std::swap;
-  swap(sequence, y.sequence);
-  swap(reduced, y.reduced);
+  std::swap(sequence, y.sequence);
+  std::swap(reduced, y.reduced);
 }
 
 template <typename D>

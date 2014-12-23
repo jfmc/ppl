@@ -25,9 +25,9 @@ site: http://bugseng.com/products/ppl/ . */
 #define PPL_Powerset_templates_hh 1
 
 #include "globals_defs.hh"
-#include <algorithm>
 #include "assertions.hh"
 #include <iostream>
+#include <algorithm>
 
 namespace Parma_Polyhedra_Library {
 
@@ -251,8 +251,7 @@ Powerset<D>::pairwise_apply_assign(const Powerset& y,
     }
   }
   // Put the new sequence in place.
-  using std::swap;
-  swap(sequence, new_sequence);
+  std::swap(sequence, new_sequence);
   reduced = false;
   PPL_ASSERT_HEAVY(OK());
 }

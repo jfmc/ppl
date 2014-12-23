@@ -24,8 +24,8 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_Partial_Function_inlines_hh
 #define PPL_Partial_Function_inlines_hh 1
 
-#include <stdexcept>
 #include "assertions.hh"
+#include <stdexcept>
 
 namespace Parma_Polyhedra_Library {
 
