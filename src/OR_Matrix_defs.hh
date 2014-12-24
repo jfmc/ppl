@@ -24,8 +24,8 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_OR_Matrix_defs_hh
 #define PPL_OR_Matrix_defs_hh 1
 
-#include "globals_defs.hh"
 #include "OR_Matrix_types.hh"
+#include "globals_defs.hh"
 #include "DB_Row_defs.hh"
 #include "Checked_Number_defs.hh"
 #include <cstddef>

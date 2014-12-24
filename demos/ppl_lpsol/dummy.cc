@@ -10,4 +10,6 @@ WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE. */
 
-// This file intentionally contains only this comment :-)
+// This file intentionally contains only the following inclusion.
+#include "ppl-config.h"
+

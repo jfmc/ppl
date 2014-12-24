@@ -24,8 +24,8 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_Floating_Point_Expression_defs_hh
 #define PPL_Floating_Point_Expression_defs_hh 1
 
-#include "globals_defs.hh"
 #include "Floating_Point_Expression_types.hh"
+#include "globals_defs.hh"
 #include "Linear_Form_types.hh"
 #include "Box_types.hh"
 #include <cmath>

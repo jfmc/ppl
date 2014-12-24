@@ -24,8 +24,8 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_NNC_Polyhedron_defs_hh
 #define PPL_NNC_Polyhedron_defs_hh 1
 
-#include "C_Polyhedron_types.hh"
 #include "NNC_Polyhedron_types.hh"
+#include "C_Polyhedron_types.hh"
 #include "Polyhedron_defs.hh"
 #include "Grid_types.hh"
 

@@ -34,12 +34,6 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Scalar_Products_inlines.hh"
 #include "math_utilities_defs.hh"
 
-#include <stdexcept>
-#include <deque>
-#include <vector>
-#include <algorithm>
-#include <cmath>
-
 // TODO: Remove this when the sparse working cost has been tested enough.
 #if PPL_USE_SPARSE_MATRIX
 
@@ -57,6 +51,12 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_SIMPLEX_USE_MIP_HEURISTIC
 #define PPL_SIMPLEX_USE_MIP_HEURISTIC 1
 #endif
+
+#include <stdexcept>
+#include <deque>
+#include <vector>
+#include <algorithm>
+#include <cmath>
 
 #if PPL_NOISY_SIMPLEX
 #include <iostream>

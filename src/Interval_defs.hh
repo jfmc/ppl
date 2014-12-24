@@ -24,11 +24,11 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_Interval_defs_hh
 #define PPL_Interval_defs_hh 1
 
+#include "Interval_types.hh"
 #include "globals_defs.hh"
 #include "meta_programming.hh"
 #include "assign_or_swap.hh"
 #include "intervals_defs.hh"
-#include "Interval_types.hh"
 #include "Interval_Info_defs.hh"
 #include <iosfwd>
 
