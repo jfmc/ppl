@@ -1,6 +1,6 @@
 dnl A function to detect the binary format used by C++ long doubles.
 dnl Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-dnl Copyright (C) 2010-2014 BUGSENG srl (http://bugseng.com)
+dnl Copyright (C) 2010-2015 BUGSENG srl (http://bugseng.com)
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
