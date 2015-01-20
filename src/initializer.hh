@@ -32,7 +32,16 @@ static Parma_Polyhedra_Library::Init Parma_Polyhedra_Library_initializer;
 
 #else
 
-static Parma_Polyhedra_Library::Init* Parma_Polyhedra_Library_initializer_p;
+namespace Parma_Polyhedra_Library {
+
+namespace Implementation {
+
+void initialize_aux();
+void finalize_aux();
+
+} // namespace Implementation
+
+} // namespace Parma_Polyhedra_Library
 
 #endif
 
@@ -42,9 +51,7 @@ namespace Parma_Polyhedra_Library {
 inline void
 initialize() {
 #ifdef PPL_NO_AUTOMATIC_INITIALIZATION
-  if (Parma_Polyhedra_Library_initializer_p == 0) {
-      Parma_Polyhedra_Library_initializer_p = new Init();
-  }
+  Implementation::initialize_aux();
 #endif
 }
 
@@ -52,9 +59,7 @@ initialize() {
 inline void
 finalize() {
 #ifdef PPL_NO_AUTOMATIC_INITIALIZATION
-  PPL_ASSERT(Parma_Polyhedra_Library_initializer_p != 0);
-  delete Parma_Polyhedra_Library_initializer_p;
-  Parma_Polyhedra_Library_initializer_p = 0;
+  Implementation::finalize_aux();
 #endif
 }
 

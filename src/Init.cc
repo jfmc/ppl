@@ -92,9 +92,9 @@ namespace Implementation {
 int (* volatile ppl_check_function_p)() = ppl_check_function;
 int (* volatile ppl_setround_function_p)(int) = ppl_setround_function;
 
-} // Implementation
+} // namespace Implementation
 
-} // Parma_Polyhedra_Library
+} // namespace Parma_Polyhedra_Library
 
 namespace {
 
@@ -214,3 +214,31 @@ PPL::Init::~Init() {
     Coefficient_constants_finalize();
   }
 }
+
+namespace Parma_Polyhedra_Library {
+
+namespace Implementation {
+
+namespace {
+
+static Parma_Polyhedra_Library::Init* Parma_Polyhedra_Library_initializer_p;
+
+} // namespace
+
+void
+initialize_aux() {
+  if (Parma_Polyhedra_Library_initializer_p == 0) {
+    Parma_Polyhedra_Library_initializer_p = new Init();
+  }
+}
+
+void
+finalize_aux() {
+  PPL_ASSERT(Parma_Polyhedra_Library_initializer_p != 0);
+  delete Parma_Polyhedra_Library_initializer_p;
+  Parma_Polyhedra_Library_initializer_p = 0;
+}
+
+} // namespace Implementation
+
+} // namespace Parma_Polyhedra_Library
