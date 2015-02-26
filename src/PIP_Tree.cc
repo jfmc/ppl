@@ -744,7 +744,9 @@ compatibility_check_find_pivot_in_set(
 
         if (lhs_sign != rhs_sign) {
           if (lhs_sign > rhs_sign) {
+#ifndef NDEBUG
             pj = challenger_j;
+#endif
             cost = challenger_cost;
             value = challenger_value;
             row_value = row_challenger_value;
@@ -772,7 +774,9 @@ compatibility_check_find_pivot_in_set(
           }
           else {
             if (lhs > rhs) {
+#ifndef NDEBUG
               pj = challenger_j;
+#endif
               cost = challenger_cost;
               value = challenger_value;
               row_value = row_challenger_value;
