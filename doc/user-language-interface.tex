@@ -73,6 +73,11 @@
 
 \setlength{\headheight}{24pt}
 
+% Custom commands
+\newcommand{\clearemptydoublepage}{%
+  \newpage{\pagestyle{empty}\cleardoublepage}%
+}
+
 \begin{document}
 \title{
 \includegraphics[height=9cm]{ppl_logo.pdf} \\
