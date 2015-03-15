@@ -468,7 +468,7 @@ public:
 
     //! Compares \p *this with \p i .
     /*!
-      \param x
+      \param i
       The %iterator that will be compared with *this.
     */
     bool operator!=(const const_iterator& i) const;
