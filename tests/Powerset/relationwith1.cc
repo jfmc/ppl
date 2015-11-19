@@ -147,15 +147,15 @@ test06() {
 
   C_Polyhedron ph2(1);
   ph2.add_constraint(x == 2);
-  Pointset_Powerset<C_Polyhedron> ps(1, EMPTY);
 
+  Pointset_Powerset<C_Polyhedron> ps(1, EMPTY);
   ps.add_disjunct(ph1);
   ps.add_disjunct(ph2);
 
   Constraint c(x == 1);
   Poly_Con_Relation rel = ps.relation_with(c);
 
-  Poly_Con_Relation known_rel = Poly_Con_Relation::saturates();
+  Poly_Con_Relation known_rel = Poly_Con_Relation::strictly_intersects();
 
   bool ok = (rel == known_rel);
 
@@ -262,6 +262,30 @@ test10() {
   return ok && ps.OK();
 }
 
+bool
+test11() {
+  Variable x(0);
+
+  C_Polyhedron ph1(1);
+  ph1.add_constraint(x <= 0);
+
+  C_Polyhedron ph2(1);
+  ph2.add_constraint(x >= 2);
+
+  Pointset_Powerset<C_Polyhedron> ps(1, EMPTY);
+  ps.add_disjunct(ph1);
+  ps.add_disjunct(ph2);
+
+  Constraint c(x >= 2);
+  Poly_Con_Relation rel = ps.relation_with(c);
+
+  Poly_Con_Relation known_rel = Poly_Con_Relation::strictly_intersects();
+
+  bool ok = (rel == known_rel);
+
+  return ok && ps.OK();
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -275,4 +299,5 @@ BEGIN_MAIN
   DO_TEST(test08);
   DO_TEST(test09);
   DO_TEST(test10);
+  DO_TEST(test11);
 END_MAIN
