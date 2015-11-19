@@ -890,30 +890,37 @@ Pointset_Powerset<PSET>::relation_with(const Constraint& c) const {
   bool is_included = true;
   /* *this is disjoint with c if every disjunct is disjoint with c */
   bool is_disjoint = true;
-  /* *this strictly_intersects with c if some disjunct strictly
-     intersects with c */
+  /* *this strictly_intersects with c if:
+       - some disjunct strictly intersects with c
+     or
+       - there exists two disjoints d1 and d2
+         such that d1 is included in c and d2 is disjoint with c
+  */
   bool is_strictly_intersecting = false;
-  /* *this saturates c if some disjunct saturates c and
-     every disjunct is either disjoint from c or saturates c */
-  bool saturates_once = false;
-  bool may_saturate = true;
+  bool included_once = false;
+  bool disjoint_once = false;
+  /* *this saturates c if all disjuncts saturate c */
+  bool saturates = true;
   for (Sequence_const_iterator si = x.sequence.begin(),
          s_end = x.sequence.end(); si != s_end; ++si) {
     Poly_Con_Relation relation_i = si->pointset().relation_with(c);
-    if (!relation_i.implies(Poly_Con_Relation::is_included())) {
+    if (relation_i.implies(Poly_Con_Relation::is_included())) {
+      included_once = true;
+    }
+    else {
       is_included = false;
     }
-    if (!relation_i.implies(Poly_Con_Relation::is_disjoint())) {
+    if (relation_i.implies(Poly_Con_Relation::is_disjoint())) {
+      disjoint_once = true;
+    }
+    else {
       is_disjoint = false;
     }
     if (relation_i.implies(Poly_Con_Relation::strictly_intersects())) {
       is_strictly_intersecting = true;
     }
-    if (relation_i.implies(Poly_Con_Relation::saturates())) {
-      saturates_once = true;
-    }
-    else if (!relation_i.implies(Poly_Con_Relation::is_disjoint())) {
-      may_saturate = false;
+    if (!relation_i.implies(Poly_Con_Relation::saturates())) {
+      saturates = false;
     }
   }
 
@@ -924,10 +931,10 @@ Pointset_Powerset<PSET>::relation_with(const Constraint& c) const {
   if (is_disjoint) {
     result = result && Poly_Con_Relation::is_disjoint();
   }
-  if (is_strictly_intersecting) {
+  if (is_strictly_intersecting || (included_once && disjoint_once)) {
     result = result && Poly_Con_Relation::strictly_intersects();
   }
-  if (saturates_once && may_saturate) {
+  if (saturates) {
     result = result && Poly_Con_Relation::saturates();
   }
   return result;
