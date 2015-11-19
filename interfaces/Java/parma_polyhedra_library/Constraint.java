@@ -47,6 +47,8 @@ public class Constraint {
     */
     public Constraint(Linear_Expression le1, Relation_Symbol rel_sym,
                       Linear_Expression le2) {
+        if (rel_sym == Relation_Symbol.NOT_EQUAL)
+            throw new Invalid_Argument_Exception("Invalid relation symbol");
         lhs = le1.clone();
         rhs = le2.clone();
         kind = rel_sym;

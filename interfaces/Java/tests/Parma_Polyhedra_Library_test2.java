@@ -51,6 +51,28 @@ public class Parma_Polyhedra_Library_test2 {
                                                           max_dimension);
     }
 
+    public static boolean test03() {
+        Linear_Expression_Variable le_a
+            = new Linear_Expression_Variable(new Variable(0));
+        Linear_Expression le_zero
+            = new Linear_Expression_Coefficient(new Coefficient("0"));
+        try {
+            Constraint c = new Constraint(le_a,
+                                          Relation_Symbol.NOT_EQUAL,
+                                          le_zero);
+        }
+        catch (Invalid_Argument_Exception e) {
+            PPL_Test.println_if_noisy("Expected invalid argument exception"
+                                      + " caught!");
+            PPL_Test.println_if_noisy(e.getMessage());
+            return true;
+        }
+        PPL_Test.println_if_noisy("Expected invalid argument exception"
+                                  + " NOT caught!");
+        return false;
+    }
+
+
     public static void main(String[] args) {
         Parma_Polyhedra_Library.initialize_library();
         boolean test_result_ok =
