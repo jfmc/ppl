@@ -22,6 +22,13 @@ o  TO BE WRITTEN
 Bugfixes
 ========
 
+o  Fixed a bug in the implementation of methods
+     Pointset_Powerset<PSET>::relation_with(const Constraint&) const;
+   and
+     Pointset_Powerset<PSET>::relation_with(const Congruence&) const;
+   whereby the computed result for relations strictly_intersects()
+   and saturates() could have been wrong.
+
 o  Fixed a bug in the implementation of dense rows.
 
 o  Portability improved.
