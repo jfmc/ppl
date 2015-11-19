@@ -54,15 +54,15 @@ test02() {
 
   C_Polyhedron ph2(1);
   ph2.add_constraint(x == 2);
-  Pointset_Powerset<C_Polyhedron> ps(1, EMPTY);
 
+  Pointset_Powerset<C_Polyhedron> ps(1, EMPTY);
   ps.add_disjunct(ph1);
   ps.add_disjunct(ph2);
 
   Congruence cg((x %= 1) / 0);
   Poly_Con_Relation rel = ps.relation_with(cg);
 
-  Poly_Con_Relation known_rel = Poly_Con_Relation::saturates();
+  Poly_Con_Relation known_rel = Poly_Con_Relation::strictly_intersects();
 
   bool ok = (rel == known_rel);
 
