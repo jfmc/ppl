@@ -233,6 +233,18 @@ Pointset_Powerset<PSET>::time_elapse_assign(const Pointset_Powerset& y) {
 }
 
 template <typename PSET>
+inline Poly_Con_Relation
+Pointset_Powerset<PSET>::relation_with(const Constraint& c) const {
+  return relation_with_aux(c);
+}
+
+template <typename PSET>
+inline Poly_Con_Relation
+Pointset_Powerset<PSET>::relation_with(const Congruence& cg) const {
+  return relation_with_aux(cg);
+}
+
+template <typename PSET>
 inline bool
 Pointset_Powerset<PSET>
 ::geometrically_covers(const Pointset_Powerset& y) const {

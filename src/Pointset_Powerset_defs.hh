@@ -1294,6 +1294,13 @@ private:
                                                    typename Cert::Compare>&
                                     y_cert_ms) const;
 
+  /*! \brief
+    Template helper: common implementation for constraints
+    and congruences.
+  */
+  template <typename Cons_or_Congr>
+  Poly_Con_Relation relation_with_aux(const Cons_or_Congr& c) const;
+
   // FIXME: here it should be enough to befriend the template constructor
   // template <typename QH>
   // Pointset_Powerset(const Pointset_Powerset<QH>&),
