@@ -99,6 +99,7 @@ generators1 \
 geomcovers1 \
 h79widening1 h79widening2 \
 hybrid \
+hypercubes \
 intersection1 \
 limitedbhrz03extrapolation1 \
 limitedh79extrapolation1 \
@@ -336,6 +337,8 @@ h79widening1_SOURCES = h79widening1.cc
 h79widening2_SOURCES = h79widening2.cc
 
 hybrid_SOURCES = hybrid.cc
+
+hypercubes_SOURCES = hypercubes.cc
 
 intersection1_SOURCES = intersection1.cc
 
