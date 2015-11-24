@@ -947,7 +947,7 @@ ppl_@CLASS@_frequency_6_test :-
         F_N == F_Nexptd, F_D == F_Dexptd,
         V_N == V_Nexptd, V_D == V_Dexptd)
      ;
-       \+ ppl_@CLASS@_frequency(PS, LE, F_N, F_D, V_N, V_D)
+       \+ ppl_@CLASS@_frequency(PS, LE, _F_N, _F_D, _V_N, _V_D)
      ),
      ppl_@CLASS@_OK(PS),
      ppl_delete_@CLASS@(PS)
