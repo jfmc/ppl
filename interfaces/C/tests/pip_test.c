@@ -112,6 +112,8 @@ display_solution_i(ppl_const_PIP_Tree_Node_t node,
         ppl_io_print_Constraint(c);
         notfirst = 1;
       }
+      ppl_delete_Constraint_System_const_iterator(end);
+      ppl_delete_Constraint_System_const_iterator(i);
       printf(" then\n");
     }
     ppl_PIP_Tree_Node_as_decision(node, &dn);
@@ -175,6 +177,7 @@ display_solution(ppl_const_PIP_Tree_Node_t node,
 int
 main(int argc, char **argv) {
   ppl_PIP_Problem_t pip;
+  ppl_Constraint_System_t cs;
   ppl_Constraint_t ct;
   ppl_Coefficient_t c;
   ppl_Linear_Expression_t le;
@@ -220,6 +223,7 @@ main(int argc, char **argv) {
   ppl_new_PIP_Problem_from_space_dimension(&pip, N_VARS+N_PARAMETERS);
   ppl_PIP_Problem_add_to_parameter_space_dimensions(pip, parameter_dim,
                                                     N_PARAMETERS);
+  ppl_new_Constraint_System(&cs);
   ppl_new_Coefficient(&c);
   for (i = 0; i < N_CONSTRAINTS; ++i) {
     ppl_new_Linear_Expression(&le);
@@ -232,7 +236,9 @@ main(int argc, char **argv) {
     ppl_assign_Coefficient_from_mpz_t(c, mpc);
     ppl_Linear_Expression_add_to_inhomogeneous(le, c);
     ppl_new_Constraint(&ct, le, PPL_CONSTRAINT_TYPE_GREATER_OR_EQUAL);
+    ppl_Constraint_System_insert_Constraint(cs, ct);
     ppl_PIP_Problem_add_constraint(pip, ct);
+    ppl_delete_Constraint(ct);
     ppl_delete_Linear_Expression(le);
   }
   ppl_delete_Coefficient(c);
@@ -246,7 +252,6 @@ main(int argc, char **argv) {
     ppl_dimension_type dim;
     ppl_const_PIP_Tree_Node_t solution;
     ppl_PIP_Problem_t pip0;
-    ppl_Constraint_System_t constraints;
     ppl_Constraint_System_const_iterator_t begin, end;
 
     ppl_PIP_Problem_space_dimension(pip, &dim);
@@ -255,18 +260,19 @@ main(int argc, char **argv) {
       display_solution(solution, N_VARS, N_PARAMETERS, parameter_dim);
     ppl_new_Constraint_System_const_iterator(&begin);
     ppl_new_Constraint_System_const_iterator(&end);
-    ppl_new_Constraint_System_from_Constraint(&constraints, ct);
-    ppl_Constraint_System_begin(constraints, begin);
-    ppl_Constraint_System_end(constraints, end);
+    ppl_Constraint_System_begin(cs, begin);
+    ppl_Constraint_System_end(cs, end);
     ppl_new_PIP_Problem_from_constraints(&pip0, N_VARS+N_PARAMETERS,
                                          begin, end, N_PARAMETERS,
                                          parameter_dim);
     ok = ppl_PIP_Problem_OK(pip0);
-    ppl_delete_Constraint(ct);
-    ppl_delete_Constraint_System(constraints);
+    ppl_delete_PIP_Problem(pip0);
+    ppl_delete_Constraint_System_const_iterator(end);
+    ppl_delete_Constraint_System_const_iterator(begin);
   }
 
   ppl_delete_PIP_Problem(pip);
+  ppl_delete_Constraint_System(cs);
   ppl_finalize();
   return ok ? 0 : 1;
 }

@@ -24,6 +24,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "ppl_c_test.h"
 
 #include "print_to_buffer.h"
+#include <stdlib.h>
 #include <stdio.h>
 
 #define DIMENSION 100
@@ -58,7 +59,10 @@ main() {
     else
       printf("    %s\n", p);
   }
+  free(p);
   ppl_delete_Constraint_System(cs);
+  ppl_delete_Coefficient(coeff);
   ppl_finalize();
+  mpz_clear(z);
   return 0;
 }
