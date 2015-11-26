@@ -425,7 +425,6 @@ Polyhedron::conversion(Source_Linear_System& source,
 #ifndef NDEBUG
 #if PPL_QUICK_ADJ_TEST
     for (dimension_type i = dest_num_rows; i-- > 0; ) {
-      std::cerr << "sat_num_ones[" << i << "] = " << sat_num_ones[i] << "\n";
       PPL_ASSERT(sat_num_ones[i] == sat[i].count_ones());
     }
 #endif // PPL_QUICK_ADJ_TEST
