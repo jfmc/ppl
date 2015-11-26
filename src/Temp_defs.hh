@@ -51,8 +51,20 @@ private:
   //! Pointer to the next item in the free list.
   Temp_Item* next;
 
+  class Free_List {
+  public:
+    Free_List();
+    ~Free_List();
+    Temp_Item* head_ptr;
+  private:
+    Free_List(const Free_List&); // Not implemented.
+    Free_List& operator=(const Free_List&); // Not implemented.
+  }; // class Free_List
+
+  friend class Free_List;
+
   //! Head of the free list.
-  static Temp_Item* free_list_head;
+  static Temp_Item*& free_list_ref();
 
   //! Default constructor.
   Temp_Item();

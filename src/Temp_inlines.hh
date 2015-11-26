@@ -41,11 +41,24 @@ Temp_Item<T>::item() {
 }
 
 template <typename T>
+inline
+Temp_Item<T>::Free_List::Free_List()
+  : head_ptr(0) {
+}
+
+template <typename T>
+inline Temp_Item<T>*&
+Temp_Item<T>::free_list_ref() {
+  static Free_List free_list;
+  return free_list.head_ptr;
+}
+
+template <typename T>
 inline Temp_Item<T>&
 Temp_Item<T>::obtain() {
-  if (free_list_head != 0) {
-    Temp_Item* const p = free_list_head;
-    free_list_head = free_list_head->next;
+  Temp_Item* const p = free_list_ref();
+  if (p != 0) {
+    free_list_ref() = p->next;
     return *p;
   }
   else {
@@ -56,8 +69,8 @@ Temp_Item<T>::obtain() {
 template <typename T>
 inline void
 Temp_Item<T>::release(Temp_Item& p) {
-  p.next = free_list_head;
-  free_list_head = &p;
+  p.next = free_list_ref();
+  free_list_ref() = &p;
 }
 
 template <typename T>

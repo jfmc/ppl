@@ -27,7 +27,13 @@ site: http://bugseng.com/products/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename T>
-Temp_Item<T>* Temp_Item<T>::free_list_head = 0;
+Temp_Item<T>::Free_List::~Free_List() {
+  while (head_ptr != 0) {
+    Temp_Item* const p = head_ptr;
+    head_ptr = head_ptr->next;
+    delete p;
+  }
+}
 
 } // namespace Parma_Polyhedra_Library
 
