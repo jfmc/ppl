@@ -6,7 +6,7 @@ dnl the generated Prolog interface predicates
 dnl and the main file ppl_prolog_generated_test_main.pl.
 
 dnl Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-dnl Copyright (C) 2010-2015 BUGSENG srl (http://bugseng.com)
+dnl Copyright (C) 2010-2016 BUGSENG srl (http://bugseng.com)
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl
@@ -947,7 +947,7 @@ ppl_@CLASS@_frequency_6_test :-
         F_N == F_Nexptd, F_D == F_Dexptd,
         V_N == V_Nexptd, V_D == V_Dexptd)
      ;
-       \+ ppl_@CLASS@_frequency(PS, LE, F_N, F_D, V_N, V_D)
+       \+ ppl_@CLASS@_frequency(PS, LE, _F_N, _F_D, _V_N, _V_D)
      ),
      ppl_@CLASS@_OK(PS),
      ppl_delete_@CLASS@(PS)

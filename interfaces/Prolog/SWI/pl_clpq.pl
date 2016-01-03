@@ -1,6 +1,6 @@
 /* Prolog main program for the toy PPL/SWI-Prolog CLP(Q) interpreter.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2015 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2016 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -21,7 +21,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-1307, USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://bugseng.com/products/ppl/ . */
 
-eat_eol.
+eat_eol :-
+        get_code(user_input, _EOL).
 
 main :-
   % FIXME: clearing the prompt as it is done here is a temporary workaround.
