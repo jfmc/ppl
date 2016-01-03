@@ -1,5 +1,5 @@
 /* Test customization of variable output in Java.
-   Copyright (C) 2010-2015 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2016 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
