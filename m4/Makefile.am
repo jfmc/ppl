@@ -50,6 +50,7 @@ ac_prog_java.m4 \
 ac_prog_javac.m4 \
 ac_prog_javah.m4 \
 ac_text_md5sum.m4 \
+ac_use_libtool.m4 \
 libtool.m4 \
 ltoptions.m4 \
 ltsugar.m4 \
