@@ -3,10 +3,10 @@ Copyright (C) 2010-2016 BUGSENG srl (http://bugseng.com)
 See below for the copying conditions.
 
 
-Parma Polyhedra Library (Release 1.0)
+Parma Polyhedra Library (Release 1.2)
 =====================================
 
-This is the release 1.0 of the Parma Polyhedra Library:
+This is the release 1.2 of the Parma Polyhedra Library:
 a C++ library for (not necessarily closed) convex polyhedra
 and other numerical abstractions.
 
@@ -71,10 +71,10 @@ See http://bugseng.com/products/ppl/ for more information on the PPL.
 For any additional questions you might have, please do not hesitate to
 write to ppl-devel@cs.unipr.it.
 
-Here is the contents of the PPL 1.0 source distribution
-(41 directories, 1616 files):
+Here is the contents of the PPL 1.2 source distribution
+(41 directories, 1634 files):
 
-ppl-1.0
+ppl-1.2
 |-- BUGS
 |-- COPYING
 |-- CREDITS
@@ -344,18 +344,18 @@ ppl-1.0
 |   |-- libppl.3
 |   |-- libppl_c.3
 |   |-- ppl-config.1
-|   |-- ppl-user-1.0-html.tar.gz
-|   |-- ppl-user-1.0.pdf
-|   |-- ppl-user-1.0.ps.gz
-|   |-- ppl-user-c-interface-1.0-html.tar.gz
-|   |-- ppl-user-c-interface-1.0.pdf
-|   |-- ppl-user-c-interface-1.0.ps.gz
-|   |-- ppl-user-ocaml-interface-1.0-html.tar.gz
-|   |-- ppl-user-ocaml-interface-1.0.pdf
-|   |-- ppl-user-ocaml-interface-1.0.ps.gz
-|   |-- ppl-user-prolog-interface-1.0-html.tar.gz
-|   |-- ppl-user-prolog-interface-1.0.pdf
-|   |-- ppl-user-prolog-interface-1.0.ps.gz
+|   |-- ppl-user-1.2-html.tar.gz
+|   |-- ppl-user-1.2.pdf
+|   |-- ppl-user-1.2.ps.gz
+|   |-- ppl-user-c-interface-1.2-html.tar.gz
+|   |-- ppl-user-c-interface-1.2.pdf
+|   |-- ppl-user-c-interface-1.2.ps.gz
+|   |-- ppl-user-java-interface-1.2-html.tar.gz
+|   |-- ppl-user-java-interface-1.2.pdf
+|   |-- ppl-user-java-interface-1.2.ps.gz
+|   |-- ppl-user-prolog-interface-1.2-html.tar.gz
+|   |-- ppl-user-prolog-interface-1.2.pdf
+|   |-- ppl-user-prolog-interface-1.2.ps.gz
 |   |-- ppl.bib
 |   |-- ppl.sty
 |   |-- ppl_citations.bib
@@ -466,12 +466,14 @@ ppl-1.0
 |   |   |   |-- Relation_Symbol.java
 |   |   |   |-- Timeout_Exception.java
 |   |   |   |-- Variable.java
+|   |   |   |-- Variable_Stringifier.java
 |   |   |   |-- Variables_Set.java
 |   |   |   |-- ppl_interface_generator_java_classes_java.m4
 |   |   |   `-- ppl_interface_generator_java_classes_java_code.m4
 |   |   |-- ppl_interface_generator_java_procedure_generators.m4
 |   |   `-- tests
 |   |       |-- C_Polyhedron_test1.java
+|   |       |-- Custom_Variable_Stringifier.java
 |   |       |-- MIP_Problem_test1.java
 |   |       |-- Makefile.am
 |   |       |-- Makefile.in
@@ -481,6 +483,7 @@ ppl-1.0
 |   |       |-- Parma_Polyhedra_Library_test1.java
 |   |       |-- Parma_Polyhedra_Library_test2.java
 |   |       |-- Test_Executor.java
+|   |       |-- Variable_Output_test1.java
 |   |       |-- ppl_interface_generator_java_test_java.m4
 |   |       |-- ppl_interface_generator_java_test_java_code.m4
 |   |       `-- ppl_java_tests_common
@@ -569,6 +572,7 @@ ppl-1.0
 |   |   |   |-- ppl_interface_generator_swiprolog_cc.m4
 |   |   |   |-- ppl_pl.cc
 |   |   |   |-- ppl_prolog_sysdep.hh
+|   |   |   |-- ppl_swiprolog.hh
 |   |   |   |-- ppl_swiprolog.pl
 |   |   |   |-- swi_cfli.hh
 |   |   |   |-- swi_efli.cc
@@ -677,6 +681,7 @@ ppl-1.0
 |   |-- Makefile.in
 |   |-- ac_check_ciao.m4
 |   |-- ac_check_classpath.m4
+|   |-- ac_check_cxx11.m4
 |   |-- ac_check_fpu_control.m4
 |   |-- ac_check_gmp.m4
 |   |-- ac_check_sicstus_prolog.m4
@@ -697,6 +702,7 @@ ppl-1.0
 |   |-- ac_prog_javac.m4
 |   |-- ac_prog_javah.m4
 |   |-- ac_text_md5sum.m4
+|   |-- ac_use_libtool.m4
 |   |-- libtool.m4
 |   |-- ltoptions.m4
 |   |-- ltsugar.m4
@@ -712,7 +718,8 @@ ppl-1.0
 |-- ppl-config.sed
 |-- ppl.lsm.in
 |-- src
-|   |-- BDS_Status.idefs.hh
+|   |-- BDS_Status.cc
+|   |-- BDS_Status_idefs.hh
 |   |-- BDS_Status_inlines.hh
 |   |-- BD_Shape.cc
 |   |-- BD_Shape_defs.hh
@@ -735,12 +742,13 @@ ppl-1.0
 |   |-- Bit_Row_types.hh
 |   |-- Boundary_defs.hh
 |   |-- Box.cc
+|   |-- Box_Status.cc
+|   |-- Box_Status_idefs.hh
+|   |-- Box_Status_inlines.hh
 |   |-- Box_defs.hh
 |   |-- Box_inlines.hh
 |   |-- Box_templates.hh
 |   |-- Box_types.hh
-|   |-- Box_Status.idefs.hh
-|   |-- Box_Status_inlines.hh
 |   |-- COPYING.cc.dist
 |   |-- COPYING.hh.dist
 |   |-- CO_Tree.cc
@@ -767,31 +775,31 @@ ppl-1.0
 |   |-- Coefficient.cc
 |   |-- Coefficient_defs.hh
 |   |-- Coefficient_inlines.hh
-|   |-- Coefficient_types.hh
 |   |-- Coefficient_traits_template.hh
+|   |-- Coefficient_types.hh
 |   |-- Concrete_Expression.cc
 |   |-- Concrete_Expression_defs.hh
 |   |-- Concrete_Expression_inlines.hh
 |   |-- Concrete_Expression_types.hh
 |   |-- Congruence.cc
-|   |-- Congruence_defs.hh
-|   |-- Congruence_inlines.hh
-|   |-- Congruence_types.hh
 |   |-- Congruence_System.cc
 |   |-- Congruence_System_defs.hh
 |   |-- Congruence_System_inlines.hh
 |   |-- Congruence_System_types.hh
+|   |-- Congruence_defs.hh
+|   |-- Congruence_inlines.hh
+|   |-- Congruence_types.hh
 |   |-- Constant_Floating_Point_Expression_defs.hh
 |   |-- Constant_Floating_Point_Expression_inlines.hh
 |   |-- Constant_Floating_Point_Expression_types.hh
 |   |-- Constraint.cc
-|   |-- Constraint_defs.hh
-|   |-- Constraint_inlines.hh
-|   |-- Constraint_types.hh
 |   |-- Constraint_System.cc
 |   |-- Constraint_System_defs.hh
 |   |-- Constraint_System_inlines.hh
 |   |-- Constraint_System_types.hh
+|   |-- Constraint_defs.hh
+|   |-- Constraint_inlines.hh
+|   |-- Constraint_types.hh
 |   |-- DB_Matrix_defs.hh
 |   |-- DB_Matrix_inlines.hh
 |   |-- DB_Matrix_templates.hh
@@ -819,12 +827,15 @@ ppl-1.0
 |   |-- Doubly_Linked_Object_defs.hh
 |   |-- Doubly_Linked_Object_inlines.hh
 |   |-- Doubly_Linked_Object_types.hh
-|   |-- EList_defs.hh
-|   |-- EList_inlines.hh
-|   |-- EList_types.hh
 |   |-- EList_Iterator_defs.hh
 |   |-- EList_Iterator_inlines.hh
 |   |-- EList_Iterator_types.hh
+|   |-- EList_defs.hh
+|   |-- EList_inlines.hh
+|   |-- EList_types.hh
+|   |-- Expression_Adapter_defs.hh
+|   |-- Expression_Adapter_inlines.hh
+|   |-- Expression_Adapter_types.hh
 |   |-- Expression_Hide_Inhomo_defs.hh
 |   |-- Expression_Hide_Inhomo_inlines.hh
 |   |-- Expression_Hide_Inhomo_types.hh
@@ -843,42 +854,43 @@ ppl-1.0
 |   |-- GMP_Integer_inlines.hh
 |   |-- GMP_Integer_types.hh
 |   |-- Generator.cc
-|   |-- Generator_defs.hh
-|   |-- Generator_inlines.hh
-|   |-- Generator_types.hh
 |   |-- Generator_System.cc
 |   |-- Generator_System_defs.hh
 |   |-- Generator_System_inlines.hh
 |   |-- Generator_System_types.hh
-|   |-- Grid_defs.hh
-|   |-- Grid_inlines.hh
-|   |-- Grid_templates.hh
-|   |-- Grid_types.hh
+|   |-- Generator_defs.hh
+|   |-- Generator_inlines.hh
+|   |-- Generator_types.hh
 |   |-- Grid_Certificate.cc
 |   |-- Grid_Certificate_defs.hh
 |   |-- Grid_Certificate_inlines.hh
 |   |-- Grid_Certificate_types.hh
 |   |-- Grid_Generator.cc
-|   |-- Grid_Generator_defs.hh
-|   |-- Grid_Generator_inlines.hh
-|   |-- Grid_Generator_types.hh
 |   |-- Grid_Generator_System.cc
 |   |-- Grid_Generator_System_defs.hh
 |   |-- Grid_Generator_System_inlines.hh
 |   |-- Grid_Generator_System_types.hh
+|   |-- Grid_Generator_defs.hh
+|   |-- Grid_Generator_inlines.hh
+|   |-- Grid_Generator_types.hh
 |   |-- Grid_Status.cc
-|   |-- Grid_Status.idefs.hh
+|   |-- Grid_Status_idefs.hh
 |   |-- Grid_Status_inlines.hh
 |   |-- Grid_chdims.cc
 |   |-- Grid_conversion.cc
+|   |-- Grid_defs.hh
+|   |-- Grid_inlines.hh
 |   |-- Grid_nonpublic.cc
 |   |-- Grid_public.cc
 |   |-- Grid_simplify.cc
+|   |-- Grid_templates.hh
+|   |-- Grid_types.hh
 |   |-- Grid_widenings.cc
 |   |-- H79_Certificate.cc
 |   |-- H79_Certificate_defs.hh
 |   |-- H79_Certificate_inlines.hh
 |   |-- H79_Certificate_types.hh
+|   |-- Handler.cc
 |   |-- Handler_defs.hh
 |   |-- Handler_inlines.hh
 |   |-- Handler_types.hh
@@ -888,17 +900,14 @@ ppl-1.0
 |   |-- Init_inlines.hh
 |   |-- Init_types.hh
 |   |-- Integer_Interval.hh
+|   |-- Interval_Info_defs.hh
+|   |-- Interval_Info_inlines.hh
+|   |-- Interval_Info_types.hh
 |   |-- Interval_defs.hh
 |   |-- Interval_inlines.hh
 |   |-- Interval_templates.hh
 |   |-- Interval_types.hh
-|   |-- Interval_Info_defs.hh
-|   |-- Interval_Info_inlines.hh
-|   |-- Interval_Info_types.hh
 |   |-- Linear_Expression.cc
-|   |-- Linear_Expression_defs.hh
-|   |-- Linear_Expression_inlines.hh
-|   |-- Linear_Expression_types.hh
 |   |-- Linear_Expression_Impl.cc
 |   |-- Linear_Expression_Impl_defs.hh
 |   |-- Linear_Expression_Impl_inlines.hh
@@ -907,6 +916,9 @@ ppl-1.0
 |   |-- Linear_Expression_Interface.cc
 |   |-- Linear_Expression_Interface_defs.hh
 |   |-- Linear_Expression_Interface_types.hh
+|   |-- Linear_Expression_defs.hh
+|   |-- Linear_Expression_inlines.hh
+|   |-- Linear_Expression_types.hh
 |   |-- Linear_Form.cc
 |   |-- Linear_Form_defs.hh
 |   |-- Linear_Form_inlines.hh
@@ -945,7 +957,8 @@ ppl-1.0
 |   |-- Octagonal_Shape_inlines.hh
 |   |-- Octagonal_Shape_templates.hh
 |   |-- Octagonal_Shape_types.hh
-|   |-- Og_Status.idefs.hh
+|   |-- Og_Status.cc
+|   |-- Og_Status_idefs.hh
 |   |-- Og_Status_inlines.hh
 |   |-- Opposite_Floating_Point_Expression_defs.hh
 |   |-- Opposite_Floating_Point_Expression_inlines.hh
@@ -975,7 +988,7 @@ ppl-1.0
 |   |-- Pending_List_templates.hh
 |   |-- Pending_List_types.hh
 |   |-- Ph_Status.cc
-|   |-- Ph_Status.idefs.hh
+|   |-- Ph_Status_idefs.hh
 |   |-- Ph_Status_inlines.hh
 |   |-- Pointset_Powerset.cc
 |   |-- Pointset_Powerset_defs.hh
@@ -990,17 +1003,17 @@ ppl-1.0
 |   |-- Poly_Gen_Relation_defs.hh
 |   |-- Poly_Gen_Relation_inlines.hh
 |   |-- Poly_Gen_Relation_types.hh
-|   |-- Polyhedron_defs.hh
-|   |-- Polyhedron_inlines.hh
-|   |-- Polyhedron_templates.hh
-|   |-- Polyhedron_types.hh
 |   |-- Polyhedron_chdims.cc
 |   |-- Polyhedron_chdims_templates.hh
 |   |-- Polyhedron_conversion_templates.hh
+|   |-- Polyhedron_defs.hh
+|   |-- Polyhedron_inlines.hh
 |   |-- Polyhedron_minimize_templates.hh
 |   |-- Polyhedron_nonpublic.cc
 |   |-- Polyhedron_public.cc
 |   |-- Polyhedron_simplify_templates.hh
+|   |-- Polyhedron_templates.hh
+|   |-- Polyhedron_types.hh
 |   |-- Polyhedron_widenings.cc
 |   |-- Powerset_defs.hh
 |   |-- Powerset_inlines.hh
@@ -1046,12 +1059,12 @@ ppl-1.0
 |   |-- Time_types.hh
 |   |-- Topology_types.hh
 |   |-- Variable.cc
-|   |-- Variable_defs.hh
-|   |-- Variable_inlines.hh
-|   |-- Variable_types.hh
 |   |-- Variable_Floating_Point_Expression_defs.hh
 |   |-- Variable_Floating_Point_Expression_inlines.hh
 |   |-- Variable_Floating_Point_Expression_types.hh
+|   |-- Variable_defs.hh
+|   |-- Variable_inlines.hh
+|   |-- Variable_types.hh
 |   |-- Variables_Set.cc
 |   |-- Variables_Set_defs.hh
 |   |-- Variables_Set_inlines.hh
@@ -1068,8 +1081,8 @@ ppl-1.0
 |   |-- Widening_Function_inlines.hh
 |   |-- Widening_Function_types.hh
 |   |-- algorithms.hh
-|   |-- assert.cc
-|   |-- assert.hh
+|   |-- assertions.cc
+|   |-- assertions.hh
 |   |-- assign_or_swap.hh
 |   |-- c_streambuf.cc
 |   |-- c_streambuf_defs.hh
@@ -1077,9 +1090,9 @@ ppl-1.0
 |   |-- c_streambuf_types.hh
 |   |-- checked.cc
 |   |-- checked_defs.hh
-|   |-- checked_inlines.hh
 |   |-- checked_ext_inlines.hh
 |   |-- checked_float_inlines.hh
+|   |-- checked_inlines.hh
 |   |-- checked_int_inlines.hh
 |   |-- checked_mpq_inlines.hh
 |   |-- checked_mpz_inlines.hh
@@ -1116,6 +1129,7 @@ ppl-1.0
 |   |-- ppl-config.cc.in
 |   |-- ppl.hh.dist
 |   |-- ppl_header.hh
+|   |-- set_GMP_memory_alloc_funcs.cc
 |   |-- stdiobuf.cc
 |   |-- stdiobuf_defs.hh
 |   |-- stdiobuf_inlines.hh
@@ -1130,6 +1144,7 @@ ppl-1.0
 |   |-- wrap_assign.hh
 |   |-- wrap_string.cc
 |   `-- wrap_string.hh
+|-- test-driver
 |-- tests
 |   |-- BD_Shape
 |   |   |-- Makefile.am
@@ -1604,6 +1619,7 @@ ppl-1.0
 |   |   |-- h79widening1.cc
 |   |   |-- h79widening2.cc
 |   |   |-- hybrid.cc
+|   |   |-- hypercubes.cc
 |   |   |-- intersection1.cc
 |   |   |-- limitedbhrz03extrapolation1.cc
 |   |   |-- limitedh79extrapolation1.cc
@@ -1624,6 +1640,7 @@ ppl-1.0
 |   |   |-- mingenerators2.cc
 |   |   |-- nncminimize1.cc
 |   |   |-- nncminimize2.cc
+|   |   |-- nncpostimeelapse1.cc
 |   |   |-- numberinput1.cc
 |   |   |-- onepoint.cc
 |   |   |-- permute.cc
@@ -1644,6 +1661,7 @@ ppl-1.0
 |   |   |-- removespacedims1.cc
 |   |   |-- removespacedims2.cc
 |   |   |-- simplifyusingcontext1.cc
+|   |   |-- simplifyusingcontext2.cc
 |   |   |-- smm1.cc
 |   |   |-- sparserow1.cc
 |   |   |-- termination1.cc
