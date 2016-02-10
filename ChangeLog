@@ -1,3 +1,3170 @@
+2016-02-10  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* config.guess, config.sub: Updated.
+
+2016-02-10  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* configure.ac: Version number bumped.
+
+2016-02-10  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* : commit e1d8ae6dff428bd849b8fe3b0adc7d40e9e0891f Author: Enea
+	Zaffanella <zaffanella@cs.unipr.it> Date:   Wed Feb 10 09:49:57 2016
+	+0100
+
+2016-02-10  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/BD_Shape_templates.hh, src/Box_defs.hh, src/Box_templates.hh,
+	src/Octagonal_Shape_templates.hh, src/Polyhedron_nonpublic.cc,
+	src/Polyhedron_public.cc, src/Polyhedron_templates.hh: Be more
+	consistent in the usage of PPL_DIRTY_TEMP macros.  Got rid of a
+	couple of FIXME's.
+
+2016-02-05  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* configure.ac, m4/Makefile.am, m4/ac_check_gmp.m4,
+	m4/ac_use_libtool.m4: Avoid overriding LD_LIBRARY_PATH; use libtool
+	instead.
+
+2016-01-03  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* : commit 1a50eab30f191ed0fd9963d4e90a2753d715a6be Author: Roberto
+	Bagnara <roberto.bagnara@bugseng.com> Date:   Sun Jan 3 15:06:03
+	2016 +0100
+
+2015-11-26  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Temp_defs.hh, src/Temp_inlines.hh, src/Temp_templates.hh: 
+	Avoid a memory leak due to the global list of dirty temporaries.  The memory leak was not causing a real problem, in that the list of
+	dirty temporaries is meant to survive up to the end of the process.
+	However, it could cause a problem if/when the library is extended to
+	become multi-thread safe, since in such a scenario it is meaningful
+	to have a list of dirty temporaries for each thread (to be released
+	on thread exit).
+
+2015-11-26  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/C/tests/formatted_output.c,
+	interfaces/C/tests/pip_test.c: Avoid a couple of memory leaks in the
+	C interface tests.
+
+2015-11-26  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron_conversion_templates.hh: Get rid of temporary print
+	previously added for debugging purposes.
+
+2015-11-24  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* interfaces/Prolog/SWI/pl_clpq.pl: Adapted to SWI-Prolog version
+	7.x.
+
+2015-11-24  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	*
+	interfaces/Prolog/tests/ppl_interface_generator_prolog_generated_te
+	st_pl_code.m4: Warnings avoided.
+
+2015-11-23  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron_conversion_templates.hh,
+	tests/Polyhedron/Makefile.am, tests/Polyhedron/hypercubes.cc: 
+	Implemented the quick adjacency check in the conversion procedure.  The test allows for significant performce improvements on certain
+	classes of polyhedra (e.g., hypercubes) in that it saves many
+	saturation subset checks.  Added preprocessing flags to allow for enabling/disabling the new
+	check (as well as the old quick non-adjacency check). Added new
+	  testcase tests/Polyhedron/hypercubes.cc that can be used for a
+	performance comparison.  The efficiency benefits can also be appreciated when running the
+	ppl_lcdd demo testsuite.
+
+2015-11-19  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Java/parma_polyhedra_library/Constraint.java,
+	interfaces/Java/tests/Parma_Polyhedra_Library_test2.java: In Java,
+	throw an exception when trying to build a disequality.
+
+2015-11-19  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* NEWS: Mention fixed bug.
+
+2015-11-19  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Pointset_Powerset_defs.hh, src/Pointset_Powerset_inlines.hh,
+	src/Pointset_Powerset_templates.hh: Provide a common, correct
+	  implementation for the methods
+	Pointset_Powerset<PSET>::relation_with() working on Constraint and
+	Congruence objects.
+
+2015-11-19  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Powerset/relationwith1.cc: Corrected expected result for
+	test02().  The test shows a bug in current implementation of method   Pointset_Powerset<PSET>::relation_with(const Congruence& c) const
+
+2015-11-19  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Pointset_Powerset_templates.hh: Fixed bug in
+	Pointset_Powerset::relation_with(const Constraint&) const.  The bug was causing wrong results for relations
+	strictly_intersects() and saturates() on some inputs.
+
+2015-11-19  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/Powerset/relationwith1.cc: Corrected expected result for
+	test06().  Added a new testcase as test11().  The two tests show a
+	  bug in current implementation of method
+	Pointset_Powerset<PSET>::relation_with(const Constraint& c) const
+
+2015-06-30  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* CREDITS: Updated.
+
+2015-03-15  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/devref-language-interface.doxyconf.in,
+	doc/user-language-interface.doxyconf.in: Updated.
+
+2015-03-15  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* tests/Watchdog/Makefile.am: Added missing linker options.
+
+2015-03-15  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/devref-language-interface.tex, doc/devref.tex,
+	doc/user-language-interface.tex, doc/user.tex: Added missing
+	definitions.
+
+2015-03-15  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/devref.doxyconf-html.in, doc/devref.doxyconf-latex.in,
+	doc/user.doxyconf-html.in, doc/user.doxyconf-latex.in: Updated.
+
+2015-03-15  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/devref-language-interface.tex, doc/devref.tex,
+	doc/user-language-interface.tex, doc/user.tex: Added missing \+
+	command to build LaTeX manual.
+
+2015-03-15  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/Linear_Expression_defs.hh: Typo fixed.
+
+2015-03-15  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* config.guess, config.sub: Updated.
+
+2015-02-26  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/PIP_Tree.cc: Dead store avoided.
+
+2015-01-20  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/Init.cc, src/initializer.hh: Initialization machinery
+	improved.  Previously there was undefined behavior for the case
+	where the user defined PPL_NO_AUTOMATIC_INITIALIZATION.  (Thanks to
+	Esseger.)
+
+2015-01-20  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* configure.ac: Version number bumped.
+
+2015-01-01  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* devtools/bump_copyright_years: Improved.
+
+2015-01-01  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* devtools/bump_copyright_years: Extended copyright years.
+
+2015-01-01  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* Makefile.am, NEWS, README, README.alpha, README.arm,
+	README.configure, README.solaris, STANDARDS, configure.ac,
+	debian/libppl-pwl.copyright.in, debian/libppl.copyright.in,
+	demos/Makefile.am, demos/ppl_lcdd/Makefile.am,
+	demos/ppl_lcdd/examples/Makefile.am, demos/ppl_lcdd/ppl_lcdd.1,
+	demos/ppl_lcdd/ppl_lcdd.cc, demos/ppl_lcdd/ppl_lcdd_extra_man_text,
+	demos/ppl_lpsol/Makefile.am, demos/ppl_lpsol/dummy.cc,
+	demos/ppl_lpsol/examples/Makefile.am, demos/ppl_lpsol/ppl_lpsol.1,
+	demos/ppl_lpsol/ppl_lpsol.c,
+	demos/ppl_lpsol/ppl_lpsol_extra_man_text,
+	demos/ppl_pips/Makefile.am, demos/ppl_pips/examples/Makefile.am,
+	demos/ppl_pips/ppl_pips.1, demos/ppl_pips/ppl_pips.cc,
+	demos/ppl_pips/ppl_pips_extra_man_text,
+	devtools/bump_copyright_years, devtools/generate_dox_biblio,
+	devtools/generate_man_pages, devtools/print_nonascii_lines,
+	devtools/update_ChangeLog, doc/Makefile.am, doc/README.doc,
+	doc/definitions.dox, doc/devref-language-interface.tex,
+	doc/devref.tex, doc/libppl.3, doc/libppl_c.3, doc/ppl-config.1,
+	doc/ppl-config_extra_man_text, doc/ppl.bib, doc/ppl.sty,
+	doc/ppl_citations.bib, doc/user-language-interface.tex,
+	doc/user.tex, fedora/ppl.hh, fedora/ppl_c.h, fedora/pwl.hh,
+	instchk.hh, interfaces/C/C_interface.dox, interfaces/C/Makefile.am,
+	interfaces/C/ppl_c_header.h,
+	interfaces/C/ppl_c_implementation_common.cc,
+	interfaces/C/ppl_c_implementation_common_defs.hh,
+	interfaces/C/ppl_c_implementation_common_inlines.hh,
+	interfaces/C/ppl_c_version.h.in,
+	interfaces/C/ppl_interface_generator_c_cc_code.m4,
+	interfaces/C/ppl_interface_generator_c_cc_files.m4,
+	interfaces/C/ppl_interface_generator_c_h.m4,
+	interfaces/C/ppl_interface_generator_c_h_code.m4,
+	interfaces/C/ppl_interface_generator_c_hh_files.m4,
+	interfaces/C/ppl_interface_generator_c_procedure_generators.m4,
+	interfaces/C/tests/Makefile.am,
+	interfaces/C/tests/formatted_output.c,
+	interfaces/C/tests/pip_test.c, interfaces/C/tests/ppl_c_test.cc,
+	interfaces/C/tests/ppl_c_test.h,
+	interfaces/C/tests/print_to_buffer.c,
+	interfaces/C/tests/print_to_buffer.h,
+	interfaces/C/tests/watchdog1.c, interfaces/C/tests/weightwatch1.c,
+	interfaces/Java/Makefile.am, interfaces/Java/README.java,
+	interfaces/Java/jni/Makefile.am,
+	interfaces/Java/jni/ppl_interface_generator_java_classes_cc_code.m4
+	,
+	interfaces/Java/jni/ppl_interface_generator_java_classes_cc_files.m
+	4, interfaces/Java/jni/ppl_java_common.cc,
+	interfaces/Java/jni/ppl_java_common_defs.hh,
+	interfaces/Java/jni/ppl_java_common_inlines.hh,
+	interfaces/Java/jni/ppl_java_globals.cc,
+	interfaces/Java/parma_polyhedra_library/Artificial_Parameter.java,
+	interfaces/Java/parma_polyhedra_library/Artificial_Parameter_Sequen
+	ce.java,
+	interfaces/Java/parma_polyhedra_library/Bounded_Integer_Type_Overfl
+	ow.java,
+	interfaces/Java/parma_polyhedra_library/Bounded_Integer_Type_Repres
+	entation.java,
+	interfaces/Java/parma_polyhedra_library/Bounded_Integer_Type_Width.
+	java, interfaces/Java/parma_polyhedra_library/By_Reference.java,
+	interfaces/Java/parma_polyhedra_library/Coefficient.java,
+	interfaces/Java/parma_polyhedra_library/Complexity_Class.java,
+	interfaces/Java/parma_polyhedra_library/Congruence.java,
+	interfaces/Java/parma_polyhedra_library/Congruence_System.java,
+	interfaces/Java/parma_polyhedra_library/Constraint.java,
+	interfaces/Java/parma_polyhedra_library/Constraint_System.java,
+	interfaces/Java/parma_polyhedra_library/Control_Parameter_Name.java
+	,
+	interfaces/Java/parma_polyhedra_library/Control_Parameter_Value.jav
+	a, interfaces/Java/parma_polyhedra_library/Degenerate_Element.java,
+	interfaces/Java/parma_polyhedra_library/Domain_Error_Exception.java
+	,
+	interfaces/Java/parma_polyhedra_library/Fake_Class_for_Doxygen.java
+	, interfaces/Java/parma_polyhedra_library/Generator.java,
+	interfaces/Java/parma_polyhedra_library/Generator_System.java,
+	interfaces/Java/parma_polyhedra_library/Generator_Type.java,
+	interfaces/Java/parma_polyhedra_library/Grid_Generator.java,
+	interfaces/Java/parma_polyhedra_library/Grid_Generator_System.java,
+	interfaces/Java/parma_polyhedra_library/Grid_Generator_Type.java,
+	interfaces/Java/parma_polyhedra_library/IO.java,
+	interfaces/Java/parma_polyhedra_library/Invalid_Argument_Exception.
+	java,
+	interfaces/Java/parma_polyhedra_library/Length_Error_Exception.java
+	, interfaces/Java/parma_polyhedra_library/Linear_Expression.java,
+	interfaces/Java/parma_polyhedra_library/Linear_Expression_Coefficie
+	nt.java,
+	interfaces/Java/parma_polyhedra_library/Linear_Expression_Differenc
+	e.java,
+	interfaces/Java/parma_polyhedra_library/Linear_Expression_Sum.java,
+	interfaces/Java/parma_polyhedra_library/Linear_Expression_Times.jav
+	a,
+	interfaces/Java/parma_polyhedra_library/Linear_Expression_Unary_Min
+	us.java,
+	interfaces/Java/parma_polyhedra_library/Linear_Expression_Variable.
+	java,
+	interfaces/Java/parma_polyhedra_library/Logic_Error_Exception.java,
+	interfaces/Java/parma_polyhedra_library/MIP_Problem.java,
+	interfaces/Java/parma_polyhedra_library/MIP_Problem_Status.java,
+	interfaces/Java/parma_polyhedra_library/Makefile.am,
+	interfaces/Java/parma_polyhedra_library/Optimization_Mode.java,
+	interfaces/Java/parma_polyhedra_library/Overflow_Error_Exception.ja
+	va, interfaces/Java/parma_polyhedra_library/PIP_Decision_Node.java,
+	interfaces/Java/parma_polyhedra_library/PIP_Problem.java,
+	interfaces/Java/parma_polyhedra_library/PIP_Problem_Control_Paramet
+	er_Name.java,
+	interfaces/Java/parma_polyhedra_library/PIP_Problem_Control_Paramet
+	er_Value.java,
+	interfaces/Java/parma_polyhedra_library/PIP_Problem_Status.java,
+	interfaces/Java/parma_polyhedra_library/PIP_Solution_Node.java,
+	interfaces/Java/parma_polyhedra_library/PIP_Tree_Node.java,
+	interfaces/Java/parma_polyhedra_library/PPL_Object.java,
+	interfaces/Java/parma_polyhedra_library/Pair.java,
+	interfaces/Java/parma_polyhedra_library/Parma_Polyhedra_Library.jav
+	a, interfaces/Java/parma_polyhedra_library/Partial_Function.java,
+	interfaces/Java/parma_polyhedra_library/Poly_Con_Relation.java,
+	interfaces/Java/parma_polyhedra_library/Poly_Gen_Relation.java,
+	interfaces/Java/parma_polyhedra_library/Relation_Symbol.java,
+	interfaces/Java/parma_polyhedra_library/Timeout_Exception.java,
+	interfaces/Java/parma_polyhedra_library/Variable.java,
+	interfaces/Java/parma_polyhedra_library/Variable_Stringifier.java,
+	interfaces/Java/parma_polyhedra_library/Variables_Set.java,
+	interfaces/Java/parma_polyhedra_library/ppl_interface_generator_jav
+	a_classes_java.m4,
+	interfaces/Java/parma_polyhedra_library/ppl_interface_generator_jav
+	a_classes_java_code.m4,
+	interfaces/Java/ppl_interface_generator_java_procedure_generators.m
+	4, interfaces/Java/tests/C_Polyhedron_test1.java,
+	interfaces/Java/tests/Custom_Variable_Stringifier.java,
+	interfaces/Java/tests/MIP_Problem_test1.java,
+	interfaces/Java/tests/Makefile.am,
+	interfaces/Java/tests/NNC_Polyhedron_test1.java,
+	interfaces/Java/tests/PIP_Problem_test1.java,
+	interfaces/Java/tests/PPL_Test.java,
+	interfaces/Java/tests/Parma_Polyhedra_Library_test1.java,
+	interfaces/Java/tests/Parma_Polyhedra_Library_test2.java,
+	interfaces/Java/tests/Test_Executor.java,
+	interfaces/Java/tests/Variable_Output_test1.java,
+	interfaces/Java/tests/ppl_interface_generator_java_test_java.m4,
+	interfaces/Java/tests/ppl_interface_generator_java_test_java_code.m
+	4, interfaces/Java/tests/ppl_java_tests_common,
+	interfaces/Makefile.am, interfaces/OCaml/Makefile.am,
+	interfaces/OCaml/OCaml_interface.dox,
+	interfaces/OCaml/README.ocaml,
+	interfaces/OCaml/ppl_interface_generator_ocaml_cc_code.m4,
+	interfaces/OCaml/ppl_interface_generator_ocaml_cc_files.m4,
+	interfaces/OCaml/ppl_interface_generator_ocaml_hh_code.m4,
+	interfaces/OCaml/ppl_interface_generator_ocaml_hh_files.m4,
+	interfaces/OCaml/ppl_interface_generator_ocaml_ml.m4,
+	interfaces/OCaml/ppl_interface_generator_ocaml_ml_code.m4,
+	interfaces/OCaml/ppl_interface_generator_ocaml_mli.m4,
+	interfaces/OCaml/ppl_interface_generator_ocaml_mli_code.m4,
+	interfaces/OCaml/ppl_interface_generator_ocaml_procedure_generators
+	.m4, interfaces/OCaml/ppl_ocaml_common.cc,
+	interfaces/OCaml/ppl_ocaml_common_defs.hh,
+	interfaces/OCaml/ppl_ocaml_common_inlines.hh,
+	interfaces/OCaml/ppl_ocaml_globals.ml,
+	interfaces/OCaml/ppl_ocaml_globals.mli,
+	interfaces/OCaml/tests/Makefile.am,
+	interfaces/OCaml/tests/ppl_interface_generator_ocaml_test_ml.m4,
+	interfaces/OCaml/tests/ppl_interface_generator_ocaml_test_ml_code.m
+	4, interfaces/OCaml/tests/ppl_ocaml_tests_common,
+	interfaces/OCaml/tests/test1.ml,
+	interfaces/Prolog/Ciao/Makefile.am,
+	interfaces/Prolog/Ciao/README.ciao,
+	interfaces/Prolog/Ciao/ciao_cfli.hh,
+	interfaces/Prolog/Ciao/ciao_clpq.pl,
+	interfaces/Prolog/Ciao/ciao_clpq2.pl,
+	interfaces/Prolog/Ciao/ciao_efli.cc,
+	interfaces/Prolog/Ciao/ciao_efli.hh,
+	interfaces/Prolog/Ciao/ciao_pl_check.pl,
+	interfaces/Prolog/Ciao/ppl_interface_generator_ciao_pl.m4,
+	interfaces/Prolog/Ciao/ppl_interface_generator_ciao_prolog_generate
+	d_test_pl.m4, interfaces/Prolog/Ciao/ppl_prolog_sysdep.hh,
+	interfaces/Prolog/GNU/Makefile.am,
+	interfaces/Prolog/GNU/README.gprolog,
+	interfaces/Prolog/GNU/gnu_pl_check.pl,
+	interfaces/Prolog/GNU/gnu_prolog_generated_test.pl,
+	interfaces/Prolog/GNU/gp_clpq.pl,
+	interfaces/Prolog/GNU/gprolog_cfli.hh,
+	interfaces/Prolog/GNU/gprolog_efli.cc,
+	interfaces/Prolog/GNU/gprolog_efli.hh,
+	interfaces/Prolog/GNU/ppl_interface_generator_gprolog_pl.m4,
+	interfaces/Prolog/GNU/ppl_prolog_sysdep.hh,
+	interfaces/Prolog/Makefile.am,
+	interfaces/Prolog/Prolog_configured_interface.dox,
+	interfaces/Prolog/Prolog_interface.dox,
+	interfaces/Prolog/Prolog_interface_compilation.dox,
+	interfaces/Prolog/Prolog_interface_sysdep.dox,
+	interfaces/Prolog/Prolog_interface_sysindep.dox,
+	interfaces/Prolog/Prolog_interface_sysindep_domains.dox,
+	interfaces/Prolog/SICStus/Makefile.am,
+	interfaces/Prolog/SICStus/ppl_interface_generator_sicstus_sd_cc.m4,
+	interfaces/Prolog/SICStus/ppl_prolog_sysdep.hh,
+	interfaces/Prolog/SICStus/ppl_sicstus.pl,
+	interfaces/Prolog/SICStus/sicstus_cfli.cc,
+	interfaces/Prolog/SICStus/sicstus_cfli.h,
+	interfaces/Prolog/SICStus/sicstus_cfli.ic,
+	interfaces/Prolog/SICStus/sicstus_efli.cc,
+	interfaces/Prolog/SICStus/sicstus_efli.hh,
+	interfaces/Prolog/SICStus/sp_clpq.pl,
+	interfaces/Prolog/SICStus/sp_pl_check.pl,
+	interfaces/Prolog/SICStus/sp_prolog_generated_test.pl,
+	interfaces/Prolog/SWI/Makefile.am,
+	interfaces/Prolog/SWI/README.swiprolog,
+	interfaces/Prolog/SWI/pl_clpq.cc, interfaces/Prolog/SWI/pl_clpq.pl,
+	interfaces/Prolog/SWI/ppl_interface_generator_swiprolog_cc.m4,
+	interfaces/Prolog/SWI/ppl_pl.cc,
+	interfaces/Prolog/SWI/ppl_prolog_sysdep.hh,
+	interfaces/Prolog/SWI/ppl_swiprolog.hh,
+	interfaces/Prolog/SWI/ppl_swiprolog.pl,
+	interfaces/Prolog/SWI/swi_cfli.hh,
+	interfaces/Prolog/SWI/swi_efli.cc,
+	interfaces/Prolog/SWI/swi_efli.hh,
+	interfaces/Prolog/SWI/swi_pl_check.pl,
+	interfaces/Prolog/SWI/swi_prolog_generated_test.pl,
+	interfaces/Prolog/XSB/Makefile.am,
+	interfaces/Prolog/XSB/ppl_interface_generator_xsb_H.m4,
+	interfaces/Prolog/XSB/ppl_interface_generator_xsb_cc.m4,
+	interfaces/Prolog/XSB/ppl_interface_generator_xsb_hh.m4,
+	interfaces/Prolog/XSB/ppl_interface_generator_xsb_prolog_generated_
+	test_P.m4, interfaces/Prolog/XSB/ppl_prolog_sysdep.hh,
+	interfaces/Prolog/XSB/xsb_cfli.hh,
+	interfaces/Prolog/XSB/xsb_clpq.P,
+	interfaces/Prolog/XSB/xsb_clpq2.P,
+	interfaces/Prolog/XSB/xsb_efli.cc,
+	interfaces/Prolog/XSB/xsb_efli.hh,
+	interfaces/Prolog/XSB/xsb_pl_check.P,
+	interfaces/Prolog/YAP/Makefile.am,
+	interfaces/Prolog/YAP/README.yap,
+	interfaces/Prolog/YAP/ppl_interface_generator_yap_cc.m4,
+	interfaces/Prolog/YAP/ppl_prolog_sysdep.hh,
+	interfaces/Prolog/YAP/ppl_yap.pl,
+	interfaces/Prolog/YAP/yap_cfli.hh,
+	interfaces/Prolog/YAP/yap_clpq.pl,
+	interfaces/Prolog/YAP/yap_clpq2.pl,
+	interfaces/Prolog/YAP/yap_efli.cc,
+	interfaces/Prolog/YAP/yap_efli.hh,
+	interfaces/Prolog/YAP/yap_pl_check.pl,
+	interfaces/Prolog/YAP/yap_prolog_generated_test.pl,
+	interfaces/Prolog/ppl_interface_generator_prolog_cc_code.m4,
+	interfaces/Prolog/ppl_interface_generator_prolog_cc_files.m4,
+	interfaces/Prolog/ppl_interface_generator_prolog_dox.m4,
+	interfaces/Prolog/ppl_interface_generator_prolog_dox_code.m4,
+	interfaces/Prolog/ppl_interface_generator_prolog_hh_code.m4,
+	interfaces/Prolog/ppl_interface_generator_prolog_hh_files.m4,
+	interfaces/Prolog/ppl_interface_generator_prolog_procedure_generato
+	rs.m4, interfaces/Prolog/ppl_interface_generator_prolog_systems.m4,
+	interfaces/Prolog/ppl_prolog_common.cc,
+	interfaces/Prolog/ppl_prolog_common_defs.hh,
+	interfaces/Prolog/ppl_prolog_common_inlines.hh,
+	interfaces/Prolog/tests/Makefile.am,
+	interfaces/Prolog/tests/clpq.pl, interfaces/Prolog/tests/clpq2.pl,
+	interfaces/Prolog/tests/expected_clpq2_int16,
+	interfaces/Prolog/tests/expected_clpq2_int16_a,
+	interfaces/Prolog/tests/expected_clpq2_int32,
+	interfaces/Prolog/tests/expected_clpq2_int32_a,
+	interfaces/Prolog/tests/expected_clpq2_int64,
+	interfaces/Prolog/tests/expected_clpq2_int64_a,
+	interfaces/Prolog/tests/expected_clpq2_int8,
+	interfaces/Prolog/tests/expected_clpq2_int8_a,
+	interfaces/Prolog/tests/expected_clpq2_mpz,
+	interfaces/Prolog/tests/expected_clpq2_mpz_a,
+	interfaces/Prolog/tests/expected_clpq_int16,
+	interfaces/Prolog/tests/expected_clpq_int16_a,
+	interfaces/Prolog/tests/expected_clpq_int32,
+	interfaces/Prolog/tests/expected_clpq_int32_a,
+	interfaces/Prolog/tests/expected_clpq_int64,
+	interfaces/Prolog/tests/expected_clpq_int64_a,
+	interfaces/Prolog/tests/expected_clpq_int8,
+	interfaces/Prolog/tests/expected_clpq_int8_a,
+	interfaces/Prolog/tests/expected_clpq_mpz,
+	interfaces/Prolog/tests/expected_clpq_mpz_a,
+	interfaces/Prolog/tests/pl_check.pl,
+	interfaces/Prolog/tests/ppl_interface_generator_prolog_generated_te
+	st_pl.m4,
+	interfaces/Prolog/tests/ppl_interface_generator_prolog_generated_te
+	st_pl_code.m4,
+	interfaces/Prolog/tests/ppl_prolog_generated_test_common.pl,
+	interfaces/Python/ppl_py.cc, interfaces/Python/ppl_py.py,
+	interfaces/interfaced_boxes.hh, interfaces/marked_pointers.hh,
+	interfaces/ppl_interface_generator_common.m4,
+	interfaces/ppl_interface_generator_common_dat.m4,
+	interfaces/ppl_interface_generator_common_procedure_generators.m4,
+	interfaces/ppl_interface_generator_copyright, m4/Makefile.am,
+	m4/ac_check_ciao.m4, m4/ac_check_cxx11.m4,
+	m4/ac_check_fpu_control.m4, m4/ac_check_gmp.m4,
+	m4/ac_check_sicstus_prolog.m4, m4/ac_check_swi_prolog.m4,
+	m4/ac_check_xsb_prolog.m4, m4/ac_check_yap.m4,
+	m4/ac_cxx_attribute_weak.m4, m4/ac_cxx_double_binary_format.m4,
+	m4/ac_cxx_float_binary_format.m4, m4/ac_cxx_ieee_inexact_flag.m4,
+	m4/ac_cxx_limit_memory.m4, m4/ac_cxx_long_double_binary_format.m4,
+	m4/ac_cxx_plain_char_is_signed.m4, m4/ac_cxx_proper_long_double.m4,
+	m4/ac_cxx_zero_length_arrays.m4, m4/ac_prog_jar.m4,
+	m4/ac_prog_java.m4, m4/ac_prog_javac.m4, m4/ac_prog_javah.m4,
+	m4/ac_text_md5sum.m4, m4/ppl.m4, m4/ppl_c.m4, src/Affine_Space.cc,
+	src/Affine_Space_defs.hh, src/Affine_Space_inlines.hh,
+	src/Affine_Space_types.hh, src/Any_Pointset_defs.hh,
+	src/Any_Pointset_inlines.hh, src/Any_Pointset_types.hh,
+	src/Ask_Tell_defs.hh, src/Ask_Tell_inlines.hh,
+	src/Ask_Tell_templates.hh, src/Ask_Tell_types.hh,
+	src/BDS_Status.cc, src/BDS_Status_idefs.hh,
+	src/BDS_Status_inlines.hh, src/BD_Shape.cc, src/BD_Shape_defs.hh,
+	src/BD_Shape_inlines.hh, src/BD_Shape_templates.hh,
+	src/BD_Shape_types.hh, src/BHRZ03_Certificate.cc,
+	src/BHRZ03_Certificate_defs.hh, src/BHRZ03_Certificate_inlines.hh,
+	src/BHRZ03_Certificate_types.hh, src/Bit_Matrix.cc,
+	src/Bit_Matrix_defs.hh, src/Bit_Matrix_inlines.hh,
+	src/Bit_Matrix_types.hh, src/Bit_Row.cc, src/Bit_Row_defs.hh,
+	src/Bit_Row_inlines.hh, src/Bit_Row_types.hh, src/Boundary_defs.hh,
+	src/Box.cc, src/Box_Status.cc, src/Box_Status_idefs.hh,
+	src/Box_Status_inlines.hh, src/Box_defs.hh, src/Box_inlines.hh,
+	src/Box_templates.hh, src/Box_types.hh, src/CO_Tree.cc,
+	src/CO_Tree_defs.hh, src/CO_Tree_inlines.hh,
+	src/CO_Tree_templates.hh, src/CO_Tree_types.hh, src/C_Integer.hh,
+	src/C_Polyhedron.cc, src/C_Polyhedron_defs.hh,
+	src/C_Polyhedron_inlines.hh, src/C_Polyhedron_types.hh,
+	src/Cast_Floating_Point_Expression_defs.hh,
+	src/Cast_Floating_Point_Expression_inlines.hh,
+	src/Cast_Floating_Point_Expression_templates.hh,
+	src/Cast_Floating_Point_Expression_types.hh, src/Checked_Number.cc,
+	src/Checked_Number_defs.hh, src/Checked_Number_inlines.hh,
+	src/Checked_Number_templates.hh, src/Checked_Number_types.hh,
+	src/Coefficient.cc, src/Coefficient_defs.hh,
+	src/Coefficient_inlines.hh, src/Coefficient_traits_template.hh,
+	src/Coefficient_types.hh, src/Concrete_Expression.cc,
+	src/Concrete_Expression_defs.hh,
+	src/Concrete_Expression_inlines.hh,
+	src/Concrete_Expression_types.hh, src/Congruence.cc,
+	src/Congruence_System.cc, src/Congruence_System_defs.hh,
+	src/Congruence_System_inlines.hh, src/Congruence_System_types.hh,
+	src/Congruence_defs.hh, src/Congruence_inlines.hh,
+	src/Congruence_types.hh,
+	src/Constant_Floating_Point_Expression_defs.hh,
+	src/Constant_Floating_Point_Expression_inlines.hh,
+	src/Constant_Floating_Point_Expression_types.hh, src/Constraint.cc,
+	src/Constraint_System.cc, src/Constraint_System_defs.hh,
+	src/Constraint_System_inlines.hh, src/Constraint_System_types.hh,
+	src/Constraint_defs.hh, src/Constraint_inlines.hh,
+	src/Constraint_types.hh, src/DB_Matrix_defs.hh,
+	src/DB_Matrix_inlines.hh, src/DB_Matrix_templates.hh,
+	src/DB_Matrix_types.hh, src/DB_Row_defs.hh, src/DB_Row_inlines.hh,
+	src/DB_Row_templates.hh, src/DB_Row_types.hh, src/Dense_Row.cc,
+	src/Dense_Row_defs.hh, src/Dense_Row_inlines.hh,
+	src/Dense_Row_templates.hh, src/Dense_Row_types.hh,
+	src/Determinate_defs.hh, src/Determinate_inlines.hh,
+	src/Determinate_types.hh,
+	src/Difference_Floating_Point_Expression_defs.hh,
+	src/Difference_Floating_Point_Expression_inlines.hh,
+	src/Difference_Floating_Point_Expression_templates.hh,
+	src/Difference_Floating_Point_Expression_types.hh,
+	src/Division_Floating_Point_Expression_defs.hh,
+	src/Division_Floating_Point_Expression_inlines.hh,
+	src/Division_Floating_Point_Expression_templates.hh,
+	src/Division_Floating_Point_Expression_types.hh,
+	src/Doubly_Linked_Object_defs.hh,
+	src/Doubly_Linked_Object_inlines.hh,
+	src/Doubly_Linked_Object_types.hh, src/EList_Iterator_defs.hh,
+	src/EList_Iterator_inlines.hh, src/EList_Iterator_types.hh,
+	src/EList_defs.hh, src/EList_inlines.hh, src/EList_types.hh,
+	src/Expression_Adapter_defs.hh, src/Expression_Adapter_inlines.hh,
+	src/Expression_Adapter_types.hh,
+	src/Expression_Hide_Inhomo_defs.hh,
+	src/Expression_Hide_Inhomo_inlines.hh,
+	src/Expression_Hide_Inhomo_types.hh,
+	src/Expression_Hide_Last_defs.hh,
+	src/Expression_Hide_Last_inlines.hh,
+	src/Expression_Hide_Last_types.hh, src/Float.cc, src/Float_defs.hh,
+	src/Float_inlines.hh, src/Float_templates.hh,
+	src/Floating_Point_Expression_defs.hh,
+	src/Floating_Point_Expression_inlines.hh,
+	src/Floating_Point_Expression_templates.hh,
+	src/Floating_Point_Expression_types.hh, src/GMP_Integer_defs.hh,
+	src/GMP_Integer_inlines.hh, src/GMP_Integer_types.hh,
+	src/Generator.cc, src/Generator_System.cc,
+	src/Generator_System_defs.hh, src/Generator_System_inlines.hh,
+	src/Generator_System_types.hh, src/Generator_defs.hh,
+	src/Generator_inlines.hh, src/Generator_types.hh,
+	src/Grid_Certificate.cc, src/Grid_Certificate_defs.hh,
+	src/Grid_Certificate_inlines.hh, src/Grid_Certificate_types.hh,
+	src/Grid_Generator.cc, src/Grid_Generator_System.cc,
+	src/Grid_Generator_System_defs.hh,
+	src/Grid_Generator_System_inlines.hh,
+	src/Grid_Generator_System_types.hh, src/Grid_Generator_defs.hh,
+	src/Grid_Generator_inlines.hh, src/Grid_Generator_types.hh,
+	src/Grid_Status.cc, src/Grid_Status_idefs.hh,
+	src/Grid_Status_inlines.hh, src/Grid_chdims.cc,
+	src/Grid_conversion.cc, src/Grid_defs.hh, src/Grid_inlines.hh,
+	src/Grid_nonpublic.cc, src/Grid_public.cc, src/Grid_simplify.cc,
+	src/Grid_templates.hh, src/Grid_types.hh, src/Grid_widenings.cc,
+	src/H79_Certificate.cc, src/H79_Certificate_defs.hh,
+	src/H79_Certificate_inlines.hh, src/H79_Certificate_types.hh,
+	src/Handler.cc, src/Handler_defs.hh, src/Handler_inlines.hh,
+	src/Handler_types.hh, src/Has_Assign_Or_Swap.hh, src/Init.cc,
+	src/Init_defs.hh, src/Init_inlines.hh, src/Init_types.hh,
+	src/Integer_Interval.hh, src/Interval_Info_defs.hh,
+	src/Interval_Info_inlines.hh, src/Interval_Info_types.hh,
+	src/Interval_defs.hh, src/Interval_inlines.hh,
+	src/Interval_templates.hh, src/Interval_types.hh,
+	src/Linear_Expression.cc, src/Linear_Expression_Impl.cc,
+	src/Linear_Expression_Impl_defs.hh,
+	src/Linear_Expression_Impl_inlines.hh,
+	src/Linear_Expression_Impl_templates.hh,
+	src/Linear_Expression_Impl_types.hh,
+	src/Linear_Expression_Interface.cc,
+	src/Linear_Expression_Interface_defs.hh,
+	src/Linear_Expression_Interface_types.hh,
+	src/Linear_Expression_defs.hh, src/Linear_Expression_inlines.hh,
+	src/Linear_Expression_types.hh, src/Linear_Form.cc,
+	src/Linear_Form_defs.hh, src/Linear_Form_inlines.hh,
+	src/Linear_Form_templates.hh, src/Linear_Form_types.hh,
+	src/Linear_System_defs.hh, src/Linear_System_inlines.hh,
+	src/Linear_System_templates.hh, src/Linear_System_types.hh,
+	src/MIP_Problem.cc, src/MIP_Problem_defs.hh,
+	src/MIP_Problem_inlines.hh, src/MIP_Problem_templates.hh,
+	src/MIP_Problem_types.hh, src/Makefile.am, src/Matrix_defs.hh,
+	src/Matrix_inlines.hh, src/Matrix_templates.hh,
+	src/Matrix_types.hh,
+	src/Multiplication_Floating_Point_Expression_defs.hh,
+	src/Multiplication_Floating_Point_Expression_inlines.hh,
+	src/Multiplication_Floating_Point_Expression_templates.hh,
+	src/Multiplication_Floating_Point_Expression_types.hh,
+	src/NNC_Polyhedron.cc, src/NNC_Polyhedron_defs.hh,
+	src/NNC_Polyhedron_inlines.hh, src/NNC_Polyhedron_types.hh,
+	src/Numeric_Format_defs.hh, src/OR_Matrix_defs.hh,
+	src/OR_Matrix_inlines.hh, src/OR_Matrix_templates.hh,
+	src/OR_Matrix_types.hh, src/Octagonal_Shape.cc,
+	src/Octagonal_Shape_defs.hh, src/Octagonal_Shape_inlines.hh,
+	src/Octagonal_Shape_templates.hh, src/Octagonal_Shape_types.hh,
+	src/Og_Status.cc, src/Og_Status_idefs.hh, src/Og_Status_inlines.hh,
+	src/Opposite_Floating_Point_Expression_defs.hh,
+	src/Opposite_Floating_Point_Expression_inlines.hh,
+	src/Opposite_Floating_Point_Expression_types.hh,
+	src/PIP_Problem.cc, src/PIP_Problem_defs.hh,
+	src/PIP_Problem_inlines.hh, src/PIP_Problem_templates.hh,
+	src/PIP_Problem_types.hh, src/PIP_Tree.cc, src/PIP_Tree_defs.hh,
+	src/PIP_Tree_inlines.hh, src/PIP_Tree_types.hh,
+	src/Partial_Function.cc, src/Partial_Function_defs.hh,
+	src/Partial_Function_inlines.hh, src/Partial_Function_types.hh,
+	src/Partially_Reduced_Product_defs.hh,
+	src/Partially_Reduced_Product_inlines.hh,
+	src/Partially_Reduced_Product_templates.hh,
+	src/Partially_Reduced_Product_types.hh,
+	src/Pending_Element_defs.hh, src/Pending_Element_inlines.hh,
+	src/Pending_Element_types.hh, src/Pending_List_defs.hh,
+	src/Pending_List_inlines.hh, src/Pending_List_templates.hh,
+	src/Pending_List_types.hh, src/Ph_Status.cc,
+	src/Ph_Status_idefs.hh, src/Ph_Status_inlines.hh,
+	src/Pointset_Ask_Tell.cc, src/Pointset_Ask_Tell_defs.hh,
+	src/Pointset_Ask_Tell_inlines.hh,
+	src/Pointset_Ask_Tell_templates.hh, src/Pointset_Ask_Tell_types.hh,
+	src/Pointset_Powerset.cc, src/Pointset_Powerset_defs.hh,
+	src/Pointset_Powerset_inlines.hh,
+	src/Pointset_Powerset_templates.hh, src/Pointset_Powerset_types.hh,
+	src/Poly_Con_Relation.cc, src/Poly_Con_Relation_defs.hh,
+	src/Poly_Con_Relation_inlines.hh, src/Poly_Con_Relation_types.hh,
+	src/Poly_Gen_Relation.cc, src/Poly_Gen_Relation_defs.hh,
+	src/Poly_Gen_Relation_inlines.hh, src/Poly_Gen_Relation_types.hh,
+	src/Polyhedron_chdims.cc, src/Polyhedron_chdims_templates.hh,
+	src/Polyhedron_conversion_templates.hh, src/Polyhedron_defs.hh,
+	src/Polyhedron_inlines.hh, src/Polyhedron_minimize_templates.hh,
+	src/Polyhedron_nonpublic.cc, src/Polyhedron_public.cc,
+	src/Polyhedron_simplify_templates.hh, src/Polyhedron_templates.hh,
+	src/Polyhedron_types.hh, src/Polyhedron_widenings.cc,
+	src/Powerset_defs.hh, src/Powerset_inlines.hh,
+	src/Powerset_templates.hh, src/Powerset_types.hh,
+	src/Ptr_Iterator_defs.hh, src/Ptr_Iterator_inlines.hh,
+	src/Ptr_Iterator_types.hh, src/Rational_Box.hh,
+	src/Rational_Interval.hh, src/Result_defs.hh,
+	src/Result_inlines.hh, src/Rounding_Dir_defs.hh,
+	src/Rounding_Dir_inlines.hh, src/Scalar_Products.cc,
+	src/Scalar_Products_defs.hh, src/Scalar_Products_inlines.hh,
+	src/Scalar_Products_types.hh, src/Slow_Copy.hh, src/Sparse_Row.cc,
+	src/Sparse_Row_defs.hh, src/Sparse_Row_inlines.hh,
+	src/Sparse_Row_templates.hh, src/Sparse_Row_types.hh,
+	src/Sum_Floating_Point_Expression_defs.hh,
+	src/Sum_Floating_Point_Expression_inlines.hh,
+	src/Sum_Floating_Point_Expression_templates.hh,
+	src/Sum_Floating_Point_Expression_types.hh,
+	src/Swapping_Vector_defs.hh, src/Swapping_Vector_inlines.hh,
+	src/Swapping_Vector_types.hh, src/Temp_defs.hh,
+	src/Temp_inlines.hh, src/Temp_templates.hh,
+	src/Threshold_Watcher.cc, src/Threshold_Watcher_defs.hh,
+	src/Threshold_Watcher_inlines.hh,
+	src/Threshold_Watcher_templates.hh, src/Threshold_Watcher_types.hh,
+	src/Time.cc, src/Time_defs.hh, src/Time_inlines.hh,
+	src/Time_types.hh, src/Topology_types.hh, src/Variable.cc,
+	src/Variable_Floating_Point_Expression_defs.hh,
+	src/Variable_Floating_Point_Expression_inlines.hh,
+	src/Variable_Floating_Point_Expression_types.hh,
+	src/Variable_defs.hh, src/Variable_inlines.hh,
+	src/Variable_types.hh, src/Variables_Set.cc,
+	src/Variables_Set_defs.hh, src/Variables_Set_inlines.hh,
+	src/Variables_Set_types.hh, src/WRD_coefficient_types_defs.hh,
+	src/WRD_coefficient_types_inlines.hh, src/Watchdog.cc,
+	src/Watchdog_defs.hh, src/Watchdog_inlines.hh,
+	src/Watchdog_types.hh, src/Weight_Profiler.cc,
+	src/Weight_Profiler_defs.hh, src/Widening_Function_defs.hh,
+	src/Widening_Function_inlines.hh, src/Widening_Function_types.hh,
+	src/algorithms.hh, src/assertions.cc, src/assertions.hh,
+	src/assign_or_swap.hh, src/c_streambuf.cc, src/c_streambuf_defs.hh,
+	src/c_streambuf_inlines.hh, src/c_streambuf_types.hh,
+	src/checked.cc, src/checked_defs.hh, src/checked_ext_defs.hh,
+	src/checked_ext_inlines.hh, src/checked_float_inlines.hh,
+	src/checked_inlines.hh, src/checked_int_inlines.hh,
+	src/checked_mpq_inlines.hh, src/checked_mpz_inlines.hh,
+	src/checked_numeric_limits.hh, src/compiler.hh,
+	src/distances_defs.hh, src/distances_inlines.hh,
+	src/distances_types.hh, src/fpu-c99_inlines.hh, src/fpu-ia32.cc,
+	src/fpu-ia32_inlines.hh, src/fpu-none_inlines.hh,
+	src/fpu-sparc_inlines.hh, src/fpu_defs.hh, src/fpu_types.hh,
+	src/globals.cc, src/globals_defs.hh, src/globals_inlines.hh,
+	src/globals_types.hh, src/initializer.hh, src/intervals_defs.hh,
+	src/iterator_to_const_defs.hh, src/iterator_to_const_inlines.hh,
+	src/iterator_to_const_types.hh, src/linearize.hh,
+	src/math_utilities_defs.hh, src/math_utilities_inlines.hh,
+	src/max_space_dimension.hh, src/meta_programming.hh,
+	src/mp_std_bits.cc, src/mp_std_bits_defs.hh,
+	src/mp_std_bits_inlines.hh, src/namespaces.hh,
+	src/ppl-config.cc.in, src/ppl_header.hh,
+	src/set_GMP_memory_alloc_funcs.cc, src/stdiobuf.cc,
+	src/stdiobuf_defs.hh, src/stdiobuf_inlines.hh,
+	src/stdiobuf_types.hh, src/swapping_sort_templates.hh,
+	src/termination.cc, src/termination_defs.hh,
+	src/termination_templates.hh, src/termination_types.hh,
+	src/version.cc, src/version.hh.in, src/wrap_assign.hh,
+	src/wrap_string.cc, src/wrap_string.hh, tests/Ask_Tell/Makefile.am,
+	tests/Ask_Tell/append1.cc, tests/BD_Shape/Makefile.am,
+	tests/BD_Shape/addconstraints1.cc, tests/BD_Shape/addspacedims1.cc,
+	tests/BD_Shape/affinedimension1.cc, tests/BD_Shape/affineimage1.cc,
+	tests/BD_Shape/affineimage2.cc, tests/BD_Shape/affinepreimage1.cc,
+	tests/BD_Shape/ascii_dump_load1.cc,
+	tests/BD_Shape/bgp99extrapolation1.cc,
+	tests/BD_Shape/bhmz05widening1.cc,
+	tests/BD_Shape/bhz03widening1.cc, tests/BD_Shape/bounded1.cc,
+	tests/BD_Shape/boundedaffineimage1.cc,
+	tests/BD_Shape/boundedaffinepreimage1.cc,
+	tests/BD_Shape/bounds1.cc, tests/BD_Shape/cc76extrapolation1.cc,
+	tests/BD_Shape/cc76narrowing1.cc, tests/BD_Shape/closure1.cc,
+	tests/BD_Shape/concatenate1.cc, tests/BD_Shape/congruences1.cc,
+	tests/BD_Shape/constrains1.cc, tests/BD_Shape/constraints1.cc,
+	tests/BD_Shape/contains1.cc,
+	tests/BD_Shape/containsintegerpoint1.cc,
+	tests/BD_Shape/difference1.cc, tests/BD_Shape/discrete1.cc,
+	tests/BD_Shape/disjoint1.cc,
+	tests/BD_Shape/dropsomenonintegerpoints1.cc,
+	tests/BD_Shape/empty1.cc, tests/BD_Shape/equality1.cc,
+	tests/BD_Shape/expandspacedim1.cc,
+	tests/BD_Shape/foldspacedims1.cc, tests/BD_Shape/frequency1.cc,
+	tests/BD_Shape/frombdshape1.cc, tests/BD_Shape/frombox1.cc,
+	tests/BD_Shape/fromgensys1.cc, tests/BD_Shape/fromgrid1.cc,
+	tests/BD_Shape/fromoctagonalshape1.cc,
+	tests/BD_Shape/frompolyhedron1.cc, tests/BD_Shape/fromspacedim1.cc,
+	tests/BD_Shape/generalizedaffineimage1.cc,
+	tests/BD_Shape/generalizedaffineimage2.cc,
+	tests/BD_Shape/generalizedaffinepreimage1.cc,
+	tests/BD_Shape/generalizedaffinepreimage2.cc,
+	tests/BD_Shape/generalizedaffinepreimage3.cc,
+	tests/BD_Shape/geomcovers1.cc, tests/BD_Shape/h79widening1.cc,
+	tests/BD_Shape/integerupperboundifexact1.cc,
+	tests/BD_Shape/intersection1.cc,
+	tests/BD_Shape/limitedbhmz05extrapolation1.cc,
+	tests/BD_Shape/limitedcc76extrapolation1.cc,
+	tests/BD_Shape/limitedh79extrapolation1.cc,
+	tests/BD_Shape/mapspacedims1.cc, tests/BD_Shape/max_min1.cc,
+	tests/BD_Shape/max_min2.cc, tests/BD_Shape/maxspacedim1.cc,
+	tests/BD_Shape/membytes1.cc, tests/BD_Shape/minconstraints1.cc,
+	tests/BD_Shape/relations1.cc, tests/BD_Shape/relations2.cc,
+	tests/BD_Shape/relations3.cc, tests/BD_Shape/relations4.cc,
+	tests/BD_Shape/removespacedims1.cc, tests/BD_Shape/run_tests,
+	tests/BD_Shape/simplifyusingcontext1.cc,
+	tests/BD_Shape/timeelapse1.cc, tests/BD_Shape/unconstrain1.cc,
+	tests/BD_Shape/universe1.cc, tests/BD_Shape/upperbound1.cc,
+	tests/BD_Shape/upperboundifexact1.cc, tests/BD_Shape/wrap1.cc,
+	tests/BD_Shape/writebdshape1.cc, tests/Box/Makefile.am,
+	tests/Box/addconstraints1.cc, tests/Box/addspacedims1.cc,
+	tests/Box/affinedimension1.cc, tests/Box/affineimage1.cc,
+	tests/Box/affinepreimage1.cc, tests/Box/ascii_dump_load1.cc,
+	tests/Box/bgp99extrapolation1.cc, tests/Box/bhz03widening1.cc,
+	tests/Box/bounded1.cc, tests/Box/boundedaffineimage1.cc,
+	tests/Box/boundedaffinepreimage1.cc, tests/Box/cc76narrowing1.cc,
+	tests/Box/cc76widening.cc, tests/Box/concatenate1.cc,
+	tests/Box/congruences1.cc, tests/Box/constrains1.cc,
+	tests/Box/constraints1.cc, tests/Box/contains1.cc,
+	tests/Box/containsintegerpoint1.cc, tests/Box/difference1.cc,
+	tests/Box/discrete1.cc, tests/Box/disjoint1.cc,
+	tests/Box/empty1.cc, tests/Box/equality1.cc,
+	tests/Box/expandspacedim1.cc, tests/Box/foldspacedims1.cc,
+	tests/Box/frequency1.cc, tests/Box/frombdshape1.cc,
+	tests/Box/frombox1.cc, tests/Box/fromgensys1.cc,
+	tests/Box/fromgrid1.cc, tests/Box/frompartiallyreducedproduct1.cc,
+	tests/Box/frompolyhedron1.cc, tests/Box/frompolyhedron2.cc,
+	tests/Box/fromspacedim1.cc, tests/Box/generalizedaffineimage1.cc,
+	tests/Box/generalizedaffineimage2.cc,
+	tests/Box/generalizedaffinepreimage1.cc, tests/Box/geomcovers1.cc,
+	tests/Box/intersection1.cc, tests/Box/interval1.cc,
+	tests/Box/limitedcc76extrapolation1.cc, tests/Box/mapspacedims1.cc,
+	tests/Box/max_min1.cc, tests/Box/maxspacedim1.cc,
+	tests/Box/membytes1.cc, tests/Box/minconstraints1.cc,
+	tests/Box/propagateconstraints1.cc,
+	tests/Box/propagateconstraints2.cc,
+	tests/Box/refinewithcongruence1.cc,
+	tests/Box/refinewithcongruences1.cc,
+	tests/Box/refinewithconstraint1.cc,
+	tests/Box/refinewithconstraint2.cc,
+	tests/Box/refinewithconstraints1.cc,
+	tests/Box/refinewithconstraints2.cc, tests/Box/relations1.cc,
+	tests/Box/relations2.cc, tests/Box/relations3.cc,
+	tests/Box/relations4.cc, tests/Box/removespacedims1.cc,
+	tests/Box/run_tests, tests/Box/simplifyusingcontext1.cc,
+	tests/Box/timeelapse1.cc, tests/Box/topclosed1.cc,
+	tests/Box/unconstrain1.cc, tests/Box/universe1.cc,
+	tests/Box/upperbound1.cc, tests/Box/upperboundifexact1.cc,
+	tests/Box/wrap1.cc, tests/Box/writebox1.cc,
+	tests/CO_Tree/Makefile.am, tests/CO_Tree/cotree1.cc,
+	tests/Concrete_Expression/C_Expr.cc,
+	tests/Concrete_Expression/C_Expr_defs.hh,
+	tests/Concrete_Expression/C_Expr_inlines.hh,
+	tests/Concrete_Expression/C_Expr_types.hh,
+	tests/Concrete_Expression/Makefile.am,
+	tests/Concrete_Expression/bdshape1.cc,
+	tests/Concrete_Expression/bdshape2.cc,
+	tests/Concrete_Expression/digitalfilters1.cc,
+	tests/Concrete_Expression/linearform1.cc,
+	tests/Concrete_Expression/linearize.cc,
+	tests/Concrete_Expression/octagonalshape1.cc,
+	tests/Concrete_Expression/octagonalshape2.cc,
+	tests/Concrete_Expression/polyhedron1.cc,
+	tests/Concrete_Expression/polyhedron2.cc,
+	tests/Concrete_Expression/run_tests, tests/Grid/Makefile.am,
+	tests/Grid/addcongruence1.cc, tests/Grid/addcongruences1.cc,
+	tests/Grid/addconstraint1.cc, tests/Grid/addconstraints1.cc,
+	tests/Grid/addgenerator1.cc, tests/Grid/addgenerators1.cc,
+	tests/Grid/addspacedims1.cc, tests/Grid/affinedim1.cc,
+	tests/Grid/affineimage1.cc, tests/Grid/affineimage2.cc,
+	tests/Grid/affinepreimage1.cc, tests/Grid/affinepreimage2.cc,
+	tests/Grid/approximatepartition1.cc, tests/Grid/asciidumpload1.cc,
+	tests/Grid/asciidumpload2.cc, tests/Grid/asciidumpload3.cc,
+	tests/Grid/asciidumpload4.cc, tests/Grid/asciidumpload5.cc,
+	tests/Grid/asciidumpload6.cc, tests/Grid/bhz03widening1.cc,
+	tests/Grid/bounded1.cc, tests/Grid/boundedaffineimage1.cc,
+	tests/Grid/boundedaffinepreimage1.cc, tests/Grid/boundingbox1.cc,
+	tests/Grid/bounds1.cc, tests/Grid/certificate1.cc,
+	tests/Grid/concatenate1.cc, tests/Grid/congruence1.cc,
+	tests/Grid/congruences1.cc, tests/Grid/congruences2.cc,
+	tests/Grid/constraints1.cc, tests/Grid/contains1.cc,
+	tests/Grid/containsintegerpoint1.cc, tests/Grid/discrete1.cc,
+	tests/Grid/disjoint1.cc, tests/Grid/dropnonintegerpoints1.cc,
+	tests/Grid/equals1.cc, tests/Grid/expandspacedim1.cc,
+	tests/Grid/foldspacedims1.cc, tests/Grid/frequency1.cc,
+	tests/Grid/frombdshape1.cc, tests/Grid/frombox1.cc,
+	tests/Grid/fromgrid1.cc, tests/Grid/fromoctagonalshape1.cc,
+	tests/Grid/frompolyhedron1.cc,
+	tests/Grid/generalizedaffineimage1.cc,
+	tests/Grid/generalizedaffineimage2.cc,
+	tests/Grid/generalizedaffineimage3.cc,
+	tests/Grid/generalizedaffinepreimage1.cc,
+	tests/Grid/generalizedaffinepreimage2.cc,
+	tests/Grid/generalizedaffinepreimage3.cc, tests/Grid/generator1.cc,
+	tests/Grid/generators1.cc, tests/Grid/generators2.cc,
+	tests/Grid/grid1.cc, tests/Grid/grid2.cc, tests/Grid/grid3.cc,
+	tests/Grid/griddifference1.cc, tests/Grid/intersection1.cc,
+	tests/Grid/isempty1.cc, tests/Grid/isuniverse1.cc,
+	tests/Grid/limitedextrapolation1.cc,
+	tests/Grid/limitedextrapolation2.cc,
+	tests/Grid/limitedextrapolation3.cc, tests/Grid/mapspacedims1.cc,
+	tests/Grid/maxmin1.cc, tests/Grid/membytes1.cc,
+	tests/Grid/mincongruences1.cc, tests/Grid/mingenerators1.cc,
+	tests/Grid/outputoperator1.cc, tests/Grid/outputoperator2.cc,
+	tests/Grid/outputoperator3.cc, tests/Grid/partition1.cc,
+	tests/Grid/powersetdifference1.cc,
+	tests/Grid/powersetgeometricallycovers1.cc,
+	tests/Grid/powersetgeometricallyequals1.cc,
+	tests/Grid/refinewithcongruences1.cc,
+	tests/Grid/refinewithconstraints1.cc, tests/Grid/relations1.cc,
+	tests/Grid/relations2.cc, tests/Grid/relations3.cc,
+	tests/Grid/removespacedims1.cc, tests/Grid/removespacedims2.cc,
+	tests/Grid/simplifyusingcontext1.cc, tests/Grid/timeelapse1.cc,
+	tests/Grid/topclosed1.cc, tests/Grid/topclosure1.cc,
+	tests/Grid/unconstrain1.cc, tests/Grid/upperbound1.cc,
+	tests/Grid/upperbound2.cc, tests/Grid/widening1.cc,
+	tests/Grid/widening2.cc, tests/Grid/widening3.cc,
+	tests/Grid/wrap1.cc, tests/Grid/writecongruencesystem.cc,
+	tests/MIP_Problem/Makefile.am,
+	tests/MIP_Problem/ascii_dump_load1.cc,
+	tests/MIP_Problem/exceptions1.cc, tests/MIP_Problem/mipproblem1.cc,
+	tests/MIP_Problem/mipproblem2.cc, tests/MIP_Problem/mipproblem3.cc,
+	tests/MIP_Problem/mipproblem4.cc, tests/Makefile.am,
+	tests/Octagonal_Shape/Makefile.am,
+	tests/Octagonal_Shape/addspacedims1.cc,
+	tests/Octagonal_Shape/affinedimension1.cc,
+	tests/Octagonal_Shape/affineimage1.cc,
+	tests/Octagonal_Shape/affineimage2.cc,
+	tests/Octagonal_Shape/affinepreimage1.cc,
+	tests/Octagonal_Shape/affinepreimage2.cc,
+	tests/Octagonal_Shape/ascii_dump_load1.cc,
+	tests/Octagonal_Shape/bhmz05widening1.cc,
+	tests/Octagonal_Shape/bhz03widening1.cc,
+	tests/Octagonal_Shape/bounded1.cc,
+	tests/Octagonal_Shape/boundedaffineimage1.cc,
+	tests/Octagonal_Shape/boundedaffinepreimage1.cc,
+	tests/Octagonal_Shape/bounds1.cc,
+	tests/Octagonal_Shape/cc76extrapolation1.cc,
+	tests/Octagonal_Shape/cc76narrowing1.cc,
+	tests/Octagonal_Shape/chinainit.cc,
+	tests/Octagonal_Shape/concatenate1.cc,
+	tests/Octagonal_Shape/congruences1.cc,
+	tests/Octagonal_Shape/constrains1.cc,
+	tests/Octagonal_Shape/constraints1.cc,
+	tests/Octagonal_Shape/contains1.cc,
+	tests/Octagonal_Shape/containsintegerpoint1.cc,
+	tests/Octagonal_Shape/difference1.cc,
+	tests/Octagonal_Shape/discrete1.cc,
+	tests/Octagonal_Shape/disjoint1.cc,
+	tests/Octagonal_Shape/dropsomenonintegerpoints1.cc,
+	tests/Octagonal_Shape/empty1.cc,
+	tests/Octagonal_Shape/expandspacedim1.cc,
+	tests/Octagonal_Shape/foldspacedims1.cc,
+	tests/Octagonal_Shape/frequency1.cc,
+	tests/Octagonal_Shape/frombdshape1.cc,
+	tests/Octagonal_Shape/frombox1.cc,
+	tests/Octagonal_Shape/fromgensys1.cc,
+	tests/Octagonal_Shape/fromgrid1.cc,
+	tests/Octagonal_Shape/fromoctagonalshape1.cc,
+	tests/Octagonal_Shape/frompolyhedron1.cc,
+	tests/Octagonal_Shape/fromspacedim1.cc,
+	tests/Octagonal_Shape/generalizedaffineimage1.cc,
+	tests/Octagonal_Shape/generalizedaffineimage2.cc,
+	tests/Octagonal_Shape/generalizedaffineimage3.cc,
+	tests/Octagonal_Shape/generalizedaffineimage4.cc,
+	tests/Octagonal_Shape/generalizedaffineimage5.cc,
+	tests/Octagonal_Shape/generalizedaffinepreimage1.cc,
+	tests/Octagonal_Shape/generalizedaffinepreimage2.cc,
+	tests/Octagonal_Shape/generalizedaffinepreimage3.cc,
+	tests/Octagonal_Shape/generalizedaffinepreimage4.cc,
+	tests/Octagonal_Shape/integerupperboundifexact1.cc,
+	tests/Octagonal_Shape/intersection1.cc,
+	tests/Octagonal_Shape/limitedbhmz05extrapolation1.cc,
+	tests/Octagonal_Shape/limitedcc76extrapolation1.cc,
+	tests/Octagonal_Shape/mapspacedims1.cc,
+	tests/Octagonal_Shape/max_min1.cc,
+	tests/Octagonal_Shape/max_min2.cc,
+	tests/Octagonal_Shape/maxspacedim1.cc,
+	tests/Octagonal_Shape/membytes1.cc,
+	tests/Octagonal_Shape/minconstraints1.cc,
+	tests/Octagonal_Shape/relatwithcons1.cc,
+	tests/Octagonal_Shape/relatwithcons2.cc,
+	tests/Octagonal_Shape/relatwithcons3.cc,
+	tests/Octagonal_Shape/relatwithgen1.cc,
+	tests/Octagonal_Shape/removespacedims1.cc,
+	tests/Octagonal_Shape/run_tests,
+	tests/Octagonal_Shape/simplifyusingcontext1.cc,
+	tests/Octagonal_Shape/timeelapse1.cc,
+	tests/Octagonal_Shape/unconstrain1.cc,
+	tests/Octagonal_Shape/universe1.cc,
+	tests/Octagonal_Shape/upperbound1.cc,
+	tests/Octagonal_Shape/upperboundifexact1.cc,
+	tests/Octagonal_Shape/wrap1.cc,
+	tests/Octagonal_Shape/writeoctagon1.cc,
+	tests/PIP_Problem/Makefile.am,
+	tests/PIP_Problem/ascii_dump_load1.cc,
+	tests/PIP_Problem/exceptions1.cc, tests/PIP_Problem/pipproblem1.cc,
+	tests/PIP_Problem/pipproblem2.cc, tests/PIP_Problem/pipproblem3.cc,
+	tests/PIP_Problem/weightwatch1.cc,
+	tests/Partially_Reduced_Product/Makefile.am,
+	tests/Partially_Reduced_Product/addcongruences1.cc,
+	tests/Partially_Reduced_Product/addconstraints1.cc,
+	tests/Partially_Reduced_Product/affineimage1.cc,
+	tests/Partially_Reduced_Product/asciidumpload1.cc,
+	tests/Partially_Reduced_Product/bounded1.cc,
+	tests/Partially_Reduced_Product/boundedaffineimage1.cc,
+	tests/Partially_Reduced_Product/bounds1.cc,
+	tests/Partially_Reduced_Product/concatenate1.cc,
+	tests/Partially_Reduced_Product/congruences1.cc,
+	tests/Partially_Reduced_Product/congruencesproduct1.cc,
+	tests/Partially_Reduced_Product/constraints1.cc,
+	tests/Partially_Reduced_Product/constraintsproduct1.cc,
+	tests/Partially_Reduced_Product/contains1.cc,
+	tests/Partially_Reduced_Product/difference1.cc,
+	tests/Partially_Reduced_Product/dimension1.cc,
+	tests/Partially_Reduced_Product/directproduct1.cc,
+	tests/Partially_Reduced_Product/directproduct2.cc,
+	tests/Partially_Reduced_Product/directproduct3.cc,
+	tests/Partially_Reduced_Product/directproduct4.cc,
+	tests/Partially_Reduced_Product/directproduct5.cc,
+	tests/Partially_Reduced_Product/directproduct6.cc,
+	tests/Partially_Reduced_Product/discrete1.cc,
+	tests/Partially_Reduced_Product/disjoint1.cc,
+	tests/Partially_Reduced_Product/dropsomenonintegerpoints1.cc,
+	tests/Partially_Reduced_Product/equals1.cc,
+	tests/Partially_Reduced_Product/frombdshape1.cc,
+	tests/Partially_Reduced_Product/frombox1.cc,
+	tests/Partially_Reduced_Product/fromgrid1.cc,
+	tests/Partially_Reduced_Product/fromoctagonalshape1.cc,
+	tests/Partially_Reduced_Product/frompolyhedron1.cc,
+	tests/Partially_Reduced_Product/fromproduct1.cc,
+	tests/Partially_Reduced_Product/generalizedaffineimage1.cc,
+	tests/Partially_Reduced_Product/intersection1.cc,
+	tests/Partially_Reduced_Product/isempty1.cc,
+	tests/Partially_Reduced_Product/isuniverse1.cc,
+	tests/Partially_Reduced_Product/maxmin1.cc,
+	tests/Partially_Reduced_Product/partially_reduced_product_test.hh,
+	tests/Partially_Reduced_Product/partiallyreducedproduct1.cc,
+	tests/Partially_Reduced_Product/partiallyreducedproduct2.cc,
+	tests/Partially_Reduced_Product/partiallyreducedproduct3.cc,
+	tests/Partially_Reduced_Product/partiallyreducedproduct4.cc,
+	tests/Partially_Reduced_Product/refinewithcongruences1.cc,
+	tests/Partially_Reduced_Product/refinewithconstraints1.cc,
+	tests/Partially_Reduced_Product/relations1.cc,
+	tests/Partially_Reduced_Product/shapepreservingproduct1.cc,
+	tests/Partially_Reduced_Product/smashproduct1.cc,
+	tests/Partially_Reduced_Product/spacedims1.cc,
+	tests/Partially_Reduced_Product/timeelapse1.cc,
+	tests/Partially_Reduced_Product/topclosed1.cc,
+	tests/Partially_Reduced_Product/topclosure1.cc,
+	tests/Partially_Reduced_Product/upperbound1.cc,
+	tests/Partially_Reduced_Product/widening1.cc,
+	tests/Polyhedron/Makefile.am, tests/Polyhedron/addcongruence1.cc,
+	tests/Polyhedron/addcongruences1.cc,
+	tests/Polyhedron/addconstraint1.cc,
+	tests/Polyhedron/addconstraints1.cc,
+	tests/Polyhedron/addconstraints2.cc,
+	tests/Polyhedron/addgenerator1.cc,
+	tests/Polyhedron/addgenerator2.cc,
+	tests/Polyhedron/addgenerators1.cc,
+	tests/Polyhedron/addgenerators2.cc,
+	tests/Polyhedron/addspacedims1.cc,
+	tests/Polyhedron/addspacedims2.cc,
+	tests/Polyhedron/affineimage1.cc, tests/Polyhedron/affineimage2.cc,
+	tests/Polyhedron/affinepreimage1.cc,
+	tests/Polyhedron/affinetrans.cc, tests/Polyhedron/append1.cc,
+	tests/Polyhedron/append2.cc, tests/Polyhedron/ascii_dump_load1.cc,
+	tests/Polyhedron/ascii_dump_load2.cc,
+	tests/Polyhedron/ascii_dump_load3.cc,
+	tests/Polyhedron/bgp99extrapolation1.cc,
+	tests/Polyhedron/bgp99extrapolation2.cc,
+	tests/Polyhedron/bhrz03widening1.cc,
+	tests/Polyhedron/bhrz03widening2.cc,
+	tests/Polyhedron/bhrz03widening3.cc,
+	tests/Polyhedron/bhz03widening1.cc, tests/Polyhedron/bounded1.cc,
+	tests/Polyhedron/boundedaffineimage1.cc,
+	tests/Polyhedron/boundedaffinepreimage1.cc,
+	tests/Polyhedron/boundedbhrz03extrapolation1.cc,
+	tests/Polyhedron/boundedh79extrapolation1.cc,
+	tests/Polyhedron/bounds1.cc, tests/Polyhedron/cnncconversion1.cc,
+	tests/Polyhedron/concatenate1.cc, tests/Polyhedron/congruences1.cc,
+	tests/Polyhedron/constrains1.cc, tests/Polyhedron/constraints1.cc,
+	tests/Polyhedron/contains1.cc, tests/Polyhedron/contains2.cc,
+	tests/Polyhedron/containsintegerpoint1.cc,
+	tests/Polyhedron/disjoint1.cc, tests/Polyhedron/disjoint2.cc,
+	tests/Polyhedron/dropsomenonintegerpoints1.cc,
+	tests/Polyhedron/dropsomenonintegerpoints2.cc,
+	tests/Polyhedron/dualhypercubes.cc, tests/Polyhedron/empty1.cc,
+	tests/Polyhedron/equals1.cc, tests/Polyhedron/exceptions1.cc,
+	tests/Polyhedron/exceptions2.cc, tests/Polyhedron/exceptions3.cc,
+	tests/Polyhedron/expandspacedim1.cc,
+	tests/Polyhedron/expandspacedim2.cc,
+	tests/Polyhedron/foldspacedims1.cc,
+	tests/Polyhedron/foldspacedims2.cc, tests/Polyhedron/frequency1.cc,
+	tests/Polyhedron/frombdshape1.cc, tests/Polyhedron/frombox1.cc,
+	tests/Polyhedron/frombox2.cc, tests/Polyhedron/fromgrid1.cc,
+	tests/Polyhedron/fromoctagonalshape1.cc,
+	tests/Polyhedron/generalizedaffineimage1.cc,
+	tests/Polyhedron/generalizedaffineimage2.cc,
+	tests/Polyhedron/generalizedaffinepreimage1.cc,
+	tests/Polyhedron/generalizedaffinepreimage2.cc,
+	tests/Polyhedron/generators1.cc, tests/Polyhedron/geomcovers1.cc,
+	tests/Polyhedron/h79widening1.cc, tests/Polyhedron/h79widening2.cc,
+	tests/Polyhedron/hybrid.cc, tests/Polyhedron/intersection1.cc,
+	tests/Polyhedron/limitedbhrz03extrapolation1.cc,
+	tests/Polyhedron/limitedh79extrapolation1.cc,
+	tests/Polyhedron/linearexpression1.cc,
+	tests/Polyhedron/linearpartition1.cc,
+	tests/Polyhedron/linearsystem1.cc,
+	tests/Polyhedron/mapspacedims1.cc, tests/Polyhedron/matrix1.cc,
+	tests/Polyhedron/max_min1.cc, tests/Polyhedron/maxspacedim1.cc,
+	tests/Polyhedron/mc91.cc, tests/Polyhedron/membytes1.cc,
+	tests/Polyhedron/memory1.cc, tests/Polyhedron/memory2.cc,
+	tests/Polyhedron/minconstraints1.cc,
+	tests/Polyhedron/minconstraints2.cc,
+	tests/Polyhedron/mingenerators1.cc,
+	tests/Polyhedron/mingenerators2.cc,
+	tests/Polyhedron/nncminimize1.cc, tests/Polyhedron/nncminimize2.cc,
+	tests/Polyhedron/nncpostimeelapse1.cc,
+	tests/Polyhedron/numberinput1.cc, tests/Polyhedron/onepoint.cc,
+	tests/Polyhedron/permute.cc, tests/Polyhedron/polydifference1.cc,
+	tests/Polyhedron/polydifference2.cc, tests/Polyhedron/polyhull1.cc,
+	tests/Polyhedron/polyhull2.cc,
+	tests/Polyhedron/polyhullifexact1.cc,
+	tests/Polyhedron/polyhullifexact2.cc,
+	tests/Polyhedron/randphull1.cc,
+	tests/Polyhedron/refinewithcongruence1.cc,
+	tests/Polyhedron/refinewithcongruences1.cc,
+	tests/Polyhedron/refinewithconstraint1.cc,
+	tests/Polyhedron/refinewithconstraints1.cc,
+	tests/Polyhedron/relations1.cc, tests/Polyhedron/relations2.cc,
+	tests/Polyhedron/relations3.cc,
+	tests/Polyhedron/removespacedims1.cc,
+	tests/Polyhedron/removespacedims2.cc,
+	tests/Polyhedron/simplifyusingcontext1.cc,
+	tests/Polyhedron/simplifyusingcontext2.cc,
+	tests/Polyhedron/smm1.cc, tests/Polyhedron/sparserow1.cc,
+	tests/Polyhedron/termination1.cc, tests/Polyhedron/termination2.cc,
+	tests/Polyhedron/timeelapse1.cc, tests/Polyhedron/timeelapse2.cc,
+	tests/Polyhedron/topclosed1.cc, tests/Polyhedron/topclosure1.cc,
+	tests/Polyhedron/unconstrain1.cc, tests/Polyhedron/universe1.cc,
+	tests/Polyhedron/universe2.cc, tests/Polyhedron/variablesset1.cc,
+	tests/Polyhedron/watchdog1.cc, tests/Polyhedron/weightwatch1.cc,
+	tests/Polyhedron/wrap1.cc, tests/Polyhedron/wrap2.cc,
+	tests/Polyhedron/writeconsys1.cc, tests/Polyhedron/writegensys1.cc,
+	tests/Polyhedron/writepolyhedron1.cc,
+	tests/Polyhedron/writepolyhedron2.cc,
+	tests/Polyhedron/writerelation1.cc,
+	tests/Polyhedron/writevariable1.cc, tests/Powerset/Makefile.am,
+	tests/Powerset/addcongruences1.cc,
+	tests/Powerset/addconstraints1.cc,
+	tests/Powerset/affinedimension1.cc, tests/Powerset/affineimage1.cc,
+	tests/Powerset/affinepreimage1.cc, tests/Powerset/bounded1.cc,
+	tests/Powerset/bounds1.cc, tests/Powerset/closed1.cc,
+	tests/Powerset/closure1.cc, tests/Powerset/collapse1.cc,
+	tests/Powerset/concatenate1.cc, tests/Powerset/contains1.cc,
+	tests/Powerset/containsintegerpoint1.cc,
+	tests/Powerset/difference1.cc, tests/Powerset/discrete1.cc,
+	tests/Powerset/disjoint1.cc, tests/Powerset/disjunct1.cc,
+	tests/Powerset/empty1.cc, tests/Powerset/entails1.cc,
+	tests/Powerset/equals1.cc, tests/Powerset/frombdshape1.cc,
+	tests/Powerset/frombox1.cc, tests/Powerset/fromcongruences1.cc,
+	tests/Powerset/fromconstraints1.cc, tests/Powerset/fromgrid1.cc,
+	tests/Powerset/fromoctagonalshape1.cc,
+	tests/Powerset/frompolyhedron1.cc,
+	tests/Powerset/fromspacedimension1.cc,
+	tests/Powerset/intersection1.cc, tests/Powerset/maxmin1.cc,
+	tests/Powerset/meet1.cc, tests/Powerset/membytes1.cc,
+	tests/Powerset/powerset1.cc, tests/Powerset/reduce1.cc,
+	tests/Powerset/refinewith1.cc, tests/Powerset/relationwith1.cc,
+	tests/Powerset/simplifyusingcontext1.cc, tests/Powerset/size1.cc,
+	tests/Powerset/spacedims1.cc, tests/Powerset/universe1.cc,
+	tests/Powerset/upperbound1.cc, tests/README,
+	tests/Random_Number_Generator_defs.hh,
+	tests/Random_Number_Generator_inlines.hh,
+	tests/Random_Number_Generator_types.hh, tests/Watchdog/Makefile.am,
+	tests/Watchdog/watchdog1.cc, tests/files.cc, tests/files.hh,
+	tests/ppl_test.cc, tests/ppl_test.hh, utils/Makefile.am,
+	utils/build_header.in, utils/cm_cleaner.sh, utils/cm_splitter.sh,
+	utils/text2cxxarray.in, utils/timings.cc, utils/timings.hh: Extended
+	copyright years.
+
+2014-12-24  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* demos/ppl_lpsol/dummy.cc, demos/ppl_lpsol/ppl_lpsol.c,
+	src/BDS_Status.cc, src/Box_Status.cc,
+	src/Floating_Point_Expression_defs.hh, src/Interval_defs.hh,
+	src/MIP_Problem.cc, src/NNC_Polyhedron_defs.hh,
+	src/OR_Matrix_defs.hh, src/Og_Status.cc: Corrected several header
+	inclusions.  Fixes violations of rule UCGP1.F1 detected by ECLAIR.
+
+2014-12-23  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/Handler.cc, src/Handler_inlines.hh: Provided virtual method
+	anchor.  Fixes a violation of rule UCGP1.L4 detected by ECLAIR.
+
+2014-12-23  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/Handler.cc: Spurious `inline' qualifier removed.
+
+2014-12-23  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/BHRZ03_Certificate_defs.hh,
+	src/BHRZ03_Certificate_inlines.hh, src/Bit_Matrix_inlines.hh,
+	src/Coefficient_defs.hh, src/Determinate_defs.hh,
+	src/Float_defs.hh, src/Float_inlines.hh, src/GMP_Integer_types.hh,
+	src/Grid_Certificate_defs.hh, src/Grid_Certificate_inlines.hh,
+	src/H79_Certificate_defs.hh, src/Interval_Info_defs.hh,
+	src/Interval_defs.hh, src/Linear_Expression_Impl_defs.hh,
+	src/Linear_System_templates.hh, src/PIP_Problem_defs.hh,
+	src/Partial_Function_inlines.hh, src/Powerset_inlines.hh,
+	src/Powerset_templates.hh, src/Ptr_Iterator_inlines.hh,
+	src/Swapping_Vector_defs.hh, src/Swapping_Vector_inlines.hh,
+	src/Threshold_Watcher_inlines.hh, src/algorithms.hh,
+	src/checked_defs.hh, src/intervals_defs.hh,
+	src/math_utilities_inlines.hh: Corrected several header inclusions.
+	Fixes violations of rule UCGP1.F1 detected by ECLAIR.
+
+2014-12-21  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/BDS_Status.cc, src/BDS_Status_inlines.hh, src/Box_Status.cc,
+	src/Box_Status_inlines.hh, src/Makefile.am, src/Og_Status.cc,
+	src/Og_Status_inlines.hh: The interface file shall contain
+	declarations only.  Fixes violations of rule EP1.31 detected by
+	ECLAIR.
+
+2014-12-21  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/Handler.cc: Put under Git control.
+
+2014-12-21  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/Ask_Tell_inlines.hh, src/BD_Shape_inlines.hh,
+	src/BD_Shape_templates.hh, src/BHRZ03_Certificate.cc,
+	src/BHRZ03_Certificate_defs.hh, src/Bit_Matrix_inlines.hh,
+	src/Bit_Row.cc, src/Bit_Row_inlines.hh,
+	src/Checked_Number_templates.hh, src/Congruence.cc,
+	src/Congruence_System.cc, src/Constraint_System.cc,
+	src/DB_Matrix_inlines.hh, src/DB_Row_inlines.hh, src/Dense_Row.cc,
+	src/Dense_Row_inlines.hh, src/Determinate_defs.hh,
+	src/Determinate_inlines.hh, src/Float_defs.hh,
+	src/GMP_Integer_inlines.hh, src/Generator_System.cc,
+	src/Grid_Certificate.cc, src/Grid_Certificate_defs.hh,
+	src/Grid_Generator_System.cc, src/Grid_Status.cc,
+	src/Grid_chdims.cc, src/Grid_nonpublic.cc, src/Grid_public.cc,
+	src/Grid_simplify.cc, src/Grid_widenings.cc,
+	src/H79_Certificate.cc, src/H79_Certificate_defs.hh,
+	src/Linear_Expression_Impl.cc, src/Makefile.am,
+	src/OR_Matrix_inlines.hh, src/Octagonal_Shape_inlines.hh,
+	src/Octagonal_Shape_templates.hh, src/Partial_Function_inlines.hh,
+	src/Ph_Status.cc, src/Poly_Con_Relation.cc,
+	src/Poly_Gen_Relation.cc, src/Polyhedron_chdims.cc,
+	src/Polyhedron_nonpublic.cc, src/Polyhedron_public.cc,
+	src/Polyhedron_widenings.cc, src/Powerset_inlines.hh,
+	src/Powerset_templates.hh, src/Ptr_Iterator_inlines.hh,
+	src/Result_inlines.hh, src/Rounding_Dir_inlines.hh,
+	src/Swapping_Vector_defs.hh, src/Widening_Function_inlines.hh,
+	src/algorithms.hh, src/{assert.cc => assertions.cc}, src/{assert.hh
+	=> assertions.hh}, src/c_streambuf.cc, src/checked_inlines.hh,
+	src/intervals_defs.hh, src/math_utilities_inlines.hh,
+	src/ppl_header.hh, src/stdiobuf.cc, src/wrap_assign.hh,
+	src/wrap_string.cc: Guarantee that header file names are unique.
+	Fixes violations of rule CP1.PRE08 detected by ECLAIR.
+
+2014-12-21  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/Handler_inlines.hh, src/Makefile.am, src/PIP_Tree.cc,
+	src/PIP_Tree_inlines.hh, src/c_streambuf.cc,
+	src/c_streambuf_inlines.hh, src/globals.cc, src/globals_inlines.hh: 
+	Provided virtual method anchors.  Fixes violations of rule UCGP1.L4
+	detected by ECLAIR.
+
+2014-12-21  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* demos/ppl_pips/ppl_pips.cc, utils/timings.cc: Do not use `using
+	namespace std'.  Fixes violations of rule UCGP1.L3 detected by
+	ECLAIR.
+
+2014-12-15  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/CO_Tree.cc, src/CO_Tree_inlines.hh, src/CO_Tree_templates.hh,
+	src/DB_Row_inlines.hh, src/DB_Row_templates.hh, src/Dense_Row.cc,
+	src/Dense_Row_inlines.hh, src/MIP_Problem.cc,
+	src/checked_inlines.hh, src/checked_mpq_inlines.hh,
+	src/checked_mpz_inlines.hh: Parenthesis spacing corrected.  Fixes
+	violations of rule UCGP1.M1 detected by ECLAIR.
+
+2014-12-15  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/Octagonal_Shape_templates.hh: Post-decrement avoided.  Fixes a
+	violation of rule UCGP1.M2 detected by ECLAIR.
+
+2014-12-14  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* demos/ppl_lcdd/ppl_lcdd.cc, demos/ppl_pips/ppl_pips.cc: Avoid
+	commenting out code.  Fixes violations of rule EP1.17 detected by
+	ECLAIR.
+
+2014-12-14  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/checked.cc: Avoid the `expected' identifier.  The C++
+	standard, ISO/IEC 14882:2003(E), reserves it for header <exception>.
+	Fixes a violation of rule MP1.17-0-3 detected by ECLAIR.
+
+2014-12-14  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/Interval_templates.hh, src/checked.cc: Avoid the `unexpected'
+	identifier.  The C++ standard, ISO/IEC 14882:2003(E), reserves it
+	for header <exception>.
+
+2014-12-14  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* demos/ppl_lcdd/ppl_lcdd.cc: Redundant anonymous namespace removed.
+
+2014-12-14  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* demos/ppl_lcdd/ppl_lcdd.cc: Scope of declaration reduced.  Fixes a
+	violation of rule CP1.DCL07 detected by ECLAIR.
+
+2014-12-14  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/BD_Shape_defs.hh, src/Box_defs.hh,
+	src/Octagonal_Shape_defs.hh, src/Pointset_Powerset_inlines.hh,
+	src/Polyhedron_templates.hh: Parenthesis spacing corrected.  Fixes
+	violations of rule UCGP1.M1 detected by ECLAIR.
+
+2014-12-14  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/Checked_Number_inlines.hh, src/Float_templates.hh,
+	src/Grid_public.cc, src/Linear_Expression_defs.hh,
+	src/Linear_Expression_inlines.hh,
+	src/Polyhedron_conversion_templates.hh, src/compiler.hh,
+	src/intervals_defs.hh: Parenthesis spacing corrected.  Fixes
+	violations of rule UCGP1.M1 detected by ECLAIR.
+
+2014-12-09  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/Polyhedron_nonpublic.cc: Post-decrement avoided.  Fixes a
+	violation of rule UCGP1.M2 detected by ECLAIR.
+
+2014-11-30  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/Handler_defs.hh: Capitalization and punctuation fixed.
+
+2014-11-29  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/Dense_Row_defs.hh, src/Dense_Row_inlines.hh,
+	src/Expression_Adapter_defs.hh, src/Expression_Adapter_inlines.hh,
+	src/Expression_Hide_Inhomo_defs.hh,
+	src/Expression_Hide_Inhomo_inlines.hh,
+	src/Expression_Hide_Last_defs.hh,
+	src/Expression_Hide_Last_inlines.hh,
+	src/Linear_Expression_Impl_defs.hh,
+	src/Linear_Expression_Impl_templates.hh,
+	src/Linear_Expression_Interface_defs.hh,
+	src/Linear_Expression_defs.hh, src/Sparse_Row.cc: Shadowing avoided.
+	Naming improved.
+
+2014-11-29  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* configure.ac: Disable some warnings.
+
+2014-11-29  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/Linear_Expression_defs.hh, src/Linear_Expression_inlines.hh,
+	src/MIP_Problem_defs.hh, src/MIP_Problem_inlines.hh: Shadowing
+	avoided.  Comments improved.
+
+2014-11-29  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/Boundary_defs.hh: Spurious comma removed.
+
+2014-11-29  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* interfaces/Prolog/SWI/Makefile.am,
+	interfaces/Prolog/SWI/pl_clpq.cc,
+	interfaces/Prolog/SWI/ppl_interface_generator_swiprolog_cc.m4,
+	interfaces/Prolog/SWI/ppl_pl.cc,
+	interfaces/Prolog/SWI/ppl_swiprolog.hh: Added missing header file
+	and inclusions.
+
+2014-11-29  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* interfaces/Prolog/SWI/ppl_interface_generator_swiprolog_cc.m4: 
+	C-style casts avoided.
+
+2014-11-29  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* interfaces/Prolog/ppl_interface_generator_prolog_cc_files.m4,
+	interfaces/Prolog/ppl_interface_generator_prolog_hh_files.m4: Added
+	missing inclusions.
+
+2014-11-29  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/Makefile.am: Added missing inclusions.
+
+2014-11-04  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS, configure.ac, src/Dense_Row.cc,
+	tests/Polyhedron/sparserow1.cc: Fixed a bug in the implementation of
+	dense rows.  (Thanks to Enea Zaffanella.)
+
+2014-10-19  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* config.sub: Updated.
+
+2014-10-01  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* demos/ppl_lcdd/ppl_lcdd.cc, demos/ppl_lpsol/ppl_lpsol.c,
+	demos/ppl_pips/ppl_pips.cc, src/Init.cc,
+	src/set_GMP_memory_alloc_funcs.cc, tests/Polyhedron/memory1.cc: No
+	need to depend on PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK for auto
+	initialization.  (Thanks to Keith Clifford.)
+
+2014-09-28  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Added AssarfGHJLPR14TR.
+
+2014-09-27  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/BD_Shape_templates.hh, src/Bit_Matrix.cc,
+	src/Box_templates.hh,
+	src/Difference_Floating_Point_Expression_inlines.hh,
+	src/Generator_System.cc, src/Grid_public.cc,
+	src/Polyhedron_nonpublic.cc, src/Polyhedron_public.cc,
+	src/checked_ext_inlines.hh, src/checked_float_inlines.hh: Code
+	layout corrected.
+
+2014-09-27  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* configure.ac: Version number bumped.
+
+2014-09-27  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/Init.cc, src/Makefile.am, src/set_GMP_memory_alloc_funcs.cc: 
+	Default definition of ppl_set_GMP_memory_allocation_functions()
+	moved.  Having it in its own file solves all problems with the MinGW
+	compiler.  (Thanks to Keith Clifford.)
+
+2014-09-27  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* configure.ac: Version number bumped.
+
+2014-09-27  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* configure.ac: Version number bumped.
+
+2014-09-27  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/Makefile.am: Fixed.
+
+2014-09-27  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/Polyhedron_public.cc, tests/Polyhedron/Makefile.am,
+	tests/Polyhedron/simplifyusingcontext2.cc: Fixed a bug in
+	Polyhedron::simplify_using_context_assign().  (Thanks to Didier Lime
+	for the bug report.)
+
+2014-07-28  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/Pending_List_templates.hh,
+	src/Polyhedron_minimize_templates.hh,
+	src/Polyhedron_simplify_templates.hh: Use a monotonic indentation
+	style.  Fixes violations detected by ECLAIR checker B.MONOINDENT.
+
+2014-07-27  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/Bit_Row.cc, src/CO_Tree_inlines.hh, src/PIP_Tree.cc,
+	src/Polyhedron_nonpublic.cc, src/iterator_to_const_defs.hh: Comments
+	should never be used for "commenting out" code.  Fixes violations of
+	rule EP1.17 detected by ECLAIR.
+
+2014-07-02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Checked_Number_defs.hh, src/Checked_Number_inlines.hh,
+	src/Linear_Expression_defs.hh, src/Linear_Expression_inlines.hh,
+	src/checked_int_inlines.hh, src/fpu-ia32.cc: Keep source lines to a
+	length of 120 characters or less.  Fixes violations of rule LP1.41
+	detected by ECLAIR.
+
+2014-06-30  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/Polyhedron_nonpublic.cc: Avoid tabs. Fixes violations of rule
+	UCRP1.RS1 detected by ECLAIR.
+
+2014-06-30  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* demos/ppl_lcdd/ppl_lcdd.cc, src/BD_Shape_templates.hh,
+	src/Constraint_System.cc, src/Generator_System.cc,
+	src/Linear_System_templates.hh, src/MIP_Problem.cc,
+	src/Matrix_templates.hh, src/OR_Matrix_templates.hh,
+	src/Octagonal_Shape_templates.hh, src/PIP_Tree.cc,
+	src/Polyhedron_public.cc, src/globals_defs.hh,
+	src/intervals_defs.hh: Added missing braces. Fixes violations of
+	rule MP1.6-4-1 detected by ECLAIR.
+
+2014-06-30  Patrik Pomelli <patrik.pomelli@bugseng.com>
+
+	* demos/ppl_lcdd/ppl_lcdd.cc, demos/ppl_pips/ppl_pips.cc,
+	src/BD_Shape_inlines.hh, src/BD_Shape_templates.hh, src/Bit_Row.cc,
+	src/Box_templates.hh, src/CO_Tree.cc, src/CO_Tree_inlines.hh,
+	src/Checked_Number_inlines.hh, src/Congruence_System.cc,
+	src/Constraint_System.cc, src/DB_Matrix_inlines.hh,
+	src/DB_Matrix_templates.hh, src/Generator.cc,
+	src/Generator_System.cc, src/Generator_System_inlines.hh,
+	src/Generator_inlines.hh, src/Grid_Generator.cc,
+	src/Grid_Generator_inlines.hh, src/Grid_chdims.cc,
+	src/Grid_conversion.cc, src/Grid_nonpublic.cc, src/Grid_public.cc,
+	src/Grid_widenings.cc, src/Interval_inlines.hh,
+	src/Interval_templates.hh, src/Linear_Expression_Impl_inlines.hh,
+	src/Linear_Expression_Impl_templates.hh,
+	src/Linear_System_templates.hh, src/MIP_Problem.cc,
+	src/Octagonal_Shape_templates.hh, src/PIP_Problem.cc,
+	src/PIP_Tree.cc, src/Pointset_Powerset.cc,
+	src/Pointset_Powerset_templates.hh, src/Polyhedron_chdims.cc,
+	src/Polyhedron_conversion_templates.hh,
+	src/Polyhedron_minimize_templates.hh, src/Polyhedron_nonpublic.cc,
+	src/Polyhedron_public.cc, src/Polyhedron_simplify_templates.hh,
+	src/Polyhedron_widenings.cc, src/Powerset_templates.hh,
+	src/Sparse_Row.cc, src/WRD_coefficient_types_inlines.hh,
+	src/checked.cc, src/checked_ext_inlines.hh,
+	src/checked_float_inlines.hh, src/checked_inlines.hh,
+	src/checked_int_inlines.hh, src/globals_inlines.hh,
+	src/termination.cc, src/wrap_assign.hh, src/wrap_string.cc,
+	utils/timings.cc: Added missing braces. Fixes violations of rule
+	MP1.6-4-1 detected by ECLAIR.  Signed-off-by: Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+2014-06-30  Patrik Pomelli <patrik.pomelli@bugseng.com>
+
+	* src/Generator_System_inlines.hh, src/Linear_System_templates.hh,
+	src/MIP_Problem.cc, src/Polyhedron_conversion_templates.hh,
+	src/Polyhedron_minimize_templates.hh: Added missing braces. Fixes
+	violations of rule MP1.6-3-1 detected by ECLAIR.  Signed-off-by: Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+2014-06-25  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/Grid_Generator.cc, src/H79_Certificate.cc, src/Init.cc,
+	src/Integer_Interval.hh, src/Interval_Info_defs.hh,
+	src/Interval_Info_inlines.hh, src/Interval_Info_types.hh,
+	src/Interval_defs.hh, src/Interval_inlines.hh,
+	src/Interval_templates.hh, src/Interval_types.hh,
+	src/Linear_Expression.cc, src/Linear_Expression_Impl.cc,
+	src/Linear_Expression_Impl_defs.hh,
+	src/Linear_Expression_Impl_inlines.hh,
+	src/Linear_Expression_Impl_templates.hh,
+	src/Linear_Expression_Impl_types.hh,
+	src/Linear_Expression_Interface.cc,
+	src/Linear_Expression_Interface_defs.hh,
+	src/Linear_Expression_Interface_types.hh,
+	src/Linear_Expression_defs.hh, src/Linear_Expression_inlines.hh,
+	src/Linear_Expression_types.hh, src/Linear_Form.cc,
+	src/Linear_Form_defs.hh, src/Linear_Form_inlines.hh,
+	src/Linear_Form_templates.hh, src/Linear_Form_types.hh,
+	src/Linear_System_defs.hh, src/Linear_System_inlines.hh,
+	src/Linear_System_templates.hh, src/Linear_System_types.hh,
+	src/MIP_Problem.cc, src/MIP_Problem_defs.hh,
+	src/MIP_Problem_inlines.hh, src/MIP_Problem_templates.hh,
+	src/MIP_Problem_types.hh, src/Matrix_defs.hh,
+	src/Matrix_inlines.hh, src/Matrix_templates.hh,
+	src/Matrix_types.hh,
+	src/Multiplication_Floating_Point_Expression_defs.hh,
+	src/Multiplication_Floating_Point_Expression_inlines.hh,
+	src/Multiplication_Floating_Point_Expression_templates.hh,
+	src/Multiplication_Floating_Point_Expression_types.hh,
+	src/NNC_Polyhedron.cc, src/NNC_Polyhedron_defs.hh,
+	src/NNC_Polyhedron_inlines.hh, src/NNC_Polyhedron_types.hh,
+	src/Numeric_Format_defs.hh, src/OR_Matrix_defs.hh,
+	src/OR_Matrix_inlines.hh, src/OR_Matrix_templates.hh,
+	src/OR_Matrix_types.hh, src/Octagonal_Shape.cc,
+	src/Octagonal_Shape_defs.hh, src/Octagonal_Shape_inlines.hh,
+	src/Octagonal_Shape_templates.hh, src/Octagonal_Shape_types.hh,
+	src/Og_Status_idefs.hh, src/Og_Status_inlines.hh,
+	src/Opposite_Floating_Point_Expression_defs.hh,
+	src/Opposite_Floating_Point_Expression_inlines.hh,
+	src/Opposite_Floating_Point_Expression_types.hh,
+	src/PIP_Problem.cc, src/PIP_Problem_defs.hh,
+	src/PIP_Problem_inlines.hh, src/PIP_Problem_templates.hh,
+	src/PIP_Problem_types.hh, src/PIP_Tree.cc, src/PIP_Tree_defs.hh,
+	src/PIP_Tree_inlines.hh, src/PIP_Tree_types.hh,
+	src/Partial_Function.cc, src/Partial_Function_defs.hh,
+	src/Partial_Function_inlines.hh, src/Partial_Function_types.hh,
+	src/Partially_Reduced_Product_defs.hh,
+	src/Partially_Reduced_Product_inlines.hh,
+	src/Partially_Reduced_Product_templates.hh,
+	src/Partially_Reduced_Product_types.hh,
+	src/Pending_Element_defs.hh, src/Pending_Element_inlines.hh,
+	src/Pending_Element_types.hh, src/Pending_List_defs.hh,
+	src/Pending_List_inlines.hh, src/Pending_List_templates.hh,
+	src/Pending_List_types.hh, src/Ph_Status.cc,
+	src/Ph_Status_inlines.hh, src/Pointset_Ask_Tell.cc,
+	src/Pointset_Ask_Tell_defs.hh, src/Pointset_Ask_Tell_inlines.hh,
+	src/Pointset_Ask_Tell_templates.hh, src/Pointset_Ask_Tell_types.hh,
+	src/Pointset_Powerset.cc, src/Pointset_Powerset_defs.hh,
+	src/Pointset_Powerset_inlines.hh,
+	src/Pointset_Powerset_templates.hh, src/Pointset_Powerset_types.hh,
+	src/Poly_Con_Relation.cc, src/Poly_Con_Relation_defs.hh,
+	src/Poly_Con_Relation_inlines.hh, src/Poly_Con_Relation_types.hh,
+	src/Poly_Gen_Relation.cc, src/Poly_Gen_Relation_defs.hh,
+	src/Poly_Gen_Relation_inlines.hh, src/Poly_Gen_Relation_types.hh,
+	src/Polyhedron_chdims.cc, src/Polyhedron_chdims_templates.hh,
+	src/Polyhedron_conversion_templates.hh, src/Polyhedron_defs.hh,
+	src/Polyhedron_inlines.hh, src/Polyhedron_minimize_templates.hh,
+	src/Polyhedron_nonpublic.cc, src/Polyhedron_public.cc,
+	src/Polyhedron_simplify_templates.hh, src/Polyhedron_templates.hh,
+	src/Polyhedron_types.hh, src/Polyhedron_widenings.cc,
+	src/Powerset_defs.hh, src/Powerset_inlines.hh,
+	src/Powerset_templates.hh, src/Powerset_types.hh,
+	src/Sparse_Row.cc, src/Sparse_Row_inlines.hh,
+	src/Sparse_Row_templates.hh,
+	src/Sum_Floating_Point_Expression_templates.hh,
+	src/Temp_inlines.hh, src/Threshold_Watcher_inlines.hh,
+	src/Threshold_Watcher_templates.hh, src/Variable.cc,
+	src/Variable_Floating_Point_Expression_inlines.hh,
+	src/Variables_Set.cc, src/Watchdog.cc, src/Watchdog_inlines.hh,
+	src/Weight_Profiler.cc, src/Weight_Profiler_defs.hh,
+	src/initializer.hh, src/intervals_defs.hh,
+	src/iterator_to_const_defs.hh, src/iterator_to_const_inlines.hh,
+	src/iterator_to_const_types.hh, src/linearize.hh,
+	src/math_utilities_defs.hh, src/math_utilities_inlines.hh,
+	src/max_space_dimension.hh, src/meta_programming.hh,
+	src/mp_std_bits.cc, src/mp_std_bits_defs.hh,
+	src/mp_std_bits_inlines.hh, src/namespaces.hh, src/ppl_header.hh,
+	src/stdiobuf.cc, src/swapping_sort_templates.hh,
+	src/termination.cc, src/termination_templates.hh: Fixed permissions.
+
+2014-06-21  Patrik Pomelli <patrik.pomelli@bugseng.com>
+
+	* src/wrap_assign.hh: Fixed brace position.  Signed-off-by: Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+2014-06-24  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Box_templates.hh, src/H79_Certificate.cc, src/Init.cc,
+	src/Interval_templates.hh, src/Linear_Expression_Impl.cc,
+	src/Linear_Expression_Impl_inlines.hh,
+	src/Linear_Expression_Impl_templates.hh,
+	src/Linear_Form_inlines.hh, src/Linear_System_inlines.hh,
+	src/Linear_System_templates.hh, src/MIP_Problem.cc,
+	src/Matrix_templates.hh, src/Octagonal_Shape.cc,
+	src/Octagonal_Shape_inlines.hh, src/Octagonal_Shape_templates.hh,
+	src/Og_Status_inlines.hh,
+	src/Opposite_Floating_Point_Expression_inlines.hh,
+	src/PIP_Problem.cc, src/PIP_Tree.cc,
+	src/Partial_Function_inlines.hh,
+	src/Partially_Reduced_Product_templates.hh,
+	src/Pending_List_templates.hh, src/Ph_Status.cc,
+	src/Pointset_Ask_Tell_templates.hh,
+	src/Pointset_Powerset_templates.hh, src/Polyhedron_chdims.cc,
+	src/Polyhedron_inlines.hh, src/Polyhedron_nonpublic.cc,
+	src/Polyhedron_public.cc, src/Polyhedron_templates.hh,
+	src/Polyhedron_widenings.cc, src/Sparse_Row.cc,
+	src/Sparse_Row_inlines.hh, src/Variables_Set.cc, src/linearize.hh,
+	src/swapping_sort_templates.hh, src/termination.cc: Deleted trailing
+	whitespace.
+
+2014-06-24  Patrik Pomelli <patrik.pomelli@bugseng.com>
+
+	* src/Grid_Generator.cc, src/Grid_Status.cc, src/Grid_nonpublic.cc,
+	src/Grid_public.cc, src/Grid_templates.hh, src/H79_Certificate.cc,
+	src/Handler_inlines.hh, src/Init.cc, src/Integer_Interval.hh,
+	src/Interval_Info_defs.hh, src/Interval_Info_inlines.hh,
+	src/Interval_Info_types.hh, src/Interval_defs.hh,
+	src/Interval_inlines.hh, src/Interval_templates.hh,
+	src/Interval_types.hh, src/Linear_Expression.cc,
+	src/Linear_Expression_Impl.cc, src/Linear_Expression_Impl_defs.hh,
+	src/Linear_Expression_Impl_inlines.hh,
+	src/Linear_Expression_Impl_templates.hh,
+	src/Linear_Expression_Impl_types.hh,
+	src/Linear_Expression_Interface.cc,
+	src/Linear_Expression_Interface_defs.hh,
+	src/Linear_Expression_Interface_types.hh,
+	src/Linear_Expression_defs.hh, src/Linear_Expression_inlines.hh,
+	src/Linear_Expression_types.hh, src/Linear_Form.cc,
+	src/Linear_Form_defs.hh, src/Linear_Form_inlines.hh,
+	src/Linear_Form_templates.hh, src/Linear_Form_types.hh,
+	src/Linear_System_defs.hh, src/Linear_System_inlines.hh,
+	src/Linear_System_templates.hh, src/Linear_System_types.hh,
+	src/MIP_Problem.cc, src/MIP_Problem_defs.hh,
+	src/MIP_Problem_inlines.hh, src/MIP_Problem_templates.hh,
+	src/MIP_Problem_types.hh, src/Matrix_defs.hh,
+	src/Matrix_inlines.hh, src/Matrix_templates.hh,
+	src/Matrix_types.hh,
+	src/Multiplication_Floating_Point_Expression_defs.hh,
+	src/Multiplication_Floating_Point_Expression_inlines.hh,
+	src/Multiplication_Floating_Point_Expression_templates.hh,
+	src/Multiplication_Floating_Point_Expression_types.hh,
+	src/NNC_Polyhedron.cc, src/NNC_Polyhedron_defs.hh,
+	src/NNC_Polyhedron_inlines.hh, src/NNC_Polyhedron_types.hh,
+	src/Numeric_Format_defs.hh, src/OR_Matrix_defs.hh,
+	src/OR_Matrix_inlines.hh, src/OR_Matrix_templates.hh,
+	src/OR_Matrix_types.hh, src/Octagonal_Shape.cc,
+	src/Octagonal_Shape_defs.hh, src/Octagonal_Shape_inlines.hh,
+	src/Octagonal_Shape_templates.hh, src/Octagonal_Shape_types.hh,
+	src/Og_Status_idefs.hh, src/Og_Status_inlines.hh,
+	src/Opposite_Floating_Point_Expression_defs.hh,
+	src/Opposite_Floating_Point_Expression_inlines.hh,
+	src/Opposite_Floating_Point_Expression_types.hh,
+	src/PIP_Problem.cc, src/PIP_Problem_defs.hh,
+	src/PIP_Problem_inlines.hh, src/PIP_Problem_templates.hh,
+	src/PIP_Problem_types.hh, src/PIP_Tree.cc, src/PIP_Tree_defs.hh,
+	src/PIP_Tree_inlines.hh, src/PIP_Tree_types.hh,
+	src/Partial_Function.cc, src/Partial_Function_defs.hh,
+	src/Partial_Function_inlines.hh, src/Partial_Function_types.hh,
+	src/Partially_Reduced_Product_defs.hh,
+	src/Partially_Reduced_Product_inlines.hh,
+	src/Partially_Reduced_Product_templates.hh,
+	src/Partially_Reduced_Product_types.hh,
+	src/Pending_Element_defs.hh, src/Pending_Element_inlines.hh,
+	src/Pending_Element_types.hh, src/Pending_List_defs.hh,
+	src/Pending_List_inlines.hh, src/Pending_List_templates.hh,
+	src/Pending_List_types.hh, src/Ph_Status.cc,
+	src/Ph_Status_inlines.hh, src/Pointset_Ask_Tell.cc,
+	src/Pointset_Ask_Tell_defs.hh, src/Pointset_Ask_Tell_inlines.hh,
+	src/Pointset_Ask_Tell_templates.hh, src/Pointset_Ask_Tell_types.hh,
+	src/Pointset_Powerset.cc, src/Pointset_Powerset_defs.hh,
+	src/Pointset_Powerset_inlines.hh,
+	src/Pointset_Powerset_templates.hh, src/Pointset_Powerset_types.hh,
+	src/Poly_Con_Relation.cc, src/Poly_Con_Relation_defs.hh,
+	src/Poly_Con_Relation_inlines.hh, src/Poly_Con_Relation_types.hh,
+	src/Poly_Gen_Relation.cc, src/Poly_Gen_Relation_defs.hh,
+	src/Poly_Gen_Relation_inlines.hh, src/Poly_Gen_Relation_types.hh,
+	src/Polyhedron_chdims.cc, src/Polyhedron_chdims_templates.hh,
+	src/Polyhedron_conversion_templates.hh, src/Polyhedron_defs.hh,
+	src/Polyhedron_inlines.hh, src/Polyhedron_minimize_templates.hh,
+	src/Polyhedron_nonpublic.cc, src/Polyhedron_public.cc,
+	src/Polyhedron_simplify_templates.hh, src/Polyhedron_templates.hh,
+	src/Polyhedron_types.hh, src/Polyhedron_widenings.cc,
+	src/Powerset_defs.hh, src/Powerset_inlines.hh,
+	src/Powerset_templates.hh, src/Powerset_types.hh,
+	src/Sparse_Row.cc, src/Sparse_Row_inlines.hh,
+	src/Sparse_Row_templates.hh,
+	src/Sum_Floating_Point_Expression_templates.hh,
+	src/Temp_inlines.hh, src/Threshold_Watcher_inlines.hh,
+	src/Threshold_Watcher_templates.hh, src/Variable.cc,
+	src/Variable_Floating_Point_Expression_inlines.hh,
+	src/Variables_Set.cc, src/Watchdog.cc, src/Watchdog_inlines.hh,
+	src/Weight_Profiler.cc, src/Weight_Profiler_defs.hh,
+	src/initializer.hh, src/intervals_defs.hh,
+	src/iterator_to_const_defs.hh, src/iterator_to_const_inlines.hh,
+	src/iterator_to_const_types.hh, src/linearize.hh,
+	src/math_utilities_defs.hh, src/math_utilities_inlines.hh,
+	src/max_space_dimension.hh, src/meta_programming.hh,
+	src/mp_std_bits.cc, src/mp_std_bits_defs.hh,
+	src/mp_std_bits_inlines.hh, src/namespaces.hh, src/ppl_header.hh,
+	src/stdiobuf.cc, src/swapping_sort_templates.hh,
+	src/termination.cc, src/termination_templates.hh: Added missing
+	braces. Fixes violations of rule MP1.6-4-1 detected by ECLAIR.  Signed-off-by: Roberto Bagnara <bagnara@cs.unipr.it>
+
+2014-06-21  Patrik Pomelli <patrik.pomelli@bugseng.com>
+
+	* src/Matrix_templates.hh: Brace position fixed.  Signed-off-by: Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+2014-06-20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Constraint.cc: Typo fixed.
+
+2014-06-20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/BHRZ03_Certificate.cc, src/Bit_Matrix.cc: Permissions fixed.
+
+2014-06-20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Box_templates.hh: Added missing braces. Fixes violations of
+	rule MP1.6-4-1 detected by ECLAIR.
+
+2014-06-20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Affine_Space.cc, src/Ask_Tell_inlines.hh,
+	src/BDS_Status_inlines.hh, src/BD_Shape.cc,
+	src/BD_Shape_inlines.hh, src/BD_Shape_templates.hh, src/Bit_Row.cc,
+	src/Box.cc, src/Box_Status_inlines.hh, src/Box_inlines.hh,
+	src/CO_Tree.cc, src/CO_Tree_inlines.hh, src/CO_Tree_templates.hh,
+	src/Congruence.cc, src/Congruence_System.cc, src/Constraint.cc,
+	src/Constraint_System.cc, src/Dense_Row.cc,
+	src/Division_Floating_Point_Expression_templates.hh,
+	src/Float_templates.hh, src/Floating_Point_Expression_inlines.hh,
+	src/Generator.cc, src/Generator_System.cc,
+	src/Generator_System_inlines.hh, src/Generator_inlines.hh,
+	src/Grid_Generator_System.cc, src/Grid_Status.cc,
+	src/Grid_chdims.cc, src/Grid_conversion.cc, src/Grid_inlines.hh,
+	src/Grid_nonpublic.cc, src/Grid_public.cc, src/Grid_simplify.cc,
+	src/Grid_templates.hh, src/Grid_widenings.cc, src/checked.cc,
+	src/checked_inlines.hh, src/globals_inlines.hh, src/wrap_assign.hh: 
+	Deleted trailing whitespace.
+
+2014-06-19  Patrik Pomelli <patrik.pomelli@bugseng.com>
+
+	* src/Affine_Space.cc, src/Ask_Tell_inlines.hh,
+	src/Ask_Tell_templates.hh, src/BDS_Status_inlines.hh,
+	src/BD_Shape.cc, src/BD_Shape_inlines.hh,
+	src/BD_Shape_templates.hh, src/Bit_Matrix.cc,
+	src/Bit_Matrix_inlines.hh, src/Bit_Row.cc, src/Boundary_defs.hh,
+	src/Box.cc, src/Box_Status_inlines.hh, src/Box_inlines.hh,
+	src/CO_Tree.cc, src/CO_Tree_inlines.hh, src/CO_Tree_templates.hh,
+	src/C_Polyhedron.cc,
+	src/Cast_Floating_Point_Expression_templates.hh,
+	src/Checked_Number_templates.hh, src/Coefficient_inlines.hh,
+	src/Congruence.cc, src/Congruence_System.cc,
+	src/Congruence_System_inlines.hh, src/Congruence_inlines.hh,
+	src/Constraint.cc, src/Constraint_System.cc,
+	src/Constraint_System_inlines.hh, src/Constraint_inlines.hh,
+	src/DB_Matrix_inlines.hh, src/DB_Matrix_templates.hh,
+	src/DB_Row_inlines.hh, src/DB_Row_templates.hh, src/Dense_Row.cc,
+	src/Dense_Row_inlines.hh, src/Determinate_inlines.hh,
+	src/Difference_Floating_Point_Expression_templates.hh,
+	src/Division_Floating_Point_Expression_templates.hh,
+	src/EList_inlines.hh, src/Expression_Hide_Inhomo_inlines.hh,
+	src/Expression_Hide_Last_inlines.hh, src/Float_inlines.hh,
+	src/Float_templates.hh, src/Floating_Point_Expression_inlines.hh,
+	src/Generator.cc, src/Generator_System.cc,
+	src/Generator_System_inlines.hh, src/Generator_inlines.hh,
+	src/Grid_Certificate.cc, src/Grid_Generator_System.cc,
+	src/Grid_Generator_inlines.hh, src/Grid_Status.cc,
+	src/Grid_Status_inlines.hh, src/Grid_chdims.cc,
+	src/Grid_conversion.cc, src/Grid_inlines.hh, src/Grid_nonpublic.cc,
+	src/Grid_public.cc, src/Grid_simplify.cc, src/Grid_templates.hh,
+	src/Grid_widenings.cc, src/algorithms.hh, src/c_streambuf.cc,
+	src/checked.cc, src/checked_ext_inlines.hh,
+	src/checked_float_inlines.hh, src/checked_inlines.hh,
+	src/checked_int_inlines.hh, src/checked_mpq_inlines.hh,
+	src/checked_mpz_inlines.hh, src/compiler.hh,
+	src/distances_inlines.hh, src/fpu-c99_inlines.hh,
+	src/fpu-ia32_inlines.hh, src/globals_inlines.hh,
+	src/wrap_assign.hh, src/wrap_string.cc: Added missing braces. Fixes
+	violations of rule MP1.6-4-1 detected by ECLAIR.  Signed-off-by: Roberto Bagnara <bagnara@cs.unipr.it>
+
+2014-06-18  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/Box_templates.hh, src/Generator_inlines.hh,
+	src/Linear_System_inlines.hh, src/MIP_Problem.cc,
+	src/Polyhedron_nonpublic.cc, src/Polyhedron_public.cc: Deleted
+	trailing whitespace.
+
+2014-06-16  Patrik Pomelli <patrik.pomelli@bugseng.com>
+
+	* src/MIP_Problem.cc, src/Polyhedron_nonpublic.cc,
+	src/Polyhedron_public.cc: Readded newlines erased by mistake.  Signed-off-by: Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+2014-06-14  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/BD_Shape.cc, src/Bit_Row.cc, src/Congruence.cc,
+	src/Constraint.cc, src/Generator_System.cc, src/Grid_Generator.cc,
+	src/Init.cc, src/Octagonal_Shape.cc, src/Polyhedron_nonpublic.cc,
+	src/Polyhedron_public.cc,
+	tests/Concrete_Expression/digitalfilters1.cc,
+	tests/Polyhedron/linearsystem1.cc: Removed trailing whitespace.
+
+2014-06-14  Patrik Pomelli <patrik.pomelli@bugseng.com>
+
+	* src/Box_templates.hh, src/Congruence_System_inlines.hh,
+	src/DB_Matrix_templates.hh, src/Grid_public.cc,
+	src/Linear_Expression_Impl_templates.hh,
+	src/Linear_System_inlines.hh, src/MIP_Problem.cc,
+	src/Partially_Reduced_Product_templates.hh,
+	src/Pointset_Powerset_templates.hh,
+	src/Polyhedron_conversion_templates.hh,
+	src/Polyhedron_nonpublic.cc, src/Polyhedron_public.cc: Added missing
+	braces. Fixes violations of rule MP1.6-3-1 detected by ECLAIR.  Signed-off-by: Roberto Bagnara <bagnara@cs.unipr.it>
+
+2014-06-14  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* : commit fe759bb940ffa3083ec6eca0c8221d388bd2bb64 Author: Roberto
+	Bagnara <roberto.bagnara@bugseng.com> Date:   Thu Jun 12 21:43:12
+	2014 +0200
+
+2014-06-12  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Bit_Matrix.cc: Missing brace added.
+
+2014-06-12  Patrik Pomelli <patrik.pomelli@bugseng.com>
+
+	* demos/ppl_pips/ppl_pips.cc, src/BD_Shape.cc,
+	src/BD_Shape_inlines.hh, src/BD_Shape_templates.hh,
+	src/BHRZ03_Certificate.cc, src/Box_templates.hh, src/CO_Tree.cc,
+	src/CO_Tree_inlines.hh, src/Congruence_System.cc,
+	src/Constraint_System.cc, src/DB_Matrix_templates.hh,
+	src/DB_Row_templates.hh, src/Dense_Row.cc,
+	src/Dense_Row_inlines.hh, src/Dense_Row_templates.hh,
+	src/EList_inlines.hh, src/Generator_System.cc,
+	src/Grid_Generator_System.cc, src/Grid_conversion.cc,
+	src/Grid_nonpublic.cc, src/Grid_public.cc, src/Grid_simplify.cc,
+	src/Grid_templates.hh, src/Linear_Expression_Impl.cc,
+	src/Linear_Expression_Impl_templates.hh,
+	src/Linear_Expression_inlines.hh, src/Linear_System_inlines.hh,
+	src/Linear_System_templates.hh, src/MIP_Problem.cc,
+	src/MIP_Problem_inlines.hh, src/MIP_Problem_templates.hh,
+	src/Matrix_templates.hh, src/OR_Matrix_inlines.hh,
+	src/OR_Matrix_templates.hh, src/Octagonal_Shape_inlines.hh,
+	src/Octagonal_Shape_templates.hh, src/PIP_Problem.cc,
+	src/PIP_Problem_inlines.hh, src/PIP_Tree.cc,
+	src/Partial_Function.cc,
+	src/Partially_Reduced_Product_templates.hh,
+	src/Pending_List_templates.hh, src/Pointset_Powerset.cc,
+	src/Pointset_Powerset_templates.hh, src/Polyhedron_chdims.cc,
+	src/Polyhedron_chdims_templates.hh,
+	src/Polyhedron_conversion_templates.hh,
+	src/Polyhedron_minimize_templates.hh, src/Polyhedron_nonpublic.cc,
+	src/Polyhedron_simplify_templates.hh, src/Polyhedron_widenings.cc,
+	src/Powerset_templates.hh, src/Sparse_Row.cc,
+	src/Sparse_Row_templates.hh, src/Swapping_Vector_inlines.hh,
+	src/Variables_Set.cc, src/algorithms.hh,
+	src/swapping_sort_templates.hh, src/termination.cc,
+	src/termination_templates.hh, src/wrap_assign.hh,
+	src/wrap_string.cc: Added missing braces. Fixes violations of rules
+	MP1.6-3-1 and MP1.6-4-1 detected by ECLAIR.  Signed-off-by: Roberto Bagnara <bagnara@cs.unipr.it>
+
+2014-06-09  Patrik Pomelli <patrik.pomelli@bugseng.com>
+
+	* demos/ppl_lcdd/ppl_lcdd.cc: Do not declare more than one variable
+	per declaration. Fixes violations of rule CP1.DCL04 detected by
+	ECLAIR.  Signed-off-by: Roberto Bagnara <bagnara@cs.unipr.it>
+
+2014-06-09  Patrik Pomelli <patrik.pomelli@bugseng.com>
+
+	* src/Bit_Matrix.cc: Previous commit fixed.  Signed-off-by: Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+2014-06-09  Patrik Pomelli <patrik.pomelli@bugseng.com>
+
+	* demos/ppl_lcdd/ppl_lcdd.cc, src/BD_Shape_templates.hh,
+	src/BHRZ03_Certificate.cc, src/Bit_Matrix.cc, src/Box_templates.hh: 
+	Added missing braces. Fixes violations of rules MP1.6-3-1 and
+	MP1.6-4-1 detected by ECLAIR Signed-off-by: Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+2014-06-08  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/Polyhedron_nonpublic.cc: Long lines avoided.  Fixes violations
+	of rule LP1.41 detected by ECLAIR.
+
+2014-06-08  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/Polyhedron_nonpublic.cc: Tabs avoided.  Fixes violations of
+	rule UCRP1.RS1 detected by ECLAIR.
+
+2014-05-09  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* config.guess, config.sub, missing: Updated.
+
+2014-05-09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* test-driver: Put under Git control.
+
+2014-05-08  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* configure.ac: Typo fixed.  Set warnings for compilation with
+	clang.
+
+2014-05-08  Abramo Bagnara <abramo.bagnara@bugseng.com>
+
+	* src/checked_mpz_inlines.hh: Adapted to g++ -std=c++11.
+
+2014-04-29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/GNU/gprolog_efli.hh: Adapted to recent versions
+	of GNU Prolog so as to work on 64-bit machines.
+
+2014-04-29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/CO_Tree.cc, src/CO_Tree_defs.hh, src/CO_Tree_inlines.hh,
+	src/Congruence_System_defs.hh, src/Constraint_System_defs.hh,
+	src/Dense_Row_defs.hh, src/Generator_System_defs.hh,
+	src/Grid_Generator_System_defs.hh,
+	src/Linear_Expression_Interface_defs.hh,
+	src/Linear_Expression_defs.hh: Added missing inclusions.  Use
+	std::ptrdiff_t.  (Thanks to Paulo Cesar Pereira de Andrade.)
+
+2014-04-17  Abramo Bagnara <abramo.bagnara@bugseng.com>
+
+	* interfaces/Prolog/SWI/ppl_interface_generator_swiprolog_cc.m4: 
+	Fixed compilation with SWI Prolog 7.1.13.
+
+2014-04-15  Abramo Bagnara <abramo.bagnara@bugseng.com>
+
+	* interfaces/Java/jni/Makefile.am,
+	interfaces/Prolog/Ciao/Makefile.am,
+	interfaces/Prolog/GNU/Makefile.am,
+	interfaces/Prolog/SICStus/Makefile.am,
+	interfaces/Prolog/SWI/Makefile.am,
+	interfaces/Prolog/XSB/Makefile.am,
+	interfaces/Prolog/YAP/Makefile.am: Revert "Create ordinary dynamic
+	library for interfaces, not modules. This means that the extension
+	in darwin is changed from .so to .dylib (just like for PPL
+	library)." This reverts commit faceaf05b260f5d214ae8777499a24fb69cf5c75.
+
+2014-04-15  Abramo Bagnara <abramo.bagnara@bugseng.com>
+
+	* interfaces/Java/jni/Makefile.am,
+	interfaces/Prolog/Ciao/Makefile.am,
+	interfaces/Prolog/GNU/Makefile.am,
+	interfaces/Prolog/SICStus/Makefile.am,
+	interfaces/Prolog/SWI/Makefile.am,
+	interfaces/Prolog/XSB/Makefile.am,
+	interfaces/Prolog/YAP/Makefile.am: Create ordinary dynamic library
+	for interfaces, not modules. This means that the extension in darwin
+	is changed from .so to .dylib (just like for PPL library).
+
+2014-03-30  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/Octagonal_Shape_templates.hh: Useless local variables removed.
+
+2014-03-29  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* interfaces/Prolog/GNU/gprolog_cfli.hh: Added Prolog_get_nil() and
+	Prolog_put_nil().
+
+2014-03-29  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* interfaces/Prolog/YAP/yap_cfli.hh: Added Prolog_get_nil() and
+	Prolog_put_nil().
+
+2014-03-29  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* interfaces/Prolog/XSB/xsb_cfli.hh: Added Prolog_get_nil() and
+	Prolog_put_nil().
+
+2014-03-29  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* demos/ppl_lcdd/ppl_lcdd.cc, demos/ppl_pips/ppl_pips.cc: Bugs
+	fixed.
+
+2014-03-28  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/checked_mpz_inlines.hh, src/version.cc: Solve some compilation
+	issues with clang++ -std=c++11.  (Thanks to Stefan Schupp.)
+
+2014-03-28  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* configure.ac, m4/ac_check_cxx11.m4, ppl-config.sed: Check whether
+	the C++ compiler supports some basic C++11 features.
+
+2014-02-26  Abramo Bagnara <abramo.bagnara@bugseng.com>
+
+	* interfaces/Prolog/ppl_prolog_common.cc,
+	interfaces/Prolog/ppl_prolog_common_defs.hh: Get rid of a_nil.
+
+2014-01-10  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Consistency improved.
+
+2014-01-09  Patricia Hill <patricia.hill@bugseng.com>
+
+	* doc/ppl_citations.bib: Reference added.
+
+2014-01-05  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Fixed HenryMM12b.
+
+2014-01-04  Patricia Hill <patricia.hill@bugseng.com>
+
+	* doc/ppl_citations.bib: Reference added.
+
+2014-01-01  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* Makefile.am, NEWS, README, README.alpha, README.arm,
+	README.configure, README.solaris, STANDARDS, configure.ac,
+	debian/libppl-pwl.copyright.in, debian/libppl.copyright.in,
+	demos/Makefile.am, demos/ppl_lcdd/Makefile.am,
+	demos/ppl_lcdd/examples/Makefile.am, demos/ppl_lcdd/ppl_lcdd.1,
+	demos/ppl_lcdd/ppl_lcdd.cc, demos/ppl_lcdd/ppl_lcdd_extra_man_text,
+	demos/ppl_lpsol/Makefile.am, demos/ppl_lpsol/dummy.cc,
+	demos/ppl_lpsol/examples/Makefile.am, demos/ppl_lpsol/ppl_lpsol.1,
+	demos/ppl_lpsol/ppl_lpsol.c,
+	demos/ppl_lpsol/ppl_lpsol_extra_man_text,
+	demos/ppl_pips/Makefile.am, demos/ppl_pips/examples/Makefile.am,
+	demos/ppl_pips/ppl_pips.1, demos/ppl_pips/ppl_pips.cc,
+	demos/ppl_pips/ppl_pips_extra_man_text,
+	devtools/bump_copyright_years, devtools/generate_dox_biblio,
+	devtools/generate_man_pages, devtools/print_nonascii_lines,
+	devtools/update_ChangeLog, doc/Makefile.am, doc/README.doc,
+	doc/definitions.dox, doc/devref-language-interface.tex,
+	doc/devref.tex, doc/libppl.3, doc/libppl_c.3, doc/ppl-config.1,
+	doc/ppl-config_extra_man_text, doc/ppl.bib, doc/ppl.sty,
+	doc/ppl_citations.bib, doc/user-language-interface.tex,
+	doc/user.tex, fedora/ppl.hh, fedora/ppl_c.h, fedora/pwl.hh,
+	instchk.hh, interfaces/C/C_interface.dox, interfaces/C/Makefile.am,
+	interfaces/C/ppl_c_header.h,
+	interfaces/C/ppl_c_implementation_common.cc,
+	interfaces/C/ppl_c_implementation_common_defs.hh,
+	interfaces/C/ppl_c_implementation_common_inlines.hh,
+	interfaces/C/ppl_c_version.h.in,
+	interfaces/C/ppl_interface_generator_c_cc_code.m4,
+	interfaces/C/ppl_interface_generator_c_cc_files.m4,
+	interfaces/C/ppl_interface_generator_c_h.m4,
+	interfaces/C/ppl_interface_generator_c_h_code.m4,
+	interfaces/C/ppl_interface_generator_c_hh_files.m4,
+	interfaces/C/ppl_interface_generator_c_procedure_generators.m4,
+	interfaces/C/tests/Makefile.am,
+	interfaces/C/tests/formatted_output.c,
+	interfaces/C/tests/pip_test.c, interfaces/C/tests/ppl_c_test.cc,
+	interfaces/C/tests/ppl_c_test.h,
+	interfaces/C/tests/print_to_buffer.c,
+	interfaces/C/tests/print_to_buffer.h,
+	interfaces/C/tests/watchdog1.c, interfaces/C/tests/weightwatch1.c,
+	interfaces/Java/Makefile.am, interfaces/Java/README.java,
+	interfaces/Java/jni/Makefile.am,
+	interfaces/Java/jni/ppl_interface_generator_java_classes_cc_code.m4
+	,
+	interfaces/Java/jni/ppl_interface_generator_java_classes_cc_files.m
+	4, interfaces/Java/jni/ppl_java_common.cc,
+	interfaces/Java/jni/ppl_java_common_defs.hh,
+	interfaces/Java/jni/ppl_java_common_inlines.hh,
+	interfaces/Java/jni/ppl_java_globals.cc,
+	interfaces/Java/parma_polyhedra_library/Artificial_Parameter.java,
+	interfaces/Java/parma_polyhedra_library/Artificial_Parameter_Sequen
+	ce.java,
+	interfaces/Java/parma_polyhedra_library/Bounded_Integer_Type_Overfl
+	ow.java,
+	interfaces/Java/parma_polyhedra_library/Bounded_Integer_Type_Repres
+	entation.java,
+	interfaces/Java/parma_polyhedra_library/Bounded_Integer_Type_Width.
+	java, interfaces/Java/parma_polyhedra_library/By_Reference.java,
+	interfaces/Java/parma_polyhedra_library/Coefficient.java,
+	interfaces/Java/parma_polyhedra_library/Complexity_Class.java,
+	interfaces/Java/parma_polyhedra_library/Congruence.java,
+	interfaces/Java/parma_polyhedra_library/Congruence_System.java,
+	interfaces/Java/parma_polyhedra_library/Constraint.java,
+	interfaces/Java/parma_polyhedra_library/Constraint_System.java,
+	interfaces/Java/parma_polyhedra_library/Control_Parameter_Name.java
+	,
+	interfaces/Java/parma_polyhedra_library/Control_Parameter_Value.jav
+	a, interfaces/Java/parma_polyhedra_library/Degenerate_Element.java,
+	interfaces/Java/parma_polyhedra_library/Domain_Error_Exception.java
+	,
+	interfaces/Java/parma_polyhedra_library/Fake_Class_for_Doxygen.java
+	, interfaces/Java/parma_polyhedra_library/Generator.java,
+	interfaces/Java/parma_polyhedra_library/Generator_System.java,
+	interfaces/Java/parma_polyhedra_library/Generator_Type.java,
+	interfaces/Java/parma_polyhedra_library/Grid_Generator.java,
+	interfaces/Java/parma_polyhedra_library/Grid_Generator_System.java,
+	interfaces/Java/parma_polyhedra_library/Grid_Generator_Type.java,
+	interfaces/Java/parma_polyhedra_library/IO.java,
+	interfaces/Java/parma_polyhedra_library/Invalid_Argument_Exception.
+	java,
+	interfaces/Java/parma_polyhedra_library/Length_Error_Exception.java
+	, interfaces/Java/parma_polyhedra_library/Linear_Expression.java,
+	interfaces/Java/parma_polyhedra_library/Linear_Expression_Coefficie
+	nt.java,
+	interfaces/Java/parma_polyhedra_library/Linear_Expression_Differenc
+	e.java,
+	interfaces/Java/parma_polyhedra_library/Linear_Expression_Sum.java,
+	interfaces/Java/parma_polyhedra_library/Linear_Expression_Times.jav
+	a,
+	interfaces/Java/parma_polyhedra_library/Linear_Expression_Unary_Min
+	us.java,
+	interfaces/Java/parma_polyhedra_library/Linear_Expression_Variable.
+	java,
+	interfaces/Java/parma_polyhedra_library/Logic_Error_Exception.java,
+	interfaces/Java/parma_polyhedra_library/MIP_Problem.java,
+	interfaces/Java/parma_polyhedra_library/MIP_Problem_Status.java,
+	interfaces/Java/parma_polyhedra_library/Makefile.am,
+	interfaces/Java/parma_polyhedra_library/Optimization_Mode.java,
+	interfaces/Java/parma_polyhedra_library/Overflow_Error_Exception.ja
+	va, interfaces/Java/parma_polyhedra_library/PIP_Decision_Node.java,
+	interfaces/Java/parma_polyhedra_library/PIP_Problem.java,
+	interfaces/Java/parma_polyhedra_library/PIP_Problem_Control_Paramet
+	er_Name.java,
+	interfaces/Java/parma_polyhedra_library/PIP_Problem_Control_Paramet
+	er_Value.java,
+	interfaces/Java/parma_polyhedra_library/PIP_Problem_Status.java,
+	interfaces/Java/parma_polyhedra_library/PIP_Solution_Node.java,
+	interfaces/Java/parma_polyhedra_library/PIP_Tree_Node.java,
+	interfaces/Java/parma_polyhedra_library/PPL_Object.java,
+	interfaces/Java/parma_polyhedra_library/Pair.java,
+	interfaces/Java/parma_polyhedra_library/Parma_Polyhedra_Library.jav
+	a, interfaces/Java/parma_polyhedra_library/Partial_Function.java,
+	interfaces/Java/parma_polyhedra_library/Poly_Con_Relation.java,
+	interfaces/Java/parma_polyhedra_library/Poly_Gen_Relation.java,
+	interfaces/Java/parma_polyhedra_library/Relation_Symbol.java,
+	interfaces/Java/parma_polyhedra_library/Timeout_Exception.java,
+	interfaces/Java/parma_polyhedra_library/Variable.java,
+	interfaces/Java/parma_polyhedra_library/Variable_Stringifier.java,
+	interfaces/Java/parma_polyhedra_library/Variables_Set.java,
+	interfaces/Java/parma_polyhedra_library/ppl_interface_generator_jav
+	a_classes_java.m4,
+	interfaces/Java/parma_polyhedra_library/ppl_interface_generator_jav
+	a_classes_java_code.m4,
+	interfaces/Java/ppl_interface_generator_java_procedure_generators.m
+	4, interfaces/Java/tests/C_Polyhedron_test1.java,
+	interfaces/Java/tests/Custom_Variable_Stringifier.java,
+	interfaces/Java/tests/MIP_Problem_test1.java,
+	interfaces/Java/tests/Makefile.am,
+	interfaces/Java/tests/NNC_Polyhedron_test1.java,
+	interfaces/Java/tests/PIP_Problem_test1.java,
+	interfaces/Java/tests/PPL_Test.java,
+	interfaces/Java/tests/Parma_Polyhedra_Library_test1.java,
+	interfaces/Java/tests/Parma_Polyhedra_Library_test2.java,
+	interfaces/Java/tests/Test_Executor.java,
+	interfaces/Java/tests/Variable_Output_test1.java,
+	interfaces/Java/tests/ppl_interface_generator_java_test_java.m4,
+	interfaces/Java/tests/ppl_interface_generator_java_test_java_code.m
+	4, interfaces/Java/tests/ppl_java_tests_common,
+	interfaces/Makefile.am, interfaces/OCaml/Makefile.am,
+	interfaces/OCaml/OCaml_interface.dox,
+	interfaces/OCaml/README.ocaml,
+	interfaces/OCaml/ppl_interface_generator_ocaml_cc_code.m4,
+	interfaces/OCaml/ppl_interface_generator_ocaml_cc_files.m4,
+	interfaces/OCaml/ppl_interface_generator_ocaml_hh_code.m4,
+	interfaces/OCaml/ppl_interface_generator_ocaml_hh_files.m4,
+	interfaces/OCaml/ppl_interface_generator_ocaml_ml.m4,
+	interfaces/OCaml/ppl_interface_generator_ocaml_ml_code.m4,
+	interfaces/OCaml/ppl_interface_generator_ocaml_mli.m4,
+	interfaces/OCaml/ppl_interface_generator_ocaml_mli_code.m4,
+	interfaces/OCaml/ppl_interface_generator_ocaml_procedure_generators
+	.m4, interfaces/OCaml/ppl_ocaml_common.cc,
+	interfaces/OCaml/ppl_ocaml_common_defs.hh,
+	interfaces/OCaml/ppl_ocaml_common_inlines.hh,
+	interfaces/OCaml/ppl_ocaml_globals.ml,
+	interfaces/OCaml/ppl_ocaml_globals.mli,
+	interfaces/OCaml/tests/Makefile.am,
+	interfaces/OCaml/tests/ppl_interface_generator_ocaml_test_ml.m4,
+	interfaces/OCaml/tests/ppl_interface_generator_ocaml_test_ml_code.m
+	4, interfaces/OCaml/tests/ppl_ocaml_tests_common,
+	interfaces/OCaml/tests/test1.ml,
+	interfaces/Prolog/Ciao/Makefile.am,
+	interfaces/Prolog/Ciao/README.ciao,
+	interfaces/Prolog/Ciao/ciao_cfli.hh,
+	interfaces/Prolog/Ciao/ciao_clpq.pl,
+	interfaces/Prolog/Ciao/ciao_clpq2.pl,
+	interfaces/Prolog/Ciao/ciao_efli.cc,
+	interfaces/Prolog/Ciao/ciao_efli.hh,
+	interfaces/Prolog/Ciao/ciao_pl_check.pl,
+	interfaces/Prolog/Ciao/ppl_interface_generator_ciao_pl.m4,
+	interfaces/Prolog/Ciao/ppl_interface_generator_ciao_prolog_generate
+	d_test_pl.m4, interfaces/Prolog/Ciao/ppl_prolog_sysdep.hh,
+	interfaces/Prolog/GNU/Makefile.am,
+	interfaces/Prolog/GNU/README.gprolog,
+	interfaces/Prolog/GNU/gnu_pl_check.pl,
+	interfaces/Prolog/GNU/gnu_prolog_generated_test.pl,
+	interfaces/Prolog/GNU/gp_clpq.pl,
+	interfaces/Prolog/GNU/gprolog_cfli.hh,
+	interfaces/Prolog/GNU/gprolog_efli.cc,
+	interfaces/Prolog/GNU/gprolog_efli.hh,
+	interfaces/Prolog/GNU/ppl_interface_generator_gprolog_pl.m4,
+	interfaces/Prolog/GNU/ppl_prolog_sysdep.hh,
+	interfaces/Prolog/Makefile.am,
+	interfaces/Prolog/Prolog_configured_interface.dox,
+	interfaces/Prolog/Prolog_interface.dox,
+	interfaces/Prolog/Prolog_interface_compilation.dox,
+	interfaces/Prolog/Prolog_interface_sysdep.dox,
+	interfaces/Prolog/Prolog_interface_sysindep.dox,
+	interfaces/Prolog/Prolog_interface_sysindep_domains.dox,
+	interfaces/Prolog/SICStus/Makefile.am,
+	interfaces/Prolog/SICStus/ppl_interface_generator_sicstus_sd_cc.m4,
+	interfaces/Prolog/SICStus/ppl_prolog_sysdep.hh,
+	interfaces/Prolog/SICStus/ppl_sicstus.pl,
+	interfaces/Prolog/SICStus/sicstus_cfli.cc,
+	interfaces/Prolog/SICStus/sicstus_cfli.h,
+	interfaces/Prolog/SICStus/sicstus_cfli.ic,
+	interfaces/Prolog/SICStus/sicstus_efli.cc,
+	interfaces/Prolog/SICStus/sicstus_efli.hh,
+	interfaces/Prolog/SICStus/sp_clpq.pl,
+	interfaces/Prolog/SICStus/sp_pl_check.pl,
+	interfaces/Prolog/SICStus/sp_prolog_generated_test.pl,
+	interfaces/Prolog/SWI/Makefile.am,
+	interfaces/Prolog/SWI/README.swiprolog,
+	interfaces/Prolog/SWI/pl_clpq.cc, interfaces/Prolog/SWI/pl_clpq.pl,
+	interfaces/Prolog/SWI/ppl_interface_generator_swiprolog_cc.m4,
+	interfaces/Prolog/SWI/ppl_pl.cc,
+	interfaces/Prolog/SWI/ppl_prolog_sysdep.hh,
+	interfaces/Prolog/SWI/ppl_swiprolog.pl,
+	interfaces/Prolog/SWI/swi_cfli.hh,
+	interfaces/Prolog/SWI/swi_efli.cc,
+	interfaces/Prolog/SWI/swi_efli.hh,
+	interfaces/Prolog/SWI/swi_pl_check.pl,
+	interfaces/Prolog/SWI/swi_prolog_generated_test.pl,
+	interfaces/Prolog/XSB/Makefile.am,
+	interfaces/Prolog/XSB/ppl_interface_generator_xsb_H.m4,
+	interfaces/Prolog/XSB/ppl_interface_generator_xsb_cc.m4,
+	interfaces/Prolog/XSB/ppl_interface_generator_xsb_hh.m4,
+	interfaces/Prolog/XSB/ppl_interface_generator_xsb_prolog_generated_
+	test_P.m4, interfaces/Prolog/XSB/ppl_prolog_sysdep.hh,
+	interfaces/Prolog/XSB/xsb_cfli.hh,
+	interfaces/Prolog/XSB/xsb_clpq.P,
+	interfaces/Prolog/XSB/xsb_clpq2.P,
+	interfaces/Prolog/XSB/xsb_efli.cc,
+	interfaces/Prolog/XSB/xsb_efli.hh,
+	interfaces/Prolog/XSB/xsb_pl_check.P,
+	interfaces/Prolog/YAP/Makefile.am,
+	interfaces/Prolog/YAP/README.yap,
+	interfaces/Prolog/YAP/ppl_interface_generator_yap_cc.m4,
+	interfaces/Prolog/YAP/ppl_prolog_sysdep.hh,
+	interfaces/Prolog/YAP/ppl_yap.pl,
+	interfaces/Prolog/YAP/yap_cfli.hh,
+	interfaces/Prolog/YAP/yap_clpq.pl,
+	interfaces/Prolog/YAP/yap_clpq2.pl,
+	interfaces/Prolog/YAP/yap_efli.cc,
+	interfaces/Prolog/YAP/yap_efli.hh,
+	interfaces/Prolog/YAP/yap_pl_check.pl,
+	interfaces/Prolog/YAP/yap_prolog_generated_test.pl,
+	interfaces/Prolog/ppl_interface_generator_prolog_cc_code.m4,
+	interfaces/Prolog/ppl_interface_generator_prolog_cc_files.m4,
+	interfaces/Prolog/ppl_interface_generator_prolog_dox.m4,
+	interfaces/Prolog/ppl_interface_generator_prolog_dox_code.m4,
+	interfaces/Prolog/ppl_interface_generator_prolog_hh_code.m4,
+	interfaces/Prolog/ppl_interface_generator_prolog_hh_files.m4,
+	interfaces/Prolog/ppl_interface_generator_prolog_procedure_generato
+	rs.m4, interfaces/Prolog/ppl_interface_generator_prolog_systems.m4,
+	interfaces/Prolog/ppl_prolog_common.cc,
+	interfaces/Prolog/ppl_prolog_common_defs.hh,
+	interfaces/Prolog/ppl_prolog_common_inlines.hh,
+	interfaces/Prolog/tests/Makefile.am,
+	interfaces/Prolog/tests/clpq.pl, interfaces/Prolog/tests/clpq2.pl,
+	interfaces/Prolog/tests/expected_clpq2_int16,
+	interfaces/Prolog/tests/expected_clpq2_int16_a,
+	interfaces/Prolog/tests/expected_clpq2_int32,
+	interfaces/Prolog/tests/expected_clpq2_int32_a,
+	interfaces/Prolog/tests/expected_clpq2_int64,
+	interfaces/Prolog/tests/expected_clpq2_int64_a,
+	interfaces/Prolog/tests/expected_clpq2_int8,
+	interfaces/Prolog/tests/expected_clpq2_int8_a,
+	interfaces/Prolog/tests/expected_clpq2_mpz,
+	interfaces/Prolog/tests/expected_clpq2_mpz_a,
+	interfaces/Prolog/tests/expected_clpq_int16,
+	interfaces/Prolog/tests/expected_clpq_int16_a,
+	interfaces/Prolog/tests/expected_clpq_int32,
+	interfaces/Prolog/tests/expected_clpq_int32_a,
+	interfaces/Prolog/tests/expected_clpq_int64,
+	interfaces/Prolog/tests/expected_clpq_int64_a,
+	interfaces/Prolog/tests/expected_clpq_int8,
+	interfaces/Prolog/tests/expected_clpq_int8_a,
+	interfaces/Prolog/tests/expected_clpq_mpz,
+	interfaces/Prolog/tests/expected_clpq_mpz_a,
+	interfaces/Prolog/tests/pl_check.pl,
+	interfaces/Prolog/tests/ppl_interface_generator_prolog_generated_te
+	st_pl.m4,
+	interfaces/Prolog/tests/ppl_interface_generator_prolog_generated_te
+	st_pl_code.m4,
+	interfaces/Prolog/tests/ppl_prolog_generated_test_common.pl,
+	interfaces/Python/ppl_py.cc, interfaces/Python/ppl_py.py,
+	interfaces/interfaced_boxes.hh, interfaces/marked_pointers.hh,
+	interfaces/ppl_interface_generator_common.m4,
+	interfaces/ppl_interface_generator_common_dat.m4,
+	interfaces/ppl_interface_generator_common_procedure_generators.m4,
+	interfaces/ppl_interface_generator_copyright, m4/Makefile.am,
+	m4/ac_check_ciao.m4, m4/ac_check_fpu_control.m4,
+	m4/ac_check_gmp.m4, m4/ac_check_sicstus_prolog.m4,
+	m4/ac_check_swi_prolog.m4, m4/ac_check_xsb_prolog.m4,
+	m4/ac_check_yap.m4, m4/ac_cxx_attribute_weak.m4,
+	m4/ac_cxx_double_binary_format.m4,
+	m4/ac_cxx_float_binary_format.m4, m4/ac_cxx_ieee_inexact_flag.m4,
+	m4/ac_cxx_limit_memory.m4, m4/ac_cxx_long_double_binary_format.m4,
+	m4/ac_cxx_plain_char_is_signed.m4, m4/ac_cxx_proper_long_double.m4,
+	m4/ac_cxx_zero_length_arrays.m4, m4/ac_prog_jar.m4,
+	m4/ac_prog_java.m4, m4/ac_prog_javac.m4, m4/ac_prog_javah.m4,
+	m4/ac_text_md5sum.m4, m4/ppl.m4, m4/ppl_c.m4, src/Affine_Space.cc,
+	src/Affine_Space_defs.hh, src/Affine_Space_inlines.hh,
+	src/Affine_Space_types.hh, src/Any_Pointset_defs.hh,
+	src/Any_Pointset_inlines.hh, src/Any_Pointset_types.hh,
+	src/Ask_Tell_defs.hh, src/Ask_Tell_inlines.hh,
+	src/Ask_Tell_templates.hh, src/Ask_Tell_types.hh,
+	src/BDS_Status_idefs.hh, src/BDS_Status_inlines.hh,
+	src/BD_Shape.cc, src/BD_Shape_defs.hh, src/BD_Shape_inlines.hh,
+	src/BD_Shape_templates.hh, src/BD_Shape_types.hh,
+	src/BHRZ03_Certificate.cc, src/BHRZ03_Certificate_defs.hh,
+	src/BHRZ03_Certificate_inlines.hh, src/BHRZ03_Certificate_types.hh,
+	src/Bit_Matrix.cc, src/Bit_Matrix_defs.hh,
+	src/Bit_Matrix_inlines.hh, src/Bit_Matrix_types.hh, src/Bit_Row.cc,
+	src/Bit_Row_defs.hh, src/Bit_Row_inlines.hh, src/Bit_Row_types.hh,
+	src/Boundary_defs.hh, src/Box.cc, src/Box_Status_idefs.hh,
+	src/Box_Status_inlines.hh, src/Box_defs.hh, src/Box_inlines.hh,
+	src/Box_templates.hh, src/Box_types.hh, src/CO_Tree.cc,
+	src/CO_Tree_defs.hh, src/CO_Tree_inlines.hh,
+	src/CO_Tree_templates.hh, src/CO_Tree_types.hh, src/C_Integer.hh,
+	src/C_Polyhedron.cc, src/C_Polyhedron_defs.hh,
+	src/C_Polyhedron_inlines.hh, src/C_Polyhedron_types.hh,
+	src/Cast_Floating_Point_Expression_defs.hh,
+	src/Cast_Floating_Point_Expression_inlines.hh,
+	src/Cast_Floating_Point_Expression_templates.hh,
+	src/Cast_Floating_Point_Expression_types.hh, src/Checked_Number.cc,
+	src/Checked_Number_defs.hh, src/Checked_Number_inlines.hh,
+	src/Checked_Number_templates.hh, src/Checked_Number_types.hh,
+	src/Coefficient.cc, src/Coefficient_defs.hh,
+	src/Coefficient_inlines.hh, src/Coefficient_traits_template.hh,
+	src/Coefficient_types.hh, src/Concrete_Expression.cc,
+	src/Concrete_Expression_defs.hh,
+	src/Concrete_Expression_inlines.hh,
+	src/Concrete_Expression_types.hh, src/Congruence.cc,
+	src/Congruence_System.cc, src/Congruence_System_defs.hh,
+	src/Congruence_System_inlines.hh, src/Congruence_System_types.hh,
+	src/Congruence_defs.hh, src/Congruence_inlines.hh,
+	src/Congruence_types.hh,
+	src/Constant_Floating_Point_Expression_defs.hh,
+	src/Constant_Floating_Point_Expression_inlines.hh,
+	src/Constant_Floating_Point_Expression_types.hh, src/Constraint.cc,
+	src/Constraint_System.cc, src/Constraint_System_defs.hh,
+	src/Constraint_System_inlines.hh, src/Constraint_System_types.hh,
+	src/Constraint_defs.hh, src/Constraint_inlines.hh,
+	src/Constraint_types.hh, src/DB_Matrix_defs.hh,
+	src/DB_Matrix_inlines.hh, src/DB_Matrix_templates.hh,
+	src/DB_Matrix_types.hh, src/DB_Row_defs.hh, src/DB_Row_inlines.hh,
+	src/DB_Row_templates.hh, src/DB_Row_types.hh, src/Dense_Row.cc,
+	src/Dense_Row_defs.hh, src/Dense_Row_inlines.hh,
+	src/Dense_Row_templates.hh, src/Dense_Row_types.hh,
+	src/Determinate_defs.hh, src/Determinate_inlines.hh,
+	src/Determinate_types.hh,
+	src/Difference_Floating_Point_Expression_defs.hh,
+	src/Difference_Floating_Point_Expression_inlines.hh,
+	src/Difference_Floating_Point_Expression_templates.hh,
+	src/Difference_Floating_Point_Expression_types.hh,
+	src/Division_Floating_Point_Expression_defs.hh,
+	src/Division_Floating_Point_Expression_inlines.hh,
+	src/Division_Floating_Point_Expression_templates.hh,
+	src/Division_Floating_Point_Expression_types.hh,
+	src/Doubly_Linked_Object_defs.hh,
+	src/Doubly_Linked_Object_inlines.hh,
+	src/Doubly_Linked_Object_types.hh, src/EList_Iterator_defs.hh,
+	src/EList_Iterator_inlines.hh, src/EList_Iterator_types.hh,
+	src/EList_defs.hh, src/EList_inlines.hh, src/EList_types.hh,
+	src/Expression_Adapter_defs.hh, src/Expression_Adapter_inlines.hh,
+	src/Expression_Adapter_types.hh,
+	src/Expression_Hide_Inhomo_defs.hh,
+	src/Expression_Hide_Inhomo_inlines.hh,
+	src/Expression_Hide_Inhomo_types.hh,
+	src/Expression_Hide_Last_defs.hh,
+	src/Expression_Hide_Last_inlines.hh,
+	src/Expression_Hide_Last_types.hh, src/Float.cc, src/Float_defs.hh,
+	src/Float_inlines.hh, src/Float_templates.hh,
+	src/Floating_Point_Expression_defs.hh,
+	src/Floating_Point_Expression_inlines.hh,
+	src/Floating_Point_Expression_templates.hh,
+	src/Floating_Point_Expression_types.hh, src/GMP_Integer_defs.hh,
+	src/GMP_Integer_inlines.hh, src/GMP_Integer_types.hh,
+	src/Generator.cc, src/Generator_System.cc,
+	src/Generator_System_defs.hh, src/Generator_System_inlines.hh,
+	src/Generator_System_types.hh, src/Generator_defs.hh,
+	src/Generator_inlines.hh, src/Generator_types.hh,
+	src/Grid_Certificate.cc, src/Grid_Certificate_defs.hh,
+	src/Grid_Certificate_inlines.hh, src/Grid_Certificate_types.hh,
+	src/Grid_Generator.cc, src/Grid_Generator_System.cc,
+	src/Grid_Generator_System_defs.hh,
+	src/Grid_Generator_System_inlines.hh,
+	src/Grid_Generator_System_types.hh, src/Grid_Generator_defs.hh,
+	src/Grid_Generator_inlines.hh, src/Grid_Generator_types.hh,
+	src/Grid_Status.cc, src/Grid_Status_idefs.hh,
+	src/Grid_Status_inlines.hh, src/Grid_chdims.cc,
+	src/Grid_conversion.cc, src/Grid_defs.hh, src/Grid_inlines.hh,
+	src/Grid_nonpublic.cc, src/Grid_public.cc, src/Grid_simplify.cc,
+	src/Grid_templates.hh, src/Grid_types.hh, src/Grid_widenings.cc,
+	src/H79_Certificate.cc, src/H79_Certificate_defs.hh,
+	src/H79_Certificate_inlines.hh, src/H79_Certificate_types.hh,
+	src/Handler_defs.hh, src/Handler_inlines.hh, src/Handler_types.hh,
+	src/Has_Assign_Or_Swap.hh, src/Init.cc, src/Init_defs.hh,
+	src/Init_inlines.hh, src/Init_types.hh, src/Integer_Interval.hh,
+	src/Interval_Info_defs.hh, src/Interval_Info_inlines.hh,
+	src/Interval_Info_types.hh, src/Interval_defs.hh,
+	src/Interval_inlines.hh, src/Interval_templates.hh,
+	src/Interval_types.hh, src/Linear_Expression.cc,
+	src/Linear_Expression_Impl.cc, src/Linear_Expression_Impl_defs.hh,
+	src/Linear_Expression_Impl_inlines.hh,
+	src/Linear_Expression_Impl_templates.hh,
+	src/Linear_Expression_Impl_types.hh,
+	src/Linear_Expression_Interface.cc,
+	src/Linear_Expression_Interface_defs.hh,
+	src/Linear_Expression_Interface_types.hh,
+	src/Linear_Expression_defs.hh, src/Linear_Expression_inlines.hh,
+	src/Linear_Expression_types.hh, src/Linear_Form.cc,
+	src/Linear_Form_defs.hh, src/Linear_Form_inlines.hh,
+	src/Linear_Form_templates.hh, src/Linear_Form_types.hh,
+	src/Linear_System_defs.hh, src/Linear_System_inlines.hh,
+	src/Linear_System_templates.hh, src/Linear_System_types.hh,
+	src/MIP_Problem.cc, src/MIP_Problem_defs.hh,
+	src/MIP_Problem_inlines.hh, src/MIP_Problem_templates.hh,
+	src/MIP_Problem_types.hh, src/Makefile.am, src/Matrix_defs.hh,
+	src/Matrix_inlines.hh, src/Matrix_templates.hh,
+	src/Matrix_types.hh,
+	src/Multiplication_Floating_Point_Expression_defs.hh,
+	src/Multiplication_Floating_Point_Expression_inlines.hh,
+	src/Multiplication_Floating_Point_Expression_templates.hh,
+	src/Multiplication_Floating_Point_Expression_types.hh,
+	src/NNC_Polyhedron.cc, src/NNC_Polyhedron_defs.hh,
+	src/NNC_Polyhedron_inlines.hh, src/NNC_Polyhedron_types.hh,
+	src/Numeric_Format_defs.hh, src/OR_Matrix_defs.hh,
+	src/OR_Matrix_inlines.hh, src/OR_Matrix_templates.hh,
+	src/OR_Matrix_types.hh, src/Octagonal_Shape.cc,
+	src/Octagonal_Shape_defs.hh, src/Octagonal_Shape_inlines.hh,
+	src/Octagonal_Shape_templates.hh, src/Octagonal_Shape_types.hh,
+	src/Og_Status_idefs.hh, src/Og_Status_inlines.hh,
+	src/Opposite_Floating_Point_Expression_defs.hh,
+	src/Opposite_Floating_Point_Expression_inlines.hh,
+	src/Opposite_Floating_Point_Expression_types.hh,
+	src/PIP_Problem.cc, src/PIP_Problem_defs.hh,
+	src/PIP_Problem_inlines.hh, src/PIP_Problem_templates.hh,
+	src/PIP_Problem_types.hh, src/PIP_Tree.cc, src/PIP_Tree_defs.hh,
+	src/PIP_Tree_inlines.hh, src/PIP_Tree_types.hh,
+	src/Partial_Function.cc, src/Partial_Function_defs.hh,
+	src/Partial_Function_inlines.hh, src/Partial_Function_types.hh,
+	src/Partially_Reduced_Product_defs.hh,
+	src/Partially_Reduced_Product_inlines.hh,
+	src/Partially_Reduced_Product_templates.hh,
+	src/Partially_Reduced_Product_types.hh,
+	src/Pending_Element_defs.hh, src/Pending_Element_inlines.hh,
+	src/Pending_Element_types.hh, src/Pending_List_defs.hh,
+	src/Pending_List_inlines.hh, src/Pending_List_templates.hh,
+	src/Pending_List_types.hh, src/Ph_Status.cc,
+	src/Ph_Status_idefs.hh, src/Ph_Status_inlines.hh,
+	src/Pointset_Ask_Tell.cc, src/Pointset_Ask_Tell_defs.hh,
+	src/Pointset_Ask_Tell_inlines.hh,
+	src/Pointset_Ask_Tell_templates.hh, src/Pointset_Ask_Tell_types.hh,
+	src/Pointset_Powerset.cc, src/Pointset_Powerset_defs.hh,
+	src/Pointset_Powerset_inlines.hh,
+	src/Pointset_Powerset_templates.hh, src/Pointset_Powerset_types.hh,
+	src/Poly_Con_Relation.cc, src/Poly_Con_Relation_defs.hh,
+	src/Poly_Con_Relation_inlines.hh, src/Poly_Con_Relation_types.hh,
+	src/Poly_Gen_Relation.cc, src/Poly_Gen_Relation_defs.hh,
+	src/Poly_Gen_Relation_inlines.hh, src/Poly_Gen_Relation_types.hh,
+	src/Polyhedron_chdims.cc, src/Polyhedron_chdims_templates.hh,
+	src/Polyhedron_conversion_templates.hh, src/Polyhedron_defs.hh,
+	src/Polyhedron_inlines.hh, src/Polyhedron_minimize_templates.hh,
+	src/Polyhedron_nonpublic.cc, src/Polyhedron_public.cc,
+	src/Polyhedron_simplify_templates.hh, src/Polyhedron_templates.hh,
+	src/Polyhedron_types.hh, src/Polyhedron_widenings.cc,
+	src/Powerset_defs.hh, src/Powerset_inlines.hh,
+	src/Powerset_templates.hh, src/Powerset_types.hh,
+	src/Ptr_Iterator_defs.hh, src/Ptr_Iterator_inlines.hh,
+	src/Ptr_Iterator_types.hh, src/Rational_Box.hh,
+	src/Rational_Interval.hh, src/Result_defs.hh,
+	src/Result_inlines.hh, src/Rounding_Dir_defs.hh,
+	src/Rounding_Dir_inlines.hh, src/Scalar_Products.cc,
+	src/Scalar_Products_defs.hh, src/Scalar_Products_inlines.hh,
+	src/Scalar_Products_types.hh, src/Slow_Copy.hh, src/Sparse_Row.cc,
+	src/Sparse_Row_defs.hh, src/Sparse_Row_inlines.hh,
+	src/Sparse_Row_templates.hh, src/Sparse_Row_types.hh,
+	src/Sum_Floating_Point_Expression_defs.hh,
+	src/Sum_Floating_Point_Expression_inlines.hh,
+	src/Sum_Floating_Point_Expression_templates.hh,
+	src/Sum_Floating_Point_Expression_types.hh,
+	src/Swapping_Vector_defs.hh, src/Swapping_Vector_inlines.hh,
+	src/Swapping_Vector_types.hh, src/Temp_defs.hh,
+	src/Temp_inlines.hh, src/Temp_templates.hh,
+	src/Threshold_Watcher.cc, src/Threshold_Watcher_defs.hh,
+	src/Threshold_Watcher_inlines.hh,
+	src/Threshold_Watcher_templates.hh, src/Threshold_Watcher_types.hh,
+	src/Time.cc, src/Time_defs.hh, src/Time_inlines.hh,
+	src/Time_types.hh, src/Topology_types.hh, src/Variable.cc,
+	src/Variable_Floating_Point_Expression_defs.hh,
+	src/Variable_Floating_Point_Expression_inlines.hh,
+	src/Variable_Floating_Point_Expression_types.hh,
+	src/Variable_defs.hh, src/Variable_inlines.hh,
+	src/Variable_types.hh, src/Variables_Set.cc,
+	src/Variables_Set_defs.hh, src/Variables_Set_inlines.hh,
+	src/Variables_Set_types.hh, src/WRD_coefficient_types_defs.hh,
+	src/WRD_coefficient_types_inlines.hh, src/Watchdog.cc,
+	src/Watchdog_defs.hh, src/Watchdog_inlines.hh,
+	src/Watchdog_types.hh, src/Weight_Profiler.cc,
+	src/Weight_Profiler_defs.hh, src/Widening_Function_defs.hh,
+	src/Widening_Function_inlines.hh, src/Widening_Function_types.hh,
+	src/algorithms.hh, src/assert.cc, src/assert.hh,
+	src/assign_or_swap.hh, src/c_streambuf.cc, src/c_streambuf_defs.hh,
+	src/c_streambuf_inlines.hh, src/c_streambuf_types.hh,
+	src/checked.cc, src/checked_defs.hh, src/checked_ext_defs.hh,
+	src/checked_ext_inlines.hh, src/checked_float_inlines.hh,
+	src/checked_inlines.hh, src/checked_int_inlines.hh,
+	src/checked_mpq_inlines.hh, src/checked_mpz_inlines.hh,
+	src/checked_numeric_limits.hh, src/compiler.hh,
+	src/distances_defs.hh, src/distances_inlines.hh,
+	src/distances_types.hh, src/fpu-c99_inlines.hh, src/fpu-ia32.cc,
+	src/fpu-ia32_inlines.hh, src/fpu-none_inlines.hh,
+	src/fpu-sparc_inlines.hh, src/fpu_defs.hh, src/fpu_types.hh,
+	src/globals.cc, src/globals_defs.hh, src/globals_inlines.hh,
+	src/globals_types.hh, src/initializer.hh, src/intervals_defs.hh,
+	src/iterator_to_const_defs.hh, src/iterator_to_const_inlines.hh,
+	src/iterator_to_const_types.hh, src/linearize.hh,
+	src/math_utilities_defs.hh, src/math_utilities_inlines.hh,
+	src/max_space_dimension.hh, src/meta_programming.hh,
+	src/mp_std_bits.cc, src/mp_std_bits_defs.hh,
+	src/mp_std_bits_inlines.hh, src/namespaces.hh,
+	src/ppl-config.cc.in, src/ppl_header.hh, src/stdiobuf.cc,
+	src/stdiobuf_defs.hh, src/stdiobuf_inlines.hh,
+	src/stdiobuf_types.hh, src/swapping_sort_templates.hh,
+	src/termination.cc, src/termination_defs.hh,
+	src/termination_templates.hh, src/termination_types.hh,
+	src/version.cc, src/version.hh.in, src/wrap_assign.hh,
+	src/wrap_string.cc, src/wrap_string.hh, tests/Ask_Tell/Makefile.am,
+	tests/Ask_Tell/append1.cc, tests/BD_Shape/Makefile.am,
+	tests/BD_Shape/addconstraints1.cc, tests/BD_Shape/addspacedims1.cc,
+	tests/BD_Shape/affinedimension1.cc, tests/BD_Shape/affineimage1.cc,
+	tests/BD_Shape/affineimage2.cc, tests/BD_Shape/affinepreimage1.cc,
+	tests/BD_Shape/ascii_dump_load1.cc,
+	tests/BD_Shape/bgp99extrapolation1.cc,
+	tests/BD_Shape/bhmz05widening1.cc,
+	tests/BD_Shape/bhz03widening1.cc, tests/BD_Shape/bounded1.cc,
+	tests/BD_Shape/boundedaffineimage1.cc,
+	tests/BD_Shape/boundedaffinepreimage1.cc,
+	tests/BD_Shape/bounds1.cc, tests/BD_Shape/cc76extrapolation1.cc,
+	tests/BD_Shape/cc76narrowing1.cc, tests/BD_Shape/closure1.cc,
+	tests/BD_Shape/concatenate1.cc, tests/BD_Shape/congruences1.cc,
+	tests/BD_Shape/constrains1.cc, tests/BD_Shape/constraints1.cc,
+	tests/BD_Shape/contains1.cc,
+	tests/BD_Shape/containsintegerpoint1.cc,
+	tests/BD_Shape/difference1.cc, tests/BD_Shape/discrete1.cc,
+	tests/BD_Shape/disjoint1.cc,
+	tests/BD_Shape/dropsomenonintegerpoints1.cc,
+	tests/BD_Shape/empty1.cc, tests/BD_Shape/equality1.cc,
+	tests/BD_Shape/expandspacedim1.cc,
+	tests/BD_Shape/foldspacedims1.cc, tests/BD_Shape/frequency1.cc,
+	tests/BD_Shape/frombdshape1.cc, tests/BD_Shape/frombox1.cc,
+	tests/BD_Shape/fromgensys1.cc, tests/BD_Shape/fromgrid1.cc,
+	tests/BD_Shape/fromoctagonalshape1.cc,
+	tests/BD_Shape/frompolyhedron1.cc, tests/BD_Shape/fromspacedim1.cc,
+	tests/BD_Shape/generalizedaffineimage1.cc,
+	tests/BD_Shape/generalizedaffineimage2.cc,
+	tests/BD_Shape/generalizedaffinepreimage1.cc,
+	tests/BD_Shape/generalizedaffinepreimage2.cc,
+	tests/BD_Shape/generalizedaffinepreimage3.cc,
+	tests/BD_Shape/geomcovers1.cc, tests/BD_Shape/h79widening1.cc,
+	tests/BD_Shape/integerupperboundifexact1.cc,
+	tests/BD_Shape/intersection1.cc,
+	tests/BD_Shape/limitedbhmz05extrapolation1.cc,
+	tests/BD_Shape/limitedcc76extrapolation1.cc,
+	tests/BD_Shape/limitedh79extrapolation1.cc,
+	tests/BD_Shape/mapspacedims1.cc, tests/BD_Shape/max_min1.cc,
+	tests/BD_Shape/max_min2.cc, tests/BD_Shape/maxspacedim1.cc,
+	tests/BD_Shape/membytes1.cc, tests/BD_Shape/minconstraints1.cc,
+	tests/BD_Shape/relations1.cc, tests/BD_Shape/relations2.cc,
+	tests/BD_Shape/relations3.cc, tests/BD_Shape/relations4.cc,
+	tests/BD_Shape/removespacedims1.cc, tests/BD_Shape/run_tests,
+	tests/BD_Shape/simplifyusingcontext1.cc,
+	tests/BD_Shape/timeelapse1.cc, tests/BD_Shape/unconstrain1.cc,
+	tests/BD_Shape/universe1.cc, tests/BD_Shape/upperbound1.cc,
+	tests/BD_Shape/upperboundifexact1.cc, tests/BD_Shape/wrap1.cc,
+	tests/BD_Shape/writebdshape1.cc, tests/Box/Makefile.am,
+	tests/Box/addconstraints1.cc, tests/Box/addspacedims1.cc,
+	tests/Box/affinedimension1.cc, tests/Box/affineimage1.cc,
+	tests/Box/affinepreimage1.cc, tests/Box/ascii_dump_load1.cc,
+	tests/Box/bgp99extrapolation1.cc, tests/Box/bhz03widening1.cc,
+	tests/Box/bounded1.cc, tests/Box/boundedaffineimage1.cc,
+	tests/Box/boundedaffinepreimage1.cc, tests/Box/cc76narrowing1.cc,
+	tests/Box/cc76widening.cc, tests/Box/concatenate1.cc,
+	tests/Box/congruences1.cc, tests/Box/constrains1.cc,
+	tests/Box/constraints1.cc, tests/Box/contains1.cc,
+	tests/Box/containsintegerpoint1.cc, tests/Box/difference1.cc,
+	tests/Box/discrete1.cc, tests/Box/disjoint1.cc,
+	tests/Box/empty1.cc, tests/Box/equality1.cc,
+	tests/Box/expandspacedim1.cc, tests/Box/foldspacedims1.cc,
+	tests/Box/frequency1.cc, tests/Box/frombdshape1.cc,
+	tests/Box/frombox1.cc, tests/Box/fromgensys1.cc,
+	tests/Box/fromgrid1.cc, tests/Box/frompartiallyreducedproduct1.cc,
+	tests/Box/frompolyhedron1.cc, tests/Box/frompolyhedron2.cc,
+	tests/Box/fromspacedim1.cc, tests/Box/generalizedaffineimage1.cc,
+	tests/Box/generalizedaffineimage2.cc,
+	tests/Box/generalizedaffinepreimage1.cc, tests/Box/geomcovers1.cc,
+	tests/Box/intersection1.cc, tests/Box/interval1.cc,
+	tests/Box/limitedcc76extrapolation1.cc, tests/Box/mapspacedims1.cc,
+	tests/Box/max_min1.cc, tests/Box/maxspacedim1.cc,
+	tests/Box/membytes1.cc, tests/Box/minconstraints1.cc,
+	tests/Box/propagateconstraints1.cc,
+	tests/Box/propagateconstraints2.cc,
+	tests/Box/refinewithcongruence1.cc,
+	tests/Box/refinewithcongruences1.cc,
+	tests/Box/refinewithconstraint1.cc,
+	tests/Box/refinewithconstraint2.cc,
+	tests/Box/refinewithconstraints1.cc,
+	tests/Box/refinewithconstraints2.cc, tests/Box/relations1.cc,
+	tests/Box/relations2.cc, tests/Box/relations3.cc,
+	tests/Box/relations4.cc, tests/Box/removespacedims1.cc,
+	tests/Box/run_tests, tests/Box/simplifyusingcontext1.cc,
+	tests/Box/timeelapse1.cc, tests/Box/topclosed1.cc,
+	tests/Box/unconstrain1.cc, tests/Box/universe1.cc,
+	tests/Box/upperbound1.cc, tests/Box/upperboundifexact1.cc,
+	tests/Box/wrap1.cc, tests/Box/writebox1.cc,
+	tests/CO_Tree/Makefile.am, tests/CO_Tree/cotree1.cc,
+	tests/Concrete_Expression/C_Expr.cc,
+	tests/Concrete_Expression/C_Expr_defs.hh,
+	tests/Concrete_Expression/C_Expr_inlines.hh,
+	tests/Concrete_Expression/C_Expr_types.hh,
+	tests/Concrete_Expression/Makefile.am,
+	tests/Concrete_Expression/bdshape1.cc,
+	tests/Concrete_Expression/bdshape2.cc,
+	tests/Concrete_Expression/digitalfilters1.cc,
+	tests/Concrete_Expression/linearform1.cc,
+	tests/Concrete_Expression/linearize.cc,
+	tests/Concrete_Expression/octagonalshape1.cc,
+	tests/Concrete_Expression/octagonalshape2.cc,
+	tests/Concrete_Expression/polyhedron1.cc,
+	tests/Concrete_Expression/polyhedron2.cc,
+	tests/Concrete_Expression/run_tests, tests/Grid/Makefile.am,
+	tests/Grid/addcongruence1.cc, tests/Grid/addcongruences1.cc,
+	tests/Grid/addconstraint1.cc, tests/Grid/addconstraints1.cc,
+	tests/Grid/addgenerator1.cc, tests/Grid/addgenerators1.cc,
+	tests/Grid/addspacedims1.cc, tests/Grid/affinedim1.cc,
+	tests/Grid/affineimage1.cc, tests/Grid/affineimage2.cc,
+	tests/Grid/affinepreimage1.cc, tests/Grid/affinepreimage2.cc,
+	tests/Grid/approximatepartition1.cc, tests/Grid/asciidumpload1.cc,
+	tests/Grid/asciidumpload2.cc, tests/Grid/asciidumpload3.cc,
+	tests/Grid/asciidumpload4.cc, tests/Grid/asciidumpload5.cc,
+	tests/Grid/asciidumpload6.cc, tests/Grid/bhz03widening1.cc,
+	tests/Grid/bounded1.cc, tests/Grid/boundedaffineimage1.cc,
+	tests/Grid/boundedaffinepreimage1.cc, tests/Grid/boundingbox1.cc,
+	tests/Grid/bounds1.cc, tests/Grid/certificate1.cc,
+	tests/Grid/concatenate1.cc, tests/Grid/congruence1.cc,
+	tests/Grid/congruences1.cc, tests/Grid/congruences2.cc,
+	tests/Grid/constraints1.cc, tests/Grid/contains1.cc,
+	tests/Grid/containsintegerpoint1.cc, tests/Grid/discrete1.cc,
+	tests/Grid/disjoint1.cc, tests/Grid/dropnonintegerpoints1.cc,
+	tests/Grid/equals1.cc, tests/Grid/expandspacedim1.cc,
+	tests/Grid/foldspacedims1.cc, tests/Grid/frequency1.cc,
+	tests/Grid/frombdshape1.cc, tests/Grid/frombox1.cc,
+	tests/Grid/fromgrid1.cc, tests/Grid/fromoctagonalshape1.cc,
+	tests/Grid/frompolyhedron1.cc,
+	tests/Grid/generalizedaffineimage1.cc,
+	tests/Grid/generalizedaffineimage2.cc,
+	tests/Grid/generalizedaffineimage3.cc,
+	tests/Grid/generalizedaffinepreimage1.cc,
+	tests/Grid/generalizedaffinepreimage2.cc,
+	tests/Grid/generalizedaffinepreimage3.cc, tests/Grid/generator1.cc,
+	tests/Grid/generators1.cc, tests/Grid/generators2.cc,
+	tests/Grid/grid1.cc, tests/Grid/grid2.cc, tests/Grid/grid3.cc,
+	tests/Grid/griddifference1.cc, tests/Grid/intersection1.cc,
+	tests/Grid/isempty1.cc, tests/Grid/isuniverse1.cc,
+	tests/Grid/limitedextrapolation1.cc,
+	tests/Grid/limitedextrapolation2.cc,
+	tests/Grid/limitedextrapolation3.cc, tests/Grid/mapspacedims1.cc,
+	tests/Grid/maxmin1.cc, tests/Grid/membytes1.cc,
+	tests/Grid/mincongruences1.cc, tests/Grid/mingenerators1.cc,
+	tests/Grid/outputoperator1.cc, tests/Grid/outputoperator2.cc,
+	tests/Grid/outputoperator3.cc, tests/Grid/partition1.cc,
+	tests/Grid/powersetdifference1.cc,
+	tests/Grid/powersetgeometricallycovers1.cc,
+	tests/Grid/powersetgeometricallyequals1.cc,
+	tests/Grid/refinewithcongruences1.cc,
+	tests/Grid/refinewithconstraints1.cc, tests/Grid/relations1.cc,
+	tests/Grid/relations2.cc, tests/Grid/relations3.cc,
+	tests/Grid/removespacedims1.cc, tests/Grid/removespacedims2.cc,
+	tests/Grid/simplifyusingcontext1.cc, tests/Grid/timeelapse1.cc,
+	tests/Grid/topclosed1.cc, tests/Grid/topclosure1.cc,
+	tests/Grid/unconstrain1.cc, tests/Grid/upperbound1.cc,
+	tests/Grid/upperbound2.cc, tests/Grid/widening1.cc,
+	tests/Grid/widening2.cc, tests/Grid/widening3.cc,
+	tests/Grid/wrap1.cc, tests/Grid/writecongruencesystem.cc,
+	tests/MIP_Problem/Makefile.am,
+	tests/MIP_Problem/ascii_dump_load1.cc,
+	tests/MIP_Problem/exceptions1.cc, tests/MIP_Problem/mipproblem1.cc,
+	tests/MIP_Problem/mipproblem2.cc, tests/MIP_Problem/mipproblem3.cc,
+	tests/MIP_Problem/mipproblem4.cc, tests/Makefile.am,
+	tests/Octagonal_Shape/Makefile.am,
+	tests/Octagonal_Shape/addspacedims1.cc,
+	tests/Octagonal_Shape/affinedimension1.cc,
+	tests/Octagonal_Shape/affineimage1.cc,
+	tests/Octagonal_Shape/affineimage2.cc,
+	tests/Octagonal_Shape/affinepreimage1.cc,
+	tests/Octagonal_Shape/affinepreimage2.cc,
+	tests/Octagonal_Shape/ascii_dump_load1.cc,
+	tests/Octagonal_Shape/bhmz05widening1.cc,
+	tests/Octagonal_Shape/bhz03widening1.cc,
+	tests/Octagonal_Shape/bounded1.cc,
+	tests/Octagonal_Shape/boundedaffineimage1.cc,
+	tests/Octagonal_Shape/boundedaffinepreimage1.cc,
+	tests/Octagonal_Shape/bounds1.cc,
+	tests/Octagonal_Shape/cc76extrapolation1.cc,
+	tests/Octagonal_Shape/cc76narrowing1.cc,
+	tests/Octagonal_Shape/chinainit.cc,
+	tests/Octagonal_Shape/concatenate1.cc,
+	tests/Octagonal_Shape/congruences1.cc,
+	tests/Octagonal_Shape/constrains1.cc,
+	tests/Octagonal_Shape/constraints1.cc,
+	tests/Octagonal_Shape/contains1.cc,
+	tests/Octagonal_Shape/containsintegerpoint1.cc,
+	tests/Octagonal_Shape/difference1.cc,
+	tests/Octagonal_Shape/discrete1.cc,
+	tests/Octagonal_Shape/disjoint1.cc,
+	tests/Octagonal_Shape/dropsomenonintegerpoints1.cc,
+	tests/Octagonal_Shape/empty1.cc,
+	tests/Octagonal_Shape/expandspacedim1.cc,
+	tests/Octagonal_Shape/foldspacedims1.cc,
+	tests/Octagonal_Shape/frequency1.cc,
+	tests/Octagonal_Shape/frombdshape1.cc,
+	tests/Octagonal_Shape/frombox1.cc,
+	tests/Octagonal_Shape/fromgensys1.cc,
+	tests/Octagonal_Shape/fromgrid1.cc,
+	tests/Octagonal_Shape/fromoctagonalshape1.cc,
+	tests/Octagonal_Shape/frompolyhedron1.cc,
+	tests/Octagonal_Shape/fromspacedim1.cc,
+	tests/Octagonal_Shape/generalizedaffineimage1.cc,
+	tests/Octagonal_Shape/generalizedaffineimage2.cc,
+	tests/Octagonal_Shape/generalizedaffineimage3.cc,
+	tests/Octagonal_Shape/generalizedaffineimage4.cc,
+	tests/Octagonal_Shape/generalizedaffineimage5.cc,
+	tests/Octagonal_Shape/generalizedaffinepreimage1.cc,
+	tests/Octagonal_Shape/generalizedaffinepreimage2.cc,
+	tests/Octagonal_Shape/generalizedaffinepreimage3.cc,
+	tests/Octagonal_Shape/generalizedaffinepreimage4.cc,
+	tests/Octagonal_Shape/integerupperboundifexact1.cc,
+	tests/Octagonal_Shape/intersection1.cc,
+	tests/Octagonal_Shape/limitedbhmz05extrapolation1.cc,
+	tests/Octagonal_Shape/limitedcc76extrapolation1.cc,
+	tests/Octagonal_Shape/mapspacedims1.cc,
+	tests/Octagonal_Shape/max_min1.cc,
+	tests/Octagonal_Shape/max_min2.cc,
+	tests/Octagonal_Shape/maxspacedim1.cc,
+	tests/Octagonal_Shape/membytes1.cc,
+	tests/Octagonal_Shape/minconstraints1.cc,
+	tests/Octagonal_Shape/relatwithcons1.cc,
+	tests/Octagonal_Shape/relatwithcons2.cc,
+	tests/Octagonal_Shape/relatwithcons3.cc,
+	tests/Octagonal_Shape/relatwithgen1.cc,
+	tests/Octagonal_Shape/removespacedims1.cc,
+	tests/Octagonal_Shape/run_tests,
+	tests/Octagonal_Shape/simplifyusingcontext1.cc,
+	tests/Octagonal_Shape/timeelapse1.cc,
+	tests/Octagonal_Shape/unconstrain1.cc,
+	tests/Octagonal_Shape/universe1.cc,
+	tests/Octagonal_Shape/upperbound1.cc,
+	tests/Octagonal_Shape/upperboundifexact1.cc,
+	tests/Octagonal_Shape/wrap1.cc,
+	tests/Octagonal_Shape/writeoctagon1.cc,
+	tests/PIP_Problem/Makefile.am,
+	tests/PIP_Problem/ascii_dump_load1.cc,
+	tests/PIP_Problem/exceptions1.cc, tests/PIP_Problem/pipproblem1.cc,
+	tests/PIP_Problem/pipproblem2.cc, tests/PIP_Problem/pipproblem3.cc,
+	tests/PIP_Problem/weightwatch1.cc,
+	tests/Partially_Reduced_Product/Makefile.am,
+	tests/Partially_Reduced_Product/addcongruences1.cc,
+	tests/Partially_Reduced_Product/addconstraints1.cc,
+	tests/Partially_Reduced_Product/affineimage1.cc,
+	tests/Partially_Reduced_Product/asciidumpload1.cc,
+	tests/Partially_Reduced_Product/bounded1.cc,
+	tests/Partially_Reduced_Product/boundedaffineimage1.cc,
+	tests/Partially_Reduced_Product/bounds1.cc,
+	tests/Partially_Reduced_Product/concatenate1.cc,
+	tests/Partially_Reduced_Product/congruences1.cc,
+	tests/Partially_Reduced_Product/congruencesproduct1.cc,
+	tests/Partially_Reduced_Product/constraints1.cc,
+	tests/Partially_Reduced_Product/constraintsproduct1.cc,
+	tests/Partially_Reduced_Product/contains1.cc,
+	tests/Partially_Reduced_Product/difference1.cc,
+	tests/Partially_Reduced_Product/dimension1.cc,
+	tests/Partially_Reduced_Product/directproduct1.cc,
+	tests/Partially_Reduced_Product/directproduct2.cc,
+	tests/Partially_Reduced_Product/directproduct3.cc,
+	tests/Partially_Reduced_Product/directproduct4.cc,
+	tests/Partially_Reduced_Product/directproduct5.cc,
+	tests/Partially_Reduced_Product/directproduct6.cc,
+	tests/Partially_Reduced_Product/discrete1.cc,
+	tests/Partially_Reduced_Product/disjoint1.cc,
+	tests/Partially_Reduced_Product/dropsomenonintegerpoints1.cc,
+	tests/Partially_Reduced_Product/equals1.cc,
+	tests/Partially_Reduced_Product/frombdshape1.cc,
+	tests/Partially_Reduced_Product/frombox1.cc,
+	tests/Partially_Reduced_Product/fromgrid1.cc,
+	tests/Partially_Reduced_Product/fromoctagonalshape1.cc,
+	tests/Partially_Reduced_Product/frompolyhedron1.cc,
+	tests/Partially_Reduced_Product/fromproduct1.cc,
+	tests/Partially_Reduced_Product/generalizedaffineimage1.cc,
+	tests/Partially_Reduced_Product/intersection1.cc,
+	tests/Partially_Reduced_Product/isempty1.cc,
+	tests/Partially_Reduced_Product/isuniverse1.cc,
+	tests/Partially_Reduced_Product/maxmin1.cc,
+	tests/Partially_Reduced_Product/partially_reduced_product_test.hh,
+	tests/Partially_Reduced_Product/partiallyreducedproduct1.cc,
+	tests/Partially_Reduced_Product/partiallyreducedproduct2.cc,
+	tests/Partially_Reduced_Product/partiallyreducedproduct3.cc,
+	tests/Partially_Reduced_Product/partiallyreducedproduct4.cc,
+	tests/Partially_Reduced_Product/refinewithcongruences1.cc,
+	tests/Partially_Reduced_Product/refinewithconstraints1.cc,
+	tests/Partially_Reduced_Product/relations1.cc,
+	tests/Partially_Reduced_Product/shapepreservingproduct1.cc,
+	tests/Partially_Reduced_Product/smashproduct1.cc,
+	tests/Partially_Reduced_Product/spacedims1.cc,
+	tests/Partially_Reduced_Product/timeelapse1.cc,
+	tests/Partially_Reduced_Product/topclosed1.cc,
+	tests/Partially_Reduced_Product/topclosure1.cc,
+	tests/Partially_Reduced_Product/upperbound1.cc,
+	tests/Partially_Reduced_Product/widening1.cc,
+	tests/Polyhedron/Makefile.am, tests/Polyhedron/addcongruence1.cc,
+	tests/Polyhedron/addcongruences1.cc,
+	tests/Polyhedron/addconstraint1.cc,
+	tests/Polyhedron/addconstraints1.cc,
+	tests/Polyhedron/addconstraints2.cc,
+	tests/Polyhedron/addgenerator1.cc,
+	tests/Polyhedron/addgenerator2.cc,
+	tests/Polyhedron/addgenerators1.cc,
+	tests/Polyhedron/addgenerators2.cc,
+	tests/Polyhedron/addspacedims1.cc,
+	tests/Polyhedron/addspacedims2.cc,
+	tests/Polyhedron/affineimage1.cc, tests/Polyhedron/affineimage2.cc,
+	tests/Polyhedron/affinepreimage1.cc,
+	tests/Polyhedron/affinetrans.cc, tests/Polyhedron/append1.cc,
+	tests/Polyhedron/append2.cc, tests/Polyhedron/ascii_dump_load1.cc,
+	tests/Polyhedron/ascii_dump_load2.cc,
+	tests/Polyhedron/ascii_dump_load3.cc,
+	tests/Polyhedron/bgp99extrapolation1.cc,
+	tests/Polyhedron/bgp99extrapolation2.cc,
+	tests/Polyhedron/bhrz03widening1.cc,
+	tests/Polyhedron/bhrz03widening2.cc,
+	tests/Polyhedron/bhrz03widening3.cc,
+	tests/Polyhedron/bhz03widening1.cc, tests/Polyhedron/bounded1.cc,
+	tests/Polyhedron/boundedaffineimage1.cc,
+	tests/Polyhedron/boundedaffinepreimage1.cc,
+	tests/Polyhedron/boundedbhrz03extrapolation1.cc,
+	tests/Polyhedron/boundedh79extrapolation1.cc,
+	tests/Polyhedron/bounds1.cc, tests/Polyhedron/cnncconversion1.cc,
+	tests/Polyhedron/concatenate1.cc, tests/Polyhedron/congruences1.cc,
+	tests/Polyhedron/constrains1.cc, tests/Polyhedron/constraints1.cc,
+	tests/Polyhedron/contains1.cc, tests/Polyhedron/contains2.cc,
+	tests/Polyhedron/containsintegerpoint1.cc,
+	tests/Polyhedron/disjoint1.cc, tests/Polyhedron/disjoint2.cc,
+	tests/Polyhedron/dropsomenonintegerpoints1.cc,
+	tests/Polyhedron/dropsomenonintegerpoints2.cc,
+	tests/Polyhedron/dualhypercubes.cc, tests/Polyhedron/empty1.cc,
+	tests/Polyhedron/equals1.cc, tests/Polyhedron/exceptions1.cc,
+	tests/Polyhedron/exceptions2.cc, tests/Polyhedron/exceptions3.cc,
+	tests/Polyhedron/expandspacedim1.cc,
+	tests/Polyhedron/expandspacedim2.cc,
+	tests/Polyhedron/foldspacedims1.cc,
+	tests/Polyhedron/foldspacedims2.cc, tests/Polyhedron/frequency1.cc,
+	tests/Polyhedron/frombdshape1.cc, tests/Polyhedron/frombox1.cc,
+	tests/Polyhedron/frombox2.cc, tests/Polyhedron/fromgrid1.cc,
+	tests/Polyhedron/fromoctagonalshape1.cc,
+	tests/Polyhedron/generalizedaffineimage1.cc,
+	tests/Polyhedron/generalizedaffineimage2.cc,
+	tests/Polyhedron/generalizedaffinepreimage1.cc,
+	tests/Polyhedron/generalizedaffinepreimage2.cc,
+	tests/Polyhedron/generators1.cc, tests/Polyhedron/geomcovers1.cc,
+	tests/Polyhedron/h79widening1.cc, tests/Polyhedron/h79widening2.cc,
+	tests/Polyhedron/hybrid.cc, tests/Polyhedron/intersection1.cc,
+	tests/Polyhedron/limitedbhrz03extrapolation1.cc,
+	tests/Polyhedron/limitedh79extrapolation1.cc,
+	tests/Polyhedron/linearexpression1.cc,
+	tests/Polyhedron/linearpartition1.cc,
+	tests/Polyhedron/linearsystem1.cc,
+	tests/Polyhedron/mapspacedims1.cc, tests/Polyhedron/matrix1.cc,
+	tests/Polyhedron/max_min1.cc, tests/Polyhedron/maxspacedim1.cc,
+	tests/Polyhedron/mc91.cc, tests/Polyhedron/membytes1.cc,
+	tests/Polyhedron/memory1.cc, tests/Polyhedron/memory2.cc,
+	tests/Polyhedron/minconstraints1.cc,
+	tests/Polyhedron/minconstraints2.cc,
+	tests/Polyhedron/mingenerators1.cc,
+	tests/Polyhedron/mingenerators2.cc,
+	tests/Polyhedron/nncminimize1.cc, tests/Polyhedron/nncminimize2.cc,
+	tests/Polyhedron/nncpostimeelapse1.cc,
+	tests/Polyhedron/numberinput1.cc, tests/Polyhedron/onepoint.cc,
+	tests/Polyhedron/permute.cc, tests/Polyhedron/polydifference1.cc,
+	tests/Polyhedron/polydifference2.cc, tests/Polyhedron/polyhull1.cc,
+	tests/Polyhedron/polyhull2.cc,
+	tests/Polyhedron/polyhullifexact1.cc,
+	tests/Polyhedron/polyhullifexact2.cc,
+	tests/Polyhedron/randphull1.cc,
+	tests/Polyhedron/refinewithcongruence1.cc,
+	tests/Polyhedron/refinewithcongruences1.cc,
+	tests/Polyhedron/refinewithconstraint1.cc,
+	tests/Polyhedron/refinewithconstraints1.cc,
+	tests/Polyhedron/relations1.cc, tests/Polyhedron/relations2.cc,
+	tests/Polyhedron/relations3.cc,
+	tests/Polyhedron/removespacedims1.cc,
+	tests/Polyhedron/removespacedims2.cc,
+	tests/Polyhedron/simplifyusingcontext1.cc,
+	tests/Polyhedron/smm1.cc, tests/Polyhedron/sparserow1.cc,
+	tests/Polyhedron/termination1.cc, tests/Polyhedron/termination2.cc,
+	tests/Polyhedron/timeelapse1.cc, tests/Polyhedron/timeelapse2.cc,
+	tests/Polyhedron/topclosed1.cc, tests/Polyhedron/topclosure1.cc,
+	tests/Polyhedron/unconstrain1.cc, tests/Polyhedron/universe1.cc,
+	tests/Polyhedron/universe2.cc, tests/Polyhedron/variablesset1.cc,
+	tests/Polyhedron/watchdog1.cc, tests/Polyhedron/weightwatch1.cc,
+	tests/Polyhedron/wrap1.cc, tests/Polyhedron/wrap2.cc,
+	tests/Polyhedron/writeconsys1.cc, tests/Polyhedron/writegensys1.cc,
+	tests/Polyhedron/writepolyhedron1.cc,
+	tests/Polyhedron/writepolyhedron2.cc,
+	tests/Polyhedron/writerelation1.cc,
+	tests/Polyhedron/writevariable1.cc, tests/Powerset/Makefile.am,
+	tests/Powerset/addcongruences1.cc,
+	tests/Powerset/addconstraints1.cc,
+	tests/Powerset/affinedimension1.cc, tests/Powerset/affineimage1.cc,
+	tests/Powerset/affinepreimage1.cc, tests/Powerset/bounded1.cc,
+	tests/Powerset/bounds1.cc, tests/Powerset/closed1.cc,
+	tests/Powerset/closure1.cc, tests/Powerset/collapse1.cc,
+	tests/Powerset/concatenate1.cc, tests/Powerset/contains1.cc,
+	tests/Powerset/containsintegerpoint1.cc,
+	tests/Powerset/difference1.cc, tests/Powerset/discrete1.cc,
+	tests/Powerset/disjoint1.cc, tests/Powerset/disjunct1.cc,
+	tests/Powerset/empty1.cc, tests/Powerset/entails1.cc,
+	tests/Powerset/equals1.cc, tests/Powerset/frombdshape1.cc,
+	tests/Powerset/frombox1.cc, tests/Powerset/fromcongruences1.cc,
+	tests/Powerset/fromconstraints1.cc, tests/Powerset/fromgrid1.cc,
+	tests/Powerset/fromoctagonalshape1.cc,
+	tests/Powerset/frompolyhedron1.cc,
+	tests/Powerset/fromspacedimension1.cc,
+	tests/Powerset/intersection1.cc, tests/Powerset/maxmin1.cc,
+	tests/Powerset/meet1.cc, tests/Powerset/membytes1.cc,
+	tests/Powerset/powerset1.cc, tests/Powerset/reduce1.cc,
+	tests/Powerset/refinewith1.cc, tests/Powerset/relationwith1.cc,
+	tests/Powerset/simplifyusingcontext1.cc, tests/Powerset/size1.cc,
+	tests/Powerset/spacedims1.cc, tests/Powerset/universe1.cc,
+	tests/Powerset/upperbound1.cc, tests/README,
+	tests/Random_Number_Generator_defs.hh,
+	tests/Random_Number_Generator_inlines.hh,
+	tests/Random_Number_Generator_types.hh, tests/Watchdog/Makefile.am,
+	tests/Watchdog/watchdog1.cc, tests/files.cc, tests/files.hh,
+	tests/ppl_test.cc, tests/ppl_test.hh, utils/Makefile.am,
+	utils/build_header.in, utils/cm_cleaner.sh, utils/cm_splitter.sh,
+	utils/text2cxxarray.in, utils/timings.cc, utils/timings.hh: Extended
+	copyright years.
+
+2013-12-30  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Several corrections.
+
+2013-12-30  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Capitalization fixes.
+
+2013-12-29  Patricia Hill <patricia.hill@bugseng.com>
+
+	* doc/ppl_citations.bib: Reference added.
+
+2013-12-29  Patricia Hill <patricia.hill@bugseng.com>
+
+	* doc/ppl_citations.bib: References added.
+
+2013-12-29  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Several corrections to the abstract of
+	Fu13th.
+
+2013-12-29  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Added abstract of Fu13th.
+
+2013-12-29  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Added Zu14th.
+
+2013-12-29  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Added Fu14b.
+
+2013-12-29  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl.bib, doc/ppl_citations.bib: Several improvements.
+
+2013-12-29  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Abstracts fixed.  Avoided non-ASCII
+	characters.
+
+2013-12-29  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Fixed bogus label.
+
+2013-12-29  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Several corrections.
+
+2013-12-29  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: More corrections.
+
+2013-12-29  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl.bib, doc/ppl_citations.bib: Several corrections.
+
+2013-12-29  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Fixed CostantiniFM13.
+
+2013-12-29  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Fixed BrauerKK13.
+
+2013-12-29  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Fixed KapurZHZLN13.
+
+2013-12-28  Patricia Hill <patricia.hill@bugseng.com>
+
+	* doc/ppl_citations.bib: More references added.
+
+2013-12-28  Patricia Hill <patricia.hill@bugseng.com>
+
+	* doc/ppl.bib, doc/ppl_citations.bib: More references added.
+
+2013-12-28  Patricia Hill <patricia.hill@bugseng.com>
+
+	* doc/ppl.bib, doc/ppl_citations.bib: More references added.
+
+2013-12-28  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Accented letters fixed.
+
+2013-12-28  Patricia Hill <patricia.hill@bugseng.com>
+
+	* doc/ppl_citations.bib: More references added.
+
+2013-12-28  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Author field fixed.
+
+2013-12-28  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Book title fixed.
+
+2013-12-28  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Added missing acronym.
+
+2013-12-28  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Duplicate key avoided.
+
+2013-12-28  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Added missing acronym.
+
+2013-12-28  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Added missing quote.
+
+2013-12-28  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Braces restored.
+
+2013-12-28  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Book title corrected.
+
+2013-12-28  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Fixed book title and capitalization.
+
+2013-12-28  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Fixed capitalization.
+
+2013-12-28  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Book title fixed.
+
+2013-12-28  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Book titles corrected.
+
+2013-12-28  Patricia Hill <patricia.hill@bugseng.com>
+
+	* doc/ppl_citations.bib: More references added.
+
+2013-12-28  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Fixed title capitalization.
+
+2013-12-28  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Book title corrected.
+
+2013-12-28  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Fixed more book titles.
+
+2013-12-28  Patricia Hill <patricia.hill@bugseng.com>
+
+	* doc/ppl_citations.bib: Typo fixed.
+
+2013-12-28  Patricia Hill <patricia.hill@bugseng.com>
+
+	* doc/ppl_citations.bib: More references added.
+
+2013-12-28  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Removed duplicate entry.
+
+2013-12-28  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Book title fixed.
+
+2013-12-28  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Title fixed and abstract added.
+
+2013-12-28  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Fixed more book titles.
+
+2013-12-28  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Book title fixed.
+
+2013-12-28  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* doc/ppl_citations.bib: Fixed several typos.
+
+2013-12-27  Patricia Hill <patricia.hill@bugseng.com>
+
+	* doc/ppl_citations.bib: Typo fixed.
+
+2013-12-27  Patricia Hill <patricia.hill@bugseng.com>
+
+	* doc/ppl_citations.bib: Typo fixed.
+
+2013-12-27  Patricia Hill <patricia.hill@bugseng.com>
+
+	* doc/ppl_citations.bib: Added recently published papers citing the
+	PPL.  Added papers are books, journal articles or conference proceedings
+	published in 2012-2013 that cite "The Parma Polyhedra Library:
+	Toward a complete set of numerical abstractions for the analysis and
+	verification of hardware and software systems." Theses, workshop papers and technical reports have not been added in
+	this commit.
+
+2013-12-11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/ppl_prolog_common.cc: Fixed
+	check_nil_terminating().
+
+2013-12-11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/SWI/swi_cfli.hh: Some corrections.
+
+2013-12-11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/ppl_interface_generator_prolog_cc_code.m4,
+	interfaces/Prolog/ppl_prolog_common.cc: Use Prolog_put_nil() and
+	Prolog_get_nil().
+
+2013-12-11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/SWI/swi_cfli.hh: Added Prolog_put_nil() and
+	Prolog_get_nil().
+
+2013-12-01  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* src/Octagonal_Shape_templates.hh,
+	src/Polyhedron_chdims_templates.hh,
+	src/Polyhedron_simplify_templates.hh, src/linearize.hh: Useless
+	typedefs avoided.  Formatting improved on passing.
+
+2013-11-08  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* configure.ac, src/Makefile.am: Version number bumped.
+
+2013-10-28  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* ChangeLog: Updated.
+
 2013-10-28  Roberto Bagnara <roberto.bagnara@bugseng.com>
 
 	* doc/devref-language-interface.doxyconf.in,
