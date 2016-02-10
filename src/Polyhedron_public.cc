@@ -3805,15 +3805,8 @@ PPL::Polyhedron::frequency(const Linear_Expression& expr,
   PPL_DIRTY_TEMP(mpz_class, n);
   assign_r(n, expr.inhomogeneous_term(), ROUND_NOT_NEEDED);
   value += n;
-  // FIXME: avoid these temporaries, if possible.
-  // This can be done adding an `assign' function working on native
-  // and checked or an operator= that have on one side a checked and
-  // on the other a native or checked.
-  // The reason why now we can't use operator= is the fact that we
-  // still can have Coefficient defined to mpz_class (and not
-  // Checked_Number<mpz_class>).
-  val_n = Coefficient(value.get_num());
-  val_d = Coefficient(value.get_den());
+  val_n = value.get_num();
+  val_d = value.get_den();
 
   freq_n = 0;
   freq_d = 1;

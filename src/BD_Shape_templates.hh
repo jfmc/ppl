@@ -1543,11 +1543,11 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
     Linear_Expression le(c.expression());
     le.set_inhomogeneous_term(Coefficient_zero());
 
-    PPL_DIRTY_TEMP(Coefficient, max_numer);
-    PPL_DIRTY_TEMP(Coefficient, max_denom);
+    PPL_DIRTY_TEMP_COEFFICIENT(max_numer);
+    PPL_DIRTY_TEMP_COEFFICIENT(max_denom);
     bool max_included;
-    PPL_DIRTY_TEMP(Coefficient, min_numer);
-    PPL_DIRTY_TEMP(Coefficient, min_denom);
+    PPL_DIRTY_TEMP_COEFFICIENT(min_numer);
+    PPL_DIRTY_TEMP_COEFFICIENT(min_denom);
     bool min_included;
     bool bounded_above = maximize(le, max_numer, max_denom, max_included);
     bool bounded_below = minimize(le, min_numer, min_denom, min_included);

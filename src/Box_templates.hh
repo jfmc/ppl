@@ -428,8 +428,8 @@ Box<ITV>::Box(const Polyhedron& ph, Complexity_Class complexity)
     Generator g(point());
     PPL_DIRTY_TEMP(mpq_class, lower_bound);
     PPL_DIRTY_TEMP(mpq_class, upper_bound);
-    PPL_DIRTY_TEMP(Coefficient, bound_numer);
-    PPL_DIRTY_TEMP(Coefficient, bound_denom);
+    PPL_DIRTY_TEMP_COEFFICIENT(bound_numer);
+    PPL_DIRTY_TEMP_COEFFICIENT(bound_denom);
     for (dimension_type i = space_dim; i-- > 0; ) {
       I_Constraint<mpq_class> lower;
       I_Constraint<mpq_class> upper;
@@ -506,8 +506,8 @@ Box<ITV>::Box(const Grid& gr, Complexity_Class)
   // of the interval to the value of the associated coefficient in a
   // generator point.
   PPL_DIRTY_TEMP(mpq_class, bound);
-  PPL_DIRTY_TEMP(Coefficient, bound_numer);
-  PPL_DIRTY_TEMP(Coefficient, bound_denom);
+  PPL_DIRTY_TEMP_COEFFICIENT(bound_numer);
+  PPL_DIRTY_TEMP_COEFFICIENT(bound_denom);
   for (dimension_type i = space_dim; i-- > 0; ) {
     ITV& seq_i = seq[i];
     Variable var(i);
@@ -1207,14 +1207,14 @@ Box<ITV>::max_min(const Linear_Expression& expr,
   }
   // Compute generator `g'.
   Linear_Expression g_expr;
-  PPL_DIRTY_TEMP(Coefficient, g_divisor);
+  PPL_DIRTY_TEMP_COEFFICIENT(g_divisor);
   g_divisor = 1;
   const int maximize_sign = maximize ? 1 : -1;
   PPL_DIRTY_TEMP(mpq_class, g_coord);
-  PPL_DIRTY_TEMP(Coefficient, numer);
-  PPL_DIRTY_TEMP(Coefficient, denom);
-  PPL_DIRTY_TEMP(Coefficient, lcm);
-  PPL_DIRTY_TEMP(Coefficient, factor);
+  PPL_DIRTY_TEMP_COEFFICIENT(numer);
+  PPL_DIRTY_TEMP_COEFFICIENT(denom);
+  PPL_DIRTY_TEMP_COEFFICIENT(lcm);
+  PPL_DIRTY_TEMP_COEFFICIENT(factor);
   // TODO: Check if the following loop can be optimized to exploit the
   // (possible) sparseness of expr.
   for (dimension_type i = space_dimension(); i-- > 0; ) {
@@ -3292,11 +3292,11 @@ Box<ITV>
     // can only use the non-relational constraints, we find the
     // maximum/minimum values `ub_expr' and `lb_expr' obtain with the
     // box and use these instead of the `ub-expr' and `lb-expr'.
-    PPL_DIRTY_TEMP(Coefficient, max_numer);
-    PPL_DIRTY_TEMP(Coefficient, max_denom);
+    PPL_DIRTY_TEMP_COEFFICIENT(max_numer);
+    PPL_DIRTY_TEMP_COEFFICIENT(max_denom);
     bool max_included;
-    PPL_DIRTY_TEMP(Coefficient, min_numer);
-    PPL_DIRTY_TEMP(Coefficient, min_denom);
+    PPL_DIRTY_TEMP_COEFFICIENT(min_numer);
+    PPL_DIRTY_TEMP_COEFFICIENT(min_denom);
     bool min_included;
     ITV& seq_v = seq[var.id()];
     if (maximize(ub_expr, max_numer, max_denom, max_included)) {
@@ -3435,8 +3435,8 @@ Box<ITV>
     bool open_lower = seq_var.lower_is_open();
     bool unbounded_lower = seq_var.lower_is_boundary_infinity();
     PPL_DIRTY_TEMP(mpq_class, q_seq_var_lower);
-    PPL_DIRTY_TEMP(Coefficient, numer_lower);
-    PPL_DIRTY_TEMP(Coefficient, denom_lower);
+    PPL_DIRTY_TEMP_COEFFICIENT(numer_lower);
+    PPL_DIRTY_TEMP_COEFFICIENT(denom_lower);
     if (!unbounded_lower) {
       assign_r(q_seq_var_lower, seq_var.lower(), ROUND_NOT_NEEDED);
       assign_r(numer_lower, q_seq_var_lower.get_num(), ROUND_NOT_NEEDED);
@@ -3450,8 +3450,8 @@ Box<ITV>
     bool open_upper = seq_var.upper_is_open();
     bool unbounded_upper = seq_var.upper_is_boundary_infinity();
     PPL_DIRTY_TEMP(mpq_class, q_seq_var_upper);
-    PPL_DIRTY_TEMP(Coefficient, numer_upper);
-    PPL_DIRTY_TEMP(Coefficient, denom_upper);
+    PPL_DIRTY_TEMP_COEFFICIENT(numer_upper);
+    PPL_DIRTY_TEMP_COEFFICIENT(denom_upper);
     if (!unbounded_upper) {
       assign_r(q_seq_var_upper, seq_var.upper(), ROUND_NOT_NEEDED);
       assign_r(numer_upper, q_seq_var_upper.get_num(), ROUND_NOT_NEEDED);
@@ -3469,7 +3469,7 @@ Box<ITV>
       // and adding the lower bound for `var' to the inhomogeneous term.
       Linear_Expression revised_lb_expr(ub_expr);
       revised_lb_expr -= ub_var_coeff * var;
-      PPL_DIRTY_TEMP(Coefficient, d);
+      PPL_DIRTY_TEMP_COEFFICIENT(d);
       neg_assign(d, denom_lower);
       revised_lb_expr *= d;
       revised_lb_expr += numer_lower;
@@ -3477,7 +3477,7 @@ Box<ITV>
       // Find the minimum value for the revised lower bound expression
       // and use this to refine the appropriate bound.
       bool included;
-      PPL_DIRTY_TEMP(Coefficient, denom);
+      PPL_DIRTY_TEMP_COEFFICIENT(denom);
       if (minimize(revised_lb_expr, numer_lower, denom, included)) {
         denom_lower *= (denom * ub_var_coeff);
         PPL_DIRTY_TEMP(mpq_class, q);
@@ -3508,7 +3508,7 @@ Box<ITV>
       // and adding the upper bound for `var' to the inhomogeneous term.
       Linear_Expression revised_ub_expr(lb_expr);
       revised_ub_expr -= lb_var_coeff * var;
-      PPL_DIRTY_TEMP(Coefficient, d);
+      PPL_DIRTY_TEMP_COEFFICIENT(d);
       neg_assign(d, denom_upper);
       revised_ub_expr *= d;
       revised_ub_expr += numer_upper;
@@ -3516,7 +3516,7 @@ Box<ITV>
       // Find the maximum value for the revised upper bound expression
       // and use this to refine the appropriate bound.
       bool included;
-      PPL_DIRTY_TEMP(Coefficient, denom);
+      PPL_DIRTY_TEMP_COEFFICIENT(denom);
       if (maximize(revised_ub_expr, numer_upper, denom, included)) {
         denom_upper *= (denom * lb_var_coeff);
         PPL_DIRTY_TEMP(mpq_class, q);
@@ -3713,12 +3713,12 @@ Box<ITV>
   // First, compute the maximum and minimum value reached by
   // `denominator*var' on the box as we need to use non-relational
   // expressions.
-  PPL_DIRTY_TEMP(Coefficient, max_numer);
-  PPL_DIRTY_TEMP(Coefficient, max_denom);
+  PPL_DIRTY_TEMP_COEFFICIENT(max_numer);
+  PPL_DIRTY_TEMP_COEFFICIENT(max_denom);
   bool max_included;
   bool bound_above = maximize(denominator*var, max_numer, max_denom, max_included);
-  PPL_DIRTY_TEMP(Coefficient, min_numer);
-  PPL_DIRTY_TEMP(Coefficient, min_denom);
+  PPL_DIRTY_TEMP_COEFFICIENT(min_numer);
+  PPL_DIRTY_TEMP_COEFFICIENT(min_denom);
   bool min_included;
   bool bound_below = minimize(denominator*var, min_numer, min_denom, min_included);
   // Use the correct relation symbol
@@ -3817,12 +3817,12 @@ Box<ITV>
   }
 
   // Compute the maximum and minimum value reached by the rhs on the box.
-  PPL_DIRTY_TEMP(Coefficient, max_numer);
-  PPL_DIRTY_TEMP(Coefficient, max_denom);
+  PPL_DIRTY_TEMP_COEFFICIENT(max_numer);
+  PPL_DIRTY_TEMP_COEFFICIENT(max_denom);
   bool max_included;
   bool max_rhs = maximize(rhs, max_numer, max_denom, max_included);
-  PPL_DIRTY_TEMP(Coefficient, min_numer);
-  PPL_DIRTY_TEMP(Coefficient, min_denom);
+  PPL_DIRTY_TEMP_COEFFICIENT(min_numer);
+  PPL_DIRTY_TEMP_COEFFICIENT(min_denom);
   bool min_included;
   bool min_rhs = minimize(rhs, min_numer, min_denom, min_included);
 
@@ -4264,8 +4264,8 @@ Box<ITV>::constraints() const {
 
   for (dimension_type k = 0; k < space_dim; ++k) {
     const Variable v_k = Variable(k);
-    PPL_DIRTY_TEMP(Coefficient, n);
-    PPL_DIRTY_TEMP(Coefficient, d);
+    PPL_DIRTY_TEMP_COEFFICIENT(n);
+    PPL_DIRTY_TEMP_COEFFICIENT(d);
     bool closed = false;
     if (has_lower_bound(v_k, n, d, closed)) {
       if (closed) {
@@ -4309,8 +4309,8 @@ Box<ITV>::minimized_constraints() const {
 
   for (dimension_type k = 0; k < space_dim; ++k) {
     const Variable v_k = Variable(k);
-    PPL_DIRTY_TEMP(Coefficient, n);
-    PPL_DIRTY_TEMP(Coefficient, d);
+    PPL_DIRTY_TEMP_COEFFICIENT(n);
+    PPL_DIRTY_TEMP_COEFFICIENT(d);
     bool closed = false;
     if (has_lower_bound(v_k, n, d, closed)) {
       if (closed) {
@@ -4360,8 +4360,8 @@ Box<ITV>::congruences() const {
 
   for (dimension_type k = 0; k < space_dim; ++k) {
     const Variable v_k = Variable(k);
-    PPL_DIRTY_TEMP(Coefficient, n);
-    PPL_DIRTY_TEMP(Coefficient, d);
+    PPL_DIRTY_TEMP_COEFFICIENT(n);
+    PPL_DIRTY_TEMP_COEFFICIENT(d);
     bool closed = false;
     if (has_lower_bound(v_k, n, d, closed) && closed) {
       // Make sure equality congruences are detected.

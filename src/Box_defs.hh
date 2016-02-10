@@ -2239,7 +2239,8 @@ Poly_Con_Relation
 interval_relation(const ITV& i,
                   const Constraint::Type constraint_type,
                   Coefficient_traits::const_reference numer,
-                  Coefficient_traits::const_reference denom = 1);
+                  Coefficient_traits::const_reference denom
+                  = Coefficient_one());
 
 class Box_Helpers {
 public:

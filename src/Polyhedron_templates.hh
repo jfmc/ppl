@@ -572,7 +572,7 @@ Polyhedron::convert_to_integer_expressions(
     res_low_coeff = numerators[lf_dimension];
   }
   else {
-    res_low_coeff = Coefficient(0);
+    res_low_coeff = 0;
   }
 
   if (numerators[lf_dimension+1] != 0) {
@@ -582,7 +582,7 @@ Polyhedron::convert_to_integer_expressions(
     res_hi_coeff = numerators[lf_dimension+1];
   }
   else {
-    res_hi_coeff = Coefficient(0);
+    res_hi_coeff = 0;
   }
 }
 
