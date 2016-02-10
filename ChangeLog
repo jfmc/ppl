@@ -1,5 +1,18 @@
 2016-02-10  Roberto Bagnara <roberto.bagnara@bugseng.com>
 
+	* README: Updated.
+
+2016-02-10  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* NEWS: Updated.
+
+2016-02-10  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
+	* ChangeLog, doc/libppl.3, doc/libppl_c.3, doc/ppl-config.1: 
+	Updated.
+
+2016-02-10  Roberto Bagnara <roberto.bagnara@bugseng.com>
+
 	* config.guess, config.sub: Updated.
 
 2016-02-10  Roberto Bagnara <roberto.bagnara@bugseng.com>
