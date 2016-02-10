@@ -15,8 +15,11 @@ NEWS for version 1.2  (released date to be decided)
 New and Changed Features
 ========================
 
-o  TO BE WRITTEN
+o  Improved the efficiency of the conversion procedure for polyhedra
+   by adding a quick adjacency check.
 
+o  In the Java language interface, throw an exception when trying
+   to build a disequality Constraint.
 
 
 Bugfixes
