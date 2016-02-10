@@ -81,9 +81,6 @@ ac_save_CPPFLAGS="$CPPFLAGS"
 CPPFLAGS="$CPPFLAGS $gmp_include_options"
 ac_save_LIBS="$LIBS"
 LIBS="$LIBS $gmp_library_options"
-eval ac_save_shared_library_path="\$$shared_library_path_env_var"
-eval $shared_library_path_env_var=\"$gmp_library_paths:$ac_save_shared_library_path\"
-export $shared_library_path_env_var
 
 AC_LANG_PUSH(C++)
 
@@ -224,7 +221,6 @@ AC_DEFINE_UNQUOTED(PPL_GMP_SUPPORTS_EXCEPTIONS, $value,
 fi
 
 AC_LANG_POP(C++)
-eval $shared_library_path_env_var=\"$ac_save_shared_library_path\"
 LIBS="$ac_save_LIBS"
 CPPFLAGS="$ac_save_CPPFLAGS"
 

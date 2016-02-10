@@ -851,6 +851,17 @@ AC_CHECK_TYPES([int_fast16_t,int_fast32_t,int_fast64_t,uint_fast16_t,uint_fast32
 AC_TYPE_UINTPTR_T
 
 
+# Libtool.
+LT_PREREQ([1.5.24])
+LT_INIT([dlopen,win32-dll])
+AM_CONDITIONAL(ENABLE_SHARED, test x"$enable_shared" = xyes)
+AM_CONDITIONAL(ENABLE_STATIC, test x"$enable_static" = xyes)
+
+
+# Make sure libtool is used for linking.
+AC_USE_LIBTOOL
+
+
 # Checks on the GMP library.
 
 AC_CHECK_GMP
@@ -1489,12 +1500,6 @@ quick)
   ;;
 esac
 AM_CONDITIONAL(THOROUGH_MAKE_CHECK, test x"$enableval" = xthorough)
-
-# Libtool.
-LT_PREREQ([1.5.24])
-LT_INIT([dlopen,win32-dll])
-AM_CONDITIONAL(ENABLE_SHARED, test x"$enable_shared" = xyes)
-AM_CONDITIONAL(ENABLE_STATIC, test x"$enable_static" = xyes)
 
 # Checks for md5sum.
 AC_CHECK_PROG(MD5SUM, md5sum, md5sum)
