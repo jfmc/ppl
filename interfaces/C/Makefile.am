@@ -72,8 +72,14 @@ C_interface.dox
 #	    0.10.1		    2:0:0 (was not updated by mistake)
 #	    0.10.2		    3:0:1
 #	    0.11		    4:0:0
+#	    0.12		    4:0:0 (was not updated by mistake)
+#	    0.12.1		    4:0:0 (was not updated by mistake)
+#	    1.0			    4:0:0 (was not updated by mistake)
+#	    1.1			    4:0:0 (was not updated by mistake)
+#	    1.2			    4:0:0 (was not updated by mistake)
+#	    1.3			    5:0:0
 
-LIBPPL_C_LT_CURRENT =  4
+LIBPPL_C_LT_CURRENT =  5
 LIBPPL_C_LT_REVISION = 0
 LIBPPL_C_LT_AGE =      0
 
