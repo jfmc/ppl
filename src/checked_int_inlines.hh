@@ -797,7 +797,7 @@ PPL_SPECIALIZE_ASSIGN(assign_int_mpq, unsigned long long, mpq_class)
 #error "Unexpected max for unsigned short"
 #endif
 
-#if UINT_MAX == 0xffffffff
+#if UINT_MAX == 0xffffffffU
 #define INT_BITS 32
 #else
 #error "Unexpected max for unsigned int"
