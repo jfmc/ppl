@@ -165,7 +165,7 @@ namespace Implementation {
   Assuming \p u is nonzero, returns the index of the first set bit in \p u.
 */
 inline unsigned int
-first_one(unsigned int u) {
+first_one(const unsigned int u) {
   return ctz(u);
 }
 
@@ -174,7 +174,7 @@ first_one(unsigned int u) {
   \p ul.
 */
 inline unsigned int
-first_one(unsigned long ul) {
+first_one(const unsigned long ul) {
   return ctz(ul);
 }
 
@@ -183,7 +183,7 @@ first_one(unsigned long ul) {
   \p ull.
 */
 inline unsigned int
-first_one(unsigned long long ull) {
+first_one(const unsigned long long ull) {
   return ctz(ull);
 }
 
@@ -191,7 +191,7 @@ first_one(unsigned long long ull) {
   Assuming \p u is nonzero, returns the index of the last set bit in \p u.
 */
 inline unsigned int
-last_one(unsigned int u) {
+last_one(const unsigned int u) {
   return static_cast<unsigned int>(sizeof_to_bits(sizeof(u)))
     - 1U - clz(u);
 }
@@ -201,7 +201,7 @@ last_one(unsigned int u) {
   \p ul.
 */
 inline unsigned int
-last_one(unsigned long ul) {
+last_one(const unsigned long ul) {
   return static_cast<unsigned int>(sizeof_to_bits(sizeof(ul)))
     - 1U - clz(ul);
 }
@@ -211,7 +211,7 @@ last_one(unsigned long ul) {
   \p ull.
 */
 inline unsigned int
-last_one(unsigned long long ull) {
+last_one(const unsigned long long ull) {
   return static_cast<unsigned int>(sizeof_to_bits(sizeof(ull)))
     - 1U - clz(ull);
 }
@@ -226,8 +226,8 @@ swap(Bit_Row& x, Bit_Row& y) {
 
 /*! \relates Bit_Row */
 inline void
-iter_swap(std::vector<Bit_Row>::iterator x,
-          std::vector<Bit_Row>::iterator y) {
+iter_swap(const std::vector<Bit_Row>::iterator x,
+          const std::vector<Bit_Row>::iterator y) {
   swap(*x, *y);
 }
 

@@ -62,8 +62,8 @@ PPL::Bit_Matrix::sort_rows() {
   if (num_duplicates > 0) {
     typedef Cont::iterator Iter;
     typedef std::iterator_traits<Iter>::difference_type diff_t;
-    Iter last = rows.end();
-    Iter first = last - static_cast<diff_t>(num_duplicates);
+    const Iter last = rows.end();
+    const Iter first = last - static_cast<diff_t>(num_duplicates);
     rows.erase(first, last);
   }
 
@@ -129,8 +129,8 @@ PPL::Bit_Matrix::transpose_assign(const Bit_Matrix& y) {
 }
 
 void
-PPL::Bit_Matrix::resize(dimension_type new_n_rows,
-                        dimension_type new_n_columns) {
+PPL::Bit_Matrix::resize(const dimension_type new_n_rows,
+                        const dimension_type new_n_columns) {
   PPL_ASSERT(OK());
   const dimension_type old_num_rows = num_rows();
   if (new_n_columns < row_size) {

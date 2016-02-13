@@ -33,7 +33,7 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::Congruence::Congruence(const Constraint& c, Representation r)
+PPL::Congruence::Congruence(const Constraint& c, const Representation r)
   : expr(c.expression(), c.space_dimension(), r),
     modulus_(0) {
   if (!c.is_equality()) {
@@ -43,8 +43,8 @@ PPL::Congruence::Congruence(const Constraint& c, Representation r)
 }
 
 PPL::Congruence::Congruence(const Constraint& c,
-                            dimension_type new_space_dimension,
-                            Representation r)
+                            const dimension_type new_space_dimension,
+                            const Representation r)
   : expr(c.expression(), new_space_dimension, r),
     modulus_(0) {
   if (!c.is_equality()) {
@@ -112,7 +112,7 @@ PPL::Congruence::scale(Coefficient_traits::const_reference factor) {
 
 void
 PPL::Congruence
-::affine_preimage(Variable v, const Linear_Expression& e,
+::affine_preimage(const Variable v, const Linear_Expression& e,
                   Coefficient_traits::const_reference denominator) {
   PPL_DIRTY_TEMP_COEFFICIENT(c);
   c = expr.get(v);
@@ -138,7 +138,7 @@ PPL::Congruence
 PPL::Congruence
 PPL::Congruence::create(const Linear_Expression& e1,
                         const Linear_Expression& e2,
-                        Representation r) {
+                        const Representation r) {
   Linear_Expression e(e1,
                       std::max(e1.space_dimension(), e2.space_dimension()),
                       r);
@@ -147,8 +147,8 @@ PPL::Congruence::create(const Linear_Expression& e1,
 }
 
 void
-PPL::Congruence::throw_invalid_argument(const char* method,
-                                        const char* message) const {
+PPL::Congruence::throw_invalid_argument(const char* const method,
+                                        const char* const message) const {
   std::ostringstream s;
   s << "PPL::Congruence::" << method << ":" << std::endl
     << message;
@@ -156,8 +156,8 @@ PPL::Congruence::throw_invalid_argument(const char* method,
 }
 
 void
-PPL::Congruence::throw_dimension_incompatible(const char* method,
-                                              const char* v_name,
+PPL::Congruence::throw_dimension_incompatible(const char* const method,
+                                              const char* const v_name,
                                               const Variable v) const {
   std::ostringstream s;
   s << "this->space_dimension() == " << space_dimension() << ", "

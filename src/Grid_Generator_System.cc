@@ -77,7 +77,7 @@ PPL::Grid_Generator_System::insert(Grid_Generator& g, Recycle_Input) {
 
 void
 PPL::Grid_Generator_System
-::affine_image(Variable v,
+::affine_image(const Variable v,
                const Linear_Expression& expr,
                Coefficient_traits::const_reference denominator) {
   // This is mostly a copy of Generator_System::affine_image.

@@ -29,12 +29,12 @@ site: http://bugseng.com/products/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-Generator_System::Generator_System(Representation r)
+Generator_System::Generator_System(const Representation r)
   : sys(NECESSARILY_CLOSED, r) {
 }
 
 inline
-Generator_System::Generator_System(const Generator& g, Representation r)
+Generator_System::Generator_System(const Generator& g, const Representation r)
   : sys(g.topology(), r) {
   sys.insert(g);
 }
@@ -46,19 +46,19 @@ Generator_System::Generator_System(const Generator_System& gs)
 
 inline
 Generator_System::Generator_System(const Generator_System& gs,
-                                   Representation r)
+                                   const Representation r)
   : sys(gs.sys, r) {
 }
 
 inline
-Generator_System::Generator_System(const Topology topol, Representation r)
+Generator_System::Generator_System(const Topology topol, const Representation r)
   : sys(topol, r) {
 }
 
 inline
 Generator_System::Generator_System(const Topology topol,
                                    const dimension_type space_dim,
-                                   Representation r)
+                                   const Representation r)
   : sys(topol, space_dim, r) {
 }
 
@@ -79,7 +79,7 @@ Generator_System::representation() const {
 }
 
 inline void
-Generator_System::set_representation(Representation r) {
+Generator_System::set_representation(const Representation r) {
   sys.set_representation(r);
 }
 
@@ -94,7 +94,7 @@ Generator_System::space_dimension() const {
 }
 
 inline void
-Generator_System::set_space_dimension(dimension_type space_dim) {
+Generator_System::set_space_dimension(const dimension_type space_dim) {
   const dimension_type old_space_dim = space_dimension();
   sys.set_space_dimension_no_ok(space_dim);
 
@@ -130,7 +130,7 @@ Generator_System
 
 inline void
 Generator_System
-::shift_space_dimensions(Variable v, dimension_type n) {
+::shift_space_dimensions(const Variable v, const dimension_type n) {
   sys.shift_space_dimensions(v, n);
 }
 
@@ -142,7 +142,7 @@ Generator_System
 
 inline void
 Generator_System
-::swap_space_dimensions(Variable v1, Variable v2) {
+::swap_space_dimensions(const Variable v1, const Variable v2) {
   sys.swap_space_dimensions(v1, v2);
 }
 
@@ -152,7 +152,8 @@ Generator_System::num_rows() const {
 }
 
 inline void
-Generator_System::add_universe_rows_and_space_dimensions(dimension_type n) {
+Generator_System
+::add_universe_rows_and_space_dimensions(const dimension_type n) {
   sys.add_universe_rows_and_space_dimensions(n);
 }
 
@@ -172,7 +173,7 @@ Generator_System::unset_pending_rows() {
 }
 
 inline void
-Generator_System::set_sorted(bool b) {
+Generator_System::set_sorted(const bool b) {
   sys.set_sorted(b);
 }
 
@@ -182,7 +183,7 @@ Generator_System::is_sorted() const {
 }
 
 inline void
-Generator_System::set_index_first_pending_row(dimension_type i) {
+Generator_System::set_index_first_pending_row(const dimension_type i) {
   sys.set_index_first_pending_row(i);
 }
 
@@ -227,13 +228,14 @@ Generator_System::num_lines_or_equalities() const {
 }
 
 inline void
-Generator_System::remove_row(dimension_type i, bool keep_sorted) {
+Generator_System::remove_row(const dimension_type i, const bool keep_sorted) {
   sys.remove_row(i, keep_sorted);
 }
 
 inline void
-Generator_System::remove_rows(dimension_type first, dimension_type last,
-                              bool keep_sorted) {
+Generator_System::remove_rows(const dimension_type first,
+                              const dimension_type last,
+                              const bool keep_sorted) {
   sys.remove_rows(first, last, keep_sorted);
 }
 
@@ -243,17 +245,17 @@ Generator_System::remove_rows(const std::vector<dimension_type>& indexes) {
 }
 
 inline void
-Generator_System::remove_trailing_rows(dimension_type n) {
+Generator_System::remove_trailing_rows(const dimension_type n) {
   sys.remove_trailing_rows(n);
 }
 
 inline dimension_type
-Generator_System::gauss(dimension_type n_lines_or_equalities) {
+Generator_System::gauss(const dimension_type n_lines_or_equalities) {
   return sys.gauss(n_lines_or_equalities);
 }
 
 inline void
-Generator_System::back_substitute(dimension_type n_lines_or_equalities) {
+Generator_System::back_substitute(const dimension_type n_lines_or_equalities) {
   sys.back_substitute(n_lines_or_equalities);
 }
 

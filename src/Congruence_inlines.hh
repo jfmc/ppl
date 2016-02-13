@@ -29,7 +29,7 @@ site: http://bugseng.com/products/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-Congruence::Congruence(Representation r)
+Congruence::Congruence(const Representation r)
   : expr(r) {
   PPL_ASSERT(OK());
 }
@@ -40,21 +40,21 @@ Congruence::Congruence(const Congruence& cg)
 }
 
 inline
-Congruence::Congruence(const Congruence& cg, Representation r)
+Congruence::Congruence(const Congruence& cg, const Representation r)
   : expr(cg.expr, r), modulus_(cg.modulus_) {
 }
 
 inline
 Congruence::Congruence(const Congruence& cg,
-                       dimension_type new_space_dimension)
+                       const dimension_type new_space_dimension)
   : expr(cg.expr, new_space_dimension), modulus_(cg.modulus_) {
   PPL_ASSERT(OK());
 }
 
 inline
 Congruence::Congruence(const Congruence& cg,
-                       dimension_type new_space_dimension,
-                       Representation r)
+                       const dimension_type new_space_dimension,
+                       const Representation r)
   : expr(cg.expr, new_space_dimension, r), modulus_(cg.modulus_) {
   PPL_ASSERT(OK());
 }
@@ -65,7 +65,7 @@ Congruence::representation() const {
 }
 
 inline void
-Congruence::set_representation(Representation r) {
+Congruence::set_representation(const Representation r) {
   expr.set_representation(r);
 }
 
@@ -75,13 +75,13 @@ Congruence::expression() const {
 }
 
 inline void
-Congruence::set_space_dimension(dimension_type n) {
+Congruence::set_space_dimension(const dimension_type n) {
   expr.set_space_dimension(n);
   PPL_ASSERT(OK());
 }
 
 inline void
-Congruence::shift_space_dimensions(Variable v, dimension_type n) {
+Congruence::shift_space_dimensions(const Variable v, const dimension_type n) {
   expr.shift_space_dimensions(v, n);
 }
 
@@ -103,7 +103,7 @@ Congruence::Congruence(Linear_Expression& le,
 inline Congruence
 Congruence::create(const Linear_Expression& e,
                    Coefficient_traits::const_reference n,
-                   Representation r) {
+                   const Representation r) {
   Linear_Expression diff(e, r);
   diff -= n;
   const Congruence cg(diff, 1, Recycle_Input());
@@ -113,7 +113,7 @@ Congruence::create(const Linear_Expression& e,
 inline Congruence
 Congruence::create(Coefficient_traits::const_reference n,
                    const Linear_Expression& e,
-                   Representation r) {
+                   const Representation r) {
   Linear_Expression diff(e, r);
   diff -= n;
   const Congruence cg(diff, 1, Recycle_Input());
@@ -246,7 +246,7 @@ Congruence::is_equality() const {
 }
 
 inline bool
-Congruence::is_equal_at_dimension(Variable v,
+Congruence::is_equal_at_dimension(const Variable v,
                                   const Congruence& cg) const {
   return coefficient(v) * cg.modulus() == cg.coefficient(v) * modulus();
 }
@@ -270,7 +270,7 @@ Congruence::m_swap(Congruence& y) {
 }
 
 inline void
-Congruence::swap_space_dimensions(Variable v1, Variable v2) {
+Congruence::swap_space_dimensions(const Variable v1, const Variable v2) {
   expr.swap_space_dimensions(v1, v2);
 }
 

@@ -72,7 +72,7 @@ Generator::set_is_ray_or_point_or_inequality() {
 }
 
 inline void
-Generator::set_topology(Topology x) {
+Generator::set_topology(const Topology x) {
   if (topology() == x) {
     return;
   }
@@ -110,7 +110,7 @@ Generator::set_not_necessarily_closed() {
 }
 
 inline
-Generator::Generator(Representation r)
+Generator::Generator(const Representation r)
   : expr(r),
     kind_(RAY_OR_POINT_OR_INEQUALITY),
     topology_(NECESSARILY_CLOSED) {
@@ -120,8 +120,8 @@ Generator::Generator(Representation r)
 }
 
 inline
-Generator::Generator(dimension_type space_dim, Kind kind, Topology topology,
-                     Representation r)
+Generator::Generator(const dimension_type space_dim, const Kind kind,
+                     const Topology topology, const Representation r)
   : expr(r),
     kind_(kind),
     topology_(topology) {
@@ -136,7 +136,8 @@ Generator::Generator(dimension_type space_dim, Kind kind, Topology topology,
 }
 
 inline
-Generator::Generator(Linear_Expression& e, Type type, Topology topology)
+Generator::Generator(Linear_Expression& e,
+                     const Type type, const Topology topology)
   : topology_(topology) {
   PPL_ASSERT(type != CLOSURE_POINT || topology == NOT_NECESSARILY_CLOSED);
   swap(expr, e);
@@ -153,7 +154,8 @@ Generator::Generator(Linear_Expression& e, Type type, Topology topology)
 }
 
 inline
-Generator::Generator(Linear_Expression& e, Kind kind, Topology topology)
+Generator::Generator(Linear_Expression& e,
+                     const Kind kind, const Topology topology)
   : kind_(kind),
     topology_(topology) {
   swap(expr, e);
@@ -171,7 +173,7 @@ Generator::Generator(const Generator& g)
 }
 
 inline
-Generator::Generator(const Generator& g, Representation r)
+Generator::Generator(const Generator& g, const Representation r)
   : expr(g.expr, r),
     kind_(g.kind_),
     topology_(g.topology_) {
@@ -180,7 +182,7 @@ Generator::Generator(const Generator& g, Representation r)
 }
 
 inline
-Generator::Generator(const Generator& g, dimension_type space_dim)
+Generator::Generator(const Generator& g, const dimension_type space_dim)
   : expr(g.expr, g.is_necessarily_closed() ? space_dim : (space_dim + 1)),
     kind_(g.kind_),
     topology_(g.topology_) {
@@ -189,8 +191,8 @@ Generator::Generator(const Generator& g, dimension_type space_dim)
 }
 
 inline
-Generator::Generator(const Generator& g, dimension_type space_dim,
-                     Representation r)
+Generator::Generator(const Generator& g,
+                     const dimension_type space_dim, const Representation r)
   : expr(g.expr, g.is_necessarily_closed() ? space_dim : (space_dim + 1), r),
     kind_(g.kind_),
     topology_(g.topology_) {
@@ -216,7 +218,7 @@ Generator::representation() const {
 }
 
 inline void
-Generator::set_representation(Representation r) {
+Generator::set_representation(const Representation r) {
   expr.set_representation(r);
 }
 
@@ -226,7 +228,7 @@ Generator::max_space_dimension() {
 }
 
 inline void
-Generator::set_space_dimension_no_ok(dimension_type space_dim) {
+Generator::set_space_dimension_no_ok(const dimension_type space_dim) {
   const dimension_type old_expr_space_dim = expr.space_dimension();
   if (topology() == NECESSARILY_CLOSED) {
     expr.set_space_dimension(space_dim);
@@ -249,13 +251,13 @@ Generator::set_space_dimension_no_ok(dimension_type space_dim) {
 }
 
 inline void
-Generator::set_space_dimension(dimension_type space_dim) {
+Generator::set_space_dimension(const dimension_type space_dim) {
   set_space_dimension_no_ok(space_dim);
   PPL_ASSERT(OK());
 }
 
 inline void
-Generator::shift_space_dimensions(Variable v, dimension_type n) {
+Generator::shift_space_dimensions(const Variable v, const dimension_type n) {
   expr.shift_space_dimensions(v, n);
 }
 
@@ -383,32 +385,32 @@ Generator::zero_dim_closure_point() {
 
 /*! \relates Generator */
 inline Generator
-line(const Linear_Expression& e, Representation r) {
+line(const Linear_Expression& e, const Representation r) {
   return Generator::line(e, r);
 }
 
 /*! \relates Generator */
 inline Generator
-ray(const Linear_Expression& e, Representation r) {
+ray(const Linear_Expression& e, const Representation r) {
   return Generator::ray(e, r);
 }
 
 /*! \relates Generator */
 inline Generator
 point(const Linear_Expression& e, Coefficient_traits::const_reference d,
-      Representation r) {
+      const Representation r) {
   return Generator::point(e, d, r);
 }
 
 /*! \relates Generator */
 inline Generator
-point(Representation r) {
+point(const Representation r) {
   return Generator::point(r);
 }
 
 /*! \relates Generator */
 inline Generator
-point(const Linear_Expression& e, Representation r) {
+point(const Linear_Expression& e, const Representation r) {
   return Generator::point(e, r);
 }
 
@@ -416,20 +418,20 @@ point(const Linear_Expression& e, Representation r) {
 inline Generator
 closure_point(const Linear_Expression& e,
               Coefficient_traits::const_reference d,
-              Representation r) {
+              const Representation r) {
   return Generator::closure_point(e, d, r);
 }
 
 /*! \relates Generator */
 inline Generator
-closure_point(Representation r) {
+closure_point(const Representation r) {
   return Generator::closure_point(r);
 }
 
 /*! \relates Generator */
 inline Generator
 closure_point(const Linear_Expression& e,
-              Representation r) {
+              const Representation r) {
   return Generator::closure_point(e, r);
 }
 

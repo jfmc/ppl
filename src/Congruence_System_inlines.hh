@@ -44,7 +44,7 @@ Congruence_System::has_no_rows() const {
 }
 
 inline void
-Congruence_System::remove_trailing_rows(dimension_type n) {
+Congruence_System::remove_trailing_rows(const dimension_type n) {
   PPL_ASSERT(num_rows() >= n);
   rows.resize(num_rows() - n);
 }
@@ -65,14 +65,15 @@ Congruence_System::insert(Congruence& cg, Recycle_Input) {
 }
 
 inline
-Congruence_System::Congruence_System(Representation r)
+Congruence_System::Congruence_System(const Representation r)
   : rows(),
     space_dimension_(0),
     representation_(r) {
 }
 
 inline
-Congruence_System::Congruence_System(const Congruence& cg, Representation r)
+Congruence_System::Congruence_System(const Congruence& cg,
+                                     const Representation r)
   : rows(),
     space_dimension_(0),
     representation_(r) {
@@ -80,7 +81,8 @@ Congruence_System::Congruence_System(const Congruence& cg, Representation r)
 }
 
 inline
-Congruence_System::Congruence_System(const Constraint& c, Representation r)
+Congruence_System::Congruence_System(const Constraint& c,
+                                     const Representation r)
   : rows(),
     space_dimension_(0),
     representation_(r) {
@@ -96,7 +98,7 @@ Congruence_System::Congruence_System(const Congruence_System& cgs)
 
 inline
 Congruence_System::Congruence_System(const Congruence_System& cgs,
-                                     Representation r)
+                                     const Representation r)
   : rows(cgs.rows),
     space_dimension_(cgs.space_dimension_),
     representation_(r) {
@@ -108,7 +110,8 @@ Congruence_System::Congruence_System(const Congruence_System& cgs,
 }
 
 inline
-Congruence_System::Congruence_System(const dimension_type d, Representation r)
+Congruence_System::Congruence_System(const dimension_type d,
+                                     const Representation r)
   : rows(),
     space_dimension_(d),
     representation_(r) {
@@ -131,7 +134,7 @@ Congruence_System::representation() const {
 }
 
 inline void
-Congruence_System::set_representation(Representation r) {
+Congruence_System::set_representation(const Representation r) {
   if (representation_ == r) {
     return;
   }

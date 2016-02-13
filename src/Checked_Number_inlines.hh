@@ -35,7 +35,7 @@ namespace Parma_Polyhedra_Library {
 #endif
 
 inline Rounding_Dir
-rounding_dir(Rounding_Dir dir) {
+rounding_dir(const Rounding_Dir dir) {
   if (dir == ROUND_NOT_NEEDED) {
 #ifdef DEBUG_ROUND_NOT_NEEDED
     return ROUND_CHECK;
@@ -45,7 +45,7 @@ rounding_dir(Rounding_Dir dir) {
 }
 
 inline Result
-check_result(Result r, Rounding_Dir dir) {
+check_result(const Result r, const Rounding_Dir dir) {
   if (dir == ROUND_NOT_NEEDED) {
 #ifdef DEBUG_ROUND_NOT_NEEDED
     PPL_ASSERT(result_relation(r) == VR_EQ);
@@ -62,7 +62,7 @@ Checked_Number_Transparent_Policy<T>::handle_result(Result) {
 }
 
 inline void
-Extended_Number_Policy::handle_result(Result r) {
+Extended_Number_Policy::handle_result(const Result r) {
   if (result_class(r) == VC_NAN) {
     throw_result_exception(r);
   }
@@ -204,7 +204,7 @@ Checked_Number<T, Policy>::Checked_Number(const From&, typename Enable_If<Is_Spe
 template <typename To, typename From>
 inline typename Enable_If<Is_Native_Or_Checked<To>::value
                           && Is_Special<From>::value, Result>::type
-assign_r(To& to, const From&, Rounding_Dir dir) {
+assign_r(To& to, const From&, const Rounding_Dir dir) {
   return check_result(Checked::assign_special<typename Native_Checked_To_Wrapper<To>
                       ::Policy>(Native_Checked_To_Wrapper<To>::raw_value(to),
                                 From::vclass,

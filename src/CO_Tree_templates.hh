@@ -27,7 +27,7 @@ site: http://bugseng.com/products/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename Iterator>
-CO_Tree::CO_Tree(Iterator i, dimension_type n) {
+CO_Tree::CO_Tree(Iterator i, const dimension_type n) {
 
   if (n == 0) {
     init(0);

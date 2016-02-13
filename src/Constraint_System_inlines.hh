@@ -29,12 +29,13 @@ site: http://bugseng.com/products/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-Constraint_System::Constraint_System(Representation r)
+Constraint_System::Constraint_System(const Representation r)
   : sys(NECESSARILY_CLOSED, r) {
 }
 
 inline
-Constraint_System::Constraint_System(const Constraint& c, Representation r)
+Constraint_System::Constraint_System(const Constraint& c,
+                                     const Representation r)
   : sys(c.topology(), r) {
   sys.insert(c);
 }
@@ -46,19 +47,20 @@ Constraint_System::Constraint_System(const Constraint_System& cs)
 
 inline
 Constraint_System::Constraint_System(const Constraint_System& cs,
-                                     Representation r)
+                                     const Representation r)
   : sys(cs.sys, r) {
 }
 
 inline
-Constraint_System::Constraint_System(const Topology topol, Representation r)
+Constraint_System::Constraint_System(const Topology topol,
+                                     const Representation r)
   : sys(topol, r) {
 }
 
 inline
 Constraint_System::Constraint_System(const Topology topol,
                                      const dimension_type space_dim,
-                                     Representation r)
+                                     const Representation r)
   : sys(topol, space_dim, r) {
 }
 
@@ -84,7 +86,7 @@ Constraint_System::representation() const {
 }
 
 inline void
-Constraint_System::set_representation(Representation r) {
+Constraint_System::set_representation(const Representation r) {
   sys.set_representation(r);
 }
 
@@ -99,7 +101,7 @@ Constraint_System::space_dimension() const {
 }
 
 inline void
-Constraint_System::set_space_dimension(dimension_type space_dim) {
+Constraint_System::set_space_dimension(const dimension_type space_dim) {
   return sys.set_space_dimension(space_dim);
 }
 
@@ -263,23 +265,24 @@ Constraint_System::unset_pending_rows() {
 }
 
 inline void
-Constraint_System::set_index_first_pending_row(dimension_type i) {
+Constraint_System::set_index_first_pending_row(const dimension_type i) {
   sys.set_index_first_pending_row(i);
 }
 
 inline void
-Constraint_System::set_sorted(bool b) {
+Constraint_System::set_sorted(const bool b) {
   sys.set_sorted(b);
 }
 
 inline void
-Constraint_System::remove_row(dimension_type i, bool keep_sorted) {
+Constraint_System::remove_row(const dimension_type i, const bool keep_sorted) {
   sys.remove_row(i, keep_sorted);
 }
 
 inline void
-Constraint_System::remove_rows(dimension_type first, dimension_type last,
-                               bool keep_sorted) {
+Constraint_System::remove_rows(const dimension_type first,
+                               const dimension_type last,
+                               const bool keep_sorted) {
   sys.remove_rows(first, last, keep_sorted);
 }
 
@@ -289,7 +292,7 @@ Constraint_System::remove_rows(const std::vector<dimension_type>& indexes) {
 }
 
 inline void
-Constraint_System::remove_trailing_rows(dimension_type n) {
+Constraint_System::remove_trailing_rows(const dimension_type n) {
   sys.remove_trailing_rows(n);
 }
 
@@ -301,7 +304,7 @@ Constraint_System
 
 inline void
 Constraint_System
-::shift_space_dimensions(Variable v, dimension_type n) {
+::shift_space_dimensions(const Variable v, const dimension_type n) {
   sys.shift_space_dimensions(v, n);
 }
 
@@ -313,7 +316,7 @@ Constraint_System
 
 inline void
 Constraint_System
-::swap_space_dimensions(Variable v1, Variable v2) {
+::swap_space_dimensions(const Variable v1, const Variable v2) {
   sys.swap_space_dimensions(v1, v2);
 }
 
@@ -368,12 +371,12 @@ Constraint_System::mark_as_not_necessarily_closed() {
 }
 
 inline dimension_type
-Constraint_System::gauss(dimension_type n_lines_or_equalities) {
+Constraint_System::gauss(const dimension_type n_lines_or_equalities) {
   return sys.gauss(n_lines_or_equalities);
 }
 
 inline void
-Constraint_System::back_substitute(dimension_type n_lines_or_equalities) {
+Constraint_System::back_substitute(const dimension_type n_lines_or_equalities) {
   sys.back_substitute(n_lines_or_equalities);
 }
 
@@ -403,7 +406,8 @@ Constraint_System::num_lines_or_equalities() const {
 }
 
 inline void
-Constraint_System::add_universe_rows_and_space_dimensions(dimension_type n) {
+Constraint_System
+::add_universe_rows_and_space_dimensions(const dimension_type n) {
   sys.add_universe_rows_and_space_dimensions(n);
 }
 

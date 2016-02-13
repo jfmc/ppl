@@ -34,8 +34,8 @@ site: http://bugseng.com/products/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 void
-PPL::Generator::throw_dimension_incompatible(const char* method,
-                                             const char* v_name,
+PPL::Generator::throw_dimension_incompatible(const char* const method,
+                                             const char* const v_name,
                                              const Variable v) const {
   std::ostringstream s;
   s << "PPL::Generator::" << method << ":" << std::endl
@@ -45,8 +45,8 @@ PPL::Generator::throw_dimension_incompatible(const char* method,
 }
 
 void
-PPL::Generator::throw_invalid_argument(const char* method,
-                                       const char* reason) const {
+PPL::Generator::throw_invalid_argument(const char* const method,
+                                       const char* const reason) const {
   std::ostringstream s;
   s << "PPL::Generator::" << method << ":" << std::endl
     << reason << ".";
@@ -56,7 +56,7 @@ PPL::Generator::throw_invalid_argument(const char* method,
 PPL::Generator
 PPL::Generator::point(const Linear_Expression& e,
                       Coefficient_traits::const_reference d,
-                      Representation r) {
+                      const Representation r) {
   if (d == 0) {
     throw std::invalid_argument("PPL::point(e, d):\n"
                                 "d == 0.");
@@ -79,19 +79,19 @@ PPL::Generator::point(const Linear_Expression& e,
 
 PPL::Generator
 PPL::Generator::point(const Linear_Expression& e,
-                      Representation r) {
+                      const Representation r) {
   return point(e, Coefficient_one(), r);
 }
 
 PPL::Generator
-PPL::Generator::point(Representation r) {
+PPL::Generator::point(const Representation r) {
   return point(Linear_Expression::zero(), Coefficient_one(), r);
 }
 
 PPL::Generator
 PPL::Generator::closure_point(const Linear_Expression& e,
                               Coefficient_traits::const_reference d,
-                              Representation r) {
+                              const Representation r) {
   if (d == 0) {
     throw std::invalid_argument("PPL::closure_point(e, d):\n"
                                 "d == 0.");
@@ -115,17 +115,17 @@ PPL::Generator::closure_point(const Linear_Expression& e,
 
 PPL::Generator
 PPL::Generator::closure_point(const Linear_Expression& e,
-                              Representation r) {
+                              const Representation r) {
   return closure_point(e, Coefficient_one(), r);
 }
 
 PPL::Generator
-PPL::Generator::closure_point(Representation r) {
+PPL::Generator::closure_point(const Representation r) {
   return closure_point(Linear_Expression::zero(), Coefficient_one(), r);
 }
 
 PPL::Generator
-PPL::Generator::ray(const Linear_Expression& e, Representation r) {
+PPL::Generator::ray(const Linear_Expression& e, const Representation r) {
   // The origin of the space cannot be a ray.
   if (e.all_homogeneous_terms_are_zero()) {
     throw std::invalid_argument("PPL::ray(e):\n"
@@ -140,7 +140,7 @@ PPL::Generator::ray(const Linear_Expression& e, Representation r) {
 }
 
 PPL::Generator
-PPL::Generator::line(const Linear_Expression& e, Representation r) {
+PPL::Generator::line(const Linear_Expression& e, const Representation r) {
   // The origin of the space cannot be a line.
   if (e.all_homogeneous_terms_are_zero()) {
     throw std::invalid_argument("PPL::line(e):\n"
@@ -155,7 +155,7 @@ PPL::Generator::line(const Linear_Expression& e, Representation r) {
 }
 
 void
-PPL::Generator::swap_space_dimensions(Variable v1, Variable v2) {
+PPL::Generator::swap_space_dimensions(const Variable v1, const Variable v2) {
   PPL_ASSERT(v1.space_dimension() <= space_dimension());
   PPL_ASSERT(v2.space_dimension() <= space_dimension());
   expr.swap_space_dimensions(v1, v2);
@@ -204,7 +204,7 @@ PPL::Generator
 }
 
 void
-PPL::Generator::linear_combine(const Generator& y, dimension_type i) {
+PPL::Generator::linear_combine(const Generator& y, const dimension_type i) {
   expr.linear_combine(y.expr, i);
   strong_normalize();
 }

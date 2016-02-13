@@ -39,7 +39,7 @@ site: http://bugseng.com/products/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Congruence_System::Congruence_System(const Constraint_System& cs,
-                                          Representation r)
+                                          const Representation r)
   : rows(),
     space_dimension_(cs.space_dimension()),
     representation_(r) {
@@ -64,7 +64,7 @@ PPL::Congruence_System
 void
 PPL::Congruence_System::remove_rows(const dimension_type first,
                                     const dimension_type last,
-                                    bool keep_sorted) {
+                                    const bool keep_sorted) {
   PPL_ASSERT(first <= last);
   PPL_ASSERT(last <= num_rows());
   const dimension_type n = last - first;
@@ -101,7 +101,8 @@ PPL::Congruence_System
 }
 
 void
-PPL::Congruence_System::swap_space_dimensions(Variable v1, Variable v2) {
+PPL::Congruence_System::swap_space_dimensions(const Variable v1,
+                                              const Variable v2) {
   for (dimension_type k = num_rows(); k-- > 0; ) {
     rows[k].swap_space_dimensions(v1, v2);
   }
@@ -326,7 +327,7 @@ PPL::Congruence_System::has_a_free_dimension() const {
 
 void
 PPL::Congruence_System::
-affine_preimage(Variable v,
+affine_preimage(const Variable v,
                 const Linear_Expression& expr,
                 Coefficient_traits::const_reference denominator) {
   PPL_ASSERT(v.space_dimension() <= space_dimension());
@@ -460,7 +461,7 @@ PPL::operator==(const Congruence_System& x, const Congruence_System& y) {
 
 void
 PPL::Congruence_System
-::add_unit_rows_and_space_dimensions(dimension_type dims) {
+::add_unit_rows_and_space_dimensions(const dimension_type dims) {
   const dimension_type old_num_rows = num_rows();
   set_space_dimension(space_dimension() + dims);
 

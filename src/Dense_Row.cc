@@ -32,7 +32,8 @@ site: http://bugseng.com/products/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Dense_Row::Dense_Row(const Sparse_Row& y,
-                          dimension_type sz, dimension_type capacity) {
+                          const dimension_type sz,
+                          const dimension_type capacity) {
   resize(sz, capacity);
   for (Sparse_Row::const_iterator i = y.begin(),
          i_end = y.lower_bound(std::min(y.size(), sz)); i != i_end; ++i) {
@@ -42,7 +43,7 @@ PPL::Dense_Row::Dense_Row(const Sparse_Row& y,
 }
 
 void
-PPL::Dense_Row::resize(dimension_type new_size) {
+PPL::Dense_Row::resize(const dimension_type new_size) {
   if (new_size <= size()) {
     shrink(new_size);
   }
@@ -74,7 +75,8 @@ PPL::Dense_Row::resize(dimension_type new_size) {
 }
 
 void
-PPL::Dense_Row::resize(dimension_type new_size, dimension_type new_capacity) {
+PPL::Dense_Row::resize(const dimension_type new_size,
+                       const dimension_type new_capacity) {
   PPL_ASSERT(new_size <= new_capacity);
 
   if (new_capacity == 0) {
@@ -137,7 +139,8 @@ PPL::Dense_Row::clear() {
 }
 
 void
-PPL::Dense_Row::add_zeroes_and_shift(dimension_type n, dimension_type i) {
+PPL::Dense_Row::add_zeroes_and_shift(const dimension_type n,
+                                     const dimension_type i) {
   PPL_ASSERT(i <= size());
   const dimension_type new_size = size() + n;
   if (new_size > capacity()) {
@@ -222,7 +225,7 @@ PPL::Dense_Row::expand_within_capacity(const dimension_type new_size) {
 }
 
 void
-PPL::Dense_Row::shrink(dimension_type new_size) {
+PPL::Dense_Row::shrink(const dimension_type new_size) {
   PPL_ASSERT(new_size <= size());
   // Since ~Coefficient() does not throw exceptions, nothing here does.
 
@@ -251,7 +254,7 @@ PPL::Dense_Row::init(const Sparse_Row& row) {
   impl.capacity = row.size();
   impl.vec = impl.coeff_allocator.allocate(impl.capacity);
   Sparse_Row::const_iterator itr = row.begin();
-  Sparse_Row::const_iterator itr_end = row.end();
+  const Sparse_Row::const_iterator itr_end = row.end();
   while (impl.size != impl.capacity) {
     // Constructs (*this)[impl.size] with row[impl.size].
     if (itr != itr_end && itr.index() == impl.size) {
@@ -274,7 +277,7 @@ PPL::Dense_Row::operator=(const Sparse_Row& row) {
     // this can be optimized.
     shrink(row.size());
     Sparse_Row::const_iterator itr = row.begin();
-    Sparse_Row::const_iterator itr_end = row.end();
+    const Sparse_Row::const_iterator itr_end = row.end();
     for (dimension_type i = 0; i < impl.size; ++i) {
       // Computes (*this)[impl.size] = row[impl.size].
       if (itr != itr_end && itr.index() == i) {
@@ -290,7 +293,7 @@ PPL::Dense_Row::operator=(const Sparse_Row& row) {
     if (capacity() >= row.size()) {
       // size() <= row.size() <= capacity().
       Sparse_Row::const_iterator itr = row.begin();
-      Sparse_Row::const_iterator itr_end = row.end();
+      const Sparse_Row::const_iterator itr_end = row.end();
       for (dimension_type i = 0; i < impl.size; ++i) {
         // The following code is equivalent to (*this)[i] = row[i].
         if (itr != itr_end && itr.index() == impl.size) {
@@ -377,7 +380,7 @@ compute_gcd:
 }
 
 void
-PPL::Dense_Row::reset(dimension_type first, dimension_type last) {
+PPL::Dense_Row::reset(const dimension_type first, const dimension_type last) {
   PPL_ASSERT(first <= last);
   PPL_ASSERT(last <= size());
   for (dimension_type i = first; i < last; ++i) {
@@ -399,7 +402,8 @@ void
 PPL::Dense_Row::linear_combine(const Dense_Row& y,
                                Coefficient_traits::const_reference coeff1,
                                Coefficient_traits::const_reference coeff2,
-                               dimension_type start, dimension_type end) {
+                               const dimension_type start,
+                               const dimension_type end) {
   Dense_Row& x = *this;
   PPL_ASSERT(start <= end);
   PPL_ASSERT(end <= x.size());
@@ -511,7 +515,8 @@ PPL::Dense_Row::ascii_load(std::istream& s) {
 }
 
 PPL::memory_size_type
-PPL::Dense_Row::external_memory_in_bytes(dimension_type /* capacity */) const {
+PPL::Dense_Row
+::external_memory_in_bytes(const dimension_type /* capacity */) const {
   return external_memory_in_bytes();
 }
 

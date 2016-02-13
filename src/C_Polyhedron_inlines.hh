@@ -34,8 +34,8 @@ C_Polyhedron::~C_Polyhedron() {
 }
 
 inline
-C_Polyhedron::C_Polyhedron(dimension_type num_dimensions,
-                           Degenerate_Element kind)
+C_Polyhedron::C_Polyhedron(const dimension_type num_dimensions,
+                           const Degenerate_Element kind)
   : Polyhedron(NECESSARILY_CLOSED,
                check_space_dimension_overflow(num_dimensions,
                                               NECESSARILY_CLOSED,

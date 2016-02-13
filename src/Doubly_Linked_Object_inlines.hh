@@ -33,8 +33,8 @@ Doubly_Linked_Object::Doubly_Linked_Object() {
 }
 
 inline
-Doubly_Linked_Object::Doubly_Linked_Object(Doubly_Linked_Object* f,
-                                           Doubly_Linked_Object* b)
+Doubly_Linked_Object::Doubly_Linked_Object(Doubly_Linked_Object* const f,
+                                           Doubly_Linked_Object* const b)
   : next(f),
     prev(b) {
 }

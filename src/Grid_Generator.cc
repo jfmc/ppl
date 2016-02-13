@@ -33,8 +33,8 @@ site: http://bugseng.com/products/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 void
-PPL::Grid_Generator::throw_dimension_incompatible(const char* method,
-                                                  const char* name_var,
+PPL::Grid_Generator::throw_dimension_incompatible(const char* const method,
+                                                  const char* const name_var,
                                                   const Variable v) const {
   std::ostringstream s;
   s << "PPL::Grid_Generator::" << method << ":" << std::endl
@@ -44,8 +44,8 @@ PPL::Grid_Generator::throw_dimension_incompatible(const char* method,
 }
 
 void
-PPL::Grid_Generator::throw_invalid_argument(const char* method,
-                                            const char* reason) const {
+PPL::Grid_Generator::throw_invalid_argument(const char* const method,
+                                            const char* const reason) const {
   std::ostringstream s;
   s << "PPL::Grid_Generator::" << method << ":" << std::endl
     << reason << ".";
@@ -55,7 +55,7 @@ PPL::Grid_Generator::throw_invalid_argument(const char* method,
 PPL::Grid_Generator
 PPL::Grid_Generator::parameter(const Linear_Expression& e,
                                Coefficient_traits::const_reference d,
-                               Representation r) {
+                               const Representation r) {
   if (d == 0) {
     throw std::invalid_argument("PPL::parameter(e, d):\n"
                                 "d == 0.");
@@ -85,7 +85,7 @@ PPL::Grid_Generator::parameter(const Linear_Expression& e,
 PPL::Grid_Generator
 PPL::Grid_Generator::grid_point(const Linear_Expression& e,
                                 Coefficient_traits::const_reference d,
-                                Representation r) {
+                                const Representation r) {
   if (d == 0) {
     throw std::invalid_argument("PPL::grid_point(e, d):\n"
                                 "d == 0.");
@@ -110,18 +110,19 @@ PPL::Grid_Generator::grid_point(const Linear_Expression& e,
 }
 
 PPL::Grid_Generator
-PPL::Grid_Generator::grid_point(Representation r) {
+PPL::Grid_Generator::grid_point(const Representation r) {
   return grid_point(Linear_Expression::zero(), Coefficient_one(), r);
 }
 
 PPL::Grid_Generator
 PPL::Grid_Generator::grid_point(const Linear_Expression& e,
-                                Representation r) {
+                                const Representation r) {
   return grid_point(e, Coefficient_one(), r);
 }
 
 PPL::Grid_Generator
-PPL::Grid_Generator::grid_line(const Linear_Expression& e, Representation r) {
+PPL::Grid_Generator::grid_line(const Linear_Expression& e,
+                               const Representation r) {
   // The origin of the space cannot be a line.
   if (e.all_homogeneous_terms_are_zero()) {
     throw std::invalid_argument("PPL::grid_line(e):\n"
@@ -141,7 +142,8 @@ PPL::Grid_Generator::grid_line(const Linear_Expression& e, Representation r) {
 }
 
 void
-PPL::Grid_Generator::swap_space_dimensions(Variable v1, Variable v2) {
+PPL::Grid_Generator::swap_space_dimensions(const Variable v1,
+                                           const Variable v2) {
   PPL_ASSERT(v1.space_dimension() <= space_dimension());
   PPL_ASSERT(v2.space_dimension() <= space_dimension());
   expr.swap_space_dimensions(v1, v2);
@@ -242,7 +244,7 @@ PPL::Grid_Generator::set_is_parameter() {
 
 void
 PPL::Grid_Generator::linear_combine(const Grid_Generator& y,
-                                    dimension_type i) {
+                                    const dimension_type i) {
   expr.linear_combine(y.expr, i);
   strong_normalize();
 }

@@ -163,8 +163,8 @@ struct option long_options[] = {
 #endif
 
 void
-usage(const char* program) {
-  static const char* usage_string
+usage(const char* const program) {
+  static const char* const usage_string
     = "Usage: %s [OPTION]... [FILE]\n"
     "Reads an H-representation (resp., a V-representation) of a polyhedron\n"
     "and generates a V-representation (resp., an H-representation) of\n"
@@ -225,7 +225,7 @@ const char* input_file_name = 0;
 std::istream* input_stream_p = 0;
 
 void
-set_input(const char* file_name) {
+set_input(const char* const file_name) {
   if (input_stream_p && (input_stream_p != &std::cin)) {
     delete input_stream_p;
   }
@@ -253,7 +253,7 @@ const char* output_file_name = 0;
 std::ostream* output_stream_p = 0;
 
 void
-set_output(const char* file_name) {
+set_output(const char* const file_name) {
   if (output_stream_p && (output_stream_p != &std::cout)) {
     delete output_stream_p;
   }
@@ -359,13 +359,13 @@ limit_virtual_memory(const unsigned long bytes) {
 #else
 
 void
-limit_virtual_memory(unsigned long) {
+limit_virtual_memory(const unsigned long) {
 }
 
 #endif // !PPL_HAVE_DECL_RLIMIT_AS
 
 extern "C" void
-timeout(int) {
+timeout(const int) {
   try {
     std::cerr << "TIMEOUT"
               << std::endl;
@@ -386,7 +386,7 @@ timeout(int) {
 }
 
 void
-process_options(int argc, char* argv[]) {
+process_options(const int argc, char* const argv[]) {
   while (true) {
 #ifdef PPL_HAVE_GETOPT_H
     int option_index = 0;
@@ -612,7 +612,7 @@ read_coefficients(std::istream& in,
 void
 read_indexes_set(std::istream& in,
                  std::set<unsigned>& dest,
-                 const char* what) {
+                 const char* const what) {
   assert(dest.empty());
   unsigned num_elements;
   if (!guarded_read(in, num_elements)) {
@@ -741,7 +741,7 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
 #endif
 
   unsigned row = 0;
-  std::set<unsigned>::iterator linearity_end = linearity.end();
+  const std::set<unsigned>::iterator linearity_end = linearity.end();
   if (rep == V) {
     // The V representation allows for `space_dim' coordinates.
     std::vector<mpz_class> coefficients(space_dim);

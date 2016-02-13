@@ -43,7 +43,7 @@ PPL::CO_Tree::external_memory_in_bytes() const {
 }
 
 PPL::CO_Tree::iterator
-PPL::CO_Tree::insert(iterator itr, dimension_type key1) {
+PPL::CO_Tree::insert(const iterator itr, const dimension_type key1) {
   PPL_ASSERT(key1 != unused_index);
 
   if (empty()) {
@@ -55,7 +55,7 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1) {
     return insert(key1);
   }
 
-  iterator candidate1 = bisect_near(itr, key1);
+  const iterator candidate1 = bisect_near(itr, key1);
 
   if (key1 == candidate1.index()) {
     return candidate1;
@@ -76,7 +76,7 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1) {
     }
   }
 
-  tree_iterator candidate1_node(candidate1, *this);
+  const tree_iterator candidate1_node(candidate1, *this);
 
   PPL_ASSERT(candidate2_index <= reserved_size + 1);
 
@@ -86,7 +86,7 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1) {
                                    candidate1_node));
   }
 
-  tree_iterator candidate2_node(*this, candidate2_index);
+  const tree_iterator candidate2_node(*this, candidate2_index);
 
   // Adjacent nodes in an in-order visit of a tree always have different
   // heights. This fact can be easily proven by induction on the tree's
@@ -110,7 +110,7 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1) {
 }
 
 PPL::CO_Tree::iterator
-PPL::CO_Tree::insert(iterator itr, dimension_type key1,
+PPL::CO_Tree::insert(const iterator itr, const dimension_type key1,
                      data_type_const_reference data1) {
   PPL_ASSERT(key1 != unused_index);
 
@@ -147,14 +147,14 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1,
 
   }
 
-  tree_iterator candidate1_node(candidate1, *this);
+  const tree_iterator candidate1_node(candidate1, *this);
 
   if (candidate2_index == 0 || candidate2_index > reserved_size) {
     // Use candidate1
     return iterator(insert_precise(key1, data1, candidate1_node));
   }
 
-  tree_iterator candidate2_node(*this, candidate2_index);
+  const tree_iterator candidate2_node(*this, candidate2_index);
 
   // Adjacent nodes in an in-order visit of a tree always have different
   // heights. This fact can be easily proven by induction on the tree's
@@ -176,8 +176,8 @@ PPL::CO_Tree::insert(iterator itr, dimension_type key1,
 }
 
 void
-PPL::CO_Tree::erase_element_and_shift_left(dimension_type key) {
-  iterator itr = erase(key);
+PPL::CO_Tree::erase_element_and_shift_left(const dimension_type key) {
+  const iterator itr = erase(key);
   if (itr == end()) {
     return;
   }
@@ -193,7 +193,8 @@ PPL::CO_Tree::erase_element_and_shift_left(dimension_type key) {
 }
 
 void
-PPL::CO_Tree::increase_keys_from(dimension_type key, dimension_type n) {
+PPL::CO_Tree::increase_keys_from(const dimension_type key,
+                                 const dimension_type n) {
   if (empty()) {
     return;
   }
@@ -213,7 +214,7 @@ PPL::CO_Tree::increase_keys_from(dimension_type key, dimension_type n) {
 
 PPL::dimension_type
 PPL::CO_Tree::bisect_in(dimension_type first, dimension_type last,
-                   dimension_type key) const {
+                        const dimension_type key) const {
   PPL_ASSERT(first != 0);
   PPL_ASSERT(last <= reserved_size);
   PPL_ASSERT(first <= last);
@@ -259,7 +260,7 @@ PPL::CO_Tree::bisect_in(dimension_type first, dimension_type last,
 }
 
 PPL::dimension_type
-PPL::CO_Tree::bisect_near(dimension_type hint, dimension_type key) const {
+PPL::CO_Tree::bisect_near(dimension_type hint, const dimension_type key) const {
   PPL_ASSERT(hint != 0);
   PPL_ASSERT(hint <= reserved_size);
   PPL_ASSERT(indexes[hint] != unused_index);
@@ -398,7 +399,7 @@ PPL::CO_Tree::bisect_near(dimension_type hint, dimension_type key) const {
 }
 
 PPL::CO_Tree::tree_iterator
-PPL::CO_Tree::insert_precise(dimension_type key1,
+PPL::CO_Tree::insert_precise(const dimension_type key1,
                              data_type_const_reference data1,
                              tree_iterator itr) {
   PPL_ASSERT(key1 != unused_index);
@@ -453,7 +454,7 @@ PPL::CO_Tree::insert_precise(dimension_type key1,
 }
 
 PPL::CO_Tree::tree_iterator
-PPL::CO_Tree::insert_precise_aux(dimension_type key1,
+PPL::CO_Tree::insert_precise_aux(const dimension_type key1,
                                  data_type_const_reference data1,
                                  tree_iterator itr) {
   PPL_ASSERT(key1 != unused_index);
@@ -537,7 +538,7 @@ PPL::CO_Tree::erase(tree_iterator itr) {
 #endif
 
   const dimension_type deleted_key = itr.index();
-  tree_iterator deleted_node = itr;
+  const tree_iterator deleted_node = itr;
   (*itr).~data_type();
   while (true) {
     dimension_type& current_key  = itr.index();
@@ -604,7 +605,7 @@ PPL::CO_Tree::erase(tree_iterator itr) {
 }
 
 void
-PPL::CO_Tree::init(dimension_type n) {
+PPL::CO_Tree::init(const dimension_type n) {
   indexes = NULL;
   data = NULL;
   size_ = 0;
@@ -713,7 +714,7 @@ PPL::CO_Tree::structure_OK() const {
   else {
     // This const_cast could be removed by adding a const_tree_iterator,
     // but it would add much code duplication without a real need.
-    tree_iterator itr(*const_cast<CO_Tree*>(this));
+    const tree_iterator itr(*const_cast<CO_Tree*>(this));
     const dimension_type real_size = count_used_in_subtree(itr);
     if (real_size != size_) {
       // There are \p real_size elements in the tree that are reachable by the
@@ -724,7 +725,7 @@ PPL::CO_Tree::structure_OK() const {
 
   if (size_ != 0) {
     const_iterator itr = begin();
-    const_iterator itr_end = end();
+    const const_iterator itr_end = end();
 
     if (itr != itr_end) {
       dimension_type last_index = itr.index();
@@ -865,7 +866,7 @@ PPL::CO_Tree::rebuild_bigger_tree() {
 }
 
 PPL::CO_Tree::tree_iterator
-PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
+PPL::CO_Tree::rebalance(tree_iterator itr, const dimension_type key,
                         data_type_const_reference value) {
   // Trees with reserved size 3 need not to be rebalanced.
   // This check is needed because they can't be shrunk, so they may violate
@@ -948,11 +949,11 @@ PPL::CO_Tree::rebalance(tree_iterator itr, dimension_type key,
 
 PPL::dimension_type
 PPL::CO_Tree
-::compact_elements_in_the_rightmost_end(dimension_type last_in_subtree,
+::compact_elements_in_the_rightmost_end(const dimension_type last_in_subtree,
                                         dimension_type subtree_size,
-                                        dimension_type key,
+                                        const dimension_type key,
                                         data_type_const_reference value,
-                                        bool add_element) {
+                                        const bool add_element) {
 
   PPL_ASSERT(subtree_size != 0);
 
@@ -1035,11 +1036,10 @@ PPL::CO_Tree
 }
 
 void
-PPL::CO_Tree::redistribute_elements_in_subtree(
-    dimension_type root_index,
-    dimension_type subtree_size,
-    dimension_type last_used,
-    dimension_type key,
+PPL::CO_Tree::redistribute_elements_in_subtree(const dimension_type root_index,
+                                               const dimension_type subtree_size,
+                                               dimension_type last_used,
+                                               const dimension_type key,
     data_type_const_reference value,
     bool add_element) {
 
@@ -1291,7 +1291,7 @@ PPL::CO_Tree::copy_data_from(const CO_Tree& x) {
 }
 
 PPL::dimension_type
-PPL::CO_Tree::count_used_in_subtree(tree_iterator itr) {
+PPL::CO_Tree::count_used_in_subtree(const tree_iterator itr) {
   dimension_type n = 0;
 
   const dimension_type k = itr.get_offset();
@@ -1414,7 +1414,7 @@ PPL::CO_Tree::tree_iterator::OK() const {
 }
 
 void
-PPL::CO_Tree::tree_iterator::go_down_searching_key(dimension_type key) {
+PPL::CO_Tree::tree_iterator::go_down_searching_key(const dimension_type key) {
   // *this points to a node, so the tree is not empty.
   PPL_ASSERT(!tree.empty());
   PPL_ASSERT(key != unused_index);

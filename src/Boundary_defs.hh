@@ -38,7 +38,7 @@ struct Property {
   typedef bool Value;
   static const Value default_value = true;
   static const Value unsupported_value = false;
-  Property(Type t)
+  Property(const Type t)
     : type(t) {
   }
   Type type;
@@ -53,7 +53,7 @@ enum Boundary_Type {
 };
 
 inline Rounding_Dir
-round_dir_check(Boundary_Type t, bool check = false) {
+round_dir_check(const Boundary_Type t, const bool check = false) {
   if (check) {
     return static_cast<Rounding_Dir>(t) | ROUND_STRICT_RELATION;
   }
@@ -64,7 +64,7 @@ round_dir_check(Boundary_Type t, bool check = false) {
 
 template <typename T, typename Info>
 inline Result
-special_set_boundary_infinity(Boundary_Type type, T&, Info& info) {
+special_set_boundary_infinity(const Boundary_Type type, T&, Info& info) {
   PPL_ASSERT(Info::store_special);
   info.set_boundary_property(type, SPECIAL);
   return V_EQ;
@@ -72,13 +72,13 @@ special_set_boundary_infinity(Boundary_Type type, T&, Info& info) {
 
 template <typename T, typename Info>
 inline bool
-special_is_open(Boundary_Type, const T&, const Info&) {
+special_is_open(const Boundary_Type, const T&, const Info&) {
   return !Info::may_contain_infinity;
 }
 
 template <typename T, typename Info>
 inline bool
-normal_is_open(Boundary_Type type, const T& x, const Info& info) {
+normal_is_open(const Boundary_Type type, const T& x, const Info& info) {
   if (Info::store_open) {
     return info.get_boundary_property(type, OPEN);
   }
@@ -90,7 +90,7 @@ normal_is_open(Boundary_Type type, const T& x, const Info& info) {
 
 template <typename T, typename Info>
 inline bool
-is_open(Boundary_Type type, const T& x, const Info& info) {
+is_open(const Boundary_Type type, const T& x, const Info& info) {
   if (Info::store_open) {
     return info.get_boundary_property(type, OPEN);
   }
@@ -102,7 +102,7 @@ is_open(Boundary_Type type, const T& x, const Info& info) {
 
 template <typename T, typename Info>
 inline Result
-set_unbounded(Boundary_Type type, T& x, Info& info) {
+set_unbounded(const Boundary_Type type, T& x, Info& info) {
   PPL_COMPILE_TIME_CHECK(Info::store_special
                          || std::numeric_limits<T>::is_bounded
                          || std::numeric_limits<T>::has_infinity,
@@ -125,7 +125,7 @@ set_unbounded(Boundary_Type type, T& x, Info& info) {
 
 template <typename T, typename Info>
 inline Result
-set_minus_infinity(Boundary_Type type, T& x, Info& info, bool open = false) {
+set_minus_infinity(const Boundary_Type type, T& x, Info& info, bool open = false) {
   if (open) {
     PPL_ASSERT(type == LOWER);
   }
@@ -149,7 +149,7 @@ set_minus_infinity(Boundary_Type type, T& x, Info& info, bool open = false) {
 
 template <typename T, typename Info>
 inline Result
-set_plus_infinity(Boundary_Type type, T& x, Info& info, bool open = false) {
+set_plus_infinity(const Boundary_Type type, T& x, Info& info, bool open = false) {
   if (open) {
     PPL_ASSERT(type == UPPER);
   }
@@ -173,7 +173,8 @@ set_plus_infinity(Boundary_Type type, T& x, Info& info, bool open = false) {
 
 template <typename T, typename Info>
 inline Result
-set_boundary_infinity(Boundary_Type type, T& x, Info& info, bool open = false) {
+set_boundary_infinity(const Boundary_Type type, T& x, Info& info,
+                      const bool open = false) {
   PPL_ASSERT(open || Info::may_contain_infinity);
   Result r;
   if (Info::store_special) {
@@ -194,7 +195,7 @@ set_boundary_infinity(Boundary_Type type, T& x, Info& info, bool open = false) {
 
 template <typename T, typename Info>
 inline bool
-is_domain_inf(Boundary_Type type, const T& x, const Info& info) {
+is_domain_inf(const Boundary_Type type, const T& x, const Info& info) {
   if (Info::store_special && type == LOWER) {
     return info.get_boundary_property(type, SPECIAL);
   }
@@ -211,7 +212,7 @@ is_domain_inf(Boundary_Type type, const T& x, const Info& info) {
 
 template <typename T, typename Info>
 inline bool
-is_domain_sup(Boundary_Type type, const T& x, const Info& info) {
+is_domain_sup(const Boundary_Type type, const T& x, const Info& info) {
   if (Info::store_special && type == UPPER) {
     return info.get_boundary_property(type, SPECIAL);
   }
@@ -228,7 +229,7 @@ is_domain_sup(Boundary_Type type, const T& x, const Info& info) {
 
 template <typename T, typename Info>
 inline bool
-normal_is_boundary_infinity(Boundary_Type type, const T& x, const Info&) {
+normal_is_boundary_infinity(const Boundary_Type type, const T& x, const Info&) {
   if (!std::numeric_limits<T>::has_infinity) {
     return false;
   }
@@ -242,7 +243,7 @@ normal_is_boundary_infinity(Boundary_Type type, const T& x, const Info&) {
 
 template <typename T, typename Info>
 inline bool
-is_boundary_infinity(Boundary_Type type, const T& x, const Info& info) {
+is_boundary_infinity(const Boundary_Type type, const T& x, const Info& info) {
   if (Info::store_special) {
     return info.get_boundary_property(type, SPECIAL);
   }
@@ -253,7 +254,7 @@ is_boundary_infinity(Boundary_Type type, const T& x, const Info& info) {
 
 template <typename T, typename Info>
 inline bool
-normal_is_reverse_infinity(Boundary_Type type, const T& x, const Info&) {
+normal_is_reverse_infinity(const Boundary_Type type, const T& x, const Info&) {
   if (!Info::may_contain_infinity) {
     return false;
   }
@@ -267,7 +268,7 @@ normal_is_reverse_infinity(Boundary_Type type, const T& x, const Info&) {
 
 template <typename T, typename Info>
 inline bool
-is_minus_infinity(Boundary_Type type, const T& x, const Info& info) {
+is_minus_infinity(const Boundary_Type type, const T& x, const Info& info) {
   if (type == LOWER) {
     if (Info::store_special) {
       return info.get_boundary_property(type, SPECIAL);
@@ -283,7 +284,7 @@ is_minus_infinity(Boundary_Type type, const T& x, const Info& info) {
 
 template <typename T, typename Info>
 inline bool
-is_plus_infinity(Boundary_Type type, const T& x, const Info& info) {
+is_plus_infinity(const Boundary_Type type, const T& x, const Info& info) {
   if (type == UPPER) {
     if (Info::store_special) {
       return info.get_boundary_property(type, SPECIAL);
@@ -299,13 +300,13 @@ is_plus_infinity(Boundary_Type type, const T& x, const Info& info) {
 
 template <typename T, typename Info>
 inline bool
-is_reverse_infinity(Boundary_Type type, const T& x, const Info& info) {
+is_reverse_infinity(const Boundary_Type type, const T& x, const Info& info) {
   return normal_is_reverse_infinity(type, x, info);
 }
 
 template <typename T, typename Info>
 inline int
-infinity_sign(Boundary_Type type, const T& x, const Info& info) {
+infinity_sign(const Boundary_Type type, const T& x, const Info& info) {
   if (is_boundary_infinity(type, x, info)) {
     return (type == LOWER) ? -1 : 1;
   }
@@ -319,7 +320,7 @@ infinity_sign(Boundary_Type type, const T& x, const Info& info) {
 
 template <typename T, typename Info>
 inline bool
-is_boundary_infinity_closed(Boundary_Type type, const T& x, const Info& info) {
+is_boundary_infinity_closed(const Boundary_Type type, const T& x, const Info& info) {
   return Info::may_contain_infinity
     && !info.get_boundary_property(type, OPEN)
     && is_boundary_infinity(type, x, info);
@@ -327,14 +328,14 @@ is_boundary_infinity_closed(Boundary_Type type, const T& x, const Info& info) {
 
 template <typename Info>
 inline bool
-boundary_infinity_is_open(Boundary_Type type, const Info& info) {
+boundary_infinity_is_open(const Boundary_Type type, const Info& info) {
   return !Info::may_contain_infinity
     || info.get_boundary_property(type, OPEN);
 }
 
 template <typename T, typename Info>
 inline int
-sgn_b(Boundary_Type type, const T& x, const Info& info) {
+sgn_b(const Boundary_Type type, const T& x, const Info& info) {
   if (info.get_boundary_property(type, SPECIAL)) {
     return (type == LOWER) ? -1 : 1;
   }
@@ -347,7 +348,7 @@ sgn_b(Boundary_Type type, const T& x, const Info& info) {
 
 template <typename T, typename Info>
 inline int
-sgn(Boundary_Type type, const T& x, const Info& info) {
+sgn(const Boundary_Type type, const T& x, const Info& info) {
   int sign = sgn_b(type, x, info);
   if (x == 0 && info.get_boundary_property(type, OPEN)) {
     return (type == LOWER) ? -1 : 1;
@@ -359,8 +360,8 @@ sgn(Boundary_Type type, const T& x, const Info& info) {
 
 template <typename T1, typename Info1, typename T2, typename Info2>
 inline bool
-eq(Boundary_Type type1, const T1& x1, const Info1& info1,
-   Boundary_Type type2, const T2& x2, const Info2& info2) {
+eq(const Boundary_Type type1, const T1& x1, const Info1& info1,
+   const Boundary_Type type2, const T2& x2, const Info2& info2) {
   if (type1 == type2) {
     if (is_open(type1, x1, info1)
         != is_open(type2, x2, info2)) {
@@ -388,8 +389,8 @@ eq(Boundary_Type type1, const T1& x1, const Info1& info1,
 
 template <typename T1, typename Info1, typename T2, typename Info2>
 inline bool
-lt(Boundary_Type type1, const T1& x1, const Info1& info1,
-   Boundary_Type type2, const T2& x2, const Info2& info2) {
+lt(const Boundary_Type type1, const T1& x1, const Info1& info1,
+   const Boundary_Type type2, const T2& x2, const Info2& info2) {
   if (is_open(type1, x1, info1)) {
     if (type1 == UPPER
         && (type2 == LOWER
@@ -427,28 +428,28 @@ lt(Boundary_Type type1, const T1& x1, const Info1& info1,
 
 template <typename T1, typename Info1, typename T2, typename Info2>
 inline bool
-gt(Boundary_Type type1, const T1& x1, const Info1& info1,
-   Boundary_Type type2, const T2& x2, const Info2& info2) {
+gt(const Boundary_Type type1, const T1& x1, const Info1& info1,
+   const Boundary_Type type2, const T2& x2, const Info2& info2) {
   return lt(type2, x2, info2, type1, x1, info1);
 }
 
 template <typename T1, typename Info1, typename T2, typename Info2>
 inline bool
-le(Boundary_Type type1, const T1& x1, const Info1& info1,
-   Boundary_Type type2, const T2& x2, const Info2& info2) {
+le(const Boundary_Type type1, const T1& x1, const Info1& info1,
+   const Boundary_Type type2, const T2& x2, const Info2& info2) {
   return !gt(type1, x1, info1, type2, x2, info2);
 }
 
 template <typename T1, typename Info1, typename T2, typename Info2>
 inline bool
-ge(Boundary_Type type1, const T1& x1, const Info1& info1,
-   Boundary_Type type2, const T2& x2, const Info2& info2) {
+ge(const Boundary_Type type1, const T1& x1, const Info1& info1,
+   const Boundary_Type type2, const T2& x2, const Info2& info2) {
   return !lt(type1, x1, info1, type2, x2, info2);
 }
 
 template <typename T, typename Info>
 inline Result
-adjust_boundary(Boundary_Type type, T& x, Info& info,
+adjust_boundary(const Boundary_Type type, T& x, Info& info,
                 bool open, Result r) {
   r = result_relation_class(r);
   if (type == LOWER) {
@@ -509,8 +510,8 @@ adjust_boundary(Boundary_Type type, T& x, Info& info,
 
 template <typename To, typename To_Info, typename T, typename Info>
 inline Result
-complement(Boundary_Type to_type, To& to, To_Info& to_info,
-           Boundary_Type type, const T& x, const Info& info) {
+complement(const Boundary_Type to_type, To& to, To_Info& to_info,
+           const Boundary_Type type, const T& x, const Info& info) {
   PPL_ASSERT(to_type != type);
   bool should_shrink;
   if (info.get_boundary_property(type, SPECIAL)) {
@@ -530,8 +531,8 @@ complement(Boundary_Type to_type, To& to, To_Info& to_info,
 
 template <typename To, typename To_Info, typename T, typename Info>
 inline Result
-assign(Boundary_Type to_type, To& to, To_Info& to_info,
-       Boundary_Type type, const T& x, const Info& info,
+assign(const Boundary_Type to_type, To& to, To_Info& to_info,
+       const Boundary_Type type, const T& x, const Info& info,
        bool should_shrink = false) {
   PPL_ASSERT(to_type == type);
   if (info.get_boundary_property(type, SPECIAL)) {
@@ -547,8 +548,8 @@ assign(Boundary_Type to_type, To& to, To_Info& to_info,
 
 template <typename To, typename To_Info, typename T, typename Info>
 inline Result
-min_assign(Boundary_Type to_type, To& to, To_Info& to_info,
-           Boundary_Type type, const T& x, const Info& info) {
+min_assign(const Boundary_Type to_type, To& to, To_Info& to_info,
+           const Boundary_Type type, const T& x, const Info& info) {
   if (lt(type, x, info, to_type, to, to_info)) {
     to_info.clear_boundary_properties(to_type);
     return assign(to_type, to, to_info, type, x, info);
@@ -558,9 +559,9 @@ min_assign(Boundary_Type to_type, To& to, To_Info& to_info,
 
 template <typename To, typename To_Info, typename T1, typename Info1, typename T2, typename Info2>
 inline Result
-min_assign(Boundary_Type to_type, To& to, To_Info& to_info,
-           Boundary_Type type1, const T1& x1, const Info1& info1,
-           Boundary_Type type2, const T2& x2, const Info2& info2) {
+min_assign(const Boundary_Type to_type, To& to, To_Info& to_info,
+           const Boundary_Type type1, const T1& x1, const Info1& info1,
+           const Boundary_Type type2, const T2& x2, const Info2& info2) {
   if (lt(type1, x1, info1, type2, x2, info2)) {
     return assign(to_type, to, to_info, type1, x1, info1);
   }
@@ -571,8 +572,8 @@ min_assign(Boundary_Type to_type, To& to, To_Info& to_info,
 
 template <typename To, typename To_Info, typename T, typename Info>
 inline Result
-max_assign(Boundary_Type to_type, To& to, To_Info& to_info,
-           Boundary_Type type, const T& x, const Info& info) {
+max_assign(const Boundary_Type to_type, To& to, To_Info& to_info,
+           const Boundary_Type type, const T& x, const Info& info) {
   if (gt(type, x, info, to_type, to, to_info)) {
     to_info.clear_boundary_properties(to_type);
     return assign(to_type, to, to_info, type, x, info);
@@ -582,9 +583,9 @@ max_assign(Boundary_Type to_type, To& to, To_Info& to_info,
 
 template <typename To, typename To_Info, typename T1, typename Info1, typename T2, typename Info2>
 inline Result
-max_assign(Boundary_Type to_type, To& to, To_Info& to_info,
-           Boundary_Type type1, const T1& x1, const Info1& info1,
-           Boundary_Type type2, const T2& x2, const Info2& info2) {
+max_assign(const Boundary_Type to_type, To& to, To_Info& to_info,
+           const Boundary_Type type1, const T1& x1, const Info1& info1,
+           const Boundary_Type type2, const T2& x2, const Info2& info2) {
   if (gt(type1, x1, info1, type2, x2, info2)) {
     return assign(to_type, to, to_info, type1, x1, info1);
   }
@@ -595,8 +596,8 @@ max_assign(Boundary_Type to_type, To& to, To_Info& to_info,
 
 template <typename To, typename To_Info, typename T, typename Info>
 inline Result
-neg_assign(Boundary_Type to_type, To& to, To_Info& to_info,
-           Boundary_Type type, const T& x, const Info& info) {
+neg_assign(const Boundary_Type to_type, To& to, To_Info& to_info,
+           const Boundary_Type type, const T& x, const Info& info) {
   PPL_ASSERT(to_type != type);
   bool should_shrink;
   if (info.get_boundary_property(type, SPECIAL)) {
@@ -611,9 +612,9 @@ neg_assign(Boundary_Type to_type, To& to, To_Info& to_info,
 
 template <typename To, typename To_Info, typename T1, typename Info1, typename T2, typename Info2>
 inline Result
-add_assign(Boundary_Type to_type, To& to, To_Info& to_info,
-           Boundary_Type type1, const T1& x1, const Info1& info1,
-           Boundary_Type type2, const T2& x2, const Info2& info2) {
+add_assign(const Boundary_Type to_type, To& to, To_Info& to_info,
+           const Boundary_Type type1, const T1& x1, const Info1& info1,
+           const Boundary_Type type2, const T2& x2, const Info2& info2) {
   PPL_ASSERT(type1 == type2);
   bool should_shrink;
   if (is_boundary_infinity(type1, x1, info1)) {
@@ -636,9 +637,9 @@ add_assign(Boundary_Type to_type, To& to, To_Info& to_info,
 
 template <typename To, typename To_Info, typename T1, typename Info1, typename T2, typename Info2>
 inline Result
-sub_assign(Boundary_Type to_type, To& to, To_Info& to_info,
-           Boundary_Type type1, const T1& x1, const Info1& info1,
-           Boundary_Type type2, const T2& x2, const Info2& info2) {
+sub_assign(const Boundary_Type to_type, To& to, To_Info& to_info,
+           const Boundary_Type type1, const T1& x1, const Info1& info1,
+           const Boundary_Type type2, const T2& x2, const Info2& info2) {
   PPL_ASSERT(type1 != type2);
   bool should_shrink;
   if (is_boundary_infinity(type1, x1, info1)) {
@@ -661,9 +662,9 @@ sub_assign(Boundary_Type to_type, To& to, To_Info& to_info,
 
 template <typename To, typename To_Info, typename T1, typename Info1, typename T2, typename Info2>
 inline Result
-mul_assign(Boundary_Type to_type, To& to, To_Info& to_info,
-           Boundary_Type type1, const T1& x1, const Info1& info1,
-           Boundary_Type type2, const T2& x2, const Info2& info2) {
+mul_assign(const Boundary_Type to_type, To& to, To_Info& to_info,
+           const Boundary_Type type1, const T1& x1, const Info1& info1,
+           const Boundary_Type type2, const T2& x2, const Info2& info2) {
   bool should_shrink;
   if (is_boundary_infinity(type1, x1, info1)) {
     should_shrink = (boundary_infinity_is_open(type1, info1)
@@ -686,7 +687,7 @@ mul_assign(Boundary_Type to_type, To& to, To_Info& to_info,
 
 template <typename To, typename To_Info>
 inline Result
-set_zero(Boundary_Type to_type, To& to, To_Info& to_info, bool should_shrink) {
+set_zero(const Boundary_Type to_type, To& to, To_Info& to_info, bool should_shrink) {
   bool check = (To_Info::check_inexact || (!should_shrink && To_Info::store_open));
   Result r = assign_r(to, Constant<0>::value, round_dir_check(to_type, check));
   return adjust_boundary(to_type, to, to_info, should_shrink, r);
@@ -694,9 +695,9 @@ set_zero(Boundary_Type to_type, To& to, To_Info& to_info, bool should_shrink) {
 
 template <typename To, typename To_Info, typename T1, typename Info1, typename T2, typename Info2>
 inline Result
-mul_assign_z(Boundary_Type to_type, To& to, To_Info& to_info,
-             Boundary_Type type1, const T1& x1, const Info1& info1, int x1s,
-             Boundary_Type type2, const T2& x2, const Info2& info2, int x2s) {
+mul_assign_z(const Boundary_Type to_type, To& to, To_Info& to_info,
+             const Boundary_Type type1, const T1& x1, const Info1& info1, int x1s,
+             const Boundary_Type type2, const T2& x2, const Info2& info2, int x2s) {
   bool should_shrink;
   if (x1s != 0) {
     if (x2s != 0) {
@@ -717,9 +718,9 @@ mul_assign_z(Boundary_Type to_type, To& to, To_Info& to_info,
 
 template <typename To, typename To_Info, typename T1, typename Info1, typename T2, typename Info2>
 inline Result
-div_assign(Boundary_Type to_type, To& to, To_Info& to_info,
-           Boundary_Type type1, const T1& x1, const Info1& info1,
-           Boundary_Type type2, const T2& x2, const Info2& info2) {
+div_assign(const Boundary_Type to_type, To& to, To_Info& to_info,
+           const Boundary_Type type1, const T1& x1, const Info1& info1,
+           const Boundary_Type type2, const T2& x2, const Info2& info2) {
   bool should_shrink;
   if (is_boundary_infinity(type1, x1, info1)) {
     should_shrink = boundary_infinity_is_open(type1, info1);
@@ -741,9 +742,9 @@ div_assign(Boundary_Type to_type, To& to, To_Info& to_info,
 
 template <typename To, typename To_Info, typename T1, typename Info1, typename T2, typename Info2>
 inline Result
-div_assign_z(Boundary_Type to_type, To& to, To_Info& to_info,
-             Boundary_Type type1, const T1& x1, const Info1& info1, int x1s,
-             Boundary_Type type2, const T2& x2, const Info2& info2, int x2s) {
+div_assign_z(const Boundary_Type to_type, To& to, To_Info& to_info,
+             const Boundary_Type type1, const T1& x1, const Info1& info1, int x1s,
+             const Boundary_Type type2, const T2& x2, const Info2& info2, int x2s) {
   if (x1s != 0) {
     if (x2s != 0) {
       return div_assign(to_type, to, to_info,
@@ -763,8 +764,8 @@ div_assign_z(Boundary_Type to_type, To& to, To_Info& to_info,
 
 template <typename To, typename To_Info, typename T, typename Info>
 inline Result
-umod_2exp_assign(Boundary_Type to_type, To& to, To_Info& to_info,
-                 Boundary_Type type, const T& x, const Info& info,
+umod_2exp_assign(const Boundary_Type to_type, To& to, To_Info& to_info,
+                 const Boundary_Type type, const T& x, const Info& info,
                  unsigned int exp) {
   PPL_ASSERT(to_type == type);
   bool should_shrink;
@@ -780,8 +781,8 @@ umod_2exp_assign(Boundary_Type to_type, To& to, To_Info& to_info,
 
 template <typename To, typename To_Info, typename T, typename Info>
 inline Result
-smod_2exp_assign(Boundary_Type to_type, To& to, To_Info& to_info,
-                 Boundary_Type type, const T& x, const Info& info,
+smod_2exp_assign(const Boundary_Type to_type, To& to, To_Info& to_info,
+                 const Boundary_Type type, const T& x, const Info& info,
                  unsigned int exp) {
   PPL_ASSERT(to_type == type);
   bool should_shrink;

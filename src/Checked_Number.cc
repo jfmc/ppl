@@ -27,7 +27,7 @@ site: http://bugseng.com/products/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 void
-throw_result_exception(Result r) {
+throw_result_exception(const Result r) {
   switch (r - V_UNREPRESENTABLE) {
   case V_EMPTY:
     throw std::domain_error("Exact result is not comparable to computable one.");

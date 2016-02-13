@@ -205,7 +205,7 @@ const char separator = ' ';
   is on; it is set to <CODE>false</CODE> otherwise.
 */
 inline bool
-get_field(std::istream& s, const char* keyword, bool& positive) {
+get_field(std::istream& s, const char* const keyword, bool& positive) {
   std::string str;
   if (!(s >> str)
       || (str[0] != yes && str[0] != no)

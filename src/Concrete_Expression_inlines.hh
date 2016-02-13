@@ -28,7 +28,7 @@ namespace Parma_Polyhedra_Library {
 
 inline
 Concrete_Expression_Type
-::Concrete_Expression_Type(Implementation implementation)
+::Concrete_Expression_Type(const Implementation implementation)
   : impl(implementation) {
 }
 

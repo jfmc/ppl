@@ -117,7 +117,7 @@ pip_display_sol(std::ostream& out,
                 const Parma_Polyhedra_Library::Variables_Set& parameters,
                 const Parma_Polyhedra_Library::Variables_Set& vars,
                 Parma_Polyhedra_Library::dimension_type space_dimension,
-                int indent = 0) {
+                const int indent = 0) {
   using namespace Parma_Polyhedra_Library::IO_Operators;
 
   if (!pip) {
@@ -204,15 +204,15 @@ public:
   typedef std::vector<PPL::Coefficient> Coeff_Vector;
   typedef std::vector<int> Int_Vector;
 
-  bool update_pip(PPL::dimension_type num_vars,
-                  PPL::dimension_type num_params,
-                  PPL::dimension_type num_constraints,
-                  PPL::dimension_type num_ctx_rows,
+  bool update_pip(const PPL::dimension_type num_vars,
+                  const PPL::dimension_type num_params,
+                  const PPL::dimension_type num_constraints,
+                  const PPL::dimension_type num_ctx_rows,
                   const Coeff_Vector& constraints,
                   const Coeff_Vector& context,
                   const Int_Vector& constraint_type,
                   const Int_Vector& ctx_type,
-                  PPL::dimension_type bignum_column) {
+                  const PPL::dimension_type bignum_column) {
     pip.add_space_dimensions_and_embed(num_vars, num_params);
     for (PPL::dimension_type k = 0, i = 0; i < num_constraints; ++i) {
       PPL::Linear_Expression expr;
@@ -429,7 +429,7 @@ protected:
     return true;
   }
 
-  static bool expect(std::istream& in, char c) {
+  static bool expect(std::istream& in, const char c) {
     char a;
     do {
       in >> a;
@@ -438,9 +438,9 @@ protected:
   }
 
   static bool read_vector(std::istream& in,
-                          PPL::dimension_type row_index,
-                          PPL::dimension_type row_size,
-                          PPL::dimension_type cst_col,
+                          const PPL::dimension_type row_index,
+                          const PPL::dimension_type row_size,
+                          const PPL::dimension_type cst_col,
                           Coeff_Vector& tab) {
     if (!expect(in, '#')) {
       return false;
@@ -503,7 +503,7 @@ struct option long_options[] = {
 };
 #endif
 
-static const char* usage_string
+static const char* const usage_string
 = "Usage: %s [OPTION]... [FILE]\n"
 "Reads the definition of a Parametric Integer Programming problem\n"
 "and displays the lexicographic minimum in terms of the values of the\n"
@@ -563,7 +563,7 @@ const char* input_file_name = 0;
 std::istream* input_stream_p = 0;
 
 void
-set_input(const char* file_name) {
+set_input(const char* const file_name) {
   if (input_stream_p && (input_stream_p != &std::cin)) {
     delete input_stream_p;
   }
@@ -584,7 +584,7 @@ const char* output_file_name = 0;
 std::ostream* output_stream_p = 0;
 
 void
-set_output(const char* file_name) {
+set_output(const char* const file_name) {
   if (output_stream_p && (output_stream_p != &std::cout)) {
     delete output_stream_p;
   }
@@ -648,13 +648,13 @@ limit_virtual_memory(const unsigned long bytes) {
 #else
 
 void
-limit_virtual_memory(unsigned long) {
+limit_virtual_memory(const unsigned long) {
 }
 
 #endif // !PPL_HAVE_DECL_RLIMIT_AS
 
 void
-process_options(int argc, char* argv[]) {
+process_options(const int argc, char* const argv[]) {
   while (true) {
 #ifdef PPL_HAVE_GETOPT_H
     int option_index = 0;

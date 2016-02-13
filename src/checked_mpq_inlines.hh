@@ -160,7 +160,7 @@ PPL_SPECIALIZE_CONSTRUCT(construct_mpq_base, mpq_class, unsigned long)
 
 template <typename To_Policy, typename From_Policy, typename From>
 inline Result
-construct_mpq_float(mpq_class& to, const From& from, Rounding_Dir dir) {
+construct_mpq_float(mpq_class& to, const From& from, const Rounding_Dir dir) {
   if (is_nan<From_Policy>(from)) {
     return construct_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
   }
@@ -191,7 +191,7 @@ PPL_SPECIALIZE_ASSIGN(assign_exact, mpq_class, unsigned long)
 
 template <typename To_Policy, typename From_Policy, typename From>
 inline Result
-assign_mpq_float(mpq_class& to, const From& from, Rounding_Dir dir) {
+assign_mpq_float(mpq_class& to, const From& from, const Rounding_Dir dir) {
   if (is_nan<From_Policy>(from)) {
     return assign_special<To_Policy>(to, VC_NAN, ROUND_IGNORE);
   }
@@ -330,7 +330,7 @@ PPL_SPECIALIZE_DIV(div_mpq, mpq_class, mpq_class, mpq_class)
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy>
 inline Result
-idiv_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, Rounding_Dir dir) {
+idiv_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, const Rounding_Dir dir) {
   if (CHECK_P(To_Policy::check_div_zero, sgn(y) == 0)) {
     return assign_nan<To_Policy>(to, V_DIV_ZERO);
   }
@@ -470,7 +470,7 @@ extern unsigned irrational_precision;
 
 template <typename To_Policy, typename From_Policy>
 inline Result
-sqrt_mpq(mpq_class& to, const mpq_class& from, Rounding_Dir dir) {
+sqrt_mpq(mpq_class& to, const mpq_class& from, const Rounding_Dir dir) {
   if (CHECK_P(To_Policy::check_sqrt_neg, from < 0)) {
     return assign_nan<To_Policy>(to, V_SQRT_NEG);
   }
@@ -500,7 +500,7 @@ PPL_SPECIALIZE_SQRT(sqrt_mpq, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
-input_mpq(mpq_class& to, std::istream& is, Rounding_Dir dir) {
+input_mpq(mpq_class& to, std::istream& is, const Rounding_Dir dir) {
   Result r = input_mpq(to, is);
   Result_Class c = result_class(r);
   switch (c) {

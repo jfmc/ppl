@@ -38,7 +38,7 @@ site: http://bugseng.com/products/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Constraint_System::Constraint_System(const Congruence_System& cgs,
-                                          Representation r)
+                                          const Representation r)
   : sys(NECESSARILY_CLOSED, cgs.space_dimension(), r) {
   for (Congruence_System::const_iterator i = cgs.begin(),
          cgs_end = cgs.end(); i != cgs_end; ++i) {

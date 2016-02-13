@@ -29,7 +29,7 @@ site: http://bugseng.com/products/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline dimension_type
-CO_Tree::dfs_index(const_iterator itr) const {
+CO_Tree::dfs_index(const const_iterator itr) const {
   PPL_ASSERT(itr.current_index != 0);
   PPL_ASSERT(itr.current_index >= indexes + 1);
   PPL_ASSERT(itr.current_index <= indexes + reserved_size);
@@ -38,7 +38,7 @@ CO_Tree::dfs_index(const_iterator itr) const {
 }
 
 inline dimension_type
-CO_Tree::dfs_index(iterator itr) const {
+CO_Tree::dfs_index(const iterator itr) const {
   PPL_ASSERT(itr.current_index != 0);
   PPL_ASSERT(itr.current_index >= indexes + 1);
   PPL_ASSERT(itr.current_index <= indexes + reserved_size);
@@ -125,10 +125,10 @@ CO_Tree::insert(const dimension_type key) {
 }
 
 inline CO_Tree::iterator
-CO_Tree::insert(dimension_type key, data_type_const_reference data1) {
+CO_Tree::insert(const dimension_type key, data_type_const_reference data1) {
   if (empty()) {
     insert_in_empty_tree(key, data1);
-    tree_iterator itr(*this);
+    const tree_iterator itr(*this);
     PPL_ASSERT(itr.index() != unused_index);
     return iterator(itr);
   }
@@ -140,7 +140,7 @@ CO_Tree::insert(dimension_type key, data_type_const_reference data1) {
 }
 
 inline CO_Tree::iterator
-CO_Tree::erase(dimension_type key) {
+CO_Tree::erase(const dimension_type key) {
   PPL_ASSERT(key != unused_index);
 
   if (empty()) {
@@ -170,7 +170,7 @@ CO_Tree::erase(dimension_type key) {
 }
 
 inline CO_Tree::iterator
-CO_Tree::erase(iterator itr) {
+CO_Tree::erase(const iterator itr) {
   PPL_ASSERT(itr != end());
   return erase(tree_iterator(itr, *this));
 }
@@ -223,7 +223,7 @@ CO_Tree::cend() const {
 }
 
 inline CO_Tree::iterator
-CO_Tree::bisect(dimension_type key) {
+CO_Tree::bisect(const dimension_type key) {
   if (empty()) {
     return end();
   }
@@ -233,7 +233,7 @@ CO_Tree::bisect(dimension_type key) {
 }
 
 inline CO_Tree::const_iterator
-CO_Tree::bisect(dimension_type key) const {
+CO_Tree::bisect(const dimension_type key) const {
   if (empty()) {
     return end();
   }
@@ -243,7 +243,8 @@ CO_Tree::bisect(dimension_type key) const {
 }
 
 inline CO_Tree::iterator
-CO_Tree::bisect_in(iterator first, iterator last, dimension_type key) {
+CO_Tree::bisect_in(const iterator first, const iterator last,
+                   const dimension_type key) {
   PPL_ASSERT(first != end());
   PPL_ASSERT(last != end());
   const dimension_type index
@@ -252,8 +253,8 @@ CO_Tree::bisect_in(iterator first, iterator last, dimension_type key) {
 }
 
 inline CO_Tree::const_iterator
-CO_Tree::bisect_in(const_iterator first, const_iterator last,
-                   dimension_type key) const {
+CO_Tree::bisect_in(const const_iterator first, const const_iterator last,
+                   const dimension_type key) const {
   PPL_ASSERT(first != end());
   PPL_ASSERT(last != end());
   const dimension_type index
@@ -262,7 +263,7 @@ CO_Tree::bisect_in(const_iterator first, const_iterator last,
 }
 
 inline CO_Tree::iterator
-CO_Tree::bisect_near(iterator hint, dimension_type key) {
+CO_Tree::bisect_near(const iterator hint, const dimension_type key) {
   if (hint == end()) {
     return bisect(key);
   }
@@ -272,7 +273,7 @@ CO_Tree::bisect_near(iterator hint, dimension_type key) {
 }
 
 inline CO_Tree::const_iterator
-CO_Tree::bisect_near(const_iterator hint, dimension_type key) const {
+CO_Tree::bisect_near(const const_iterator hint, const dimension_type key) const {
   if (hint == end()) {
     return bisect(key);
   }
@@ -281,7 +282,7 @@ CO_Tree::bisect_near(const_iterator hint, dimension_type key) const {
 }
 
 inline void
-CO_Tree::fast_shift(dimension_type i, iterator itr) {
+CO_Tree::fast_shift(const dimension_type i, const iterator itr) {
   PPL_ASSERT(itr != end());
   PPL_ASSERT(i <= itr.index());
   indexes[dfs_index(itr)] = i;
@@ -289,7 +290,7 @@ CO_Tree::fast_shift(dimension_type i, iterator itr) {
 }
 
 inline void
-CO_Tree::insert_in_empty_tree(dimension_type key,
+CO_Tree::insert_in_empty_tree(const dimension_type key,
                               data_type_const_reference data1) {
   PPL_ASSERT(empty());
   rebuild_bigger_tree();
@@ -305,8 +306,9 @@ CO_Tree::insert_in_empty_tree(dimension_type key,
 }
 
 inline bool
-CO_Tree::is_less_than_ratio(dimension_type numer, dimension_type denom,
-                            dimension_type ratio) {
+CO_Tree::is_less_than_ratio(const dimension_type numer,
+                            const dimension_type denom,
+                            const dimension_type ratio) {
   PPL_ASSERT(ratio <= 100);
   // If these are true, no overflows are possible.
   PPL_ASSERT(denom <= unused_index/100);
@@ -315,8 +317,9 @@ CO_Tree::is_less_than_ratio(dimension_type numer, dimension_type denom,
 }
 
 inline bool
-CO_Tree::is_greater_than_ratio(dimension_type numer, dimension_type denom,
-                               dimension_type ratio) {
+CO_Tree::is_greater_than_ratio(const dimension_type numer,
+                               const dimension_type denom,
+                               const dimension_type ratio) {
   PPL_ASSERT(ratio <= 100);
   // If these are true, no overflows are possible.
   PPL_ASSERT(denom <= unused_index/100);
@@ -381,7 +384,7 @@ CO_Tree::const_iterator::const_iterator(const CO_Tree& tree1)
 
 inline
 CO_Tree::const_iterator::const_iterator(const CO_Tree& tree1,
-                                        dimension_type i)
+                                        const dimension_type i)
   : current_index(&(tree1.indexes[i])), current_data(&(tree1.data[i])) {
 #if PPL_CO_TREE_EXTRA_DEBUG
   tree = &tree1;
@@ -471,14 +474,14 @@ CO_Tree::const_iterator::operator--() {
 
 inline CO_Tree::const_iterator
 CO_Tree::const_iterator::operator++(int) {
-  const_iterator itr(*this);
+  const const_iterator itr(*this);
   ++(*this);
   return itr;
 }
 
 inline CO_Tree::const_iterator
 CO_Tree::const_iterator::operator--(int) {
-  const_iterator itr(*this);
+  const const_iterator itr(*this);
   --(*this);
   return itr;
 }
@@ -544,7 +547,7 @@ CO_Tree::iterator::iterator(CO_Tree& tree1)
 }
 
 inline
-CO_Tree::iterator::iterator(CO_Tree& tree1, dimension_type i)
+CO_Tree::iterator::iterator(CO_Tree& tree1, const dimension_type i)
   : current_index(&(tree1.indexes[i])), current_data(&(tree1.data[i])) {
 #if PPL_CO_TREE_EXTRA_DEBUG
   tree = &tree1;
@@ -636,14 +639,14 @@ CO_Tree::iterator::operator--() {
 
 inline CO_Tree::iterator
 CO_Tree::iterator::operator++(int) {
-  iterator itr(*this);
+  const iterator itr(*this);
   ++(*this);
   return itr;
 }
 
 inline CO_Tree::iterator
 CO_Tree::iterator::operator--(int) {
-  iterator itr(*this);
+  const iterator itr(*this);
   --(*this);
   return itr;
 }
@@ -704,7 +707,7 @@ CO_Tree::tree_iterator::tree_iterator(CO_Tree& tree1)
 }
 
 inline
-CO_Tree::tree_iterator::tree_iterator(CO_Tree& tree1, dimension_type i1)
+CO_Tree::tree_iterator::tree_iterator(CO_Tree& tree1, const dimension_type i1)
   : tree(tree1) {
   PPL_ASSERT(tree.reserved_size != 0);
   PPL_ASSERT(i1 <= tree.reserved_size + 1);

@@ -213,7 +213,7 @@ Dense_Row::operator[](const dimension_type k) const {
 }
 
 inline void
-Dense_Row::swap_coefficients(dimension_type i, dimension_type j) {
+Dense_Row::swap_coefficients(const dimension_type i, const dimension_type j) {
   std::swap((*this)[i], (*this)[j]);
 }
 
@@ -223,7 +223,7 @@ Dense_Row::swap_coefficients(iterator i, iterator j) {
 }
 
 inline void
-Dense_Row::reset(dimension_type i) {
+Dense_Row::reset(const dimension_type i) {
   (*this)[i] = 0;
 }
 
@@ -255,75 +255,71 @@ Dense_Row::end() const {
 }
 
 inline Coefficient_traits::const_reference
-Dense_Row::get(dimension_type i) const {
+Dense_Row::get(const dimension_type i) const {
   return (*this)[i];
 }
 
 inline Dense_Row::iterator
-Dense_Row::find(dimension_type i) {
+Dense_Row::find(const dimension_type i) {
   return iterator(*this, i);
 }
 
 inline Dense_Row::const_iterator
-Dense_Row::find(dimension_type i) const {
+Dense_Row::find(const dimension_type i) const {
   return const_iterator(*this, i);
 }
 
 inline Dense_Row::iterator
-Dense_Row::find(iterator itr, dimension_type i) {
-  (void)itr;
+Dense_Row::find(iterator, const dimension_type i) {
   return iterator(*this, i);
 }
 
 inline Dense_Row::const_iterator
-Dense_Row::find(const_iterator itr, dimension_type i) const {
-  (void)itr;
+Dense_Row::find(const_iterator, const dimension_type i) const {
   return const_iterator(*this, i);
 }
 
 inline Dense_Row::iterator
-Dense_Row::lower_bound(dimension_type i) {
+Dense_Row::lower_bound(const dimension_type i) {
   return find(i);
 }
 
 inline Dense_Row::const_iterator
-Dense_Row::lower_bound(dimension_type i) const {
+Dense_Row::lower_bound(const dimension_type i) const {
   return find(i);
 }
 
 inline Dense_Row::iterator
-Dense_Row::lower_bound(iterator itr, dimension_type i) {
+Dense_Row::lower_bound(const iterator itr, const dimension_type i) {
   return find(itr, i);
 }
 
 inline Dense_Row::const_iterator
-Dense_Row::lower_bound(const_iterator itr, dimension_type i) const {
+Dense_Row::lower_bound(const const_iterator itr, const dimension_type i) const {
   return find(itr, i);
 }
 
 inline Dense_Row::iterator
-Dense_Row::insert(dimension_type i,
+Dense_Row::insert(const dimension_type i,
                   Coefficient_traits::const_reference x) {
   (*this)[i] = x;
   return find(i);
 }
 
 inline Dense_Row::iterator
-Dense_Row::insert(dimension_type i) {
+Dense_Row::insert(const dimension_type i) {
   return find(i);
 }
 
 inline Dense_Row::iterator
-Dense_Row::insert(iterator itr, dimension_type i,
+Dense_Row::insert(iterator, const dimension_type i,
                   Coefficient_traits::const_reference x) {
-  (void)itr;
   (*this)[i] = x;
   return find(i);
 }
 
 inline Dense_Row::iterator
-Dense_Row::insert(iterator itr, dimension_type i) {
-  (void)itr;
+Dense_Row::insert(iterator, const dimension_type i) {
   return find(i);
 }
 
@@ -333,7 +329,7 @@ Dense_Row::total_memory_in_bytes() const {
 }
 
 inline memory_size_type
-Dense_Row::total_memory_in_bytes(dimension_type capacity) const {
+Dense_Row::total_memory_in_bytes(const dimension_type capacity) const {
   return sizeof(*this) + external_memory_in_bytes(capacity);
 }
 
@@ -351,7 +347,7 @@ Dense_Row::iterator::iterator()
 }
 
 inline
-Dense_Row::iterator::iterator(Dense_Row& r, dimension_type i)
+Dense_Row::iterator::iterator(Dense_Row& r, const dimension_type i)
   : row(&r), idx(i) {
   PPL_ASSERT(OK());
 }
@@ -383,7 +379,7 @@ Dense_Row::iterator::operator++() {
 
 inline Dense_Row::iterator
 Dense_Row::iterator::operator++(int) {
-  iterator tmp(*this);
+  const iterator tmp(*this);
   ++(*this);
   return tmp;
 }
@@ -398,7 +394,7 @@ Dense_Row::iterator::operator--() {
 
 inline Dense_Row::iterator
 Dense_Row::iterator::operator--(int) {
-  iterator tmp(*this);
+  const iterator tmp(*this);
   --(*this);
   return tmp;
 }
@@ -436,7 +432,7 @@ Dense_Row::const_iterator::const_iterator()
 
 inline
 Dense_Row::const_iterator::const_iterator(const Dense_Row& r,
-                                          dimension_type i)
+                                          const dimension_type i)
   : row(&r), idx(i) {
   PPL_ASSERT(OK());
 }
@@ -462,7 +458,7 @@ Dense_Row::const_iterator::operator++() {
 
 inline Dense_Row::const_iterator
 Dense_Row::const_iterator::operator++(int) {
-  const_iterator tmp(*this);
+  const const_iterator tmp(*this);
   ++(*this);
   return tmp;
 }
@@ -477,7 +473,7 @@ Dense_Row::const_iterator::operator--() {
 
 inline Dense_Row::const_iterator
 Dense_Row::const_iterator::operator--(int) {
-  const_iterator tmp(*this);
+  const const_iterator tmp(*this);
   --(*this);
   return tmp;
 }
@@ -512,7 +508,7 @@ inline void
 linear_combine(Dense_Row& x, const Dense_Row& y,
                Coefficient_traits::const_reference c1,
                Coefficient_traits::const_reference c2,
-               dimension_type start, dimension_type end) {
+               const dimension_type start, const dimension_type end) {
   x.linear_combine(y, c1, c2, start, end);
 }
 
@@ -524,8 +520,8 @@ swap(Dense_Row& x, Dense_Row& y) {
 
 /*! \relates Dense_Row */
 inline void
-iter_swap(std::vector<Dense_Row>::iterator x,
-          std::vector<Dense_Row>::iterator y) {
+iter_swap(const std::vector<Dense_Row>::iterator x,
+          const std::vector<Dense_Row>::iterator y) {
   swap(*x, *y);
 }
 

@@ -35,8 +35,8 @@ site: http://bugseng.com/products/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 void
-PPL::Constraint::throw_invalid_argument(const char* method,
-                                        const char* message) const {
+PPL::Constraint::throw_invalid_argument(const char* const method,
+                                        const char* const message) const {
   std::ostringstream s;
   s << "PPL::Constraint::" << method << ":" << std::endl
     << message;
@@ -44,8 +44,8 @@ PPL::Constraint::throw_invalid_argument(const char* method,
 }
 
 void
-PPL::Constraint::throw_dimension_incompatible(const char* method,
-                                              const char* name_var,
+PPL::Constraint::throw_dimension_incompatible(const char* const method,
+                                              const char* const name_var,
                                               const Variable v) const {
   std::ostringstream s;
   s << "PPL::Constraint::" << method << ":" << std::endl
@@ -63,7 +63,7 @@ PPL::Constraint::construct_epsilon_geq_zero() {
   return c;
 }
 
-PPL::Constraint::Constraint(const Congruence& cg, Representation r)
+PPL::Constraint::Constraint(const Congruence& cg, const Representation r)
   : expr(cg.expression(), r),
     kind_(LINE_OR_EQUALITY),
     topology_(NECESSARILY_CLOSED) {
@@ -77,7 +77,7 @@ PPL::Constraint::Constraint(const Congruence& cg, Representation r)
 }
 
 void
-PPL::Constraint::swap_space_dimensions(Variable v1, Variable v2) {
+PPL::Constraint::swap_space_dimensions(const Variable v1, const Variable v2) {
   PPL_ASSERT(v1.space_dimension() <= space_dimension());
   PPL_ASSERT(v2.space_dimension() <= space_dimension());
   expr.swap_space_dimensions(v1, v2);
@@ -186,7 +186,7 @@ PPL::Constraint::is_inconsistent() const {
 }
 
 void
-PPL::Constraint::linear_combine(const Constraint& y, dimension_type i) {
+PPL::Constraint::linear_combine(const Constraint& y, const dimension_type i) {
   expr.linear_combine(y.expr, i);
   strong_normalize();
 }

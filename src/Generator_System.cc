@@ -742,7 +742,7 @@ PPL::Generator_System::satisfied_by_all_generators(const Constraint& c) const {
 
 void
 PPL::Generator_System
-::affine_image(Variable v,
+::affine_image(const Variable v,
                const Linear_Expression& expr,
                Coefficient_traits::const_reference denominator) {
   Generator_System& x = *this;
