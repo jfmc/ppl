@@ -258,7 +258,7 @@ public:
   PIP_PolyLib_Parser(): PIP_Parser() {
   }
 
-  bool read(std::istream& in) {
+  virtual bool read(std::istream& in) {
     std::string line;
 
     PPL::dimension_type num_ctx_rows;
@@ -339,7 +339,7 @@ public:
     : PIP_Parser(), comment() {
   }
 
-  bool read(std::istream& in) {
+  virtual bool read(std::istream& in) {
     if (!expect(in, '(')) {
       return false;
     }
