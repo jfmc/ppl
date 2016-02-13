@@ -31,7 +31,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include <stdexcept>
 #include <cerrno>
 #include <string>
-#include <string.h>
+#include <cstring>
 
 #ifdef PPL_TIME_WITH_SYS_TIME
 # include <sys/time.h>
