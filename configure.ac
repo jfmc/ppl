@@ -84,21 +84,25 @@ AH_TOP([
 #ifndef PPL_ppl_config_h
 #define PPL_ppl_config_h 1
 
+/* Unique (nonzero) code for the IEEE 754 Half Precision
+   floating point format.  */
+#define PPL_FLOAT_IEEE754_HALF 1
+
 /* Unique (nonzero) code for the IEEE 754 Single Precision
    floating point format.  */
-#define PPL_FLOAT_IEEE754_SINGLE 1
+#define PPL_FLOAT_IEEE754_SINGLE 2
 
 /* Unique (nonzero) code for the IEEE 754 Double Precision
    floating point format.  */
-#define PPL_FLOAT_IEEE754_DOUBLE 2
+#define PPL_FLOAT_IEEE754_DOUBLE 3
 
 /* Unique (nonzero) code for the IEEE 754 Quad Precision
    floating point format.  */
-#define PPL_FLOAT_IEEE754_QUAD 3
+#define PPL_FLOAT_IEEE754_QUAD 4
 
 /* Unique (nonzero) code for the Intel Double-Extended
    floating point format.  */
-#define PPL_FLOAT_INTEL_DOUBLE_EXTENDED 4
+#define PPL_FLOAT_INTEL_DOUBLE_EXTENDED 5
 ])
 
 AH_BOTTOM([
