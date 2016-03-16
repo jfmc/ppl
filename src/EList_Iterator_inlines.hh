@@ -37,13 +37,13 @@ EList_Iterator<T>::EList_Iterator() {
 
 template <typename T>
 inline
-EList_Iterator<T>::EList_Iterator(Doubly_Linked_Object* p)
+EList_Iterator<T>::EList_Iterator(Doubly_Linked_Object* const p)
   : ptr(p) {
 }
 
 template <typename T>
 inline EList_Iterator<T>&
-EList_Iterator<T>::operator=(Doubly_Linked_Object* p) {
+EList_Iterator<T>::operator=(Doubly_Linked_Object* const p) {
   ptr = p;
   return *this;
 }

@@ -62,7 +62,7 @@ Grid_Generator::set_is_ray_or_point_or_inequality() {
 }
 
 inline void
-Grid_Generator::set_topology(Topology x) {
+Grid_Generator::set_topology(const Topology x) {
   PPL_USED(x);
   PPL_ASSERT(x == NECESSARILY_CLOSED);
 }
@@ -78,7 +78,7 @@ Grid_Generator::set_not_necessarily_closed() {
 }
 
 inline
-Grid_Generator::Grid_Generator(Linear_Expression& e, Type type) {
+Grid_Generator::Grid_Generator(Linear_Expression& e, const Type type) {
   swap(expr, e);
   if (type == LINE) {
     kind_ = LINE_OR_EQUALITY;
@@ -90,7 +90,7 @@ Grid_Generator::Grid_Generator(Linear_Expression& e, Type type) {
 }
 
 inline
-Grid_Generator::Grid_Generator(Representation r)
+Grid_Generator::Grid_Generator(const Representation r)
   : expr(Coefficient_one(), r),
     kind_(RAY_OR_POINT_OR_INEQUALITY) {
   expr.set_space_dimension(1);
@@ -104,14 +104,14 @@ Grid_Generator::Grid_Generator(const Grid_Generator& g)
 }
 
 inline
-Grid_Generator::Grid_Generator(const Grid_Generator& g, Representation r)
+Grid_Generator::Grid_Generator(const Grid_Generator& g, const Representation r)
   : expr(g.expr, r),
     kind_(g.kind_) {
 }
 
 inline
-Grid_Generator::Grid_Generator(dimension_type space_dim, Kind kind,
-                               Topology topology, Representation r)
+Grid_Generator::Grid_Generator(const dimension_type space_dim, const Kind kind,
+                               const Topology topology, const Representation r)
   : expr(r),
     kind_(kind) {
   PPL_USED(topology);
@@ -122,7 +122,7 @@ Grid_Generator::Grid_Generator(dimension_type space_dim, Kind kind,
 
 inline
 Grid_Generator::Grid_Generator(const Grid_Generator& g,
-                               dimension_type space_dim)
+                               const dimension_type space_dim)
   : expr(g.expr, space_dim + 1),
     kind_(g.kind_) {
   PPL_ASSERT(OK());
@@ -131,7 +131,8 @@ Grid_Generator::Grid_Generator(const Grid_Generator& g,
 
 inline
 Grid_Generator::Grid_Generator(const Grid_Generator& g,
-                               dimension_type space_dim, Representation r)
+                               const dimension_type space_dim,
+                               const Representation r)
   : expr(g.expr, space_dim + 1, r),
     kind_(g.kind_) {
   PPL_ASSERT(OK());
@@ -153,7 +154,7 @@ Grid_Generator::representation() const {
 }
 
 inline void
-Grid_Generator::set_representation(Representation r) {
+Grid_Generator::set_representation(const Representation r) {
   expr.set_representation(r);
 }
 
@@ -168,7 +169,7 @@ Grid_Generator::space_dimension() const {
 }
 
 inline void
-Grid_Generator::set_space_dimension(dimension_type space_dim) {
+Grid_Generator::set_space_dimension(const dimension_type space_dim) {
   const dimension_type old_space_dim = space_dimension();
   if (space_dim > old_space_dim) {
     expr.set_space_dimension(space_dim + 1);
@@ -182,12 +183,13 @@ Grid_Generator::set_space_dimension(dimension_type space_dim) {
 }
 
 inline void
-Grid_Generator::set_space_dimension_no_ok(dimension_type space_dim) {
+Grid_Generator::set_space_dimension_no_ok(const dimension_type space_dim) {
   set_space_dimension(space_dim);
 }
 
 inline void
-Grid_Generator::shift_space_dimensions(Variable v, dimension_type n) {
+Grid_Generator::shift_space_dimensions(const Variable v,
+                                       const dimension_type n) {
   expr.shift_space_dimensions(v, n);
 }
 
@@ -249,7 +251,7 @@ Grid_Generator::divisor() const {
 }
 
 inline bool
-Grid_Generator::is_equal_at_dimension(dimension_type dim,
+Grid_Generator::is_equal_at_dimension(const dimension_type dim,
                                       const Grid_Generator& y) const {
   const Grid_Generator& x = *this;
   return x.expr.get(dim) * y.divisor() == y.expr.get(dim) * x.divisor();
@@ -325,45 +327,45 @@ operator!=(const Grid_Generator& x, const Grid_Generator& y) {
 
 /*! \relates Grid_Generator */
 inline Grid_Generator
-grid_line(const Linear_Expression& e, Representation r) {
+grid_line(const Linear_Expression& e, const Representation r) {
   return Grid_Generator::grid_line(e, r);
 }
 
 /*! \relates Grid_Generator */
 inline Grid_Generator
 parameter(const Linear_Expression& e,
-          Coefficient_traits::const_reference d, Representation r) {
+          Coefficient_traits::const_reference d, const Representation r) {
   return Grid_Generator::parameter(e, d, r);
 }
 
 /*! \relates Grid_Generator */
 inline Grid_Generator
-parameter(Representation r) {
+parameter(const Representation r) {
   return Grid_Generator::parameter(r);
 }
 
 /*! \relates Grid_Generator */
 inline Grid_Generator
-parameter(const Linear_Expression& e, Representation r) {
+parameter(const Linear_Expression& e, const Representation r) {
   return Grid_Generator::parameter(e, r);
 }
 
 /*! \relates Grid_Generator */
 inline Grid_Generator
 grid_point(const Linear_Expression& e,
-           Coefficient_traits::const_reference d, Representation r) {
+           Coefficient_traits::const_reference d, const Representation r) {
   return Grid_Generator::grid_point(e, d, r);
 }
 
 /*! \relates Grid_Generator */
 inline Grid_Generator
-grid_point(Representation r) {
+grid_point(const Representation r) {
   return Grid_Generator::grid_point(r);
 }
 
 /*! \relates Grid_Generator */
 inline Grid_Generator
-grid_point(const Linear_Expression& e, Representation r) {
+grid_point(const Linear_Expression& e, const Representation r) {
   return Grid_Generator::grid_point(e, r);
 }
 

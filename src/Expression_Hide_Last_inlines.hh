@@ -59,14 +59,14 @@ Expression_Hide_Last<T>::end() const {
 
 template <typename T>
 inline typename Expression_Hide_Last<T>::const_iterator
-Expression_Hide_Last<T>::lower_bound(Variable v) const {
+Expression_Hide_Last<T>::lower_bound(const Variable v) const {
   PPL_ASSERT(v.space_dimension() <= space_dimension() + 1);
   return this->inner().lower_bound(v);
 }
 
 template <typename T>
 inline Coefficient_traits::const_reference
-Expression_Hide_Last<T>::coefficient(Variable v) const {
+Expression_Hide_Last<T>::coefficient(const Variable v) const {
   PPL_ASSERT(v.space_dimension() <= space_dimension());
   return this->inner().coefficient(v);
 }
@@ -112,31 +112,31 @@ Expression_Hide_Last<T>::get(dimension_type i) const {
 
 template <typename T>
 inline Coefficient_traits::const_reference
-Expression_Hide_Last<T>::get(Variable v) const {
+Expression_Hide_Last<T>::get(const Variable v) const {
   PPL_ASSERT(v.space_dimension() <= space_dimension());
   return this->inner().get(v);
 }
 
 template <typename T>
 inline bool
-Expression_Hide_Last<T>::all_zeroes(dimension_type start,
-                                    dimension_type end) const {
+Expression_Hide_Last<T>::all_zeroes(const dimension_type start,
+                                    const dimension_type end) const {
   PPL_ASSERT(end <= space_dimension() + 1);
   return this->inner().all_zeroes(start, end);
 }
 
 template <typename T>
 inline dimension_type
-Expression_Hide_Last<T>::num_zeroes(dimension_type start,
-                                    dimension_type end) const {
+Expression_Hide_Last<T>::num_zeroes(const dimension_type start,
+                                    const dimension_type end) const {
   PPL_ASSERT(end <= space_dimension() + 1);
   return this->inner().num_zeroes(start, end);
 }
 
 template <typename T>
 inline Coefficient
-Expression_Hide_Last<T>::gcd(dimension_type start,
-                             dimension_type end) const {
+Expression_Hide_Last<T>::gcd(const dimension_type start,
+                             const dimension_type end) const {
   PPL_ASSERT(end <= space_dimension() + 1);
   return this->inner().gcd(start, end);
 }
@@ -149,16 +149,16 @@ Expression_Hide_Last<T>::last_nonzero() const {
 
 template <typename T>
 inline dimension_type
-Expression_Hide_Last<T>::last_nonzero(dimension_type first,
-                                      dimension_type last) const {
+Expression_Hide_Last<T>::last_nonzero(const dimension_type first,
+                                      const dimension_type last) const {
   PPL_ASSERT(last <= space_dimension() + 1);
   return this->inner().last_nonzero(first, last);
 }
 
 template <typename T>
 inline dimension_type
-Expression_Hide_Last<T>::first_nonzero(dimension_type first,
-                                       dimension_type last) const {
+Expression_Hide_Last<T>::first_nonzero(const dimension_type first,
+                                       const dimension_type last) const {
   PPL_ASSERT(last <= space_dimension() + 1);
   return this->inner().first_nonzero(first, last);
 }
@@ -167,7 +167,8 @@ template <typename T>
 inline bool
 Expression_Hide_Last<T>
 ::all_zeroes_except(const Variables_Set& vars,
-                    dimension_type start, dimension_type end) const {
+                    const dimension_type start,
+                    const dimension_type end) const {
   PPL_ASSERT(end <= space_dimension() + 1);
   return this->inner().all_zeroes_except(vars, start, end);
 }

@@ -352,7 +352,7 @@ Box<ITV>::Box(const Octagonal_Shape<T>& oct, Complexity_Class)
 }
 
 template <typename ITV>
-Box<ITV>::Box(const Polyhedron& ph, Complexity_Class complexity)
+Box<ITV>::Box(const Polyhedron& ph, const Complexity_Class complexity)
   : seq(check_space_dimension_overflow(ph.space_dimension(),
                                        max_space_dimension(),
                                        "PPL::Box::",
@@ -4077,7 +4077,8 @@ template <typename T, typename Iterator>
 typename Enable_If<Is_Same<T, Box<ITV> >::value
                    && Is_Same_Or_Derived<Interval_Base, ITV>::value,
                    void>::type
-Box<ITV>::CC76_widening_assign(const T& y, Iterator first, Iterator last) {
+Box<ITV>::CC76_widening_assign(const T& y,
+                               const Iterator first, const Iterator last) {
   if (y.is_empty()) {
     return;
   }
@@ -4093,7 +4094,7 @@ template <typename T>
 typename Enable_If<Is_Same<T, Box<ITV> >::value
                    && Is_Same_Or_Derived<Interval_Base, ITV>::value,
                    void>::type
-Box<ITV>::CC76_widening_assign(const T& y, unsigned* tp) {
+Box<ITV>::CC76_widening_assign(const T& y, unsigned* const tp) {
   static typename ITV::boundary_type stop_points[] = {
     typename ITV::boundary_type(-2),
     typename ITV::boundary_type(-1),
@@ -4456,7 +4457,7 @@ Box<ITV>::ascii_load(std::istream& s) {
 
 template <typename ITV>
 void
-Box<ITV>::throw_dimension_incompatible(const char* method,
+Box<ITV>::throw_dimension_incompatible(const char* const method,
                                        const Box& y) const {
   std::ostringstream s;
   s << "PPL::Box::" << method << ":" << std::endl

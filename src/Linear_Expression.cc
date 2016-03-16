@@ -51,7 +51,7 @@ PPL::Linear_Expression::finalize() {
   zero_p = 0;
 }
 
-PPL::Linear_Expression::Linear_Expression(Representation r) {
+PPL::Linear_Expression::Linear_Expression(const Representation r) {
   switch (r) {
   case DENSE:
     impl = new Linear_Expression_Impl<Dense_Row>();
@@ -64,8 +64,9 @@ PPL::Linear_Expression::Linear_Expression(Representation r) {
   }
 }
 
-PPL::Linear_Expression::Linear_Expression(dimension_type space_dim, bool x,
-                                          Representation r) {
+PPL::Linear_Expression::Linear_Expression(const dimension_type space_dim,
+                                          const bool x,
+                                          const Representation r) {
   switch (r) {
   case DENSE:
     impl = new Linear_Expression_Impl<Dense_Row>(space_dim, x);
@@ -92,7 +93,7 @@ PPL::Linear_Expression::Linear_Expression(const Linear_Expression& e) {
 }
 
 PPL::Linear_Expression::Linear_Expression(const Linear_Expression& e,
-                                          Representation r) {
+                                          const Representation r) {
   switch (r) {
   case DENSE:
     impl = new Linear_Expression_Impl<Dense_Row>(*e.impl);
@@ -106,7 +107,7 @@ PPL::Linear_Expression::Linear_Expression(const Linear_Expression& e,
 }
 
 PPL::Linear_Expression::Linear_Expression(const Linear_Expression& e,
-                                          dimension_type space_dim) {
+                                          const dimension_type space_dim) {
   switch (e.representation()) {
   case DENSE:
     impl = new Linear_Expression_Impl<Dense_Row>(*e.impl, space_dim);
@@ -120,8 +121,8 @@ PPL::Linear_Expression::Linear_Expression(const Linear_Expression& e,
 }
 
 PPL::Linear_Expression::Linear_Expression(const Linear_Expression& e,
-                                          dimension_type space_dim,
-                                          Representation r) {
+                                          const dimension_type space_dim,
+                                          const Representation r) {
   switch (r) {
   case DENSE:
     impl = new Linear_Expression_Impl<Dense_Row>(*e.impl, space_dim);
@@ -135,7 +136,7 @@ PPL::Linear_Expression::Linear_Expression(const Linear_Expression& e,
 }
 
 PPL::Linear_Expression::Linear_Expression(Coefficient_traits::const_reference n,
-                                          Representation r) {
+                                          const Representation r) {
   switch (r) {
   case DENSE:
     impl = new Linear_Expression_Impl<Dense_Row>(n);
@@ -148,7 +149,8 @@ PPL::Linear_Expression::Linear_Expression(Coefficient_traits::const_reference n,
   }
 }
 
-PPL::Linear_Expression::Linear_Expression(const Variable v, Representation r) {
+PPL::Linear_Expression::Linear_Expression(const Variable v,
+                                          const Representation r) {
   switch (r) {
   case DENSE:
     impl = new Linear_Expression_Impl<Dense_Row>(v);
@@ -163,7 +165,7 @@ PPL::Linear_Expression::Linear_Expression(const Variable v, Representation r) {
 }
 
 void
-PPL::Linear_Expression::set_representation(Representation r) {
+PPL::Linear_Expression::set_representation(const Representation r) {
   if (representation() == r) {
     return;
   }

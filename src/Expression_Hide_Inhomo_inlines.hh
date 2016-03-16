@@ -91,7 +91,7 @@ Expression_Hide_Inhomo<T>
 template <typename T>
 inline bool
 Expression_Hide_Inhomo<T>::all_zeroes(dimension_type start,
-                                      dimension_type end) const {
+                                      const dimension_type end) const {
   if (start == end) {
     return true;
   }
@@ -104,7 +104,7 @@ Expression_Hide_Inhomo<T>::all_zeroes(dimension_type start,
 template <typename T>
 inline dimension_type
 Expression_Hide_Inhomo<T>::num_zeroes(dimension_type start,
-                                      dimension_type end) const {
+                                      const dimension_type end) const {
   if (start == end) {
     return 0;
   }

@@ -51,7 +51,7 @@ const char* gensys_pending = "GP";
   is on; it is set to <CODE>false</CODE> otherwise.
 */
 bool
-get_field(std::istream& s, const char* keyword, bool& positive) {
+get_field(std::istream& s, const char* const keyword, bool& positive) {
   std::string str;
   if (!(s >> str)
       || (str[0] != '+' && str[0] != '-')

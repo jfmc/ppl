@@ -74,7 +74,7 @@ PPL::Grid::add_space_dimensions(Grid_Generator_System& gs,
 // 0 1 2 3 4 5          0 1 2 3 4 5
 //     R^1                   R^2
 void
-PPL::Grid::add_space_dimensions_and_embed(dimension_type m) {
+PPL::Grid::add_space_dimensions_and_embed(const dimension_type m) {
   if (m == 0) {
     return;
   }
@@ -151,7 +151,7 @@ PPL::Grid::add_space_dimensions_and_embed(dimension_type m) {
 // 0 1 2 3 4 5          0 1 2 3 4 5
 //     R^1                   R^2
 void
-PPL::Grid::add_space_dimensions_and_project(dimension_type m) {
+PPL::Grid::add_space_dimensions_and_project(const dimension_type m) {
   if (m == 0) {
     return;
   }
@@ -403,7 +403,7 @@ PPL::Grid::remove_higher_space_dimensions(const dimension_type new_dimension) {
 }
 
 void
-PPL::Grid::expand_space_dimension(Variable var, dimension_type m) {
+PPL::Grid::expand_space_dimension(const Variable var, const dimension_type m) {
   // `var' must be one of the dimensions of the vector space.
   if (var.space_dimension() > space_dim) {
     throw_dimension_incompatible("expand_space_dimension(v, m)", "v", var);
@@ -455,7 +455,8 @@ PPL::Grid::expand_space_dimension(Variable var, dimension_type m) {
 }
 
 void
-PPL::Grid::fold_space_dimensions(const Variables_Set& vars, Variable dest) {
+PPL::Grid::fold_space_dimensions(const Variables_Set& vars,
+                                 const Variable dest) {
   // TODO: this implementation is _really_ an executable specification.
 
   // `dest' should be one of the dimensions of the grid.

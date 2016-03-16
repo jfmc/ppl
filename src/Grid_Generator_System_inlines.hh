@@ -29,7 +29,7 @@ site: http://bugseng.com/products/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline void
-Grid_Generator_System::set_sorted(bool b) {
+Grid_Generator_System::set_sorted(const bool b) {
   sys.set_sorted(b);
 }
 
@@ -55,7 +55,7 @@ Grid_Generator_System::is_equal_to(const Grid_Generator_System& y) const {
 }
 
 inline
-Grid_Generator_System::Grid_Generator_System(Representation r)
+Grid_Generator_System::Grid_Generator_System(const Representation r)
   : sys(NECESSARILY_CLOSED, r) {
   sys.set_sorted(false);
   PPL_ASSERT(space_dimension() == 0);
@@ -68,13 +68,13 @@ Grid_Generator_System::Grid_Generator_System(const Grid_Generator_System& gs)
 
 inline
 Grid_Generator_System::Grid_Generator_System(const Grid_Generator_System& gs,
-                                             Representation r)
+                                             const Representation r)
   : sys(gs.sys, r) {
 }
 
 inline
-Grid_Generator_System::Grid_Generator_System(dimension_type dim,
-                                             Representation r)
+Grid_Generator_System::Grid_Generator_System(const dimension_type dim,
+                                             const Representation r)
   : sys(NECESSARILY_CLOSED, r) {
   sys.set_space_dimension(dim);
   sys.set_sorted(false);
@@ -83,7 +83,7 @@ Grid_Generator_System::Grid_Generator_System(dimension_type dim,
 
 inline
 Grid_Generator_System::Grid_Generator_System(const Grid_Generator& g,
-                                             Representation r)
+                                             const Representation r)
   : sys(NECESSARILY_CLOSED, r) {
   sys.insert(g);
   sys.set_sorted(false);
@@ -106,7 +106,7 @@ Grid_Generator_System::representation() const {
 }
 
 inline void
-Grid_Generator_System::set_representation(Representation r) {
+Grid_Generator_System::set_representation(const Representation r) {
   sys.set_representation(r);
 }
 
@@ -242,7 +242,7 @@ Grid_Generator_System::has_no_rows() const {
 }
 
 inline void
-Grid_Generator_System::remove_trailing_rows(dimension_type n) {
+Grid_Generator_System::remove_trailing_rows(const dimension_type n) {
   sys.remove_trailing_rows(n);
 }
 

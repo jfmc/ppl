@@ -61,19 +61,19 @@ Box<ITV>::Status::test_all(flags_t mask) const {
 
 template <typename ITV>
 inline bool
-Box<ITV>::Status::test_any(flags_t mask) const {
+Box<ITV>::Status::test_any(const flags_t mask) const {
   return (flags & mask) != 0;
 }
 
 template <typename ITV>
 inline void
-Box<ITV>::Status::set(flags_t mask) {
+Box<ITV>::Status::set(const flags_t mask) {
   flags |= mask;
 }
 
 template <typename ITV>
 inline void
-Box<ITV>::Status::reset(flags_t mask) {
+Box<ITV>::Status::reset(const flags_t mask) {
   flags &= ~mask;
 }
 

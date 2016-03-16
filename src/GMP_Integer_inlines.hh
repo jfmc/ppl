@@ -82,12 +82,12 @@ sub_mul_assign(GMP_Integer& x, const GMP_Integer& y, const GMP_Integer& z) {
 }
 
 inline void
-mul_2exp_assign(GMP_Integer& x, const GMP_Integer& y, unsigned int exp) {
+mul_2exp_assign(GMP_Integer& x, const GMP_Integer& y, const unsigned int exp) {
   mpz_mul_2exp(x.get_mpz_t(), y.get_mpz_t(), exp);
 }
 
 inline void
-div_2exp_assign(GMP_Integer& x, const GMP_Integer& y, unsigned int exp) {
+div_2exp_assign(GMP_Integer& x, const GMP_Integer& y, const unsigned int exp) {
   mpz_tdiv_q_2exp(x.get_mpz_t(), y.get_mpz_t(), exp);
 }
 

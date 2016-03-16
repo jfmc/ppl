@@ -27,7 +27,7 @@ site: http://bugseng.com/products/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-Grid::Status::Status(flags_t mask)
+Grid::Status::Status(const flags_t mask)
   : flags(mask) {
 }
 
@@ -37,22 +37,22 @@ Grid::Status::Status()
 }
 
 inline bool
-Grid::Status::test_all(flags_t mask) const {
+Grid::Status::test_all(const flags_t mask) const {
   return (flags & mask) == mask;
 }
 
 inline bool
-Grid::Status::test_any(flags_t mask) const {
+Grid::Status::test_any(const flags_t mask) const {
   return (flags & mask) != 0;
 }
 
 inline void
-Grid::Status::set(flags_t mask) {
+Grid::Status::set(const flags_t mask) {
   flags |= mask;
 }
 
 inline void
-Grid::Status::reset(flags_t mask) {
+Grid::Status::reset(const flags_t mask) {
   flags &= ~mask;
 }
 

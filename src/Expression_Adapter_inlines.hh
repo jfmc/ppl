@@ -60,7 +60,7 @@ Expression_Adapter<T>::end() const {
 
 template <typename T>
 inline typename Expression_Adapter<T>::const_iterator
-Expression_Adapter<T>::lower_bound(Variable v) const {
+Expression_Adapter<T>::lower_bound(const Variable v) const {
   return inner().lower_bound(v);
 }
 
@@ -110,27 +110,27 @@ Expression_Adapter<T>
 
 template <typename T>
 inline Coefficient_traits::const_reference
-Expression_Adapter<T>::get(dimension_type i) const {
+Expression_Adapter<T>::get(const dimension_type i) const {
   return inner().get(i);
 }
 
 template <typename T>
 inline Coefficient_traits::const_reference
-Expression_Adapter<T>::get(Variable v) const {
+Expression_Adapter<T>::get(const Variable v) const {
   return inner().get(v);
 }
 
 template <typename T>
 inline bool
-Expression_Adapter<T>::all_zeroes(dimension_type start,
-                                  dimension_type end) const {
+Expression_Adapter<T>::all_zeroes(const dimension_type start,
+                                  const dimension_type end) const {
   return inner().all_zeroes(start, end);
 }
 
 template <typename T>
 inline dimension_type
-Expression_Adapter<T>::num_zeroes(dimension_type start,
-                                  dimension_type end) const {
+Expression_Adapter<T>::num_zeroes(const dimension_type start,
+                                  const dimension_type end) const {
   return inner().num_zeroes(start, end);
 }
 
@@ -149,15 +149,15 @@ Expression_Adapter<T>::last_nonzero() const {
 
 template <typename T>
 inline dimension_type
-Expression_Adapter<T>::last_nonzero(dimension_type first,
-                                    dimension_type last) const {
+Expression_Adapter<T>::last_nonzero(const dimension_type first,
+                                    const dimension_type last) const {
   return inner().last_nonzero(first, last);
 }
 
 template <typename T>
 inline dimension_type
-Expression_Adapter<T>::first_nonzero(dimension_type first,
-                                     dimension_type last) const {
+Expression_Adapter<T>::first_nonzero(const dimension_type first,
+                                     const dimension_type last) const {
   return inner().first_nonzero(first, last);
 }
 
@@ -165,7 +165,8 @@ template <typename T>
 inline bool
 Expression_Adapter<T>
 ::all_zeroes_except(const Variables_Set& vars,
-                    dimension_type start, dimension_type end) const {
+                    const dimension_type start,
+                    const dimension_type end) const {
   return inner().all_zeroes_except(vars, start, end);
 }
 

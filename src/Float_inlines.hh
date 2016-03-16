@@ -79,7 +79,7 @@ float_ieee754_half::inc() {
 }
 
 inline void
-float_ieee754_half::set_max(bool negative) {
+float_ieee754_half::set_max(const bool negative) {
   word = WRD_MAX;
   if (negative) {
     word |= SGN_MASK;
@@ -87,7 +87,8 @@ float_ieee754_half::set_max(bool negative) {
 }
 
 inline void
-float_ieee754_half::build(bool negative, mpz_t mantissa, int exponent) {
+float_ieee754_half::build(const bool negative,
+                          mpz_t mantissa, const int exponent) {
   word = static_cast<uint16_t>(mpz_get_ui(mantissa)
                                & ((1UL << MANTISSA_BITS) - 1));
   if (negative) {
@@ -146,7 +147,7 @@ float_ieee754_single::inc() {
 }
 
 inline void
-float_ieee754_single::set_max(bool negative) {
+float_ieee754_single::set_max(const bool negative) {
   word = WRD_MAX;
   if (negative) {
     word |= SGN_MASK;
@@ -154,7 +155,8 @@ float_ieee754_single::set_max(bool negative) {
 }
 
 inline void
-float_ieee754_single::build(bool negative, mpz_t mantissa, int exponent) {
+float_ieee754_single::build(const bool negative,
+                            mpz_t mantissa, const int exponent) {
   word = static_cast<uint32_t>(mpz_get_ui(mantissa)
                                & ((1UL << MANTISSA_BITS) - 1));
   if (negative) {
@@ -232,7 +234,7 @@ float_ieee754_double::inc() {
 }
 
 inline void
-float_ieee754_double::set_max(bool negative) {
+float_ieee754_double::set_max(const bool negative) {
   msp = MSP_MAX;
   lsp = LSP_MAX;
   if (negative) {
@@ -241,7 +243,8 @@ float_ieee754_double::set_max(bool negative) {
 }
 
 inline void
-float_ieee754_double::build(bool negative, mpz_t mantissa, int exponent) {
+float_ieee754_double::build(const bool negative,
+                            mpz_t mantissa, const int exponent) {
   unsigned long m;
 #if ULONG_MAX == 0xffffffffUL
   lsp = mpz_get_ui(mantissa);
@@ -309,7 +312,7 @@ float_ibm_single::inc() {
 }
 
 inline void
-float_ibm_single::set_max(bool negative) {
+float_ibm_single::set_max(const bool negative) {
   word = WRD_MAX;
   if (negative) {
     word |= SGN_MASK;
@@ -317,7 +320,8 @@ float_ibm_single::set_max(bool negative) {
 }
 
 inline void
-float_ibm_single::build(bool negative, mpz_t mantissa, int exponent) {
+float_ibm_single::build(const bool negative,
+                        mpz_t mantissa, const int exponent) {
   word = static_cast<uint32_t>(mpz_get_ui(mantissa)
                                & ((1UL << MANTISSA_BITS) - 1));
   if (negative) {
@@ -397,7 +401,7 @@ float_intel_double_extended::inc() {
 }
 
 inline void
-float_intel_double_extended::set_max(bool negative) {
+float_intel_double_extended::set_max(const bool negative) {
   msp = MSP_MAX;
   lsp = LSP_NMAX;
   if (negative) {
@@ -406,8 +410,8 @@ float_intel_double_extended::set_max(bool negative) {
 }
 
 inline void
-float_intel_double_extended::build(bool negative,
-                                   mpz_t mantissa, int exponent) {
+float_intel_double_extended::build(const bool negative,
+                                   mpz_t mantissa, const int exponent) {
 #if ULONG_MAX == 0xffffffffUL
   mpz_export(&lsp, 0, -1, sizeof(lsp), 0, 0, mantissa);
 #else
@@ -486,7 +490,7 @@ float_ieee754_quad::inc() {
 }
 
 inline void
-float_ieee754_quad::set_max(bool negative) {
+float_ieee754_quad::set_max(const bool negative) {
   msp = MSP_MAX;
   lsp = LSP_MAX;
   if (negative) {
@@ -495,7 +499,8 @@ float_ieee754_quad::set_max(bool negative) {
 }
 
 inline void
-float_ieee754_quad::build(bool negative, mpz_t mantissa, int exponent) {
+float_ieee754_quad::build(const bool negative,
+                          mpz_t mantissa, const int exponent) {
   uint64_t parts[2];
   mpz_export(parts, 0, -1, sizeof(parts[0]), 0, 0, mantissa);
   lsp = parts[0];
@@ -510,12 +515,13 @@ float_ieee754_quad::build(bool negative, mpz_t mantissa, int exponent) {
 }
 
 inline bool
-is_less_precise_than(Floating_Point_Format f1, Floating_Point_Format f2) {
+is_less_precise_than(const Floating_Point_Format f1,
+                     const Floating_Point_Format f2) {
   return f1 < f2;
 }
 
 inline unsigned int
-msb_position(unsigned long long v) {
+msb_position(const unsigned long long v) {
   return static_cast<unsigned int>(sizeof_to_bits(sizeof(v))) - 1U - clz(v);
 }
 
@@ -537,7 +543,7 @@ Float<float>::Float() {
 }
 
 inline
-Float<float>::Float(float v) {
+Float<float>::Float(const float v) {
   u.number = v;
 }
 
@@ -553,7 +559,7 @@ Float<double>::Float() {
 }
 
 inline
-Float<double>::Float(double v) {
+Float<double>::Float(const double v) {
   u.number = v;
 }
 
@@ -569,7 +575,7 @@ Float<long double>::Float() {
 }
 
 inline
-Float<long double>::Float(long double v) {
+Float<long double>::Float(const long double v) {
   u.number = v;
 }
 

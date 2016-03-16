@@ -196,7 +196,7 @@ PPL::IO_Operators::operator<<(std::ostream& s,
 
 void
 PPL::Grid_Generator_System
-::add_universe_rows_and_columns(dimension_type dims) {
+::add_universe_rows_and_columns(const dimension_type dims) {
   dimension_type col = sys.space_dimension();
 
   set_space_dimension(space_dimension() + dims);
@@ -220,7 +220,7 @@ PPL::Grid_Generator_System
 
 void
 PPL::Grid_Generator_System
-::shift_space_dimensions(Variable v, dimension_type n) {
+::shift_space_dimensions(const Variable v, const dimension_type n) {
   sys.shift_space_dimensions(v, n);
 }
 
