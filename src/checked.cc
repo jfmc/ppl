@@ -194,7 +194,7 @@ parse_number_part(std::istream& is, number_struct& numer) {
     if (!is.get(c)) {
       return V_CVT_STR_UNK;
     }
-    if (c != 'n' && c != 'n') {
+    if (c != 'n' && c != 'N') {
       goto unexpected_char;
     }
     if (!is.get(c)) {
