@@ -581,6 +581,32 @@ AM_CONDITIONAL(USE_PRECOMPILED_HEADERS, test x"$enableval" = xyes)
 CFLAGS="$COMP_FLAGS $OPT_FLAGS $CFLAGS"
 CXXFLAGS="$COMP_FLAGS $OPT_FLAGS $CXXFLAGS"
 
+enableval=no
+AC_MSG_CHECKING([whether to compile for thread safety])
+AC_ARG_ENABLE(thread-safe,
+  AS_HELP_STRING([--enable-thread-safe], [compile for thread safety]))
+case "${enableval}" in
+yes)
+  AC_MSG_RESULT(yes)
+  ;;
+no)
+  AC_MSG_RESULT(no)
+  ;;
+*)
+  AC_MSG_ERROR([bad value ${enableval} for --enable-thread-safe, needs yes or no])
+  ;;
+esac
+
+AM_CONDITIONAL(THREAD_SAFE, test x"$enable_thread_safe" = xyes)
+
+if test x"$enable_thread_safe" = xyes
+then
+  AC_DEFINE(PPL_THREAD_SAFE, 1, [The library is (conditionally) thread safe when this is defined.])
+  CFLAGS="$CFLAGS -std=c11 -pthread"
+  CXXFLAGS="$CXXFLAGS -std=c++11 -pthread"
+  extra_libraries="${extra_libraries} -pthread"
+fi
+
 # System-dependent adjustments.
 cygwin=no
 mingw=no
