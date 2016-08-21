@@ -260,7 +260,7 @@ private:
     Holds (between class initialization and finalization) a pointer to
     the singleton system containing only Constraint::zero_dim_false().
   */
-  static const Constraint_System* zero_dim_empty_p;
+  static PPL_TLS const Constraint_System* zero_dim_empty_p;
 
   friend class Constraint_System_const_iterator;
 

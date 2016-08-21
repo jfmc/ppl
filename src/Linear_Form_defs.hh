@@ -400,7 +400,7 @@ public:
 
 private:
   //! The generic coefficient equal to the singleton zero.
-  static C zero;
+  static PPL_TLS C zero;
 
   //! Type of the container vector.
   typedef std::vector<C> vec_type;

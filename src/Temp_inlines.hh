@@ -49,7 +49,7 @@ Temp_Item<T>::Free_List::Free_List()
 template <typename T>
 inline Temp_Item<T>*&
 Temp_Item<T>::free_list_ref() {
-  static Free_List free_list;
+  static PPL_TLS Free_List free_list;
   return free_list.head_ptr;
 }
 

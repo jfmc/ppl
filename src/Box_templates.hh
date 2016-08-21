@@ -4095,7 +4095,7 @@ typename Enable_If<Is_Same<T, Box<ITV> >::value
                    && Is_Same_Or_Derived<Interval_Base, ITV>::value,
                    void>::type
 Box<ITV>::CC76_widening_assign(const T& y, unsigned* const tp) {
-  static typename ITV::boundary_type stop_points[] = {
+  static PPL_TLS typename ITV::boundary_type stop_points[] = {
     typename ITV::boundary_type(-2),
     typename ITV::boundary_type(-1),
     typename ITV::boundary_type(0),

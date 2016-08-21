@@ -263,8 +263,8 @@ PPL::Congruence::OK() const {
   return true;
 }
 
-const PPL::Congruence* PPL::Congruence::zero_dim_false_p = 0;
-const PPL::Congruence* PPL::Congruence::zero_dim_integrality_p = 0;
+PPL_TLS const PPL::Congruence* PPL::Congruence::zero_dim_false_p = 0;
+PPL_TLS const PPL::Congruence* PPL::Congruence::zero_dim_integrality_p = 0;
 
 void
 PPL::Congruence::initialize() {

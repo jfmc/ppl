@@ -466,7 +466,7 @@ sub_mul_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y,
 
 PPL_SPECIALIZE_SUB_MUL(sub_mul_mpq, mpq_class, mpq_class, mpq_class)
 
-extern unsigned irrational_precision;
+extern PPL_TLS unsigned irrational_precision;
 
 template <typename To_Policy, typename From_Policy>
 inline Result

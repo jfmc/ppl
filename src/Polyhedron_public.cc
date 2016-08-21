@@ -39,9 +39,9 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::dimension_type* PPL::Polyhedron::simplify_num_saturators_p = 0;
+PPL_TLS PPL::dimension_type* PPL::Polyhedron::simplify_num_saturators_p = 0;
 
-size_t PPL::Polyhedron::simplify_num_saturators_size = 0;
+PPL_TLS size_t PPL::Polyhedron::simplify_num_saturators_size = 0;
 
 void
 PPL::Polyhedron::initialize() {

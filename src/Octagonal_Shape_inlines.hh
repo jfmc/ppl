@@ -603,7 +603,7 @@ template <typename T>
 inline void
 Octagonal_Shape<T>::CC76_extrapolation_assign(const Octagonal_Shape& y,
                                               unsigned* tp) {
-  static N stop_points[] = {
+  static PPL_TLS N stop_points[] = {
     N(-2, ROUND_UP),
     N(-1, ROUND_UP),
     N( 0, ROUND_UP),

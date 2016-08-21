@@ -27,6 +27,7 @@ site: http://bugseng.com/products/ppl/ . */
 #include "Variable_types.hh"
 #include "Init_types.hh"
 #include "globals_types.hh"
+#include "thread_safe.hh"
 #include <iosfwd>
 #include <set>
 
@@ -148,7 +149,7 @@ private:
                                                     const Variable v);
 
   //! Pointer to the current output function.
-  static output_function_type* current_output_function;
+  static PPL_TLS output_function_type* current_output_function;
 
 };
 

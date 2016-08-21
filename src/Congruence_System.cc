@@ -388,7 +388,7 @@ PPL::Congruence_System::ascii_load(std::istream& s) {
   return true;
 }
 
-const PPL::Congruence_System* PPL::Congruence_System::zero_dim_empty_p = 0;
+PPL_TLS const PPL::Congruence_System* PPL::Congruence_System::zero_dim_empty_p = 0;
 
 void
 PPL::Congruence_System::initialize() {

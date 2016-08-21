@@ -331,7 +331,7 @@ PPL::Grid_Generator::check_strong_normalized() const {
   return compare(*this, tmp) == 0;
 }
 
-const PPL::Grid_Generator* PPL::Grid_Generator::zero_dim_point_p = 0;
+PPL_TLS const PPL::Grid_Generator* PPL::Grid_Generator::zero_dim_point_p = 0;
 
 void
 PPL::Grid_Generator::initialize() {

@@ -262,10 +262,10 @@ PPL::Constraint::check_strong_normalized() const {
   return compare(*this, tmp) == 0;
 }
 
-const PPL::Constraint* PPL::Constraint::zero_dim_false_p = 0;
-const PPL::Constraint* PPL::Constraint::zero_dim_positivity_p = 0;
-const PPL::Constraint* PPL::Constraint::epsilon_geq_zero_p = 0;
-const PPL::Constraint* PPL::Constraint::epsilon_leq_one_p = 0;
+PPL_TLS const PPL::Constraint* PPL::Constraint::zero_dim_false_p = 0;
+PPL_TLS const PPL::Constraint* PPL::Constraint::zero_dim_positivity_p = 0;
+PPL_TLS const PPL::Constraint* PPL::Constraint::epsilon_geq_zero_p = 0;
+PPL_TLS const PPL::Constraint* PPL::Constraint::epsilon_leq_one_p = 0;
 
 void
 PPL::Constraint::initialize() {

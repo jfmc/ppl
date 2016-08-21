@@ -48,7 +48,7 @@ illegal_instruction_catcher(int) {
 
 namespace Parma_Polyhedra_Library {
 
-bool have_sse_unit = true;
+PPL_TLS bool have_sse_unit = true;
 
 void
 detect_sse_unit() {

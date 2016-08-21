@@ -27,14 +27,14 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-Minus_Infinity MINUS_INFINITY;
-Plus_Infinity PLUS_INFINITY;
-Not_A_Number NOT_A_NUMBER;
+PPL_TLS Minus_Infinity MINUS_INFINITY;
+PPL_TLS Plus_Infinity PLUS_INFINITY;
+PPL_TLS Not_A_Number NOT_A_NUMBER;
 
 namespace Checked {
 
 //! Holds the precision parameter used for irrational calculations.
-unsigned irrational_precision;
+PPL_TLS unsigned irrational_precision;
 
 struct number_struct {
   unsigned int base;

@@ -27,7 +27,7 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::Variable::output_function_type*
+PPL_TLS PPL::Variable::output_function_type*
 PPL::Variable::current_output_function = 0;
 
 bool

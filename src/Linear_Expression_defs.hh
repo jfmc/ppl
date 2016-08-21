@@ -651,7 +651,7 @@ private:
     Holds (between class initialization and finalization) a pointer to
     the (zero-dimension space) constant 0.
   */
-  static const Linear_Expression* zero_p;
+  static PPL_TLS const Linear_Expression* zero_p;
 
   Linear_Expression_Interface* impl;
 

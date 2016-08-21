@@ -552,13 +552,13 @@ private:
     Holds (between class initialization and finalization) a pointer to
     the origin of the zero-dimensional space \f$\Rset^0\f$.
   */
-  static const Generator* zero_dim_point_p;
+  static PPL_TLS const Generator* zero_dim_point_p;
 
   /*! \brief
     Holds (between class initialization and finalization) a pointer to
     the origin of the zero-dimensional space \f$\Rset^0\f$, as a closure point.
   */
-  static const Generator* zero_dim_closure_point_p;
+  static PPL_TLS const Generator* zero_dim_closure_point_p;
 
   /*! \brief
     Builds a generator of type \p type and topology \p topology,

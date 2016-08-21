@@ -37,8 +37,8 @@ Coefficient_constants_finalize() {
 #endif
 
 #ifdef PPL_GMP_INTEGERS
-const Coefficient* Coefficient_zero_p = 0;
-const Coefficient* Coefficient_one_p = 0;
+PPL_TLS const Coefficient* Coefficient_zero_p = 0;
+PPL_TLS const Coefficient* Coefficient_one_p = 0;
 
 void
 Coefficient_constants_initialize() {

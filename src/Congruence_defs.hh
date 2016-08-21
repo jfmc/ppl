@@ -412,14 +412,14 @@ private:
     Holds (between class initialization and finalization) a pointer to
     the false (zero-dimension space) congruence \f$0 = 1 \pmod{0}\f$.
   */
-  static const Congruence* zero_dim_false_p;
+  static PPL_TLS const Congruence* zero_dim_false_p;
 
   /*! \brief
     Holds (between class initialization and finalization) a pointer to
     the true (zero-dimension space) congruence \f$0 = 1 \pmod{1}\f$,
     also known as the <EM>integrality congruence</EM>.
   */
-  static const Congruence* zero_dim_integrality_p;
+  static PPL_TLS const Congruence* zero_dim_integrality_p;
 
   Linear_Expression expr;
 

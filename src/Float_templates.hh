@@ -37,14 +37,14 @@ const FP_Interval_Type& compute_absolute_error(
   typedef typename FP_Interval_Type::boundary_type analyzer_format;
 
   // FIXME: check if initializing caches with EMPTY is better.
-  static const FP_Interval_Type ZERO_INTERVAL = FP_Interval_Type(0);
+  static PPL_TLS const FP_Interval_Type ZERO_INTERVAL = FP_Interval_Type(0);
   // Cached results for each different analyzed format.
-  static FP_Interval_Type ieee754_half_result = ZERO_INTERVAL;
-  static FP_Interval_Type ieee754_single_result = ZERO_INTERVAL;
-  static FP_Interval_Type ieee754_double_result = ZERO_INTERVAL;
-  static FP_Interval_Type ibm_single_result = ZERO_INTERVAL;
-  static FP_Interval_Type ieee754_quad_result = ZERO_INTERVAL;
-  static FP_Interval_Type intel_double_extended_result = ZERO_INTERVAL;
+  static PPL_TLS FP_Interval_Type ieee754_half_result = ZERO_INTERVAL;
+  static PPL_TLS FP_Interval_Type ieee754_single_result = ZERO_INTERVAL;
+  static PPL_TLS FP_Interval_Type ieee754_double_result = ZERO_INTERVAL;
+  static PPL_TLS FP_Interval_Type ibm_single_result = ZERO_INTERVAL;
+  static PPL_TLS FP_Interval_Type ieee754_quad_result = ZERO_INTERVAL;
+  static PPL_TLS FP_Interval_Type intel_double_extended_result = ZERO_INTERVAL;
 
   FP_Interval_Type* to_compute = NULL;
   // Get the necessary information on the analyzed's format.

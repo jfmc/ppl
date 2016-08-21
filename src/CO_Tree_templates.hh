@@ -54,7 +54,7 @@ CO_Tree::CO_Tree(Iterator i, const dimension_type n) {
   // with operation 0, one element with operation 2 and one element
   // with operation 3. An additional element with operation 1 can be at the
   // top of the tree.
-  static std::pair<dimension_type, signed char>
+  static PPL_TLS std::pair<dimension_type, signed char>
     stack[4U * sizeof_to_bits(sizeof(dimension_type)) + 1U];
 
   dimension_type stack_first_empty = 0;

@@ -123,7 +123,7 @@ public:
     format between the analyzer format and the analyzed format.
 
   */
-  static FP_Interval_Type absolute_error;
+  static PPL_TLS FP_Interval_Type absolute_error;
 
   // FIXME: this may not be the best place for them.
   /*! \brief
@@ -201,7 +201,7 @@ private:
 
 
 template <typename FP_Interval_Type, typename FP_Format>
-FP_Interval_Type Floating_Point_Expression<FP_Interval_Type, FP_Format>
+PPL_TLS FP_Interval_Type Floating_Point_Expression<FP_Interval_Type, FP_Format>
   ::absolute_error = compute_absolute_error();
 
 } // namespace Parma_Polyhedra_Library

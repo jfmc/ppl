@@ -605,9 +605,9 @@ struct Is_Special<Plus_Infinity> : public True {};
 template <>
 struct Is_Special<Not_A_Number> : public True {};
 
-extern Minus_Infinity MINUS_INFINITY;
-extern Plus_Infinity PLUS_INFINITY;
-extern Not_A_Number NOT_A_NUMBER;
+extern PPL_TLS Minus_Infinity MINUS_INFINITY;
+extern PPL_TLS Plus_Infinity PLUS_INFINITY;
+extern PPL_TLS Not_A_Number NOT_A_NUMBER;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_CXX_interface */

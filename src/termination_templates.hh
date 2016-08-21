@@ -46,8 +46,8 @@ namespace Implementation {
 namespace Termination {
 
 #if PRINT_DEBUG_INFO
-static dimension_type output_function_MS_n;
-static dimension_type output_function_MS_m;
+static PPL_TLS dimension_type output_function_MS_n;
+static PPL_TLS dimension_type output_function_MS_m;
 
 /* Encodes which object are we printing:
 
@@ -58,7 +58,7 @@ static dimension_type output_function_MS_m;
      (i.e., when first and second are the same);
    4 means mu space.
 */
-static int output_function_MS_which = -1;
+static PPL_TLS int output_function_MS_which = -1;
 
 /*
   Debugging output function.  See the documentation of
@@ -132,8 +132,8 @@ output_function_MS(std::ostream& s, const Variable v) {
   }
 }
 
-static dimension_type output_function_PR_s;
-static dimension_type output_function_PR_r;
+static PPL_TLS dimension_type output_function_PR_s;
+static PPL_TLS dimension_type output_function_PR_r;
 
 /*
   Debugging output function.  See the documentation of

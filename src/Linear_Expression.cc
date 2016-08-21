@@ -36,7 +36,7 @@ PPL::Linear_Expression::max_space_dimension() {
   return Dense_Row::max_size() - 1;
 }
 
-const PPL::Linear_Expression* PPL::Linear_Expression::zero_p = 0;
+PPL_TLS const PPL::Linear_Expression* PPL::Linear_Expression::zero_p = 0;
 
 void
 PPL::Linear_Expression::initialize() {

@@ -540,27 +540,27 @@ private:
     Holds (between class initialization and finalization) a pointer to
     the unsatisfiable (zero-dimension space) constraint \f$0 = 1\f$.
   */
-  static const Constraint* zero_dim_false_p;
+  static PPL_TLS const Constraint* zero_dim_false_p;
 
   /*! \brief
     Holds (between class initialization and finalization) a pointer to
     the true (zero-dimension space) constraint \f$0 \leq 1\f$, also
     known as <EM>positivity constraint</EM>.
   */
-  static const Constraint* zero_dim_positivity_p;
+  static PPL_TLS const Constraint* zero_dim_positivity_p;
 
   /*! \brief
     Holds (between class initialization and finalization) a pointer to
     the zero-dimension space constraint \f$\epsilon \geq 0\f$.
   */
-  static const Constraint* epsilon_geq_zero_p;
+  static PPL_TLS const Constraint* epsilon_geq_zero_p;
 
   /*! \brief
     Holds (between class initialization and finalization) a pointer to
     the zero-dimension space constraint \f$\epsilon \leq 1\f$
     (used to implement NNC polyhedra).
   */
-  static const Constraint* epsilon_leq_one_p;
+  static PPL_TLS const Constraint* epsilon_leq_one_p;
 
   //! Constructs the \f$0<0\f$ constraint.
   Constraint(dimension_type space_dim, Kind kind, Topology topology,

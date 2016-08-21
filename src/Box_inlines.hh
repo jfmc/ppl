@@ -152,7 +152,7 @@ Box<ITV>::get_interval(const Variable var) const {
     throw_dimension_incompatible("get_interval(v)", "v", var);
   }
   if (is_empty()) {
-    static ITV empty_interval(EMPTY);
+    static PPL_TLS ITV empty_interval(EMPTY);
     return empty_interval;
   }
 

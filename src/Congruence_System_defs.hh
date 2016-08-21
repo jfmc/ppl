@@ -494,7 +494,7 @@ private:
     Holds (between class initialization and finalization) a pointer to
     the singleton system containing only Congruence::zero_dim_false().
   */
-  static const Congruence_System* zero_dim_empty_p;
+  static PPL_TLS const Congruence_System* zero_dim_empty_p;
 
   Swapping_Vector<Congruence> rows;
 

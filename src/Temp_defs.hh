@@ -24,6 +24,7 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_Temp_defs_hh
 #define PPL_Temp_defs_hh 1
 
+#include "thread_safe.hh"
 #include "meta_programming.hh"
 #include "Slow_Copy.hh"
 

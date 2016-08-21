@@ -24,6 +24,7 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_meta_programming_hh
 #define PPL_meta_programming_hh 1
 
+#include "thread_safe.hh"
 #include <gmpxx.h>
 
 namespace Parma_Polyhedra_Library {
@@ -87,7 +88,7 @@ namespace Parma_Polyhedra_Library {
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
 #define const_ref_nodef(type, name, value)                              \
   static const type& PPL_U(name)() {                                    \
-    static type PPL_U(name) = (value);                                       \
+    static PPL_TLS type PPL_U(name) = (value);                          \
     return (name);                                                      \
   }
 

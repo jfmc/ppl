@@ -560,7 +560,7 @@ IO_Operators::operator<<(std::ostream& s, const Linear_Form<C>& f) {
 PPL_OUTPUT_TEMPLATE_DEFINITIONS(C, Linear_Form<C>)
 
 template <typename C>
-C Linear_Form<C>::zero(typename C::boundary_type(0));
+PPL_TLS C Linear_Form<C>::zero(typename C::boundary_type(0));
 
 } // namespace Parma_Polyhedra_Library
 

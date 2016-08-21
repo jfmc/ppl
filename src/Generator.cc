@@ -274,8 +274,8 @@ PPL::Generator::check_strong_normalized() const {
   return compare(*this, tmp) == 0;
 }
 
-const PPL::Generator* PPL::Generator::zero_dim_point_p = 0;
-const PPL::Generator* PPL::Generator::zero_dim_closure_point_p = 0;
+PPL_TLS const PPL::Generator* PPL::Generator::zero_dim_point_p = 0;
+PPL_TLS const PPL::Generator* PPL::Generator::zero_dim_closure_point_p = 0;
 
 void
 PPL::Generator::initialize() {

@@ -137,7 +137,7 @@ PPL::Grid_Generator_System::ascii_load(std::istream& s) {
   return true;
 }
 
-const PPL::Grid_Generator_System*
+PPL_TLS const PPL::Grid_Generator_System*
 PPL::Grid_Generator_System::zero_dim_univ_p = 0;
 
 void

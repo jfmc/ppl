@@ -545,7 +545,7 @@ private:
     Holds (between class initialization and finalization) a pointer to
     the origin of the zero-dimensional space \f$\Rset^0\f$.
   */
-  static const Grid_Generator* zero_dim_point_p;
+  static PPL_TLS const Grid_Generator* zero_dim_point_p;
 
   //! Constructs a Grid_Generator with the specified space dimension, kind
   //! and topology.

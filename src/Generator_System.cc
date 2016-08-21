@@ -832,7 +832,7 @@ PPL::Generator_System::remove_invalid_lines_and_rays() {
   }
 }
 
-const PPL::Generator_System* PPL::Generator_System::zero_dim_univ_p = 0;
+PPL_TLS const PPL::Generator_System* PPL::Generator_System::zero_dim_univ_p = 0;
 
 void
 PPL::Generator_System::initialize() {

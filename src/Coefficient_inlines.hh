@@ -41,14 +41,14 @@ Bounded_Integer_Coefficient_Policy::handle_result(Result r) {
 inline Coefficient_traits::const_reference
 Coefficient_zero() {
   // FIXME: is there a way to avoid this static variable?
-  static Coefficient zero(0);
+  static PPL_TLS Coefficient zero(0);
   return zero;
 }
 
 inline Coefficient_traits::const_reference
 Coefficient_one() {
   // FIXME: is there a way to avoid this static variable?
-  static Coefficient one(1);
+  static PPL_TLS Coefficient one(1);
   return one;
 }
 #endif // defined(PPL_CHECKED_INTEGERS) || defined(PPL_NATIVE_INTEGERS)
@@ -56,13 +56,13 @@ Coefficient_one() {
 #ifdef PPL_GMP_INTEGERS
 inline Coefficient_traits::const_reference
 Coefficient_zero() {
-  extern const Coefficient* Coefficient_zero_p;
+  extern PPL_TLS const Coefficient* Coefficient_zero_p;
   return *Coefficient_zero_p;
 }
 
 inline Coefficient_traits::const_reference
 Coefficient_one() {
-  extern const Coefficient* Coefficient_one_p;
+  extern PPL_TLS const Coefficient* Coefficient_one_p;
   PPL_ASSERT(*Coefficient_one_p != 0);
   return *Coefficient_one_p;
 }

@@ -1028,7 +1028,7 @@ PPL::MIP_Problem::steepest_edge_float_entering_index() const {
   // This is static to improve performance.
   // A vector of <column_index, challenger_denom> pairs, ordered by
   // column_index.
-  static std::vector<std::pair<dimension_type, double> > columns;
+  static PPL_TLS std::vector<std::pair<dimension_type, double> > columns;
   columns.clear();
   // (working_cost.size() - 2) is an upper bound only.
   columns.reserve(working_cost.size() - 2);
@@ -1179,7 +1179,7 @@ PPL::MIP_Problem::steepest_edge_exact_entering_index() const {
   // This is static to improve performance.
   // A pair (i, x) means that sgn(working_cost[i]) == cost_sign and x
   // is the denominator of the challenger, for the column i.
-  static std::vector<std::pair<dimension_type, Coefficient> > columns;
+  static PPL_TLS std::vector<std::pair<dimension_type, Coefficient> > columns;
   columns.clear();
   // tableau_num_columns - 2 is only an upper bound on the required elements.
   // This helps to reduce the number of calls to new [] and delete [] and

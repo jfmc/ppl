@@ -380,7 +380,7 @@ PPL::Constraint_System::ascii_load(std::istream& s) {
   return true;
 }
 
-const PPL::Constraint_System* PPL::Constraint_System::zero_dim_empty_p = 0;
+PPL_TLS const PPL::Constraint_System* PPL::Constraint_System::zero_dim_empty_p = 0;
 
 void
 PPL::Constraint_System::initialize() {

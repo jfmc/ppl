@@ -40,8 +40,8 @@ inline dimension_type
 max_space_dimension() {
   // Note: we assume that the powerset and the ask-and-tell construction
   // do not limit the space dimension more than their parameters.
-  static bool computed = false;
-  static dimension_type d = not_a_dimension();
+  static PPL_TLS bool computed = false;
+  static PPL_TLS dimension_type d = not_a_dimension();
   if (!computed) {
     d = Variable::max_space_dimension();
     d = std::min(d, C_Polyhedron::max_space_dimension());
