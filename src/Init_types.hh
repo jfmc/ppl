@@ -16,6 +16,7 @@ PURPOSE. */
 namespace Parma_Polyhedra_Library {
 
 class Init;
+class Thread_Init;
 
 } // namespace Parma_Polyhedra_Library
 

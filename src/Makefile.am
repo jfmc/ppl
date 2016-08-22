@@ -143,6 +143,7 @@ $(COEFFICIENT_TYPES_INCLUDE_FILES) \
 Coefficient_types.hh \
 stdiobuf_types.hh \
 c_streambuf_types.hh \
+thread_safe.hh \
 globals_types.hh \
 iterator_to_const_types.hh \
 distances_types.hh \

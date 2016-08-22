@@ -32,14 +32,14 @@ namespace Parma_Polyhedra_Library {
 inline void
 set_rounding_for_PPL() {
 #if PPL_CAN_CONTROL_FPU
-    fpu_set_rounding_direction(round_fpu_dir(ROUND_DIRECT));
+  fpu_set_rounding_direction(round_fpu_dir(ROUND_DIRECT));
 #endif
 }
 
 inline void
 restore_pre_PPL_rounding() {
 #if PPL_CAN_CONTROL_FPU
-  fpu_set_rounding_direction(Init::old_rounding_direction);
+  fpu_set_rounding_direction(Thread_Init::old_rounding_direction);
 #endif
 }
 

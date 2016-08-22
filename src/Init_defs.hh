@@ -26,6 +26,7 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "Init_types.hh"
 #include "fpu_types.hh"
+#include "thread_safe.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -57,7 +58,7 @@ void restore_pre_PPL_rounding();
 } // namespace Parma_Polyhedra_Library
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Class for initialization and finalization.
+//! Class for library initialization and finalization.
 /*! \ingroup PPL_CXX_interface
   <EM>Nifty Counter</EM> initialization class,
   ensuring that the library is initialized only once
@@ -78,6 +79,23 @@ public:
   ~Init();
 
 private:
+  //! Count the number of objects created.
+  static unsigned int count;
+}; // class Init
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Class for thread initialization and finalization.
+/*! \ingroup PPL_CXX_interface */
+#endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+class Parma_Polyhedra_Library::Thread_Init {
+public:
+  //! Initializes the PPL thread.
+  Thread_Init();
+
+  //! Finalizes the PPL thread.
+  ~Thread_Init();
+
+private:
   /*! \brief
     Default precision parameter used for irrational calculations.
 
@@ -86,13 +104,11 @@ private:
   */
   static const unsigned DEFAULT_IRRATIONAL_PRECISION = 128U;
 
-  //! Count the number of objects created.
-  static unsigned int count;
-  static fpu_rounding_direction_type old_rounding_direction;
+  static PPL_TLS fpu_rounding_direction_type old_rounding_direction;
 
   friend void set_rounding_for_PPL();
   friend void restore_pre_PPL_rounding();
-};
+}; // class Thread_Init
 
 #include "Init_inlines.hh"
 

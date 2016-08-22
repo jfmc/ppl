@@ -39,6 +39,9 @@ namespace Implementation {
 void initialize_aux();
 void finalize_aux();
 
+void thread_initialize_aux();
+void thread_finalize_aux();
+
 } // namespace Implementation
 
 } // namespace Parma_Polyhedra_Library
@@ -60,6 +63,22 @@ inline void
 finalize() {
 #ifdef PPL_NO_AUTOMATIC_INITIALIZATION
   Implementation::finalize_aux();
+#endif
+}
+
+//! Initializes a thread using the library.
+inline void
+thread_initialize() {
+#ifdef PPL_NO_AUTOMATIC_INITIALIZATION
+  Implementation::thread_initialize_aux();
+#endif
+}
+
+//! Finalizes a thread using the library.
+inline void
+thread_finalize() {
+#ifdef PPL_NO_AUTOMATIC_INITIALIZATION
+  Implementation::thread_finalize_aux();
 #endif
 }
 
