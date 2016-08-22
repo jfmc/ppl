@@ -25,7 +25,6 @@ site: http://bugseng.com/products/ppl/ . */
 #define PPL_Variable_defs_hh 1
 
 #include "Variable_types.hh"
-#include "Init_types.hh"
 #include "globals_types.hh"
 #include "thread_safe.hh"
 #include <iosfwd>
@@ -140,9 +139,6 @@ public:
 private:
   //! The index of the Cartesian axis.
   dimension_type varid;
-
-  // The initialization class needs to set the default output function.
-  friend class Init;
 
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
