@@ -41,6 +41,13 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl.hh"
 
+#ifdef PPL_THREAD_SAFE
+#define MULTI_THREADED 1
+#include "Thread_Pool_defs.hh"
+#else // !defined(PPL_THREAD_SAFE)
+#define MULTI_THREADED 0
+#endif // !defined(PPL_THREAD_SAFE)
+
 namespace PPL = Parma_Polyhedra_Library;
 
 #if PPL_VERSION_MAJOR == 0 && PPL_VERSION_MINOR < 6
@@ -50,6 +57,8 @@ namespace PPL = Parma_Polyhedra_Library;
 typedef PPL::C_Polyhedron POLYHEDRON_TYPE;
 
 #elif defined(USE_POLKA)
+
+#define MULTI_THREADED 0
 
 #include <ppl-config.h>
 #include <gmp.h>
@@ -72,6 +81,8 @@ typedef poly_t* POLYHEDRON_TYPE;
 
 #elif defined(USE_POLYLIB)
 
+#define MULTI_THREADED 0
+
 #include <ppl-config.h>
 #include <gmp.h>
 
@@ -84,10 +95,11 @@ const unsigned max_constraints_or_generators = 20000;
 
 typedef Polyhedron* POLYHEDRON_TYPE;
 
-#endif
+#endif // defined(USE_POLYLIB)
 
 #include "timings.hh"
 #include <gmpxx.h>
+#include <string>
 #include <vector>
 #include <set>
 #include <limits>
@@ -103,6 +115,12 @@ typedef Polyhedron* POLYHEDRON_TYPE;
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
+
+#if MULTI_THREADED
+#define THREAD_LOCAL thread_local
+#else
+#define THREAD_LOCAL
+#endif
 
 #ifdef PPL_HAVE_GETOPT_H
 #include <getopt.h>
@@ -156,7 +174,9 @@ struct option long_options[] = {
   {"verbose",        no_argument,       0, 'v'},
 #if defined(USE_PPL)
   {"version",        no_argument,       0, 'V'},
+#if !MULTI_THREADED
   {"check",          required_argument, 0, 'c'},
+#endif
 #endif
   {0, 0, 0, 0}
 };
@@ -175,13 +195,19 @@ usage(const char* const program) {
 #endif // defined(PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME)
     "  -RMB, --max-memory=MB   limits memory usage to MB megabytes\n"
     "  -h, --help              prints this help text to stdout\n"
+#if MULTI_THREADED
+    "  -oPATH, --output=PATH   writes output files into directory PATH\n"
+#else
     "  -oPATH, --output=PATH   appends output to PATH\n"
+#endif
     "  -t, --timings           prints timings to stderr\n"
     "  -v, --verbose           produces lots of output\n"
 #if defined(USE_PPL)
     "  -V, --version           prints version information to stdout\n"
+#if !MULTI_THREADED
     "  -cPATH, --check=PATH    checks if result is equal to what is in PATH\n"
 #endif
+#endif // defined(USE_PPL)
 #ifndef PPL_HAVE_GETOPT_H
     "\n"
     "NOTE: this version does not support long options.\n"
@@ -220,9 +246,11 @@ fatal(const char* format, ...) {
   exit(1);
 }
 
+// Note: for uniformity, use a vector even when single-threaded.
+std::vector<const char*> input_file_names;
 
-const char* input_file_name = 0;
-std::istream* input_stream_p = 0;
+THREAD_LOCAL const char* input_file_name = 0;
+THREAD_LOCAL std::istream* input_stream_p = 0;
 
 void
 set_input(const char* const file_name) {
@@ -249,8 +277,14 @@ input() {
   return *input_stream_p;
 }
 
-const char* output_file_name = 0;
-std::ostream* output_stream_p = 0;
+// Note: in single-thread mode, output_path contains an (optional) file name.
+// In multi-threaded mode, it contains the name of a directory, where the
+// output file(s) will be written; each output file name is obtained by
+// concatenating .out to the corresponding input file name.
+const char* output_path = 0;
+
+THREAD_LOCAL const char* output_file_name = 0;
+THREAD_LOCAL std::ostream* output_stream_p = 0;
 
 void
 set_output(const char* const file_name) {
@@ -443,7 +477,7 @@ process_options(const int argc, char* const argv[]) {
       break;
 
     case 'o':
-      output_file_name = optarg;
+      output_path = optarg;
       break;
 
     case 't':
@@ -461,16 +495,20 @@ process_options(const int argc, char* const argv[]) {
       exit(0);
       break;
 
+#if !MULTI_THREADED
     case 'c':
       check_file_name = optarg;
       break;
-
 #endif
+
+#endif // defined(USE_PPL)
 
     default:
       abort();
     }
   }
+
+#if !MULTI_THREADED
 
   if (argc - optind > 1) {
     // We have multiple input files.
@@ -478,12 +516,20 @@ process_options(const int argc, char* const argv[]) {
   }
   // We have one input files.
   if (optind < argc) {
-    input_file_name = argv[optind];
+    input_file_names.push_back(argv[optind]);
   }
   else {
     // If no input files have been specified: we will read from standard input.
-    assert(input_file_name == 0);
+    assert(input_file_names.empty());
   }
+
+#else // MULTI_THREADED
+
+  for ( ; optind < argc; ++optind) {
+    input_file_names.push_back(argv[optind]);
+  }
+
+#endif // MULTI_THREADED
 }
 
 void
@@ -1244,46 +1290,54 @@ write_polyhedron(std::ostream& out,
   }
 }
 
-} // namespace
-
-int
-main(int argc, char* argv[]) try {
-  program_name = argv[0];
-
-#if defined(USE_PPL)
-  if (strcmp(PPL_VERSION, PPL::version()) != 0) {
-    fatal("was compiled with PPL version %s, but linked with version %s",
-          PPL_VERSION, PPL::version());
+#if MULTI_THREADED
+std::string
+build_output_name(const char* path_out, const char* name_in) {
+  // FIXME: make this platform independent.
+  std::string basename = name_in;
+  const size_t pos = basename.find_last_of("/\\");
+  if (pos != std::string::npos) {
+    basename = basename.substr(pos + 1, basename.length());
   }
-  if (verbose) {
-    std::cerr << "Parma Polyhedra Library version:\n" << PPL::version()
-              << "\n\nParma Polyhedra Library banner:\n" << PPL::banner()
-              << std::endl;
-  }
-#endif
+  basename += ".out";
+  std::string res = path_out;
+  if (res.empty())
+    res += "./";
+  else if (res.back() != '/')
+    res += '/';
+  res += basename;
+  return res;
+}
+#endif // MULTI_THREADED
 
-  // Process command line options.
-  process_options(argc, argv);
+#define CATCH_ALL                                    \
+catch (const std::bad_alloc&) {                      \
+  fatal("out of memory");                            \
+  exit(1);                                           \
+}                                                    \
+catch (const std::overflow_error& e) {               \
+  fatal("arithmetic overflow (%s)", e.what());       \
+  exit(1);                                           \
+}                                                    \
+catch (...) {                                        \
+  fatal("internal error: please submit a bug report" \
+        "to ppl-devel@cs.unipr.it");                 \
+  exit(1);                                           \
+}
 
-#ifdef PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME
-
-  if (max_seconds_of_cpu_time > 0) {
-    set_alarm_on_cpu_time(max_seconds_of_cpu_time, &timeout);
-  }
-#endif // defined(PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME)
-
-  if (max_bytes_of_virtual_memory > 0) {
-    limit_virtual_memory(max_bytes_of_virtual_memory);
-  }
+void
+convert(const char* name_in) try {
   // Set up the input and output streams.
-  set_input(input_file_name);
-  set_output(output_file_name);
+  set_input(name_in);
+#if MULTI_THREADED
+  std::string name_out = build_output_name(output_path, name_in);
+  set_output(name_out.c_str());
+#else
+  set_output(output_path);
+#endif
 
   POLYHEDRON_TYPE ph;
   const Representation rep = read_polyhedron(input(), ph);
-
-  enum Command { None, H_to_V, V_to_H };
-  Command command = None;
 
   // Warn for misplaced linearity commands, and ignore all what follows.
   std::string s;
@@ -1294,10 +1348,12 @@ main(int argc, char* argv[]) try {
     input().ignore(std::numeric_limits<std::streamsize>::max(), '\n');
   }
 
-
 #if defined(USE_PPL) || defined(USE_POLKA)
   maybe_start_clock();
 #endif
+
+  enum Command { None, H_to_V, V_to_H };
+  Command command = None;
 
   // Compute the dual representation.
   if (rep == V) {
@@ -1363,7 +1419,7 @@ main(int argc, char* argv[]) try {
             std::cerr << "Check failed: polyhedra differ"
                       << std::endl;
           }
-          return 1;
+          exit(1);
         }
         else if (ph_num_generators != e_ph_num_generators) {
           // If we have different number of generators, we fail.
@@ -1399,7 +1455,7 @@ main(int argc, char* argv[]) try {
             std::cerr << "Check failed: polyhedra differ"
                       << std::endl;
           }
-          return 1;
+          exit(1);
         }
         else if (ph_num_constraints != e_ph_num_constraints) {
           // If we have different number of constraints, we fail.
@@ -1414,24 +1470,75 @@ main(int argc, char* argv[]) try {
       break;
     }
   }
-#endif
+#endif // defined(USE_PPL)
 
 #if defined(USE_POLKA)
-    // Finalize the library.
-    polka_finalize();
+  // Finalize the library.
+  polka_finalize();
 #endif
+}
+CATCH_ALL;
+
+} // namespace
+
+int
+main(int argc, char* argv[]) try {
+  program_name = argv[0];
+
+#if defined(USE_PPL)
+  if (strcmp(PPL_VERSION, PPL::version()) != 0) {
+    fatal("was compiled with PPL version %s, but linked with version %s",
+          PPL_VERSION, PPL::version());
+  }
+  if (verbose) {
+    std::cerr << "Parma Polyhedra Library version:\n" << PPL::version()
+              << "\n\nParma Polyhedra Library banner:\n" << PPL::banner()
+              << std::endl;
+  }
+#endif
+
+  // Process command line options.
+  process_options(argc, argv);
+
+#ifdef PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME
+
+  if (max_seconds_of_cpu_time > 0) {
+    set_alarm_on_cpu_time(max_seconds_of_cpu_time, &timeout);
+  }
+#endif // defined(PPL_LCDD_SUPPORTS_LIMIT_ON_CPU_TIME)
+
+  if (max_bytes_of_virtual_memory > 0) {
+    limit_virtual_memory(max_bytes_of_virtual_memory);
+  }
+
+#if MULTI_THREADED
+  const unsigned num_files = input_file_names.size();
+  if (num_files <= 1) {
+    // No need to create a thread pool, the main thread is enough.
+    // Passing 0 means "read from stdin".
+    convert(input_file_names.empty() ? 0 : input_file_names.front());
+  }
+  else {
+    // Create the thread pool.
+    typedef std::function<void()> work_type;
+    Thread_Pool<work_type> thread_pool(num_files);
+    // Submit all conversion tasks.
+    for (const char* name : input_file_names) {
+      work_type work = std::bind(convert, name);
+      thread_pool.submit(PPL::make_threadable(work));
+    }
+    // Wait for all workers to complete.
+    thread_pool.finalize();
+  }
+
+#else // !MULTI_THREADED
+
+  assert(input_file_names.size() <= 1);
+  // Passing 0 means "read from stdin".
+  convert(input_file_names.empty() ? 0 : input_file_names.front());
+
+#endif // !MULTI_THREADED
 
   return 0;
 }
-catch (const std::bad_alloc&) {
-  fatal("out of memory");
-  exit(1);
-}
-catch (const std::overflow_error& e) {
-  fatal("arithmetic overflow (%s)", e.what());
-  exit(1);
-}
-catch (...) {
-  fatal("internal error: please submit a bug report to ppl-devel@cs.unipr.it");
-  exit(1);
-}
+CATCH_ALL;

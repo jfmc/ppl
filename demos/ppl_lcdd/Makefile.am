@@ -30,7 +30,23 @@ AM_CPPFLAGS = \
 @extra_includes@
 
 bin_PROGRAMS = ppl_lcdd
-ppl_lcdd_SOURCES = ppl_lcdd.cc
+
+if THREAD_SAFE
+
+PPL_LCDD_MULTITHREADED_SOURCES = \
+Thread_Pool_defs.hh \
+Thread_Pool_templates.hh
+
+else !THREAD_SAFE
+
+PPL_LCDD_MULTITHREADED_SOURCES =
+
+endif !THREAD_SAFE
+
+ppl_lcdd_SOURCES = \
+$(PPL_LCDD_MULTITHREADED_SOURCES) \
+ppl_lcdd.cc
+
 ppl_lcdd_LDADD = \
 $(top_builddir)/src/libppl.la \
 $(top_builddir)/utils/libppl_utils.a \
