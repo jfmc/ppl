@@ -259,6 +259,7 @@ Variables_Set_inlines.hh \
 Init_defs.hh \
 Init_inlines.hh \
 initializer.hh \
+make_threadable.hh \
 Topology_types.hh \
 Dense_Row_defs.hh \
 Dense_Row_inlines.hh \

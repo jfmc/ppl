@@ -51,7 +51,21 @@ $(top_builddir)/tests/libppl_tests.a \
 $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
+
+if THREAD_SAFE
+
+THREAD_SAFETY_TESTS = \
+threadsafe1
+
+else !THREAD_SAFE
+
+THREAD_SAFETY_TESTS =
+
+endif !THREAD_SAFE
+
+
 ORIGINAL_TESTS = \
+$(THREAD_SAFETY_TESTS) \
 addcongruence1 \
 addcongruences1 \
 addconstraint1 \
@@ -221,6 +235,8 @@ nnc_writepolyhedron1
 #
 # Sources for the tests
 #
+
+threadsafe1_SOURCES = threadsafe1.cc
 
 addcongruence1_SOURCES = addcongruence1.cc
 
