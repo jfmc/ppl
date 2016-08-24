@@ -23,6 +23,7 @@ site: http://bugseng.com/products/ppl/ . */
 
 #include "ppl-config.h"
 #include "timings.hh"
+#include "thread_safe.hh"
 #include <cassert>
 #include <ctime>
 #include <iostream>
@@ -43,7 +44,7 @@ site: http://bugseng.com/products/ppl/ . */
 
 #ifdef PPL_HAVE_TIMEVAL
 // To save the time when start_clock is called.
-static struct timeval saved_ru_utime;
+static PPL_TLS struct timeval saved_ru_utime;
 #endif
 
 void

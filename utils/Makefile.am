@@ -21,10 +21,13 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://bugseng.com/products/ppl/ .
 
-AM_CPPFLAGS = @extra_includes@
+AM_CPPFLAGS = \
+-I$(top_srcdir)/src \
+@extra_includes@
 
 noinst_LIBRARIES = libppl_utils.a
 libppl_utils_a_SOURCES = \
+$(top_srcdir)/src/thread_safe.hh \
 timings.hh \
 timings.cc
 
