@@ -28,6 +28,10 @@ site: http://bugseng.com/products/ppl/ . */
 #include "fpu_types.hh"
 #include "thread_safe.hh"
 
+#ifdef PPL_THREAD_SAFE
+#include <atomic>
+#endif
+
 namespace Parma_Polyhedra_Library {
 
 /*! \brief
@@ -79,8 +83,13 @@ public:
   ~Init();
 
 private:
+#ifdef PPL_THREAD_SAFE
+  typedef std::atomic<unsigned int> counter_type;
+#else
+  typedef unsigned int counter_type;
+#endif
   //! Count the number of objects created.
-  static unsigned int count;
+  static counter_type count;
 }; // class Init
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS

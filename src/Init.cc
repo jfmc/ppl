@@ -43,7 +43,7 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-unsigned int PPL::Init::count = 0;
+PPL::Init::counter_type PPL::Init::count;
 
 PPL_TLS PPL::fpu_rounding_direction_type
 PPL::Thread_Init::old_rounding_direction;
