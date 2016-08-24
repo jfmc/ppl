@@ -38,6 +38,29 @@ namespace Parma_Polyhedra_Library {
 
 namespace {
 
+// A helper for exception safety issues.
+// (An abridged replacement for the deprecated std::auto_ptr;
+// should be using a std::unique_ptr as soon as switching to C++11).
+template <typename T>
+struct Safe_Ptr {
+  explicit Safe_Ptr(T* ptr) : raw(ptr) {}
+  void release() { raw = 0; }
+  void release_and_reset(T* ptr) { raw = ptr; }
+  T* get() { return raw; }
+  T* get_and_release() {
+    T* result = raw;
+    raw = 0;
+    return result;
+  }
+  ~Safe_Ptr() { delete raw; }
+private:
+  T* raw;
+  Safe_Ptr(const Safe_Ptr&); // Disabled.
+  Safe_Ptr& operator=(const Safe_Ptr&); // Disabled.
+};
+
+typedef Safe_Ptr<PIP_Tree_Node> Safe_Node;
+
 //! Assigns to \p x the positive remainder of the division of \p y by \p z.
 inline void
 pos_rem_assign(Coefficient& x,
@@ -1101,14 +1124,14 @@ PIP_Decision_Node::PIP_Decision_Node(const PIP_Decision_Node& y)
     false_child = y.false_child->clone();
     false_child->set_parent(this);
   }
-  // Protect false_child from exception safety issues via std::auto_ptr.
-  std::auto_ptr<PIP_Tree_Node> wrapped_node(false_child);
+  // Protect false_child from exception safety issues.
+  Safe_Node safe_node(false_child);
   if (y.true_child != 0) {
     true_child = y.true_child->clone();
     true_child->set_parent(this);
   }
   // It is now safe to release false_child.
-  wrapped_node.release();
+  safe_node.release();
 }
 
 PIP_Decision_Node::~PIP_Decision_Node() {
@@ -3140,8 +3163,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
 
       // Create a solution node for the "true" version of current node.
       PIP_Tree_Node* t_node = new PIP_Solution_Node(*this, No_Constraints());
-      // Protect it from exception safety issues via std::auto_ptr.
-      std::auto_ptr<PIP_Tree_Node> wrapped_node(t_node);
+      // Protect it from exception safety issues.
+      Safe_Node safe_node(t_node);
 
       // Add parametric constraint to context.
       ctx.add_row(t_test);
@@ -3152,11 +3175,8 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
       t_node = t_node->solve(pip, check_feasible_context,
                              ctx, all_params, space_dim,
                              indent_level + 1);
-      // Resolution may have changed t_node: in case, re-wrap it.
-      if (t_node != wrapped_node.get()) {
-        wrapped_node.release();
-        wrapped_node.reset(t_node);
-      }
+      // Resolution may have changed t_node: re-wrap it.
+      safe_node.release_and_reset(t_node);
 
       // Modify *this in place to become the "false" version of current node.
       PIP_Tree_Node* f_node = this;
@@ -3222,8 +3242,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
             = new PIP_Decision_Node(t_node->get_owner(), 0, t_node);
           // Previously wrapped 't_node' is now safe: release it
           // and protect new 'parent' node from exception safety issues.
-          wrapped_node.release();
-          wrapped_node.reset(parent);
+          safe_node.release_and_reset(parent);
           // Restore into parent `cs' and `aps'.
           swap(parent->constraints_, cs);
           swap(parent->artificial_parameters, aps);
@@ -3231,7 +3250,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           parent->add_constraint(t_test, all_params);
           // It is now safe to release previously wrapped parent pointer
           // and return it to caller.
-          return wrapped_node.release();
+          return safe_node.get_and_release();
         }
         else {
           // Merge t_node with its parent:
@@ -3252,7 +3271,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
           t_node->add_constraint(t_test, all_params);
           // It is now safe to release previously wrapped t_node pointer
           // and return it to caller.
-          return wrapped_node.release();
+          return safe_node.get_and_release();
         }
       }
 
@@ -3266,8 +3285,7 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         = new PIP_Decision_Node(f_node->get_owner(), f_node, t_node);
       // Previously wrapped 't_node' is now safe: release it
       // and protect new 'parent' node from exception safety issues.
-      wrapped_node.release();
-      wrapped_node.reset(parent);
+      safe_node.release_and_reset(parent);
 
       // Add t_test to the constraints of the new decision node.
       parent->add_constraint(t_test, all_params);
@@ -3284,14 +3302,13 @@ PIP_Solution_Node::solve(const PIP_Problem& pip,
         parent = new PIP_Decision_Node(parent->get_owner(), 0, parent);
         // Previously wrapped 'parent' node is now safe: release it
         // and protect new 'parent' node from exception safety issues.
-        wrapped_node.release();
-        wrapped_node.reset(parent);
+        safe_node.release_and_reset(parent);
         swap(parent->constraints_, cs);
       }
       swap(parent->artificial_parameters, aps);
       // It is now safe to release previously wrapped decision node
       // and return it to the caller.
-      return wrapped_node.release();
+      return safe_node.get_and_release();
     } // if (first_mixed != not_a_dim)
 
 
