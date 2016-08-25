@@ -602,7 +602,7 @@ AM_CONDITIONAL(THREAD_SAFE, test x"$enable_thread_safe" = xyes)
 if test x"$enable_thread_safe" = xyes
 then
   AC_DEFINE(PPL_THREAD_SAFE, 1, [The library is (conditionally) thread safe when this is defined.])
-  CFLAGS="$CFLAGS -std=c11 -pthread"
+  CFLAGS="$CFLAGS -pthread"
   CXXFLAGS="$CXXFLAGS -std=c++11 -pthread"
   extra_libraries="${extra_libraries} -pthread"
 fi

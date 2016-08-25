@@ -38,7 +38,7 @@ namespace C {
 extern "C" typedef void
 (*error_handler_type)(enum ppl_enum_error_code code, const char* description);
 
-extern error_handler_type user_error_handler;
+extern PPL_C_TLS error_handler_type user_error_handler;
 
 void notify_error(enum ppl_enum_error_code code, const char* description);
 

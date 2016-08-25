@@ -31,7 +31,7 @@ namespace Interfaces {
 
 namespace C {
 
-error_handler_type user_error_handler = 0;
+PPL_C_TLS error_handler_type user_error_handler = 0;
 
 extern "C" const char*
 c_variable_default_output_function(ppl_dimension_type var) {
@@ -53,7 +53,7 @@ c_variable_default_output_function(ppl_dimension_type var) {
 #if defined(ULLONG_MAX) && ULLONG_MAX > 18446744073709551615ULL
 # error "Please enlarge the buffer in the following line."
 #endif
-  static char buffer[20];
+  static PPL_C_TLS char buffer[20];
   buffer[0] = static_cast<char>('A' + var % 26);
   if (ppl_dimension_type i = var / 26) {
     int r = sprintf(buffer+1, FORMAT, CONVERSION i);
@@ -70,7 +70,7 @@ c_variable_default_output_function(ppl_dimension_type var) {
 }
 
 // Holds a pointer to the C current output function.
-ppl_io_variable_output_function_type* c_variable_output_function;
+PPL_C_TLS ppl_io_variable_output_function_type* c_variable_output_function;
 
 void
 cxx_Variable_output_function(std::ostream& s, const Variable v) {
@@ -86,7 +86,7 @@ extern "C" typedef const char*
 c_variable_output_function_type(ppl_dimension_type var);
 
 // Holds a pointer to the C++ saved output function.
-Variable::output_function_type* saved_cxx_Variable_output_function;
+PPL_C_TLS Variable::output_function_type* saved_cxx_Variable_output_function;
 
 void
 notify_error(enum ppl_enum_error_code code, const char* description) {
@@ -94,12 +94,14 @@ notify_error(enum ppl_enum_error_code code, const char* description) {
     user_error_handler(code, description);
 }
 
+// FIXME: current implementation is not thread-safe.
 Parma_Polyhedra_Library::Watchdog* p_timeout_object = 0;
 
 typedef
 Parma_Polyhedra_Library::Threshold_Watcher
 <Parma_Polyhedra_Library::Weightwatch_Traits> Weightwatch;
 
+// FIXME: current implementation is not thread-safe.
 Weightwatch* p_deterministic_timeout_object = 0;
 
 void
@@ -169,10 +171,9 @@ ppl_set_error_handler(error_handler_type h) {
   return 0;
 }
 
-int
-ppl_initialize(void) try {
-  initialize();
-
+// Helper function: C-interface specific library initialization.
+static inline void
+ppl_initialize_aux() {
   PPL_POLY_CON_RELATION_IS_DISJOINT
     = Poly_Con_Relation::is_disjoint().get_flags();
   PPL_POLY_CON_RELATION_STRICTLY_INTERSECTS
@@ -222,20 +223,67 @@ ppl_initialize(void) try {
 
   PPL_OPTIMIZATION_MODE_MINIMIZATION = MINIMIZATION;
   PPL_OPTIMIZATION_MODE_MAXIMIZATION = MAXIMIZATION;
+}
 
+// Helper function: C-interface specific library finalization.
+static inline void
+ppl_finalize_aux() {
+  // Note: currently, nothing to do.
+  // (This function is anyway kept for both clarity and future needs.)
+}
+
+// Helper function: C-interface specific thread initialization.
+static inline void
+ppl_thread_initialize_aux() {
   c_variable_output_function = c_variable_default_output_function;
   saved_cxx_Variable_output_function = Variable::get_output_function();
   Variable::set_output_function(cxx_Variable_output_function);
+}
 
+// Helper function: C-interface specific thread finalization.
+static inline void
+ppl_thread_finalize_aux() {
+  Variable::set_output_function(saved_cxx_Variable_output_function);
+}
+
+int
+ppl_initialize(void) try {
+  // First execute C++ (library and thread) initialization, ...
+  initialize();
+  // ... then execute C-interface specific initialization.
+  ppl_initialize_aux();
+  ppl_thread_initialize_aux();
   return 0;
 }
 CATCH_ALL
 
 int
 ppl_finalize(void) try {
-  Variable::set_output_function(saved_cxx_Variable_output_function);
-
+  // First execute C-interface specific finalization, ...
+  ppl_thread_finalize_aux();
+  ppl_finalize_aux();
+  // ... then execute C++ (thread and library) finalization.
   finalize();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_thread_initialize(void) try {
+  // First execute C++ thread initialization, ...
+  thread_initialize();
+  // ... then execute C-interface specific initialization.
+  ppl_thread_initialize_aux();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_thread_finalize(void) try {
+  // First execute C-interface specific finalization, ...
+  ppl_thread_finalize_aux();
+  // ... then execute C++ thread finalization.
+  thread_finalize();
   return 0;
 }
 CATCH_ALL
@@ -244,6 +292,7 @@ int
 ppl_set_timeout(unsigned csecs) try {
   // In case a timeout was already set.
   reset_timeout();
+  // FIXME: current implementation is not thread-safe.
   static timeout_exception e;
   using Parma_Polyhedra_Library::Watchdog;
   p_timeout_object = new Watchdog(csecs, abandon_expensive_computations, e);
@@ -263,6 +312,7 @@ ppl_set_deterministic_timeout(unsigned long unscaled_weight,
                               unsigned scale) try {
   // In case a deterministic timeout was already set.
   reset_deterministic_timeout();
+  // FIXME: current implementation is not thread-safe.
   static timeout_exception e;
   typedef Parma_Polyhedra_Library::Weightwatch_Traits Traits;
   p_deterministic_timeout_object

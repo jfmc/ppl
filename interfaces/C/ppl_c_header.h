@@ -162,6 +162,16 @@ Programming Kit): this is used to read linear programs in MPS format.
 # define PPL_PROTO(protos) ()
 #endif
 
+#ifdef PPL_THREAD_SAFE
+/*
+  C11 threads (and _Thread_local) are not currently supported
+  by most C compilers and libraries (e.g., gcc 4.8.4 and clang 3.4).
+*/
+#define PPL_C_TLS __thread
+#else
+#define PPL_C_TLS
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -176,6 +186,9 @@ extern "C" {
   Initializes the Parma Polyhedra Library.
   This function must be called before any other function.
 
+  The thread performing library initialization (typically, the main thread)
+  should not explicitly call <code>ppl_thread_initialize()</code>.
+
   \return
   <CODE>PPL_ERROR_INVALID_ARGUMENT</CODE> if the library
   was already initialized.
@@ -187,12 +200,43 @@ ppl_initialize PPL_PROTO((void));
   Finalizes the Parma Polyhedra Library.
   This function must be called after any other function.
 
+  The thread performing library finalization (typically, the main thread)
+  should not explicitly call <code>ppl_thread_finalize()</code>.
+
   \return
   <CODE>PPL_ERROR_INVALID_ARGUMENT</CODE> if the library
   was already finalized.
 */
 int
 ppl_finalize PPL_PROTO((void));
+
+/*! \brief
+  Performs thread specific initialization for the Parma Polyhedra Library.
+
+  This function must be called before any other function whenever
+  starting a <em>new</em> thread. The main thread is already
+  initialized by the call to <code>ppl_initialize()</code>.
+
+  \return
+  <CODE>PPL_ERROR_INVALID_ARGUMENT</CODE> if the thread
+  was already initialized.
+*/
+int
+ppl_thread_initialize PPL_PROTO((void));
+
+/*! \brief
+  Performs thread specific finalization for the Parma Polyhedra Library.
+
+  This function must be called after any other library function whenever
+  terminating a <em>new</em> thread. It should not be called by the main
+  thread, since this is finalized by calling <code>ppl_finalize()</code>.
+
+  \return
+  <CODE>PPL_ERROR_INVALID_ARGUMENT</CODE> if the thread
+  was already finalized.
+*/
+int
+ppl_thread_finalize PPL_PROTO((void));
 
 /*! \brief
   Sets the FPU rounding mode so that the PPL abstractions based on
