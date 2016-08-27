@@ -182,6 +182,37 @@ public class Parma_Polyhedra_Library {
 
     //@} // Library initialization and finalization
 
+    //! \name Thread initialization and finalization
+    //@{
+
+    /*! \brief
+      Thread-specific initialization for the Parma Polyhedra Library.
+
+      This method must be called after creating a new thread using the PPL
+      and before calling any other method from any other PPL package class.
+
+      \note
+      The thread calling <CODE>initialize_library()</CODE> need not
+      call this method.
+    */
+    public static native void initialize_thread();
+
+    /*! \brief
+      Thread-specific finalization for the Parma Polyhedra Library.
+
+      This method must be called when a thread is done working with
+      the library. After thread finalization, no other library method
+      can be called, unless the thread is re-initialized by calling
+      <CODE>initialize_thread()</CODE>.
+
+      \note
+      A thread calling <CODE>finalize_library()</CODE> need not
+      call this method.
+    */
+    public static native void finalize_thread();
+
+    //@} // Library initialization and finalization
+
     //! \name Version Checking
     //@{
 

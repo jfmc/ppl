@@ -32,6 +32,7 @@ namespace Java {
 // Define class and field/method ID caches.
 Java_Class_Cache cached_classes;
 Java_FMID_Cache cached_FMIDs;
+PPL_TLS Java_TLS_Cache cached_TLSs;
 
 Java_Class_Cache::Java_Class_Cache() {
   // Java Virtual Machine pointer.
@@ -77,16 +78,12 @@ Java_Class_Cache::Java_Class_Cache() {
   PPL_Object = NULL;
   Relation_Symbol = NULL;
   Variable = NULL;
-  Variable_Stringifier = NULL;
   Variables_Set = NULL;
 }
 
 void
 Java_Class_Cache::init_cache(JNIEnv* env, jclass& field, const char* name) {
-  assert(env != NULL);
-  if (field != NULL) {
-    env->DeleteGlobalRef(field);
-  }
+  delete_global_ref(env, field);
   jclass jni_class = env->FindClass(name);
   CHECK_RESULT_ASSERT(env, jni_class);
   field = (jclass) env->NewGlobalRef(jni_class);
@@ -108,9 +105,12 @@ Java_Class_Cache::init_cache(JNIEnv* env) {
              "parma_polyhedra_library/Artificial_Parameter");
   init_cache(env, Artificial_Parameter_Sequence,
              "parma_polyhedra_library/Artificial_Parameter_Sequence");
-  init_cache(env, Bounded_Integer_Type_Overflow, "parma_polyhedra_library/Bounded_Integer_Type_Overflow");
-  init_cache(env, Bounded_Integer_Type_Representation, "parma_polyhedra_library/Bounded_Integer_Type_Representation");
-  init_cache(env, Bounded_Integer_Type_Width, "parma_polyhedra_library/Bounded_Integer_Type_Width");
+  init_cache(env, Bounded_Integer_Type_Overflow,
+             "parma_polyhedra_library/Bounded_Integer_Type_Overflow");
+  init_cache(env, Bounded_Integer_Type_Representation,
+             "parma_polyhedra_library/Bounded_Integer_Type_Representation");
+  init_cache(env, Bounded_Integer_Type_Width,
+             "parma_polyhedra_library/Bounded_Integer_Type_Width");
   init_cache(env, By_Reference, "parma_polyhedra_library/By_Reference");
   init_cache(env, Coefficient, "parma_polyhedra_library/Coefficient");
   init_cache(env, Congruence, "parma_polyhedra_library/Congruence");
@@ -160,18 +160,12 @@ Java_Class_Cache::init_cache(JNIEnv* env) {
   init_cache(env, PPL_Object, "parma_polyhedra_library/PPL_Object");
   init_cache(env, Relation_Symbol, "parma_polyhedra_library/Relation_Symbol");
   init_cache(env, Variable, "parma_polyhedra_library/Variable");
-  // NOTE: initialization of concrete Variable_Stringifier is responsibility
-  // of static (native) method Variable.setStringifier.
   init_cache(env, Variables_Set, "parma_polyhedra_library/Variables_Set");
 }
 
 void
 Java_Class_Cache::clear_cache(JNIEnv* env, jclass& field) {
-  assert(env != NULL);
-  if (field != NULL) {
-    env->DeleteGlobalRef(field);
-    field = NULL;
-  }
+  delete_global_ref(env, field);
 }
 
 void
@@ -218,8 +212,52 @@ Java_Class_Cache::clear_cache(JNIEnv* env) {
   clear_cache(env, PPL_Object);
   clear_cache(env, Relation_Symbol);
   clear_cache(env, Variable);
-  clear_cache(env, Variable_Stringifier);
   clear_cache(env, Variables_Set);
+}
+
+Java_TLS_Cache::Java_TLS_Cache() {
+  // Variable_Stringifier.
+  Variable_Stringifier = NULL;
+  Variable_Stringifier_stringify_ID = NULL;
+  current_stringifier = NULL;
+}
+
+void
+Java_TLS_Cache::clear_Variable_Stringifier_data(JNIEnv* env) {
+  delete_global_ref(env, cached_TLSs.Variable_Stringifier);
+  cached_TLSs.Variable_Stringifier_stringify_ID = NULL;
+  delete_global_ref(env, cached_TLSs.current_stringifier);
+}
+
+void
+Java_TLS_Cache::set_Variable_Stringifier_data(JNIEnv* env,
+                                              jobject j_stringifier) {
+  assert(j_stringifier != NULL);
+  // Delete previously cached values (if any).
+  clear_Variable_Stringifier_data(env);
+  // Compute new values for j_stringifier.
+  jclass vs_class = env->GetObjectClass(j_stringifier);
+  CHECK_RESULT_ASSERT(env, vs_class);
+  jmethodID mID = env->GetMethodID(vs_class, "stringify",
+                                   "(J)Ljava/lang/String;");
+  CHECK_RESULT_ASSERT(env, mID);
+  jobject vs = (jobject) env->NewGlobalRef(j_stringifier);
+  CHECK_RESULT_ASSERT(env, vs);
+  // Update cache with values computed for j_stringifier.
+  Variable_Stringifier = vs_class;
+  cached_TLSs.Variable_Stringifier_stringify_ID = mID;
+  cached_TLSs.current_stringifier = vs;
+}
+
+Java_TLS_Cache::~Java_TLS_Cache() {
+  if (current_stringifier != NULL) {
+    // Use cached Java Virtual Machine pointer to retrieve JNI env.
+    JavaVM* jvm = cached_classes.jvm;
+    JNIEnv *env = 0;
+    jvm->AttachCurrentThread((void **)&env, NULL);
+    CHECK_EXCEPTION_ASSERT(env);
+    clear_Variable_Stringifier_data(env);
+  }
 }
 
 void
@@ -1215,12 +1253,10 @@ Java_Variable_output_function(std::ostream& s, Variable v) {
   jvm->AttachCurrentThread((void **)&env, NULL);
   CHECK_EXCEPTION_ASSERT(env);
   // Retrieve stringifier object.
-  jclass var_class = cached_classes.Variable;
-  jfieldID fID = cached_FMIDs.Variable_stringifier_ID;
-  jobject stringifier = env->GetStaticObjectField(var_class, fID);
+  jobject stringifier = cached_TLSs.current_stringifier;
   CHECK_RESULT_THROW(env, stringifier);
   // Use it to get the Java string for the variable.
-  jmethodID mID = cached_FMIDs.Variable_Stringifier_stringify_ID;
+  jmethodID mID = cached_TLSs.Variable_Stringifier_stringify_ID;
 #ifndef NDEBUG
   {
     // Dynamically retrieve stringifier class and use it to compute

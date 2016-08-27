@@ -32,6 +32,50 @@ namespace Interfaces {
 
 namespace Java {
 
+// Java-interface specific library initialization.
+inline void
+java_initialize_aux(JNIEnv* env) {
+  cached_classes.init_cache(env);
+}
+
+inline void
+java_finalize_aux(JNIEnv* env) {
+  cached_classes.clear_cache(env);
+}
+
+// Java-interface specific thread initialization.
+inline void
+java_thread_initialize_aux(JNIEnv* /* env */) {
+  /*
+    Currently, nothing to do.
+    Keep anyway this helper function for clarity.
+  */
+}
+
+// Java-interface specific thread finalization.
+inline void
+java_thread_finalize_aux(JNIEnv* env) {
+  cached_TLSs.clear_Variable_Stringifier_data(env);
+}
+
+inline void
+delete_global_ref(JNIEnv* env, jclass& ref) {
+  assert(env != NULL);
+  if (ref != NULL) {
+    env->DeleteGlobalRef(ref);
+    ref = NULL;
+  }
+}
+
+inline void
+delete_global_ref(JNIEnv* env, jobject& ref) {
+  assert(env != NULL);
+  if (ref != NULL) {
+    env->DeleteGlobalRef(ref);
+    ref = NULL;
+  }
+}
+
 template <typename U, typename V>
 U
 jtype_to_unsigned(const V& value) {

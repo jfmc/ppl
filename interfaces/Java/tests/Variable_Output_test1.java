@@ -57,7 +57,7 @@ public class Variable_Output_test1 {
           return false;
 
         // Changing output function to custom one.
-        Variable_Stringifier vs = new Custom_Variable_Stringifier();
+        Variable_Stringifier vs = new Custom_Variable_Stringifier("Var_");
         Variable.setStringifier(vs);
 
         ok = (A.toString().equals("Var_0") &&

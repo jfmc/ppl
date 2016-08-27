@@ -232,7 +232,6 @@ public:
   jclass PPL_Object;
   jclass Relation_Symbol;
   jclass Variable;
-  jclass Variable_Stringifier;
   jclass Variables_Set;
 
   //! Default constructor.
@@ -403,10 +402,7 @@ struct Java_FMID_Cache {
   jmethodID Relation_Symbol_ordinal_ID;
   // Variable.
   jfieldID Variable_varid_ID;
-  jfieldID Variable_stringifier_ID;
   jmethodID Variable_init_ID;
-  // Variable_Stringifier.
-  jmethodID Variable_Stringifier_stringify_ID;
   // Variables_Set.
   jmethodID Variables_Set_init_ID;
   jmethodID Variables_Set_add_ID;
@@ -416,12 +412,48 @@ struct Java_FMID_Cache {
   jmethodID Variables_Set_Iterator_next_ID;
 };
 
+//! A cache for thread-specific values.
+struct Java_TLS_Cache {
+  // Variable_Stringifier.
+  jclass Variable_Stringifier;
+  jmethodID Variable_Stringifier_stringify_ID;
+  jobject current_stringifier;
+
+  //! Default constructor.
+  Java_TLS_Cache();
+
+  //! Detructor.
+  ~Java_TLS_Cache();
+
+  void clear_Variable_Stringifier_data(JNIEnv* env);
+  void set_Variable_Stringifier_data(JNIEnv* env, jobject j_stringifier);
+
+private:
+  // Private and not implemented: copy construction not allowed.
+  Java_TLS_Cache(const Java_TLS_Cache&);
+  // Private and not implemented: copy assignment not allowed.
+  Java_TLS_Cache& operator=(const Java_TLS_Cache&);
+};
+
 //! The cached class references.
 extern Java_Class_Cache cached_classes;
 
 //! The field and method ID cache.
 extern Java_FMID_Cache cached_FMIDs;
 
+//! The cache for thread-specific data.
+/*!
+  The cache is thread-local only if the library is configured with
+  option --enable-thread-safe; otherwise, it will be shared.
+*/
+extern PPL_TLS Java_TLS_Cache cached_TLSs;
+
+
+void
+delete_global_ref(JNIEnv* env, jclass& ref);
+
+void
+delete_global_ref(JNIEnv* env, jobject& ref);
 
 /*! \brief
   Builds an unsigned C++ number from the Java native number \p value.

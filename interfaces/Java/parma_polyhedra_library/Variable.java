@@ -73,11 +73,8 @@ public class Variable implements Comparable<Variable> {
             return 1;
     }
 
-    //! Optional customization provider for \c toString.
-    private static Variable_Stringifier stringifier;
-
     /*! \brief
-      Sets the variable stringifier object.
+      Sets the variable stringifier object <em>for the current thread</em>.
 
       A variable stringifier object provides customization for the
       \c toString method; if no variable stringifier object is set

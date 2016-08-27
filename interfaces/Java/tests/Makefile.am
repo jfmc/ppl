@@ -51,7 +51,8 @@ Parma_Polyhedra_Library_test2.java \
 PPL_Test.java \
 ppl_java_tests_common \
 Custom_Variable_Stringifier.java \
-Variable_Output_test1.java
+Variable_Output_test1.java \
+Variable_Output_thread_safe1.java
 
 if ENABLE_SHARED
 
@@ -66,6 +67,7 @@ Parma_Polyhedra_Library_test1.java \
 Parma_Polyhedra_Library_test2.java \
 Custom_Variable_Stringifier.java \
 Variable_Output_test1.java \
+Variable_Output_thread_safe1.java \
 PPL_Test.java
 
 CLASSPATH = ../ppl_java.jar:.
@@ -84,7 +86,18 @@ ppl_java_generated_tests.java: $(interface_generator_dependencies)
 		$(srcdir)/ppl_interface_generator_java_test_java.m4 \
 			> $@
 
-check-local: ppl_java_generated_tests.java
+if THREAD_SAFE
+
+check_thread_safety:
+	$(java_test_environment) Variable_Output_thread_safe1
+
+else !THREAD_SAFE
+
+check_thread_safety:
+
+endif !THREAD_SAFE
+
+check-local: ppl_java_generated_tests.java check_thread_safety
 	$(java_test_environment) ppl_java_generated_tests
 	$(java_test_environment) C_Polyhedron_test1
 	$(java_test_environment) NNC_Polyhedron_test1

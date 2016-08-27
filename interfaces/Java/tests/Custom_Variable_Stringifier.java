@@ -23,7 +23,13 @@ site: http://bugseng.com/products/ppl/ . */
 import parma_polyhedra_library.*;
 
 public class Custom_Variable_Stringifier implements Variable_Stringifier {
+    private String prefix;
+
+    public Custom_Variable_Stringifier(String s) {
+        prefix = s;
+    }
+
     public String stringify(long var_id) {
-        return "Var_" + var_id;
+        return prefix + var_id;
     }
 }

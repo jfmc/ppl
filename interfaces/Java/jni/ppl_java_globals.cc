@@ -74,16 +74,31 @@ JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_initialize_1library
 (JNIEnv* env, jclass /* ppl_class */) {
   initialize();
-  cached_classes.init_cache(env);
+  java_initialize_aux(env);
+  java_thread_initialize_aux(env);
 }
 
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_finalize_1library
 (JNIEnv* env, jclass /* ppl_class */) {
-  cached_classes.clear_cache(env);
+  java_thread_finalize_aux(env);
+  java_finalize_aux(env);
   finalize();
 }
 
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_initialize_1thread
+(JNIEnv* env, jclass /* ppl_class */) {
+  thread_initialize();
+  java_thread_initialize_aux(env);
+}
+
+JNIEXPORT void JNICALL
+Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_finalize_1thread
+(JNIEnv* env, jclass /* ppl_class */) {
+  java_thread_finalize_aux(env);
+  thread_finalize();
+}
 
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_By_1Reference_initIDs
@@ -678,10 +693,6 @@ Java_parma_1polyhedra_1library_Variable_initIDs
   jfieldID fID = env->GetFieldID(j_variable_class, "varid", "J");
   CHECK_RESULT_ASSERT(env, fID);
   cached_FMIDs.Variable_varid_ID = fID;
-  fID = env->GetStaticFieldID(j_variable_class, "stringifier",
-                              "Lparma_polyhedra_library/Variable_Stringifier;");
-  CHECK_RESULT_ASSERT(env, fID);
-  cached_FMIDs.Variable_stringifier_ID = fID;
   jmethodID mID = env->GetMethodID(j_variable_class, "<init>", "(J)V");
   CHECK_RESULT_ASSERT(env, mID);
   cached_FMIDs.Variable_init_ID = mID;
@@ -1267,27 +1278,16 @@ Java_parma_1polyhedra_1library_Variable_toString
 
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Variable_setStringifier
-(JNIEnv* env, jclass j_variable_class, jobject j_stringifier) {
-  // Store j_stringifier in the corresponding static field.
-  env->SetStaticObjectField(j_variable_class,
-                            cached_FMIDs.Variable_stringifier_ID,
-                            j_stringifier);
+(JNIEnv* env, jclass /* j_variable_class */, jobject j_stringifier) {
   if (j_stringifier == NULL) {
-    // No stringifier object: reset cache values.
-    cached_classes.Variable_Stringifier = NULL;
-    cached_FMIDs.Variable_Stringifier_stringify_ID = NULL;
+    // Clear cache entries.
+    cached_TLSs.clear_Variable_Stringifier_data(env);
     // Reset default C++ output function.
     Variable::set_output_function(&Variable::default_output_function);
   }
   else {
-    // Update cache with values computed for concrete class.
-    jclass vs_class = env->GetObjectClass(j_stringifier);
-    CHECK_RESULT_ASSERT(env, vs_class);
-    cached_classes.Variable_Stringifier = vs_class;
-    jmethodID mID = env->GetMethodID(vs_class, "stringify",
-                                     "(J)Ljava/lang/String;");
-    CHECK_RESULT_ASSERT(env, mID);
-    cached_FMIDs.Variable_Stringifier_stringify_ID = mID;
+    // (Re-) Set cache entries to match new object.
+    cached_TLSs.set_Variable_Stringifier_data(env, j_stringifier);
     // Set C++ output function to the Java wrapper.
     Variable::set_output_function(&Java_Variable_output_function);
   }
