@@ -679,7 +679,7 @@ maybe_check_results(args_t* args,
   if (!check_results)
     return;
 
-  if (no_mip || num_integer_variables == 0)
+  if (no_mip || args->num_integer_variables == 0)
     treat_as_lp = 1;
 
   glp_set_obj_dir(glpk_lp, (maximize ? GLP_MAX : GLP_MIN));
@@ -1246,9 +1246,11 @@ process_args(void* vp) {
   mpz_clear(args->den_lcm);
   assert(args->output_file == output_file);
   fclose(output_file);
+  output_file = NULL;
   free(args);
 }
 
+#ifdef PPL_LPSOL_MULTI_THREADED
 static void*
 thread_process_args(void* vp) {
   ppl_thread_initialize();
@@ -1256,6 +1258,7 @@ thread_process_args(void* vp) {
   ppl_thread_finalize();
   return NULL;
 }
+#endif /* defined(PPL_LPSOL_MULTI_THREADED) */
 
 static void
 error_handler(enum ppl_enum_error_code code,
@@ -1296,6 +1299,8 @@ glpk_message_interceptor(void* info, char* msg) {
 
 #endif /* defined(NDEBUG) */
 
+
+#ifdef PPL_LPSOL_MULTI_THREADED
 static const char*
 get_output_name(const char* input_name) {
   /* FIXME: to be made platform independent. */
@@ -1327,6 +1332,7 @@ get_output_name(const char* input_name) {
   strcat(output_name, extension);
   return output_name;
 }
+#endif /* defined(PPL_LPSOL_MULTI_THREADED) */
 
 static void
 set_output_file(const char* file_name) {
@@ -1337,6 +1343,8 @@ set_output_file(const char* file_name) {
   if (output_file == NULL)
     fatal("cannot open output file `%s'", output_name);
 #else /* !defined(PPL_LPSOL_MULTI_THREADED) */
+  /* In single threaded mode, output name does not depend on input name. */
+  (void) file_name;
   if (output_argument) {
     output_file = fopen(output_argument, "w");
     if (output_file == NULL)
@@ -1369,7 +1377,6 @@ prepare_args(const char* file_name) {
 
   set_output_file(file_name);
 
-  glpk_lp = glp_create_prob();
   glp_init_mpscp(&glpk_mpscp);
 
   if (verbosity == 0) {
@@ -1577,7 +1584,6 @@ prepare_args(const char* file_name) {
   args->saved_ru_utime = saved_ru_utime;
 
   mpz_clear(den_lcm);
-  glp_delete_prob(glpk_lp);
 
   return args;
 }
@@ -1652,23 +1658,28 @@ main(int argc, char* argv[]) {
 
 #ifndef PPL_LPSOL_MULTI_THREADED
 
-  while (optind < argc) {
-    if (check_results)
-      check_results_failed = 0;
-    file_name = argv[optind++];
-    args = prepare_args(file_name);
-    process_args(args);
-    if (check_results && check_results_failed)
-      break;
-  }
+  /* Initialize glpk_lp (only once). */
+  glpk_lp = glp_create_prob();
+  assert(optind + 1 == argc);
+  if (check_results)
+    check_results_failed = 0;
+  file_name = argv[optind];
+  args = prepare_args(file_name);
+  process_args(args);
+  /* Finalize glpk_lp (only once). */
+  glp_delete_prob(glpk_lp);
 
 #else /* defined(PPL_LPSOL_MULTI_THEADED) */
 
   /* Span all threads (MAX_THREADS at most). */
   num_threads = 0;
   while (optind < argc && num_threads < MAX_THREADS) {
+    /* Initialize glpk_lp (once per thread). */
+    glpk_lp = glp_create_prob();
     file_name = argv[optind++];
     args = prepare_args(file_name);
+    /* Finalize glpk_lp (once per thread). */
+    glp_delete_prob(glpk_lp);
     /* Closing output_file is up to thread_process_args. */
     output_file = NULL;
     worker = &threads[num_threads++];
@@ -1694,8 +1705,10 @@ main(int argc, char* argv[]) {
   mpz_clear(tmp_z);
 
   /* Close output file, if any. */
-  if (output_file)
+  if (output_file) {
     fclose(output_file);
+    output_file = NULL;
+  }
 
 #ifdef PPL_LPSOL_SUPPORTS_CHECK_OPTION
   my_exit((check_results && check_results_failed) ? 1 : 0);
