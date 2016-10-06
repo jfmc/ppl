@@ -106,20 +106,24 @@ Weightwatch* p_deterministic_timeout_object = 0;
 
 void
 reset_timeout() {
+#ifndef PPL_THREAD_SAFE
   if (p_timeout_object != 0) {
     delete p_timeout_object;
     p_timeout_object = 0;
     abandon_expensive_computations = 0;
   }
+#endif // !defined(PPL_THREAD_SAFE)
 }
 
 void
 reset_deterministic_timeout() {
+#ifndef PPL_THREAD_SAFE
   if (p_deterministic_timeout_object != 0) {
     delete p_deterministic_timeout_object;
     p_deterministic_timeout_object = 0;
     abandon_expensive_computations = 0;
   }
+#endif // !defined(PPL_THREAD_SAFE)
 }
 
 } // namespace C
@@ -290,13 +294,18 @@ CATCH_ALL
 
 int
 ppl_set_timeout(unsigned csecs) try {
+#ifdef PPL_THREAD_SAFE
+  (void) csecs;
+  return PPL_ERROR_LOGIC_ERROR;
+#else // !defined(PPL_THREAD_SAFE)
+  // FIXME: this implementation of timeouts is not thread-safe.
   // In case a timeout was already set.
   reset_timeout();
-  // FIXME: current implementation is not thread-safe.
   static timeout_exception e;
   using Parma_Polyhedra_Library::Watchdog;
   p_timeout_object = new Watchdog(csecs, abandon_expensive_computations, e);
   return 0;
+#endif // !defined(PPL_THREAD_SAFE)
 }
 CATCH_ALL
 
@@ -310,15 +319,21 @@ CATCH_ALL
 int
 ppl_set_deterministic_timeout(unsigned long unscaled_weight,
                               unsigned scale) try {
+#ifdef PPL_THREAD_SAFE
+  (void) unscaled_weight;
+  (void) scale;
+  return PPL_ERROR_LOGIC_ERROR;
+#else // !defined(PPL_THREAD_SAFE)
+  // FIXME: this implementation of timeouts is not thread-safe.
   // In case a deterministic timeout was already set.
   reset_deterministic_timeout();
-  // FIXME: current implementation is not thread-safe.
   static timeout_exception e;
   typedef Parma_Polyhedra_Library::Weightwatch_Traits Traits;
   p_deterministic_timeout_object
     = new Weightwatch(Traits::compute_delta(unscaled_weight, scale),
                       abandon_expensive_computations, e);
   return 0;
+#endif // !defined(PPL_THREAD_SAFE)
 }
 CATCH_ALL
 

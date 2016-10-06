@@ -32,6 +32,10 @@ site: http://bugseng.com/products/ppl/ . */
 #include <exception>
 #include <gmpxx.h>
 
+#ifdef PPL_THREAD_SAFE
+#include <atomic>
+#endif
+
 #ifndef PPL_PROFILE_ADD_WEIGHT
 #define PPL_PROFILE_ADD_WEIGHT 0
 #endif
@@ -46,12 +50,14 @@ site: http://bugseng.com/products/ppl/ . */
 
 #define WEIGHT_BEGIN() Weight_Profiler::begin()
 
+// FIXME: current implementation is not thread-safe.
 #define WEIGHT_ADD(delta)                                     \
   do {                                                        \
     static Weight_Profiler wp__(__FILE__, __LINE__, delta);   \
     wp__.end();                                               \
   } while (false)
 
+// FIXME: current implementation is not thread-safe.
 #define WEIGHT_ADD_MUL(delta, factor)                                   \
   do {                                                                  \
     static Weight_Profiler wp__(__FILE__, __LINE__, delta);             \
@@ -166,6 +172,7 @@ compute_capacity(dimension_type requested_size,
   by any invocation of a library operator.
 */
 #endif // defined(PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS)
+// FIXME: current implementation is not thread-safe.
 struct Weightwatch_Traits {
   //! The type used to specify thresholds for computational weight.
   typedef unsigned long long Threshold;
@@ -211,6 +218,7 @@ struct Weightwatch_Traits {
 
 #ifndef NDEBUG
 
+// FIXME: current implementation is not thread-safe.
 class In_Assert {
 private:
   //! Non zero during evaluation of PPL_ASSERT expression.
@@ -245,6 +253,12 @@ public:
   virtual ~Throwable();
 };
 
+#ifdef PPL_THREAD_SAFE
+typedef std::atomic<const Throwable*> abandon_type;
+#else // !defined(PPL_THREAD_SAFE)
+typedef const Throwable* volatile abandon_type;
+#endif // !defined(PPL_THREAD_SAFE)
+
 /*! \brief
   A pointer to an exception object.
 
@@ -268,7 +282,7 @@ public:
   never assigns to it.  In particular, it does not zero it again when
   the exception is thrown: it is the client's responsibility to do so.
 */
-extern const Throwable* volatile abandon_expensive_computations;
+extern PPL_TLS abandon_type abandon_expensive_computations;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \brief

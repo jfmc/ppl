@@ -55,7 +55,8 @@ $(top_builddir)/src/libppl.la \
 if THREAD_SAFE
 
 THREAD_SAFETY_TESTS = \
-threadsafe1
+threadsafe1 \
+threadsafe2
 
 else !THREAD_SAFE
 
@@ -237,6 +238,7 @@ nnc_writepolyhedron1
 #
 
 threadsafe1_SOURCES = threadsafe1.cc
+threadsafe2_SOURCES = threadsafe2.cc
 
 addcongruence1_SOURCES = addcongruence1.cc
 

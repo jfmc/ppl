@@ -551,6 +551,7 @@ $(INCLUDE_FILES) \
 $(NESTED_INCLUDE_FILES) \
 swapping_sort_templates.hh \
 termination.cc \
+make_threadable.cc \
 wrap_string.cc \
 Time.cc \
 Watchdog.cc \

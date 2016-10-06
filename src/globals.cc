@@ -31,14 +31,17 @@ namespace Parma_Polyhedra_Library {
 Throwable::~Throwable() {
 }
 
-const Throwable* volatile abandon_expensive_computations = 0;
+PPL_TLS abandon_type abandon_expensive_computations(0);
 
 // Initialize Weightwatch_Traits static data members.
+// FIXME: current implementation is not thread-safe.
 Weightwatch_Traits::Threshold Weightwatch_Traits::weight = 0;
+// FIXME: current implementation is not thread-safe.
 void (*Weightwatch_Traits::check_function)(void) = 0;
 
 #ifndef NDEBUG
 
+// FIXME: current implementation is not thread-safe.
 unsigned int In_Assert::count = 0;
 
 #endif

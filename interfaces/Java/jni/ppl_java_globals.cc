@@ -810,6 +810,12 @@ Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_set_1irrational_1precis
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_set_1timeout
 (JNIEnv* env, jclass, jint csecs) {
+#ifdef PPL_THREAD_SAFE
+  (void) csecs;
+  const std::string e_msg = "set_timeout not supported in thread-safe mode";
+  handle_exception(env, std::logic_error(e_msg));
+#else // !defined(PPL_THREAD_SAFE)
+  // FIXME: this implementation of timeouts is not thread-safe.
   try {
     // In case a timeout was already set.
     reset_timeout();
@@ -822,20 +828,34 @@ Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_set_1timeout
       = new Watchdog(cxx_csecs, abandon_expensive_computations, e);
   }
   CATCH_ALL;
+#endif // !defined(PPL_THREAD_SAFE)
 }
 
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_reset_1timeout
 (JNIEnv* env, jclass) {
+#ifdef PPL_THREAD_SAFE
+  const std::string e_msg = "reset_timeout not supported in thread-safe mode";
+  handle_exception(env, std::logic_error(e_msg));
+#else // !defined(PPL_THREAD_SAFE)
   try {
     reset_timeout();
   }
   CATCH_ALL;
+#endif // !defined(PPL_THREAD_SAFE)
 }
 
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_set_1deterministic_1timeout
 (JNIEnv* env, jclass, jint unscaled_weight, jint scale) {
+#ifdef PPL_THREAD_SAFE
+  (void) unscaled_weight;
+  (void) scale;
+  const std::string e_msg
+    = "set_deterministic_timeout not supported in thread-safe mode";
+  handle_exception(env, std::logic_error(e_msg));
+#else // !defined(PPL_THREAD_SAFE)
+  // FIXME: this implementation of timeouts is not thread-safe.
   try {
     // In case a timeout was already set.
     reset_deterministic_timeout();
@@ -851,15 +871,22 @@ Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_set_1deterministic_1tim
                         abandon_expensive_computations, e);
   }
   CATCH_ALL;
+#endif // !defined(PPL_THREAD_SAFE)
 }
 
 JNIEXPORT void JNICALL
 Java_parma_1polyhedra_1library_Parma_1Polyhedra_1Library_reset_1deterministic_1timeout
 (JNIEnv* env, jclass) {
+#ifdef PPL_THREAD_SAFE
+  const std::string e_msg
+    = "reset_deterministic_timeout not supported in thread-safe mode";
+  handle_exception(env, std::logic_error(e_msg));
+#else // !defined(PPL_THREAD_SAFE)
   try {
     reset_deterministic_timeout();
   }
   CATCH_ALL;
+#endif // !defined(PPL_THREAD_SAFE)
 }
 
 JNIEXPORT jlong JNICALL

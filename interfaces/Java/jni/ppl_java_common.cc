@@ -350,26 +350,32 @@ handle_exception(JNIEnv* env) {
   CHECK_RESULT_ABORT(env, ret == 0);
 }
 
+// FIXME: current implementation is not thread-safe.
 Parma_Polyhedra_Library::Watchdog* p_timeout_object = 0;
 
+// FIXME: current implementation is not thread-safe.
 Weightwatch* p_deterministic_timeout_object = 0;
 
 void
 reset_timeout() {
+#ifndef PPL_THREAD_SAFE
   if (p_timeout_object) {
     delete p_timeout_object;
     p_timeout_object = 0;
     abandon_expensive_computations = 0;
   }
+#endif // !defined(PPL_THREAD_SAFE)
 }
 
 void
 reset_deterministic_timeout() {
+#ifndef PPL_THREAD_SAFE
   if (p_deterministic_timeout_object) {
     delete p_deterministic_timeout_object;
     p_deterministic_timeout_object = 0;
     abandon_expensive_computations = 0;
   }
+#endif // !defined(PPL_THREAD_SAFE)
 }
 
 jobject
