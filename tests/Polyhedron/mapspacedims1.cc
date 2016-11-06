@@ -137,7 +137,7 @@ test04() {
 }
 
 bool
-test06() {
+test05() {
   Variable A(0);
   Variable B(1);
 
@@ -167,7 +167,7 @@ test06() {
 }
 
 bool
-test09() {
+test06() {
   Partial_Function function;
   function.insert(0, 1);
   function.insert(1, 0);
@@ -189,7 +189,7 @@ test09() {
 }
 
 bool
-test10() {
+test07() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -259,7 +259,7 @@ test10() {
 }
 
 bool
-test11() {
+test08() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -292,7 +292,7 @@ test11() {
 }
 
 bool
-test12() {
+test09() {
   Variable A(0);
   Variable B(1);
 
@@ -325,14 +325,14 @@ BEGIN_MAIN
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
-  DO_TEST(test06);
-  DO_TEST(test09);
-  // test10() only fails when using C_Polyhedron and 8 bit coefficients.
+  DO_TEST(test05);
+  DO_TEST(test07);
+  // test07() only fails when using C_Polyhedron and 8 bit coefficients.
 #ifdef DERIVED_TEST
-  DO_TEST(test10);
+  DO_TEST(test07);
 #else
-  DO_TEST_F8(test10);
+  DO_TEST_F8(test07);
 #endif // !defined(DERIVED_TEST)
-  DO_TEST(test11);
-  DO_TEST(test12);
+  DO_TEST(test08);
+  DO_TEST(test09);
 END_MAIN
