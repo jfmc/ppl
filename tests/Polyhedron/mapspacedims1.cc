@@ -137,38 +137,6 @@ test04() {
 }
 
 bool
-test05() {
-  Variable A(0);
-  Variable B(1);
-
-  Partial_Function function;
-  function.insert(2, 0);
-  function.insert(3, 2);
-  function.insert(4, 1);
-
-  Generator_System gs;
-  gs.insert(point());
-  gs.insert(ray(A));
-  gs.insert(ray(B));
-
-  C_Polyhedron ph1(gs);
-
-  print_function(function, "*** function ***");
-  print_generators(ph1, "*** ph1 ***");
-
-  ph1.map_space_dimensions(function);
-
-  C_Polyhedron known_result(3, EMPTY);
-  known_result.add_generator(point());
-
-  bool ok = (ph1 == known_result);
-
-  print_generators(ph1, "*** after ph1.map_space_dimensions(function) ***");
-
-  return ok;
-}
-
-bool
 test06() {
   Variable A(0);
   Variable B(1);
@@ -190,77 +158,6 @@ test06() {
   print_generators(ph1, "*** ph1 ***");
 
   ph1.map_space_dimensions(function);
-
-  bool ok = (ph1 == known_result);
-
-  print_generators(ph1, "*** after ph1.map_space_dimensions(function) ***");
-
-  return ok;
-}
-
-bool
-test07() {
-  Variable A(0);
-  Variable B(1);
-
-  Partial_Function function;
-  function.insert(0, 1);
-  function.insert(1, 0);
-  function.insert(2, 2);
-  function.insert(3, 3);
-
-  Generator_System gs;
-  gs.insert(point());
-  gs.insert(point(A));
-  gs.insert(point(2*B));
-  gs.insert(point(A + 2*B));
-
-  C_Polyhedron ph1(gs);
-
-  print_function(function, "*** function ***");
-  print_generators(ph1, "*** ph1 ***");
-
-  ph1.map_space_dimensions(function);
-
-  C_Polyhedron known_result(4, EMPTY);
-  known_result.add_generator(point());
-  known_result.add_generator(point(B));
-  known_result.add_generator(point(2*A));
-  known_result.add_generator(point(2*A + B));
-
-  bool ok = (ph1 == known_result);
-
-  print_generators(ph1, "*** after ph1.map_space_dimensions(function) ***");
-
-  return ok;
-}
-
-bool
-test08() {
-  Variable A(0);
-  Variable B(1);
-
-  Partial_Function function;
-  function.insert(0, 0);
-  function.insert(2, 1);
-  function.insert(3, 2);
-
-  Generator_System gs;
-  gs.insert(point());
-  gs.insert(point(A));
-  gs.insert(ray(B));
-  gs.insert(ray(A + B));
-
-  C_Polyhedron ph1(gs);
-
-  print_function(function, "*** function ***");
-  print_generators(ph1, "*** ph1 ***");
-
-  ph1.map_space_dimensions(function);
-
-  C_Polyhedron known_result(3, EMPTY);
-  known_result.add_generator(point());
-  known_result.add_generator(ray(A));
 
   bool ok = (ph1 == known_result);
 
@@ -421,43 +318,6 @@ test12() {
   return ok;
 }
 
-bool
-test13() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
-  Variable D(3);
-
-  Partial_Function function;
-  function.insert(0, 2);
-  function.insert(1, 3);
-
-  Generator_System gs;
-  gs.insert(point());
-  gs.insert(point(A));
-  gs.insert(point(2*B));
-  gs.insert(point(A + 2*B));
-
-  C_Polyhedron ph1(gs);
-
-  print_function(function, "*** function ***");
-  print_generators(ph1, "*** ph1 ***");
-
-  ph1.map_space_dimensions(function);
-
-  C_Polyhedron known_result(4, EMPTY);
-  known_result.add_generator(point());
-  known_result.add_generator(point(C));
-  known_result.add_generator(point(2*D));
-  known_result.add_generator(point(C + 2*D));
-
-  bool ok = (ph1 == known_result);
-
-  print_generators(ph1, "*** after ph1.map_space_dimensions(function) ***");
-
-  return ok;
-}
-
 } // namespace
 
 BEGIN_MAIN
@@ -465,10 +325,7 @@ BEGIN_MAIN
   DO_TEST(test02);
   DO_TEST(test03);
   DO_TEST(test04);
-  DO_TEST(test05);
   DO_TEST(test06);
-  DO_TEST(test07);
-  DO_TEST(test08);
   DO_TEST(test09);
   // test10() only fails when using C_Polyhedron and 8 bit coefficients.
 #ifdef DERIVED_TEST
@@ -478,5 +335,4 @@ BEGIN_MAIN
 #endif // !defined(DERIVED_TEST)
   DO_TEST(test11);
   DO_TEST(test12);
-  DO_TEST(test13);
 END_MAIN
