@@ -24,8 +24,6 @@ site: http://bugseng.com/products/ppl/ . */
 #ifndef PPL_thread_safe_hh
 #define PPL_thread_safe_hh 1
 
-#include <config.h>
-
 #ifdef PPL_THREAD_SAFE
 #define PPL_TLS thread_local
 #else
