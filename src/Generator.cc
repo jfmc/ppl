@@ -212,14 +212,45 @@ PPL::Generator::linear_combine(const Generator& y, const dimension_type i) {
 /*! \relates Parma_Polyhedra_Library::Generator */
 int
 PPL::compare(const Generator& x, const Generator& y) {
-  const bool x_is_line_or_equality = x.is_line_or_equality();
-  const bool y_is_line_or_equality = y.is_line_or_equality();
-  if (x_is_line_or_equality != y_is_line_or_equality) {
-    // Equalities (lines) precede inequalities (ray/point).
-    return y_is_line_or_equality ? 2 : -2;
+  const bool x_is_line = x.is_line();
+  const bool y_is_line = y.is_line();
+  if (x_is_line != y_is_line) {
+    // Lines precede rays and (closure) points.
+    return y_is_line ? 2 : -2;
+  }
+  if (x.is_necessarily_closed() && y.is_necessarily_closed()) {
+    return compare(x.expr, y.expr);
   }
 
-  return compare(x.expr, y.expr);
+  // Epsilon coefficient should be checked last:
+  // to this end, we use the adapted expression().
+  int comp = compare(x.expression(), y.expression());
+  if (comp != 0) {
+    return comp;
+  }
+  // Same homogeneous terms (disregarding epsilon).
+  if (x_is_line) {
+    PPL_ASSERT(y_is_line);
+    // Same line.
+    return 0;
+  }
+  if (x.is_ray()) {
+    return y.is_ray() ? 0 : -1;
+  }
+  if (y.is_ray()) {
+    return 1;
+  }
+  // Compare divisors.
+  comp = cmp(x.divisor(), y.divisor());
+  if (comp > 0) {
+    return 1;
+  }
+  if (comp < 0) {
+    return -1;
+  }
+  PPL_ASSERT(comp == 0);
+  // `x' and `y' may only differ on their epsilon coefficient.
+  return cmp(x.epsilon_coefficient(), y.epsilon_coefficient());
 }
 
 bool

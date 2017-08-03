@@ -1327,6 +1327,12 @@ Linear_Expression_Impl<Row>::const_iterator
 }
 
 template <typename Row>
+dimension_type
+Linear_Expression_Impl<Row>::const_iterator::index() const {
+  return itr.index();
+}
+
+template <typename Row>
 bool
 Linear_Expression_Impl<Row>::const_iterator
 ::operator==(const const_iterator_interface& x) const {

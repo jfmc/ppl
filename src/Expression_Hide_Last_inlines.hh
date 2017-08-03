@@ -239,6 +239,58 @@ Expression_Hide_Last<T>
   return this->inner().have_a_common_variable(y, first, last);
 }
 
+template <typename T>
+inline int
+compare(const Expression_Hide_Last<T>& x, const Expression_Hide_Last<T>& y) {
+  typedef typename Expression_Hide_Last<T>::const_iterator CIter;
+  CIter i = x.begin();
+  CIter i_end = x.end();
+  CIter j = y.begin();
+  CIter j_end = y.end();
+  while (i != i_end && j != j_end) {
+    if (i.index() < j.index()) {
+      const int s = sgn(*i);
+      if (s != 0) {
+        return 2*s;
+      }
+      ++i;
+      continue;
+    }
+    if (i.index() > j.index()) {
+      const int s = sgn(*j);
+      if (s != 0) {
+        return -2*s;
+      }
+      ++j;
+      continue;
+    }
+    PPL_ASSERT(i.index() == j.index());
+    const int s = cmp(*i, *j);
+    if (s < 0) {
+      return -2;
+    }
+    if (s > 0) {
+      return 2;
+    }
+    PPL_ASSERT(s == 0);
+    ++i;
+    ++j;
+  }
+  for ( ; i != i_end; ++i) {
+    const int s = sgn(*i);
+    if (s != 0) {
+      return 2*s;
+    }
+  }
+  for ( ; j != j_end; ++j) {
+    const int s = sgn(*j);
+    if (s != 0) {
+      return -2*s;
+    }
+  }
+  return 0;
+}
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Expression_Hide_Last_inlines_hh)

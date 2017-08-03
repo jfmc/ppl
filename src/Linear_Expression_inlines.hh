@@ -682,6 +682,13 @@ Linear_Expression::const_iterator
   return itr->variable();
 }
 
+inline dimension_type
+Linear_Expression::const_iterator
+::index() const {
+  PPL_ASSERT(itr != NULL);
+  return itr->index();
+}
+
 inline bool
 Linear_Expression::const_iterator
 ::operator==(const const_iterator& i) const {

@@ -160,6 +160,14 @@ private:
   const bool hide_last_;
 };
 
+namespace Parma_Polyhedra_Library {
+
+template <typename T>
+int compare(const Expression_Hide_Last<T>& x,
+            const Expression_Hide_Last<T>& y);
+
+} // namespace Parma_Polyhedra_Library
+
 #include "Expression_Hide_Last_inlines.hh"
 
 #endif // !defined(PPL_Expression_Hide_Last_defs_hh)

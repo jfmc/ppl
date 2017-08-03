@@ -96,6 +96,9 @@ public:
     */
     virtual Variable variable() const = 0;
 
+    //! Returns the index of the coefficient pointed to by \c *this.
+    virtual dimension_type index() const = 0;
+
     //! Compares \p *this with x .
     /*!
       \param x

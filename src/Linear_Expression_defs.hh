@@ -459,6 +459,9 @@ public:
     */
     Variable variable() const;
 
+    //! Returns the index of the coefficient pointed to by \c *this.
+    dimension_type index() const;
+
     //! Compares \p *this with \p i.
     /*!
       \param i
