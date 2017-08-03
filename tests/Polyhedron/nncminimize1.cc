@@ -368,6 +368,33 @@ test06() {
   return ok;
 }
 
+bool
+test07() {
+  Variable A(0);
+  Variable B(1);
+
+  Generator_System gs;
+  gs.insert(closure_point(A + 2*B));
+  gs.insert(closure_point(A + 2*B, 2));
+  gs.insert(point(A + 2*B));
+  gs.insert(point(A + 2*B, 2));
+
+  NNC_Polyhedron ph(gs);
+
+  nout << endl << "Before NNC minimization:" << endl;
+  print_constraints(ph.constraints(), "*** ph constraints ***");
+  print_generators(ph.generators(), "*** ph generators ***");
+
+  const Generator_System& min_gs = ph.minimized_generators();
+  bool ok = (2 == std::distance(min_gs.begin(), min_gs.end()));
+
+  nout << endl << "After NNC minimization:" << endl;
+  print_constraints(ph.constraints(), "*** ph constraints ***");
+  print_generators(ph.generators(), "*** ph generators ***");
+
+  return ok;
+}
+
 } // namespace
 
 BEGIN_MAIN
@@ -377,4 +404,5 @@ BEGIN_MAIN
   DO_TEST_F8(test04);
   DO_TEST(test05);
   DO_TEST(test06);
+  DO_TEST(test07);
 END_MAIN
