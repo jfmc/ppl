@@ -812,15 +812,15 @@ on these iterators and disjuncts via the usual handles.
    \c Iterator_1 is equal to the iterator referenced by
    \c Iterator_2.</EM>
 
-<P><CODE>ppl_Pointset_Powerset_C_Polyhedron_iterator_increment(+Iterator)</CODE><BR>
+<P><CODE>ppl_Pointset_Powerset_C_Polyhedron_increment_iterator(+Iterator)</CODE><BR>
   <EM>Increments the iterator referenced by \c Iterator
   so that it "points" to the next disjunct.</EM>
 
-<P><CODE>ppl_Pointset_Powerset_C_Polyhedron_iterator_decrement(+Iterator)</CODE><BR>
+<P><CODE>ppl_Pointset_Powerset_C_Polyhedron_decrement_iterator(+Iterator)</CODE><BR>
   <EM>Decrements the iterator referenced by \c Iterator
   so that it "points" to the previous disjunct.</EM>
 
-<P><CODE>ppl_Pointset_Powerset_C_Polyhedron_iterator_get_disjunct(+Iterator, -Handle)</CODE><BR>
+<P><CODE>ppl_Pointset_Powerset_C_Polyhedron_get_disjunct(+Iterator, -Handle)</CODE><BR>
   <EM>Unifies with \c Handle a reference to the disjunct referred
   to by \c Iterator_1.</EM>
 
