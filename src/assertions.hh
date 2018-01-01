@@ -1,6 +1,6 @@
 /* Implementation of PPL assert-like macros.
    Copyright (C) 2001-2010 Roberto Bagnara <bagnara@cs.unipr.it>
-   Copyright (C) 2010-2017 BUGSENG srl (http://bugseng.com)
+   Copyright (C) 2010-2018 BUGSENG srl (http://bugseng.com)
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -98,7 +98,10 @@ site: http://bugseng.com/products/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-#if PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK
+// Note: __attribute__((weak)) does not work on 64-bit Cygwin.
+// See https://trac.sagemath.org/ticket/16152 and links therein.
+#if PPL_CXX_SUPPORTS_ATTRIBUTE_WEAK \
+  && !(defined(__CYGWIN__) && defined(__x86_64__))
 #define PPL_WEAK_NORETURN __attribute__((weak, noreturn))
 #else
 #define PPL_WEAK_NORETURN __attribute__((noreturn))
