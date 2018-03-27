@@ -72,6 +72,10 @@ ppl_swiprolog.cc: $(interface_generator_dependencies)
 
 pkglib_LTLIBRARIES = libppl_swiprolog.la
 
+pkginclude_HEADERS =
+$(SWI_CFLI_FILES) \
+ppl_swiprolog.hh
+
 libppl_swiprolog_la_SOURCES = \
 ppl_prolog_sysdep.hh \
 ppl_swiprolog.hh \
