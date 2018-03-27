@@ -64,9 +64,12 @@ NO_UNDEFINED_FLAG = -no-undefined
 
 endif NO_UNDEFINED
 
+MODULE_FLAGS = @module_flags@
+
 if HOST_OS_DARWIN
 
 libppl_java_la_LDFLAGS = \
+$(MODULE_FLAGS) \
 $(NO_UNDEFINED_FLAG) \
 -avoid-version \
 -shrext .jnilib
@@ -76,6 +79,7 @@ else !HOST_OS_DARWIN
 if HOST_OS_MINGW
 
 libppl_java_la_LDFLAGS = \
+$(MODULE_FLAGS) \
 $(NO_UNDEFINED_FLAG) \
 -module \
 -avoid-version \
@@ -84,6 +88,7 @@ $(NO_UNDEFINED_FLAG) \
 else !HOST_OS_MINGW
 
 libppl_java_la_LDFLAGS = \
+$(MODULE_FLAGS) \
 $(NO_UNDEFINED_FLAG) \
 -module \
 -avoid-version
