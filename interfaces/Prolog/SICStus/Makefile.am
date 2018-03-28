@@ -184,10 +184,7 @@ $(top_builddir)/src/libppl.la \
 libppl_sicstus_la_DEPENDENCIES = \
 @required_instantiations_prolog_cxx_objects@
 
-MODULE_FLAGS = @module_flags@
-
 libppl_sicstus_la_LDFLAGS = \
-$(MODULE_FLAGS) \
 $(NO_UNDEFINED_FLAG) \
 -module \
 -avoid-version

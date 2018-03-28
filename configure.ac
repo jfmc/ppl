@@ -1281,13 +1281,6 @@ fi
 AM_CONDITIONAL(BUILD_YAP_PROLOG_INTERFACE,
                test x$build_yap_prolog_interface = xyes)
 
-# Allow extra Libtool flags (typically to set the rpath) for linking
-# dynamically-loadable modules.
-AC_ARG_WITH(module-flags,
-  AS_HELP_STRING([--with-module-flags=XXX],
-                 [add XXX to the linking options for dynamically-loadable modules]),
-  module_flags="$with_module_flags")
-
 # Test if some Prolog interfaces have to be built.
 if test x$build_ciao_prolog_interface = xyes \
 || test x$build_gnu_prolog_interface = xyes \
@@ -1671,7 +1664,6 @@ AC_SUBST(required_instantiations_ocaml_cxx_headers)
 AC_SUBST(required_instantiations_ocaml_cxx_sources)
 AC_SUBST(required_instantiations_ocaml_cxx_objects)
 AC_SUBST(mlgmp_dir)
-AC_SUBST(module_flags)
 
 AC_CONFIG_FILES(Makefile
                 ppl.lsm
