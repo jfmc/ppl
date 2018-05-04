@@ -866,7 +866,7 @@ devref-configured-ocaml-interface.latex-dir \
 user-configured-java-interface.latex-dir \
 devref-configured-java-interface.latex-dir
 
-TEX_ENV = TEXINPUTS=$(abs_srcdir):$(TEXINPUTS)
+TEX_ENV = TEXINPUTS=$(abs_srcdir):$(TEXINPUTS) texmf_casefold_search=0
 
 .SECONDARY: $(LATEX_DIRS)
 
