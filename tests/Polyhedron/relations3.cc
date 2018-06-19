@@ -295,7 +295,7 @@ test12() {
   print_constraints(ph, "*** ph ***");
   nout << "ph.relation_with(line(C)) == " << rel << endl;
 
-  Poly_Gen_Relation known_result = Poly_Gen_Relation::subsumes();
+  Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
   return rel == known_result;
 }
 
