@@ -259,7 +259,7 @@ PPL::Polyhedron::relation_with(const Generator& g) const {
   }
 
   // The empty polyhedron cannot subsume a generator.
-  if (marked_empty()) {
+  if (is_empty()) {
     return Poly_Gen_Relation::nothing();
   }
 
